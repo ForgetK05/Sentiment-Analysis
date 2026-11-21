@@ -1,0 +1,2460 @@
+{
+  "media_analysis": {
+    "media_type": "video",
+    "source_paths": [
+      "G:\\Download\\Download (1).mp4"
+    ],
+    "num_frames_used": 10,
+    "has_audio": true,
+    "transcript": "Siêu tổng hợp đồ da mai trường găng phần 1 Ngoài, chiếc còn cửa như anh em mình là bé không biết Thì mình phải xem lại mình đó Chẳng hãy nói luôn này Bây giờ ra đường người ta vẫn kêu là trấn thành đó Bây giờ ra đường người ta vẫn kêu là trấn thành đó Oh Có rất nhiều người kêu anh là trấn thành Không em nghĩ lâu lâu một bé thôi Bây giờ mà một bé tiếp theo mà không biết anh em mình là mình phải coi lợi Coi lại đó nha, chứ không phải được Chuyện trường điệp 2 người hay quá Phải đối thật vòng là anh Hàn sẽ mãi luôn Em mong là tụi em mà đi anh Hàn là em phải được đi anh Hàn Chắc gì sắp tụi người đó",
+    "chu_de_chinh": "Tổng hợp Drama/Phim",
+    "quan_diem_noi_dung": "Thể hiện sự mong mỏi, kỳ vọng và tình cảm dành cho nhân vật (anh Hàn), đồng thời tạo sự chú ý về một bộ phim/series.",
+    "tom_tat_ngan": "Video là một bản tổng hợp (Siêu tổng hợp) các đoạn hay từ drama/phim (Trường Giang Phần 1). Nội dung thể hiện sự mong muốn được xem lại những khoảnh khắc đáng nhớ và bày tỏ sự yêu mến, mong muốn được đồng hành cùng nhân vật.",
+    "tu_khoa": [
+      "Siêu tổng hợp",
+      "Drama",
+      "Trường Giang",
+      "Mong mỏi",
+      "Anh Hàn",
+      "Phần 1"
+    ],
+    "raw_response": "{\"chu_de_chinh\": \"Tổng hợp Drama/Phim\", \"quan_diem_noi_dung\": \"Thể hiện sự mong mỏi, kỳ vọng và tình cảm dành cho nhân vật (anh Hàn), đồng thời tạo sự chú ý về một bộ phim/series.\", \"tom_tat_ngan\": \"Video là một bản tổng hợp (Siêu tổng hợp) các đoạn hay từ drama/phim (Trường Giang Phần 1). Nội dung thể hiện sự mong muốn được xem lại những khoảnh khắc đáng nhớ và bày tỏ sự yêu mến, mong muốn được đồng hành cùng nhân vật.\", \"tu_khoa\": [\"Siêu tổng hợp\", \"Drama\", \"Trường Giang\", \"Mong mỏi\", \"Anh Hàn\", \"Phần 1\"]}"
+  },
+  "sentiment_summary": {
+    "total_comments": 198,
+    "counts": {
+      "POS": 162,
+      "NEG": 27,
+      "NEU": 9
+    },
+    "percentages": {
+      "POS": 81.82,
+      "NEG": 13.64,
+      "NEU": 4.55
+    },
+    "avg_confidence": 0.9491,
+    "overall_tendency": "Tích cực",
+    "top_examples": {
+      "POS": [
+        {
+          "comment": "Trấn Thành nào á chớ 🤣🤣🤣",
+          "confidence": 0.9998
+        },
+        {
+          "comment": "TG nói chuyện có duyên",
+          "confidence": 0.9998
+        },
+        {
+          "comment": "Ờ giống Trấn Thành lắm rồi đó he 🙂",
+          "confidence": 0.9998
+        }
+      ],
+      "NEG": [
+        {
+          "comment": "Ko muốn xem vì sợ ghét quá 🙄",
+          "confidence": 0.9983
+        },
+        {
+          "comment": "đã coi qua 2 3 lần nhưng xem lại vẫn cay cú và ghéc khó chịu quá",
+          "confidence": 0.9981
+        },
+        {
+          "comment": "sáng ra xem tụt năng lượng vcl",
+          "confidence": 0.9981
+        }
+      ],
+      "NEU": [
+        {
+          "comment": "tao thấy bình thường",
+          "confidence": 0.9958
+        },
+        {
+          "comment": "khúc cuối hình như vợ TG đang bàu đúng ko nhỉ",
+          "confidence": 0.9918
+        },
+        {
+          "comment": "Nhìn sao kêu trấn thành",
+          "confidence": 0.9516
+        }
+      ]
+    }
+  },
+  "comments": [
+    {
+      "original_text": "Coi riết t thù luôn chứ không ghét nữa",
+      "cleaned_text": "Coi riết t thù luôn chứ không ghét nữa",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9933,
+      "scores": {
+        "POS": 0.9933,
+        "NEG": 0.0066,
+        "NEU": 0.0
+      }
+    },
+    {
+      "original_text": "Giống điểm gì 😅",
+      "cleaned_text": "Giống điểm gì 😅",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.999,
+      "scores": {
+        "POS": 0.999,
+        "NEG": 0.001,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "hổng ai kêu anh là TT hết á, Hai của tui cao ráo đẹp trai lắm nha 😂",
+      "cleaned_text": "hổng ai kêu anh là TT hết á, Hai của tui cao ráo đẹp trai lắm nha 😂",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9974,
+      "scores": {
+        "POS": 0.9974,
+        "NEG": 0.0013,
+        "NEU": 0.0012
+      }
+    },
+    {
+      "original_text": "Kêu anh là trấn thành chi vậy anh",
+      "cleaned_text": "Kêu anh là trấn thành chi vậy anh",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9992,
+      "scores": {
+        "POS": 0.9992,
+        "NEG": 0.0002,
+        "NEU": 0.0005
+      }
+    },
+    {
+      "original_text": "gần tháng này chưa xem cái nào trùng cái nào lun. giỏi thật :))",
+      "cleaned_text": "gần tháng này chưa xem cái nào trùng cái nào lun. giỏi thật :))",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9987,
+      "scores": {
+        "POS": 0.9987,
+        "NEG": 0.0011,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": "Mình là người luôn giữ lập trường ai nói gì nói ai hùa gì hùa…ai ghét TG cứ ghét tôi ghét trước đó rất lâu rồi",
+      "cleaned_text": "Mình là người luôn giữ lập trường ai nói gì nói ai hùa gì hùa…ai ghét TG cứ ghét tôi ghét trước đó rất lâu rồi",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0001,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": "Nhưng Trấn Thành k bị nhầm là trường giang",
+      "cleaned_text": "Nhưng Trấn Thành không bị nhầm là trường giang",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9962,
+      "scores": {
+        "POS": 0.9962,
+        "NEG": 0.0002,
+        "NEU": 0.0036
+      }
+    },
+    {
+      "original_text": "gì má",
+      "cleaned_text": "gì má",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.9841,
+      "scores": {
+        "POS": 0.0151,
+        "NEG": 0.9841,
+        "NEU": 0.0008
+      }
+    },
+    {
+      "original_text": "Ụa rồi mắc gì căng. 🤣",
+      "cleaned_text": "Ụa rồi mắc gì căng. 🤣",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9996,
+      "scores": {
+        "POS": 0.9996,
+        "NEG": 0.0003,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "Dị đó mà ảnh lập vi bằng đó",
+      "cleaned_text": "Dị đó mà ảnh lập vi bằng đó",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9981,
+      "scores": {
+        "POS": 0.9981,
+        "NEG": 0.0015,
+        "NEU": 0.0004
+      }
+    },
+    {
+      "original_text": "Pha cuối làm gì vậy",
+      "cleaned_text": "Pha cuối làm gì vậy",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9979,
+      "scores": {
+        "POS": 0.9979,
+        "NEG": 0.0009,
+        "NEU": 0.0012
+      }
+    },
+    {
+      "original_text": "chuyến này về chỉ có kinh doanh thôi chứ quay lại nghề diễn hơi khó à😆😆😆",
+      "cleaned_text": "chuyến này về chỉ có kinh doanh thôi chứ quay lại nghề diễn hơi khó à😆😆😆",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9968,
+      "scores": {
+        "POS": 0.9968,
+        "NEG": 0.0018,
+        "NEU": 0.0014
+      }
+    },
+    {
+      "original_text": "chứng tỏ ng ta thích TT [Cười to tán thành]",
+      "cleaned_text": "chứng tỏ ng ta thích TT [Cười to tán thành]",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9994,
+      "scores": {
+        "POS": 0.9994,
+        "NEG": 0.0005,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "chứ h mấy bạn ca sĩ mới nổi ổng cũng đâu nhớ tên",
+      "cleaned_text": "chứ h mấy bạn ca sĩ mới nổi ổng cũng đâu nhớ tên",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.8586,
+      "scores": {
+        "POS": 0.8586,
+        "NEG": 0.1404,
+        "NEU": 0.001
+      }
+    },
+    {
+      "original_text": "Giờ ai mới gặp cũng biết được ai là ai òi, tui mừng cho bà ☺️☺️☺️",
+      "cleaned_text": "Giờ ai mới gặp cũng biết được ai là ai òi, tui mừng cho bà ☺️☺️☺️",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0002,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "ê sao lặng rồi",
+      "cleaned_text": "ê sao lặng rồi",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.5472,
+      "scores": {
+        "POS": 0.129,
+        "NEG": 0.5472,
+        "NEU": 0.3238
+      }
+    },
+    {
+      "original_text": "K mấy mình giải ghệ đi đc k 🥹",
+      "cleaned_text": "không mấy mình giải ghệ đi được không 🥹",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.7146,
+      "scores": {
+        "POS": 0.0206,
+        "NEG": 0.7146,
+        "NEU": 0.2647
+      }
+    },
+    {
+      "original_text": "Làm quả mất tiếng trấn thành luôn [Cười chảy nước mắt]",
+      "cleaned_text": "Làm quả mất tiếng trấn thành luôn [Cười chảy nước mắt]",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.5457,
+      "scores": {
+        "POS": 0.5457,
+        "NEG": 0.4487,
+        "NEU": 0.0055
+      }
+    },
+    {
+      "original_text": "ai ai ai kêu ảnh là Trấn Thành z len tiếng cho e biết coi",
+      "cleaned_text": "ai ai ai kêu ảnh là Trấn Thành vậy len tiếng cho e biết coi",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9993,
+      "scores": {
+        "POS": 0.9993,
+        "NEG": 0.0001,
+        "NEU": 0.0006
+      }
+    },
+    {
+      "original_text": "anh trẤn thành tội quá",
+      "cleaned_text": "anh trẤn thành tội quá",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.7283,
+      "scores": {
+        "POS": 0.0751,
+        "NEG": 0.7283,
+        "NEU": 0.1965
+      }
+    },
+    {
+      "original_text": "ảnh tử tế lắm mn ạ, ảnh nâng đỡ đàn em từ lúc mới vào nghề, anh góp ý từng chút một luôn ở bên và đồng hành khi đồng nghiệp gặp khó khăn, rất yêu thương gia đình, ảnh thương vợ ảnh lắm á tại bth ảnh dỡn v thôi chứ sau hậu trường mn mới thấy được ảnh lo cho vợ mình như nào, đúng là ng đàn ông chung thuỷ. Mong anh Trấn Thành sự nghiệp thăng hoa nha",
+      "cleaned_text": "ảnh tử tế lắm mọi người ạ, ảnh nâng đỡ đàn em từ lúc mới vào nghề, anh góp ý từng chút một luôn ở bên và đồng hành khi đồng nghiệp gặp khó khăn, rất yêu thương gia đình, ảnh thương vợ ảnh lắm á tại bth ảnh dỡn vậy thôi chứ sau hậu trường mọi người mới thấy được ảnh lo cho vợ mình như nào, đúng là ng đàn ông chung thuỷ. Mong anh Trấn Thành sự nghiệp thăng hoa nha",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0002,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "nằm mơ cũng ko thấy..",
+      "cleaned_text": "nằm mơ cũng không thấy..",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.9951,
+      "scores": {
+        "POS": 0.0029,
+        "NEG": 0.9951,
+        "NEU": 0.0019
+      }
+    },
+    {
+      "original_text": "Trailer chiếu rạp hả?",
+      "cleaned_text": "Trailer chiếu rạp hả?",
+      "label": "NEU",
+      "label_vi": "Trung tính",
+      "confidence": 0.9035,
+      "scores": {
+        "POS": 0.0699,
+        "NEG": 0.0267,
+        "NEU": 0.9035
+      }
+    },
+    {
+      "original_text": "Lướt vội vì sợ nảy sinh tình cảm",
+      "cleaned_text": "Lướt vội vì sợ nảy sinh tình cảm",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.5891,
+      "scores": {
+        "POS": 0.0243,
+        "NEG": 0.5891,
+        "NEU": 0.3867
+      }
+    },
+    {
+      "original_text": "Cái miếng gì mà nó vô duyên dữ luôn á. Nói vậy chẳn khác nào trù người ta :))",
+      "cleaned_text": "Cái miếng gì mà nó vô duyên dữ luôn á. Nói vậy chẳn khác nào trù người ta :))",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9639,
+      "scores": {
+        "POS": 0.9639,
+        "NEG": 0.036,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "Anh em mình là gì mà ai cũng phải biết, quan trọng hoá vấn đề",
+      "cleaned_text": "Anh em mình là gì mà ai cũng phải biết, quan trọng hoá vấn đề",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9989,
+      "scores": {
+        "POS": 0.9989,
+        "NEG": 0.0005,
+        "NEU": 0.0006
+      }
+    },
+    {
+      "original_text": "Vậy mà ảnh đòi báo công an",
+      "cleaned_text": "Vậy mà ảnh đòi báo công an",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.999,
+      "scores": {
+        "POS": 0.999,
+        "NEG": 0.0009,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "\"Bây giờ ra đường ngta vẫn kêu a là Trấn Thành đó\". T cười chets ahhahahaha",
+      "cleaned_text": "\"Bây giờ ra đường ngta vẫn kêu a là Trấn Thành đó\". T cười chets ahhahahaha",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0002,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "h còn có cả series siêu tổg hợp drama nx à🤡",
+      "cleaned_text": "h còn có cả series siêu tổg hợp drama nx à🤡",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0002,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "https://vt.tiktok.com/ZSp3BfHUp/",
+      "cleaned_text": "",
+      "label": "NEU",
+      "label_vi": "Trung tính",
+      "confidence": 0.0,
+      "scores": {
+        "POS": 0.0,
+        "NEG": 0.0,
+        "NEU": 1.0
+      }
+    },
+    {
+      "original_text": "xem hoài chán luôn",
+      "cleaned_text": "xem hoài chán luôn",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.6133,
+      "scores": {
+        "POS": 0.3863,
+        "NEG": 0.6133,
+        "NEU": 0.0004
+      }
+    },
+    {
+      "original_text": "viral",
+      "cleaned_text": "viral",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9968,
+      "scores": {
+        "POS": 0.9968,
+        "NEG": 0.0017,
+        "NEU": 0.0014
+      }
+    },
+    {
+      "original_text": "hồi đó tui cx tưởng trường giang là chú Trấn Thành tại bt mỗi chú TT có bt TG là ai đâu:))",
+      "cleaned_text": "hồi đó tui cũng tưởng trường giang là chú Trấn Thành tại bình thường mỗi chú TT có bình thường TG là ai đâu:))",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9978,
+      "scores": {
+        "POS": 0.9978,
+        "NEG": 0.0004,
+        "NEU": 0.0018
+      }
+    },
+    {
+      "original_text": "Trấn Thành nào á chớ 🤣🤣🤣",
+      "cleaned_text": "Trấn Thành nào á chớ 🤣🤣🤣",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9998,
+      "scores": {
+        "POS": 0.9998,
+        "NEG": 0.0001,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "\"bây giờ ra đường ngta vẫn kêu anh là Trấn Thành đó\"\ncái ánh mắt sao sao ý,tao hk rành về tâm lý nên hk biết giải thích sao nữa",
+      "cleaned_text": "\"bây giờ ra đường ngta vẫn kêu anh là Trấn Thành đó\" cái ánh mắt sao sao ý,tao hk rành về tâm lý nên hk biết giải thích sao nữa",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9995,
+      "scores": {
+        "POS": 0.9995,
+        "NEG": 0.0001,
+        "NEU": 0.0004
+      }
+    },
+    {
+      "original_text": "Moá có luôn à lại chiều nó mưa😂😂😂",
+      "cleaned_text": "Moá có luôn à lại chiều nó mưa😂😂😂",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9987,
+      "scores": {
+        "POS": 0.9987,
+        "NEG": 0.0012,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "Ý là sao phải căng á bây",
+      "cleaned_text": "Ý là sao phải căng á bây",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9054,
+      "scores": {
+        "POS": 0.9054,
+        "NEG": 0.0934,
+        "NEU": 0.0012
+      }
+    },
+    {
+      "original_text": "giờ thì anh nổi quá rồi😁😁😁",
+      "cleaned_text": "giờ thì anh nổi quá rồi😁😁😁",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9992,
+      "scores": {
+        "POS": 0.9992,
+        "NEG": 0.0006,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "xem là trấn thành vậy ns ổng ns ai nói",
+      "cleaned_text": "xem là trấn thành vậy ns ổng ns ai nói",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9994,
+      "scores": {
+        "POS": 0.9994,
+        "NEG": 0.0001,
+        "NEU": 0.0005
+      }
+    },
+    {
+      "original_text": "Ai má",
+      "cleaned_text": "Ai má",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9992,
+      "scores": {
+        "POS": 0.9992,
+        "NEG": 0.0007,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "Tự ổng nói chứ ai kêu",
+      "cleaned_text": "Tự ổng nói chứ ai kêu",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9996,
+      "scores": {
+        "POS": 0.9996,
+        "NEG": 0.0004,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "G đẫm nên vào shop em sắm đồ nữ mặc là hợp lý luôn [Cười chảy nước mắt]",
+      "cleaned_text": "G đẫm nên vào shop em sắm đồ nữ mặc là hợp lý luôn [Cười chảy nước mắt]",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9989,
+      "scores": {
+        "POS": 0.9989,
+        "NEG": 0.0009,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": "mỗi phần dài hơn 1 tiếng chứ m làm video này bao nhiêu phần mới hết drama của ổng",
+      "cleaned_text": "mỗi phần dài hơn 1 tiếng chứ m làm video này bao nhiêu phần mới hết drama của ổng",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.998,
+      "scores": {
+        "POS": 0.998,
+        "NEG": 0.0018,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": "Giống chỗ nào . Tt Có 164 đâu",
+      "cleaned_text": "Giống chỗ nào . Tt Có 164 đâu",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9931,
+      "scores": {
+        "POS": 0.9931,
+        "NEG": 0.0068,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "ảnh tử tế lắm mn ạ, ảnh nâng đỡ đàn em từ lúc mới vào nghề, anh góp ý từng chút một luôn ở bên và đồng hành khi đồng nghiệp gặp khó khăn, rất yêu thương gia đình, ảnh thương vợ ảnh lắm á tại bth ảnh dỡn v thôi chứ sau hậu trường mn mới thấy được ảnh lo cho vợ mình như nào, đúng là ng đàn ông chung thuỷ. Mong anh Trấn Thành sự nghiệp thăng hoa nha",
+      "cleaned_text": "ảnh tử tế lắm mọi người ạ, ảnh nâng đỡ đàn em từ lúc mới vào nghề, anh góp ý từng chút một luôn ở bên và đồng hành khi đồng nghiệp gặp khó khăn, rất yêu thương gia đình, ảnh thương vợ ảnh lắm á tại bth ảnh dỡn vậy thôi chứ sau hậu trường mọi người mới thấy được ảnh lo cho vợ mình như nào, đúng là ng đàn ông chung thuỷ. Mong anh Trấn Thành sự nghiệp thăng hoa nha",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0002,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "trùng cái nào chưa ta",
+      "cleaned_text": "trùng cái nào chưa ta",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9279,
+      "scores": {
+        "POS": 0.9279,
+        "NEG": 0.0246,
+        "NEU": 0.0475
+      }
+    },
+    {
+      "original_text": "Đứa nào , là đứa nào kêu anh t là trấn thành lên tiếng cái coi . Anh t có đẳng cấp dc vậy đâu mà bây đồn 🤣",
+      "cleaned_text": "Đứa nào , là đứa nào kêu anh t là trấn thành lên tiếng cái coi . Anh t có đẳng cấp được vậy đâu mà bây đồn 🤣",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.999,
+      "scores": {
+        "POS": 0.999,
+        "NEG": 0.0009,
+        "NEU": 0.0
+      }
+    },
+    {
+      "original_text": "ê đoạn cuối bắp tính đấm ôg này quá😂",
+      "cleaned_text": "ê đoạn cuối bắp tính đấm ôg này quá😂",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9973,
+      "scores": {
+        "POS": 0.9973,
+        "NEG": 0.0015,
+        "NEU": 0.0012
+      }
+    },
+    {
+      "original_text": "nhìn vậy thôi chứ anh ok lắm á[Cười lớn]",
+      "cleaned_text": "nhìn vậy thôi chứ anh ok lắm á[Cười lớn]",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9985,
+      "scores": {
+        "POS": 0.9985,
+        "NEG": 0.0005,
+        "NEU": 0.001
+      }
+    },
+    {
+      "original_text": "Sao mà càng xem càng thấy ghét",
+      "cleaned_text": "Sao mà càng xem càng thấy ghét",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9938,
+      "scores": {
+        "POS": 0.9938,
+        "NEG": 0.0061,
+        "NEU": 0.0
+      }
+    },
+    {
+      "original_text": "vẫn chưa trùng",
+      "cleaned_text": "vẫn chưa trùng",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9936,
+      "scores": {
+        "POS": 0.9936,
+        "NEG": 0.005,
+        "NEU": 0.0013
+      }
+    },
+    {
+      "original_text": "Đang giải trí vui vẻ mà nặng nề v",
+      "cleaned_text": "Đang giải trí vui vẻ mà nặng nề vậy",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.9955,
+      "scores": {
+        "POS": 0.0014,
+        "NEG": 0.9955,
+        "NEU": 0.0031
+      }
+    },
+    {
+      "original_text": "Hồi trước đã kg thích ông này mà mấy nay tiktok dí ổng t càng ghét thêm",
+      "cleaned_text": "Hồi trước đã kg thích ông này mà mấy nay tiktok dí ổng t càng ghét thêm",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9386,
+      "scores": {
+        "POS": 0.9386,
+        "NEG": 0.0614,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "Người ta kêu TT chắc do ngta get ông",
+      "cleaned_text": "Người ta kêu TT chắc do ngta get ông",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.971,
+      "scores": {
+        "POS": 0.971,
+        "NEG": 0.029,
+        "NEU": 0.0
+      }
+    },
+    {
+      "original_text": "phần 1 thui mà tui đã thấy mới 😂",
+      "cleaned_text": "phần 1 thui mà tui đã thấy mới 😂",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9986,
+      "scores": {
+        "POS": 0.9986,
+        "NEG": 0.0005,
+        "NEU": 0.0009
+      }
+    },
+    {
+      "original_text": "vũ linh mà kêu kim tử long ko đó so đc ko",
+      "cleaned_text": "vũ linh mà kêu kim tử long không đó so được không",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.999,
+      "scores": {
+        "POS": 0.999,
+        "NEG": 0.0009,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "mấy tháng nay tạo toàn xem giang k xem đc cái khác Luôn.tới tết luôn nha đừng dừng lại.vui quá",
+      "cleaned_text": "mấy tháng nay tạo toàn xem giang không xem được cái khác Luôn.tới tết luôn nha đừng dừng lại.vui quá",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9995,
+      "scores": {
+        "POS": 0.9995,
+        "NEG": 0.0002,
+        "NEU": 0.0003
+      }
+    },
+    {
+      "original_text": "Hay quá! Bây giờ ai cũng biết ảnh rồi.",
+      "cleaned_text": "Hay quá! Bây giờ ai cũng biết ảnh rồi.",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9982,
+      "scores": {
+        "POS": 0.9982,
+        "NEG": 0.0005,
+        "NEU": 0.0012
+      }
+    },
+    {
+      "original_text": "ảnh tử tế lắm mn ạ, ảnh nâng đỡ đàn em từ lúc mới vào nghề, anh góp ý từng chút một luôn ở bên và đồng hành khi đồng nghiệp gặp khó khăn, rất yêu thương gia đình, ảnh thương vợ ảnh lắm á tại bth ảnh dỡn v thôi chứ sau hậu trường mn mới thấy được ảnh lo cho vợ mình như nào, đúng là ng đàn ông chung thuỷ. Mong anh Trấn Thành sự nghiệp thăng hoa nha",
+      "cleaned_text": "ảnh tử tế lắm mọi người ạ, ảnh nâng đỡ đàn em từ lúc mới vào nghề, anh góp ý từng chút một luôn ở bên và đồng hành khi đồng nghiệp gặp khó khăn, rất yêu thương gia đình, ảnh thương vợ ảnh lắm á tại bth ảnh dỡn vậy thôi chứ sau hậu trường mọi người mới thấy được ảnh lo cho vợ mình như nào, đúng là ng đàn ông chung thuỷ. Mong anh Trấn Thành sự nghiệp thăng hoa nha",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0002,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "Nhìn sao kêu trấn thành",
+      "cleaned_text": "Nhìn sao kêu trấn thành",
+      "label": "NEU",
+      "label_vi": "Trung tính",
+      "confidence": 0.9516,
+      "scores": {
+        "POS": 0.0117,
+        "NEG": 0.0367,
+        "NEU": 0.9516
+      }
+    },
+    {
+      "original_text": "Kêu anh là TT hồi nào, anh còn xa TT lắm ớ",
+      "cleaned_text": "Kêu anh là TT hồi nào, anh còn xa TT lắm ớ",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9926,
+      "scores": {
+        "POS": 0.9926,
+        "NEG": 0.0046,
+        "NEU": 0.0028
+      }
+    },
+    {
+      "original_text": "Trc t ghét giờ bị phốt t ghét thêm coi nhiều quá giờ thấy ko thèm coi nữa, chán phải thấy luôn á",
+      "cleaned_text": "Trc t ghét giờ bị phốt t ghét thêm coi nhiều quá giờ thấy không thèm coi nữa, chán phải thấy luôn á",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9982,
+      "scores": {
+        "POS": 0.9982,
+        "NEG": 0.0018,
+        "NEU": 0.0
+      }
+    },
+    {
+      "original_text": "Ai kêu chứ ko phải tao",
+      "cleaned_text": "Ai kêu chứ không phải tao",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0002,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "ủa..:))))",
+      "cleaned_text": "ủa..:))",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0001,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "thì ????",
+      "cleaned_text": "thì ??",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9925,
+      "scores": {
+        "POS": 0.9925,
+        "NEG": 0.0017,
+        "NEU": 0.0057
+      }
+    },
+    {
+      "original_text": "Lại nũa hả",
+      "cleaned_text": "Lại nũa hả",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0001,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "Đứa nào kêu z =)))) là đứa nào kêu khứa đó là TT z =)))",
+      "cleaned_text": "Đứa nào kêu vậy =)) là đứa nào kêu khứa đó là TT vậy =)))",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9994,
+      "scores": {
+        "POS": 0.9994,
+        "NEG": 0.0006,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "TT ngta duyên dáng, sao mà gọi ổng ra TT zayy",
+      "cleaned_text": "TT ngta duyên dáng, sao mà gọi ổng ra TT zayy",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9919,
+      "scores": {
+        "POS": 0.9919,
+        "NEG": 0.0077,
+        "NEU": 0.0003
+      }
+    },
+    {
+      "original_text": "Chưa trùng",
+      "cleaned_text": "Chưa trùng",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9993,
+      "scores": {
+        "POS": 0.9993,
+        "NEG": 0.0004,
+        "NEU": 0.0003
+      }
+    },
+    {
+      "original_text": "Bây có thôi đi không😂😂😂",
+      "cleaned_text": "Bây có thôi đi không😂😂😂",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0002,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "ủa còn hả",
+      "cleaned_text": "ủa còn hả",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9886,
+      "scores": {
+        "POS": 0.9886,
+        "NEG": 0.0023,
+        "NEU": 0.0091
+      }
+    },
+    {
+      "original_text": "Hahhaahhaahahh lú thiet",
+      "cleaned_text": "Hahhaahhaahahh lú thiet",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9993,
+      "scores": {
+        "POS": 0.9993,
+        "NEG": 0.0007,
+        "NEU": 0.0
+      }
+    },
+    {
+      "original_text": "giữ chuỗi tiếp đi ạ",
+      "cleaned_text": "giữ chuỗi tiếp đi ạ",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9992,
+      "scores": {
+        "POS": 0.9992,
+        "NEG": 0.0002,
+        "NEU": 0.0006
+      }
+    },
+    {
+      "original_text": "Lời nói đi trước não bộ 🧠😎",
+      "cleaned_text": "Lời nói đi trước não bộ 🧠😎",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9903,
+      "scores": {
+        "POS": 0.9903,
+        "NEG": 0.0097,
+        "NEU": 0.0
+      }
+    },
+    {
+      "original_text": "Ý là ko biết nó là phải coi lại mình 🥲",
+      "cleaned_text": "Ý là không biết nó là phải coi lại mình 🥲",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9995,
+      "scores": {
+        "POS": 0.9995,
+        "NEG": 0.0004,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "ai kêu lên tiếng dùm tau cái bây ơi",
+      "cleaned_text": "ai kêu lên tiếng dùm tau cái bây ơi",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9987,
+      "scores": {
+        "POS": 0.9987,
+        "NEG": 0.0004,
+        "NEU": 0.0009
+      }
+    },
+    {
+      "original_text": "Đứa nào chọc Trấn T vậy",
+      "cleaned_text": "Đứa nào chọc Trấn T vậy",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9996,
+      "scores": {
+        "POS": 0.9996,
+        "NEG": 0.0002,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": "nổi nữa đi mấy nay hơi chìm r, buồn đó",
+      "cleaned_text": "nổi nữa đi mấy nay hơi chìm r, buồn đó",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.7946,
+      "scores": {
+        "POS": 0.1983,
+        "NEG": 0.7946,
+        "NEU": 0.0071
+      }
+    },
+    {
+      "original_text": "Coi đi coi lại thấy tố đúng 😂",
+      "cleaned_text": "Coi đi coi lại thấy tố đúng 😂",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0001,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": "Vẫn k trùng",
+      "cleaned_text": "Vẫn không trùng",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9996,
+      "scores": {
+        "POS": 0.9996,
+        "NEG": 0.0002,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "xem mấy video r vẫn ko trùng",
+      "cleaned_text": "xem mấy video r vẫn không trùng",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9995,
+      "scores": {
+        "POS": 0.9995,
+        "NEG": 0.0004,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "Hong có cái nào trùng lun đỉnh thiệt",
+      "cleaned_text": "không có cái nào trùng lun đỉnh thiệt",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0002,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "Ê t oải lắm ấy",
+      "cleaned_text": "Ê t oải lắm ấy",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9961,
+      "scores": {
+        "POS": 0.9961,
+        "NEG": 0.0037,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": "Diễm lúc này đẹp trai quá 😜",
+      "cleaned_text": "Diễm lúc này đẹp trai quá 😜",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0001,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": "Cỡ như anh em mình…. Là cỡ nào",
+      "cleaned_text": "Cỡ như anh em mình…. Là cỡ nào",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.9898,
+      "scores": {
+        "POS": 0.0086,
+        "NEG": 0.9898,
+        "NEU": 0.0016
+      }
+    },
+    {
+      "original_text": "đảm bảo qua tết vẫn không trùng đâu🤭",
+      "cleaned_text": "đảm bảo qua tết vẫn không trùng đâu🤭",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9996,
+      "scores": {
+        "POS": 0.9996,
+        "NEG": 0.0003,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": "đã coi qua 2 3 lần nhưng xem lại vẫn cay cú và ghéc khó chịu quá",
+      "cleaned_text": "đã coi qua 2 3 lần nhưng xem lại vẫn cay cú và ghéc khó chịu quá",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.9981,
+      "scores": {
+        "POS": 0.0017,
+        "NEG": 0.9981,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": "Chưa hết nữa hả😌",
+      "cleaned_text": "Chưa hết nữa hả😌",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0002,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "t kêu á hồi đó t gặp t kêu TT á",
+      "cleaned_text": "t kêu á hồi đó t gặp t kêu TT á",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.6085,
+      "scores": {
+        "POS": 0.2047,
+        "NEG": 0.6085,
+        "NEU": 0.1868
+      }
+    },
+    {
+      "original_text": "ai kêu vậy chời?",
+      "cleaned_text": "ai kêu vậy chời?",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.5538,
+      "scores": {
+        "POS": 0.445,
+        "NEG": 0.5538,
+        "NEU": 0.0012
+      }
+    },
+    {
+      "original_text": "ê sao giờ lướt ít gặp đi nhỉ",
+      "cleaned_text": "ê sao giờ lướt ít gặp đi nhỉ",
+      "label": "NEU",
+      "label_vi": "Trung tính",
+      "confidence": 0.6948,
+      "scores": {
+        "POS": 0.2865,
+        "NEG": 0.0187,
+        "NEU": 0.6948
+      }
+    },
+    {
+      "original_text": "Thật là cảm lạnh",
+      "cleaned_text": "Thật là cảm lạnh",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9849,
+      "scores": {
+        "POS": 0.9849,
+        "NEG": 0.0145,
+        "NEU": 0.0006
+      }
+    },
+    {
+      "original_text": "lại còn có rất nhiều người kêu anh là Trấn Thành?? ai là ai kêu Trời ơi",
+      "cleaned_text": "lại còn có rất nhiều người kêu anh là Trấn Thành?? ai là ai kêu Trời ơi",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.7902,
+      "scores": {
+        "POS": 0.2082,
+        "NEG": 0.7902,
+        "NEU": 0.0017
+      }
+    },
+    {
+      "original_text": "Ngày xưa t cũng hay nhầm ông này với Trâns Thành",
+      "cleaned_text": "Ngày xưa t cũng hay nhầm ông này với Trâns Thành",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9857,
+      "scores": {
+        "POS": 0.9857,
+        "NEG": 0.0004,
+        "NEU": 0.0139
+      }
+    },
+    {
+      "original_text": "chấn lột",
+      "cleaned_text": "chấn lột",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9987,
+      "scores": {
+        "POS": 0.9987,
+        "NEG": 0.0013,
+        "NEU": 0.0
+      }
+    },
+    {
+      "original_text": "tao thấy bình thường",
+      "cleaned_text": "tao thấy bình thường",
+      "label": "NEU",
+      "label_vi": "Trung tính",
+      "confidence": 0.9958,
+      "scores": {
+        "POS": 0.0004,
+        "NEG": 0.0038,
+        "NEU": 0.9958
+      }
+    },
+    {
+      "original_text": "cỡ anh e mình... h quá bít luôn",
+      "cleaned_text": "cỡ anh e mình... h quá bít luôn",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9969,
+      "scores": {
+        "POS": 0.9969,
+        "NEG": 0.003,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "tr ui ai đề cao ổng vậy tr",
+      "cleaned_text": "tr ui ai đề cao ổng vậy tr",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9992,
+      "scores": {
+        "POS": 0.9992,
+        "NEG": 0.0006,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "Làm gì có",
+      "cleaned_text": "Làm gì có",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.9338,
+      "scores": {
+        "POS": 0.0485,
+        "NEG": 0.9338,
+        "NEU": 0.0176
+      }
+    },
+    {
+      "original_text": "đùa ko có cái nào trùng luôn 😅",
+      "cleaned_text": "đùa không có cái nào trùng luôn 😅",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9725,
+      "scores": {
+        "POS": 0.9725,
+        "NEG": 0.0175,
+        "NEU": 0.01
+      }
+    },
+    {
+      "original_text": "có hả🤣",
+      "cleaned_text": "có hả🤣",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9996,
+      "scores": {
+        "POS": 0.9996,
+        "NEG": 0.0001,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": "là nó khinh đó,ví dụ trận đấu ronaldo đá,thì antifan nó sẽ hô vang messi",
+      "cleaned_text": "là nó khinh đó,ví dụ trận đấu ronaldo đá,thì antifan nó sẽ hô vang messi",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.9943,
+      "scores": {
+        "POS": 0.0055,
+        "NEG": 0.9943,
+        "NEU": 0.0003
+      }
+    },
+    {
+      "original_text": "Ai kêu cmt dô đây cho t coi",
+      "cleaned_text": "Ai kêu cmt dô đây cho t coi",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0002,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "Được so sánh với TT luôn, thích ha",
+      "cleaned_text": "Được so sánh với TT luôn, thích ha",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9993,
+      "scores": {
+        "POS": 0.9993,
+        "NEG": 0.0005,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": "mắc ói thiệt sự .",
+      "cleaned_text": "mắc ói thiệt sự .",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.9969,
+      "scores": {
+        "POS": 0.0007,
+        "NEG": 0.9969,
+        "NEU": 0.0024
+      }
+    },
+    {
+      "original_text": "nó nằm mơ😁",
+      "cleaned_text": "nó nằm mơ😁",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.7747,
+      "scores": {
+        "POS": 0.7747,
+        "NEG": 0.0805,
+        "NEU": 0.1448
+      }
+    },
+    {
+      "original_text": "ngon vậy?",
+      "cleaned_text": "ngon vậy?",
+      "label": "NEU",
+      "label_vi": "Trung tính",
+      "confidence": 0.729,
+      "scores": {
+        "POS": 0.2701,
+        "NEG": 0.0009,
+        "NEU": 0.729
+      }
+    },
+    {
+      "original_text": "Ý muốn đánh đồng ảnh với trấn thành ngang nhau ..nên ta nhầm ák mà ..ráng kéo vị trí nó lên..ko biết lượng sức",
+      "cleaned_text": "Ý muốn đánh đồng ảnh với trấn thành ngang nhau ..nên ta nhầm ák mà ..ráng kéo vị trí nó lên..không biết lượng sức",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.8564,
+      "scores": {
+        "POS": 0.8564,
+        "NEG": 0.142,
+        "NEU": 0.0016
+      }
+    },
+    {
+      "original_text": "Ủa:))???TT nào mét sáu?",
+      "cleaned_text": "Ủa:))???TT nào mét sáu?",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9226,
+      "scores": {
+        "POS": 0.9226,
+        "NEG": 0.0128,
+        "NEU": 0.0646
+      }
+    },
+    {
+      "original_text": "ê cái đoạn Pause Trấn Thành thấy giống Trịnh Thăng Bình ghê [Cười lớn]",
+      "cleaned_text": "ê cái đoạn Pause Trấn Thành thấy giống Trịnh Thăng Bình ghê [Cười lớn]",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9953,
+      "scores": {
+        "POS": 0.9953,
+        "NEG": 0.0002,
+        "NEU": 0.0046
+      }
+    },
+    {
+      "original_text": "Trc Mk đã ghét r",
+      "cleaned_text": "Trc mình đã ghét r",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9861,
+      "scores": {
+        "POS": 0.9861,
+        "NEG": 0.0139,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "thoại gì vậy 😂😂",
+      "cleaned_text": "thoại gì vậy 😂😂",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9978,
+      "scores": {
+        "POS": 0.9978,
+        "NEG": 0.0003,
+        "NEU": 0.0019
+      }
+    },
+    {
+      "original_text": "Ý là lão vừa ganh tị nhưng lại vừa tự ti vs Tt nhé . Cảm giác nói câu ấy là rất tự ti luôn ý",
+      "cleaned_text": "Ý là lão vừa ganh tị nhưng lại vừa tự ti với Tt nhé . Cảm giác nói câu ấy là rất tự ti luôn ý",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9641,
+      "scores": {
+        "POS": 0.9641,
+        "NEG": 0.0359,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "ổng đơm đặt",
+      "cleaned_text": "ổng đơm đặt",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9993,
+      "scores": {
+        "POS": 0.9993,
+        "NEG": 0.0006,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "TG nói chuyện có duyên",
+      "cleaned_text": "TG nói chuyện có duyên",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9998,
+      "scores": {
+        "POS": 0.9998,
+        "NEG": 0.0002,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "mặt anh Lâm búng ra phụ đề luôn á 🤣",
+      "cleaned_text": "mặt anh Lâm búng ra phụ đề luôn á 🤣",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9989,
+      "scores": {
+        "POS": 0.9989,
+        "NEG": 0.001,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "ngừoi ta kêu anh là T-T còn TT thì vẫn kêu là TT chu kthe kêu là TG dc",
+      "cleaned_text": "ngừoi ta kêu anh là T-T còn TT thì vẫn kêu là TT chu kthe kêu là TG được",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.9462,
+      "scores": {
+        "POS": 0.0463,
+        "NEG": 0.9462,
+        "NEU": 0.0075
+      }
+    },
+    {
+      "original_text": "Ô, tôi phát hiện ra a Giang đẫm có kiểu miệng “con thuyền lật”",
+      "cleaned_text": "Ô, tôi phát hiện ra a Giang đẫm có kiểu miệng “con thuyền lật”",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9638,
+      "scores": {
+        "POS": 0.9638,
+        "NEG": 0.0009,
+        "NEU": 0.0353
+      }
+    },
+    {
+      "original_text": "đc nhầm vs trấn thành là phúc r",
+      "cleaned_text": "được nhầm với trấn thành là phúc r",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9991,
+      "scores": {
+        "POS": 0.9991,
+        "NEG": 0.0005,
+        "NEU": 0.0003
+      }
+    },
+    {
+      "original_text": "mơ. 😅😅😅😅😅😅😅😅😅",
+      "cleaned_text": "mơ. 😅😅",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9887,
+      "scores": {
+        "POS": 0.9887,
+        "NEG": 0.0035,
+        "NEU": 0.0079
+      }
+    },
+    {
+      "original_text": "Điêu, ai kêu ổng đâu😳",
+      "cleaned_text": "Điêu, ai kêu ổng đâu😳",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9986,
+      "scores": {
+        "POS": 0.9986,
+        "NEG": 0.0013,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "Trấn Thành có dê đâu mà giống",
+      "cleaned_text": "Trấn Thành có dê đâu mà giống",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.7817,
+      "scores": {
+        "POS": 0.7817,
+        "NEG": 0.2179,
+        "NEU": 0.0003
+      }
+    },
+    {
+      "original_text": "khứa này là ai z",
+      "cleaned_text": "khứa này là ai vậy",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9971,
+      "scores": {
+        "POS": 0.9971,
+        "NEG": 0.0001,
+        "NEU": 0.0028
+      }
+    },
+    {
+      "original_text": "Sống sao mà để ngta nhớ mỗi Hai của t [Cười chảy nước mắt]",
+      "cleaned_text": "Sống sao mà để ngta nhớ mỗi Hai của t [Cười chảy nước mắt]",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9993,
+      "scores": {
+        "POS": 0.9993,
+        "NEG": 0.0007,
+        "NEU": 0.0
+      }
+    },
+    {
+      "original_text": "Tại gét nên kêu vậy đó 😂",
+      "cleaned_text": "Tại gét nên kêu vậy đó 😂",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0002,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "t de",
+      "cleaned_text": "t de",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.5951,
+      "scores": {
+        "POS": 0.5951,
+        "NEG": 0.3751,
+        "NEU": 0.0298
+      }
+    },
+    {
+      "original_text": "Phét thôi làm sao mà lộn được",
+      "cleaned_text": "Phét thôi làm sao mà lộn được",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9978,
+      "scores": {
+        "POS": 0.9978,
+        "NEG": 0.0021,
+        "NEU": 0.0
+      }
+    },
+    {
+      "original_text": "tự tin thái quá.",
+      "cleaned_text": "tự tin thái quá.",
+      "label": "NEU",
+      "label_vi": "Trung tính",
+      "confidence": 0.5679,
+      "scores": {
+        "POS": 0.156,
+        "NEG": 0.2761,
+        "NEU": 0.5679
+      }
+    },
+    {
+      "original_text": "Ai nói giống giơ tay 🙋‍♀️",
+      "cleaned_text": "Ai nói giống giơ tay 🙋‍♀️",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0002,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": "Thành công lớn nhất sự nghiệp của TG là được so sánh với TT",
+      "cleaned_text": "Thành công lớn nhất sự nghiệp của TG là được so sánh với TT",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9993,
+      "scores": {
+        "POS": 0.9993,
+        "NEG": 0.0003,
+        "NEU": 0.0004
+      }
+    },
+    {
+      "original_text": "Ờ giống Trấn Thành lắm rồi đó he 🙂",
+      "cleaned_text": "Ờ giống Trấn Thành lắm rồi đó he 🙂",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9998,
+      "scores": {
+        "POS": 0.9998,
+        "NEG": 0.0001,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "nói về drama của TG thì lúc nào cũng là phần 1",
+      "cleaned_text": "nói về drama của TG thì lúc nào cũng là phần 1",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9968,
+      "scores": {
+        "POS": 0.9968,
+        "NEG": 0.0015,
+        "NEU": 0.0017
+      }
+    },
+    {
+      "original_text": "má cái tay kìa",
+      "cleaned_text": "má cái tay kìa",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9651,
+      "scores": {
+        "POS": 0.9651,
+        "NEG": 0.0083,
+        "NEU": 0.0266
+      }
+    },
+    {
+      "original_text": "có cao bằng hai đâu mà bị nhầm là hai 😅",
+      "cleaned_text": "có cao bằng hai đâu mà bị nhầm là hai 😅",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.858,
+      "scores": {
+        "POS": 0.858,
+        "NEG": 0.1369,
+        "NEU": 0.0051
+      }
+    },
+    {
+      "original_text": "Nói thiệt tao cũng là người qn. Tao thấy cái nết người qn hay giỡn nhưng nhiều lúc quá đà thật. Còn tính xấu của mỗi người thì k nói gì thêm.",
+      "cleaned_text": "Nói thiệt tao cũng là người qn. Tao thấy cái nết người qn hay giỡn nhưng nhiều lúc quá đà thật. Còn tính xấu của mỗi người thì không nói gì thêm.",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.8011,
+      "scores": {
+        "POS": 0.8011,
+        "NEG": 0.1984,
+        "NEU": 0.0006
+      }
+    },
+    {
+      "original_text": "a hà giờ đâu cần kiếm tiền nữa😂😂",
+      "cleaned_text": "a hà giờ đâu cần kiếm tiền nữa😂😂",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0002,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "vẫn ko trùng nha mng",
+      "cleaned_text": "vẫn không trùng nha mng",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0002,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "Vây ma h vẫn ung dung qua ha",
+      "cleaned_text": "Vây ma h vẫn ung dung qua ha",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9995,
+      "scores": {
+        "POS": 0.9995,
+        "NEG": 0.0004,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "cái mỏ dị là dth đó ☺️",
+      "cleaned_text": "cái mỏ dị là dth đó ☺️",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9986,
+      "scores": {
+        "POS": 0.9986,
+        "NEG": 0.0013,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "Cô PH đăng vụ PN, rần lên nhưng ai cũng nhớ a, m6 ah.",
+      "cleaned_text": "Cô PH đăng vụ PN, rần lên nhưng ai cũng nhớ a, m6 ah.",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9994,
+      "scores": {
+        "POS": 0.9994,
+        "NEG": 0.0004,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": "khúc cuối là Giang Đẫm ko chịu nỗi mới bế ngta như z đó",
+      "cleaned_text": "khúc cuối là Giang Đẫm không chịu nỗi mới bế ngta như vậy đó",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.5133,
+      "scores": {
+        "POS": 0.0238,
+        "NEG": 0.5133,
+        "NEU": 0.463
+      }
+    },
+    {
+      "original_text": "Đc so sánh vs TT là thành công nhất sự nghiệp của TG r nên tự hào lắm á:))",
+      "cleaned_text": "được so sánh với TT là thành công nhất sự nghiệp của TG r nên tự hào lắm á:))",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9995,
+      "scores": {
+        "POS": 0.9995,
+        "NEG": 0.0004,
+        "NEU": 0.0
+      }
+    },
+    {
+      "original_text": "do tgiang k dc như Hai nên ngta chỉ bic Hai chớ k bic tguang",
+      "cleaned_text": "do tgiang không được như Hai nên ngta chỉ bic Hai chớ không bic tguang",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9822,
+      "scores": {
+        "POS": 0.9822,
+        "NEG": 0.0175,
+        "NEU": 0.0003
+      }
+    },
+    {
+      "original_text": "Ko muốn xem vì sợ ghét quá 🙄",
+      "cleaned_text": "không muốn xem vì sợ ghét quá 🙄",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.9983,
+      "scores": {
+        "POS": 0.0005,
+        "NEG": 0.9983,
+        "NEU": 0.0012
+      }
+    },
+    {
+      "original_text": "sáng ra xem tụt năng lượng vcl",
+      "cleaned_text": "sáng ra xem tụt năng lượng vcl",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.9981,
+      "scores": {
+        "POS": 0.0018,
+        "NEG": 0.9981,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "càng coi càng ghét",
+      "cleaned_text": "càng coi càng ghét",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.8261,
+      "scores": {
+        "POS": 0.1738,
+        "NEG": 0.8261,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "Ai dị",
+      "cleaned_text": "Ai dị",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9995,
+      "scores": {
+        "POS": 0.9995,
+        "NEG": 0.0001,
+        "NEU": 0.0003
+      }
+    },
+    {
+      "original_text": "Ê thật sự kiện tụng gì chìm thì vẫn ko chìm nổi nha :))))",
+      "cleaned_text": "Ê thật sự kiện tụng gì chìm thì vẫn không chìm nổi nha :))",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9991,
+      "scores": {
+        "POS": 0.9991,
+        "NEG": 0.0009,
+        "NEU": 0.0
+      }
+    },
+    {
+      "original_text": "Haha ổng nói đúng mà , chắc gì sống tới ngày đó",
+      "cleaned_text": "Haha ổng nói đúng mà , chắc gì sống tới ngày đó",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9996,
+      "scores": {
+        "POS": 0.9996,
+        "NEG": 0.0004,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "Cái tôi của ổng phải cao gấp 3 lần ổng luôn á",
+      "cleaned_text": "Cái tôi của ổng phải cao gấp 3 lần ổng luôn á",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9964,
+      "scores": {
+        "POS": 0.9964,
+        "NEG": 0.0023,
+        "NEU": 0.0013
+      }
+    },
+    {
+      "original_text": "vậy giờ anh coi lại a chưa a😳",
+      "cleaned_text": "vậy giờ anh coi lại a chưa a😳",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9995,
+      "scores": {
+        "POS": 0.9995,
+        "NEG": 0.0004,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "Ai là ai kêu ảnh là Trấn Thành đâu 🤣🤣🤣🤣",
+      "cleaned_text": "Ai là ai kêu ảnh là Trấn Thành đâu 🤣🤣",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0001,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": "coi riết càng thích trường giang",
+      "cleaned_text": "coi riết càng thích trường giang",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0001,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "thành công nhất sự nghiệp diễn của anh john làng là đc so sánh với TT🤣",
+      "cleaned_text": "thành công nhất sự nghiệp diễn của anh john làng là được so sánh với TT🤣",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9943,
+      "scores": {
+        "POS": 0.9943,
+        "NEG": 0.0048,
+        "NEU": 0.001
+      }
+    },
+    {
+      "original_text": "so với tran thành thì thua sa nhe Ko có cửa Theo kiệp TT",
+      "cleaned_text": "so với tran thành thì thua sa nhe không có cửa Theo kiệp TT",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9853,
+      "scores": {
+        "POS": 0.9853,
+        "NEG": 0.0147,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "hài hước mà tưởng vô duyên",
+      "cleaned_text": "hài hước mà tưởng vô duyên",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9962,
+      "scores": {
+        "POS": 0.9962,
+        "NEG": 0.0037,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "mấy đứa làm i nhìn anh dử Dạ 😅😅😅😅",
+      "cleaned_text": "mấy đứa làm i nhìn anh dử Dạ 😅😅",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9995,
+      "scores": {
+        "POS": 0.9995,
+        "NEG": 0.0003,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": "Nó cố tình kêu vậy để ông nhục",
+      "cleaned_text": "Nó cố tình kêu vậy để ông nhục",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.8187,
+      "scores": {
+        "POS": 0.1812,
+        "NEG": 0.8187,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "Ý là nch kiểu vô duyên á :))",
+      "cleaned_text": "Ý là nch kiểu vô duyên á :))",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9838,
+      "scores": {
+        "POS": 0.9838,
+        "NEG": 0.0162,
+        "NEU": 0.0
+      }
+    },
+    {
+      "original_text": "S ghét quá,😏",
+      "cleaned_text": "S ghét quá,😏",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9973,
+      "scores": {
+        "POS": 0.9973,
+        "NEG": 0.0026,
+        "NEU": 0.0
+      }
+    },
+    {
+      "original_text": "ủa mấy bé h ngta coi hoạt hình vs Tiktok ai rảnh xem Má đâu😁",
+      "cleaned_text": "ủa mấy bé h ngta coi hoạt hình với Tiktok ai rảnh xem Má đâu😁",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9993,
+      "scores": {
+        "POS": 0.9993,
+        "NEG": 0.0006,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "Ảo",
+      "cleaned_text": "Ảo",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.8387,
+      "scores": {
+        "POS": 0.8387,
+        "NEG": 0.1605,
+        "NEU": 0.0008
+      }
+    },
+    {
+      "original_text": "\"Sẳn đây nói luôn, anh chỉ nói vậy thôi, ai có đi học sẽ biết, quá dễ,..\"",
+      "cleaned_text": "\"Sẳn đây nói luôn, anh chỉ nói vậy thôi, ai có đi học sẽ biết, quá dễ,..\"",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.9747,
+      "scores": {
+        "POS": 0.0229,
+        "NEG": 0.9747,
+        "NEU": 0.0025
+      }
+    },
+    {
+      "original_text": "tran Cha😅",
+      "cleaned_text": "tran Cha😅",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0001,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": "Ganh",
+      "cleaned_text": "Ganh",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9994,
+      "scores": {
+        "POS": 0.9994,
+        "NEG": 0.0004,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": "Sợ bị gọi là TG thì mới sợ ấy ai cũng sợ bị gọi thế",
+      "cleaned_text": "Sợ bị gọi là TG thì mới sợ ấy ai cũng sợ bị gọi thế",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.9634,
+      "scores": {
+        "POS": 0.0055,
+        "NEG": 0.9634,
+        "NEU": 0.0311
+      }
+    },
+    {
+      "original_text": "í là đẹp cao và xuất sắc như TT sao ng ta k nhầm tt là tg nhỉ",
+      "cleaned_text": "í là đẹp cao và xuất sắc như TT sao ng ta không nhầm tt là tg nhỉ",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9982,
+      "scores": {
+        "POS": 0.9982,
+        "NEG": 0.0009,
+        "NEU": 0.0009
+      }
+    },
+    {
+      "original_text": "Ý là ảnh nghĩ ảnh ngang hàng với TT á😂vậy chứ kêu dẫn mấy chuong trinh của TT thử coi he🤣",
+      "cleaned_text": "Ý là ảnh nghĩ ảnh ngang hàng với TT á😂vậy chứ kêu dẫn mấy chuong trinh của TT thử coi he🤣",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9989,
+      "scores": {
+        "POS": 0.9989,
+        "NEG": 0.001,
+        "NEU": 0.0
+      }
+    },
+    {
+      "original_text": "😂",
+      "cleaned_text": "😂",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9996,
+      "scores": {
+        "POS": 0.9996,
+        "NEG": 0.0001,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": "@An",
+      "cleaned_text": "@An",
+      "label": "NEU",
+      "label_vi": "Trung tính",
+      "confidence": 0.8296,
+      "scores": {
+        "POS": 0.1691,
+        "NEG": 0.0012,
+        "NEU": 0.8296
+      }
+    },
+    {
+      "original_text": "h kêu là anh sông dài",
+      "cleaned_text": "h kêu là anh sông dài",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9996,
+      "scores": {
+        "POS": 0.9996,
+        "NEG": 0.0003,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "ua ổ tự nhận hay dì mà ai mà nhầm đc ??? lạy",
+      "cleaned_text": "ua ổ tự nhận hay dì mà ai mà nhầm được ??? lạy",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.998,
+      "scores": {
+        "POS": 0.0019,
+        "NEG": 0.998,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "khúc cuối hình như vợ TG đang bàu đúng ko nhỉ",
+      "cleaned_text": "khúc cuối hình như vợ TG đang bàu đúng không nhỉ",
+      "label": "NEU",
+      "label_vi": "Trung tính",
+      "confidence": 0.9918,
+      "scores": {
+        "POS": 0.0075,
+        "NEG": 0.0007,
+        "NEU": 0.9918
+      }
+    },
+    {
+      "original_text": "@Hàaaaa",
+      "cleaned_text": "@Hàaa",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9968,
+      "scores": {
+        "POS": 0.9968,
+        "NEG": 0.0002,
+        "NEU": 0.003
+      }
+    },
+    {
+      "original_text": "phần 1 gì ba 3 tháng trời rùi đó 😅",
+      "cleaned_text": "phần 1 gì ba 3 tháng trời rùi đó 😅",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9534,
+      "scores": {
+        "POS": 0.9534,
+        "NEG": 0.0456,
+        "NEU": 0.001
+      }
+    },
+    {
+      "original_text": "[Cười to tán thành][Cười to tán thành]",
+      "cleaned_text": "[Cười to tán thành][Cười to tán thành]",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9989,
+      "scores": {
+        "POS": 0.9989,
+        "NEG": 0.0009,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": "@Trường Giang :) chịu",
+      "cleaned_text": "@Trường Giang :) chịu",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9995,
+      "scores": {
+        "POS": 0.9995,
+        "NEG": 0.0005,
+        "NEU": 0.0
+      }
+    },
+    {
+      "original_text": "😂😂😂",
+      "cleaned_text": "😂😂😂",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9993,
+      "scores": {
+        "POS": 0.9993,
+        "NEG": 0.0002,
+        "NEU": 0.0005
+      }
+    },
+    {
+      "original_text": "@",
+      "cleaned_text": "@",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9693,
+      "scores": {
+        "POS": 0.9693,
+        "NEG": 0.0012,
+        "NEU": 0.0295
+      }
+    },
+    {
+      "original_text": "🤣🤣🤣",
+      "cleaned_text": "🤣🤣🤣",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9996,
+      "scores": {
+        "POS": 0.9996,
+        "NEG": 0.0002,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": "😂😂😂",
+      "cleaned_text": "😂😂😂",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9993,
+      "scores": {
+        "POS": 0.9993,
+        "NEG": 0.0002,
+        "NEU": 0.0005
+      }
+    },
+    {
+      "original_text": "😂😂😂😂",
+      "cleaned_text": "😂😂",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9997,
+      "scores": {
+        "POS": 0.9997,
+        "NEG": 0.0002,
+        "NEU": 0.0001
+      }
+    },
+    {
+      "original_text": "[Cười to tán thành][Cười to tán thành][Cười to tán thành]",
+      "cleaned_text": "[Cười to tán thành][Cười to tán thành][Cười to tán thành]",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.999,
+      "scores": {
+        "POS": 0.999,
+        "NEG": 0.0009,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": "😂",
+      "cleaned_text": "😂",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9996,
+      "scores": {
+        "POS": 0.9996,
+        "NEG": 0.0001,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": ".",
+      "cleaned_text": ".",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.5385,
+      "scores": {
+        "POS": 0.5385,
+        "NEG": 0.0024,
+        "NEU": 0.459
+      }
+    },
+    {
+      "original_text": "😂😂😂",
+      "cleaned_text": "😂😂😂",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9993,
+      "scores": {
+        "POS": 0.9993,
+        "NEG": 0.0002,
+        "NEU": 0.0005
+      }
+    },
+    {
+      "original_text": "@Trường Giang",
+      "cleaned_text": "@Trường Giang",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9996,
+      "scores": {
+        "POS": 0.9996,
+        "NEG": 0.0001,
+        "NEU": 0.0003
+      }
+    },
+    {
+      "original_text": "😳😳😳",
+      "cleaned_text": "😳😳😳",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9995,
+      "scores": {
+        "POS": 0.9995,
+        "NEG": 0.0001,
+        "NEU": 0.0003
+      }
+    },
+    {
+      "original_text": "😳😳😳",
+      "cleaned_text": "😳😳😳",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9995,
+      "scores": {
+        "POS": 0.9995,
+        "NEG": 0.0001,
+        "NEU": 0.0003
+      }
+    },
+    {
+      "original_text": "🥰🥰🥰",
+      "cleaned_text": "🥰🥰🥰",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9995,
+      "scores": {
+        "POS": 0.9995,
+        "NEG": 0.0001,
+        "NEU": 0.0004
+      }
+    },
+    {
+      "original_text": "😂😂😂",
+      "cleaned_text": "😂😂😂",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9993,
+      "scores": {
+        "POS": 0.9993,
+        "NEG": 0.0002,
+        "NEU": 0.0005
+      }
+    },
+    {
+      "original_text": "😏😏😏",
+      "cleaned_text": "😏😏😏",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9884,
+      "scores": {
+        "POS": 0.9884,
+        "NEG": 0.0034,
+        "NEU": 0.0082
+      }
+    },
+    {
+      "original_text": "😂",
+      "cleaned_text": "😂",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9996,
+      "scores": {
+        "POS": 0.9996,
+        "NEG": 0.0001,
+        "NEU": 0.0002
+      }
+    },
+    {
+      "original_text": "Trường Giang mới nghe từ khi phốt to và chưa hề lặp lại 🤣",
+      "cleaned_text": "Trường Giang mới nghe từ khi phốt to và chưa hề lặp lại 🤣",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9996,
+      "scores": {
+        "POS": 0.9996,
+        "NEG": 0.0003,
+        "NEU": 0.0
+      }
+    },
+    {
+      "original_text": "có cửa so với Trấn Thành hả má",
+      "cleaned_text": "có cửa so với Trấn Thành hả má",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9744,
+      "scores": {
+        "POS": 0.9744,
+        "NEG": 0.0243,
+        "NEU": 0.0013
+      }
+    },
+    {
+      "original_text": "thất bại lớn nhất trong sự nghiệp TT là bị đem ra so sánh với TG",
+      "cleaned_text": "thất bại lớn nhất trong sự nghiệp TT là bị đem ra so sánh với TG",
+      "label": "NEG",
+      "label_vi": "Tiêu cực",
+      "confidence": 0.8861,
+      "scores": {
+        "POS": 0.1136,
+        "NEG": 0.8861,
+        "NEU": 0.0003
+      }
+    },
+    {
+      "original_text": "Nó thoại câu nào vô duyên câu đó.",
+      "cleaned_text": "Nó thoại câu nào vô duyên câu đó.",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9944,
+      "scores": {
+        "POS": 0.9944,
+        "NEG": 0.0025,
+        "NEU": 0.0031
+      }
+    },
+    {
+      "original_text": "đoạn Vũ Hà khác j nói ông Hà sống dai hả ta 😂",
+      "cleaned_text": "đoạn Vũ Hà khác gì nói ông Hà sống dai hả ta 😂",
+      "label": "POS",
+      "label_vi": "Tích cực",
+      "confidence": 0.9906,
+      "scores": {
+        "POS": 0.9906,
+        "NEG": 0.0083,
+        "NEU": 0.0011
+      }
+    }
+  ]
+}
