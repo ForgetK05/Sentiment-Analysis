@@ -1,6 +1,6 @@
 # Hệ thống Phân tích Cảm xúc TikTok Song ngữ (Tiếng Việt & Tiếng Anh)
 
-Hệ thống thiết kế theo chuẩn **Sentiment Analysis của VNPT AI**, chỉ dùng AI **Gemma 4 E2B** ở **Đầu vào** và **Đầu ra**, toàn bộ lõi phân tích ở giữa dùng **NLP (`underthesea`) + Machine Learning cổ điển + Deep Learning chuyên biệt** cho cả **Tiếng Việt** và **Tiếng Anh** (tự động lọc bỏ các ngôn ngữ khác).
+Hệ thống **Sentiment Analysis** , kết hợp AI **Gemma 4 E2B** giúp đọc nội dung video ở **Đầu vào** và đánh giá kết quả thực tế **Đầu ra**, toàn bộ lõi phân tích ở giữa dùng **NLP (`underthesea`) + Machine Learning cổ điển + Deep Learning chuyên biệt** cho cả **Tiếng Việt** và **Tiếng Anh** (tự động lọc bỏ các ngôn ngữ khác).
 
 ## Cấu trúc thư mục
 
