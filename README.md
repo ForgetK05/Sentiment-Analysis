@@ -12,7 +12,8 @@ Sentiment-Analysis/
 │   └── <post_id>/                   # Tự tạo theo từng link TikTok: video.mp4, metadata.json, raw_comments.csv
 ├── outputs/                         # Kết quả cuối cùng sau xử lý theo từng bài đăng
 │   └── <post_id>/
-│       ├── final_results.csv        # Bình luận sạch (VI/EN) + 2 thang điểm + 7 cảm xúc + ML/DL + Gemma 4
+│       ├── final_results.csv        # Đầy đủ 42 cột bình luận sạch (VI/EN) + chú thích tiếng Việt
+│       ├── cleaned_final_results.csv # Bản tóm gọn 15 cột quan trọng (sắp theo likes giảm dần)
 │       ├── filtered_noise.csv       # Tách riêng bình luận nhiễu (tag, URL, spam, ngôn ngữ khác)
 │       ├── model_comparison.csv     # Bảng so sánh ML cổ điển, Lexicon, Deep Learning & Hybrid
 │       ├── report.json              # Báo cáo JSON đầy đủ 4 giai đoạn

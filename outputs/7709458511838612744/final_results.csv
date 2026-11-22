@@ -1,4 +1,46 @@
-﻿comment_id,username,nickname,likes,reply_count,created_at,language,original_text,cleaned_text,segmented_text,is_duplicate,has_sarcasm_signal,needs_audit,polarity_label,polarity_vi,polarity_confidence,polarity_score,score_5,score_10,rating_level_vi,score_POS,score_NEG,score_NEU,emotion_label,emotion_vi,emotion_confidence,pred_nb,pred_lr,pred_svm,pred_lexicon,pred_visobert,pred_dl_primary,emotion_ml_label,gemma_audited,gemma_polarity,gemma_emotion,gemma_emotion_vi,gemma_score_5,gemma_is_sarcasm,gemma_agrees_polarity,gemma_agrees_emotion,gemma_reason
+﻿"comment_id
+(mã bình luận)","username
+(tên tài khoản)","nickname
+(tên hiển thị)","likes
+(lượt thích)","reply_count
+(số phản hồi)","created_at
+(thời gian đăng)","language
+(ngôn ngữ)","original_text
+(nội dung gốc)","cleaned_text
+(nội dung đã làm sạch)","segmented_text
+(văn bản đã tách từ)","is_duplicate
+(bình luận trùng lặp)","has_sarcasm_signal
+(dấu hiệu mỉa mai)","needs_audit
+(cần thẩm định kỹ)","polarity_label
+(nhãn cực tính)","polarity_vi
+(cực tính tiếng việt)","polarity_confidence
+(độ tự tin cực tính)","polarity_score
+(điểm cực tính -1 đến +1)","score_5
+(điểm thang 1-5)","score_10
+(điểm thang 0-10)","rating_level_vi
+(mức độ đánh giá)","score_POS
+(xác suất tích cực)","score_NEG
+(xác suất tiêu cực)","score_NEU
+(xác suất trung tính)","emotion_label
+(nhãn cảm xúc)","emotion_vi
+(cảm xúc 7 cung bậc)","emotion_confidence
+(độ tự tin cảm xúc)","pred_nb
+(dự đoán naive bayes)","pred_lr
+(dự đoán logistic regression)","pred_svm
+(dự đoán linear svm)","pred_lexicon
+(dự đoán từ điển luật)","pred_visobert
+(dự đoán visobert)","pred_dl_primary
+(dự đoán học sâu chính)","emotion_ml_label
+(cảm xúc ml cổ điển)","gemma_audited
+(đã thẩm định gemma)","gemma_polarity
+(cực tính gemma)","gemma_emotion
+(nhãn cảm xúc gemma)","gemma_emotion_vi
+(cảm xúc gemma)","gemma_score_5
+(điểm 1-5 gemma)","gemma_is_sarcasm
+(nói mỉa theo gemma)","gemma_agrees_polarity
+(khớp cực tính với gemma)","gemma_agrees_emotion
+(khớp cảm xúc với gemma)","gemma_reason
+(lý do gemma giải thích)"
 7709509346682979093,flaycnn,mây trời lơ ngơ ☁️,3230,16,2026-11-18 20:54:06,vi,ê làm sao mà D có được cái giọng nó ngang được tới thế nhỉ?,ê làm sao mà D có được cái giọng nó ngang được tới thế nhỉ?,ê làm_sao mà D có được cái giọng nó ngang được tới thế nhỉ ?,False,False,True,NEU,Trung tính,0.5764,-0.1371,3,4.31,Trung tính,0.1155,0.3081,0.5764,Surprise,Ngạc nhiên,0.9881,NEU,NEU,NEU,NEU,NEG,NEU,Surprise,True,POS,Enjoyment,Vui vẻ / Hài lòng,5,False,False,False,Bình luận thể hiện sự ngưỡng mộ và thích thú với giọng nói của nhân vật.
 7710022854226035457,19036388441017tech,Babydon'tcry,153,11,2026-11-20 06:06:49,vi,Thời phong kiến đã có trao nhẫn cầu hôn rồi à mn lại còn trao nhẫn nữa,Thời phong kiến đã có trao nhẫn cầu hôn rồi à mọi người lại còn trao nhẫn nữa,Thời phong_kiến đã có trao nhẫn cầu_hôn rồi à mọi người lại còn trao_nhẫn nữa,False,False,True,POS,Tích cực,0.5683,0.2996,4,6.5,Tích cực,0.5683,0.2687,0.1629,Surprise,Ngạc nhiên,0.9666,NEG,POS,POS,NEU,NEG,POS,Disgust,True,NEU,Other,Trung tính / Khác,3,False,False,False,Đây là một nhận xét mang tính chất suy ngẫm về cốt truyện/tình tiết.
 7709816835475227399,cherrii142,Chè ríiiii🍒,60,1,2026-11-19 16:47:12,vi,Kể cuốn dậy cha,Kể cuốn dậy cha,Kể cuốn dậy cha,False,False,True,NEU,Trung tính,0.4813,0.0443,3,5.22,Trung tính,0.3116,0.2071,0.4813,Anger,Tức giận,0.5762,NEG,NEU,NEG,NEU,POS,NEU,Disgust,True,NEU,Other,Trung tính / Khác,3,False,True,False,Bình luận này quá ngắn và không rõ ràng về cảm xúc cụ thể.

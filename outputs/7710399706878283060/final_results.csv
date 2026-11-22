@@ -1,4 +1,46 @@
-﻿comment_id,username,nickname,likes,reply_count,created_at,language,original_text,cleaned_text,segmented_text,is_duplicate,has_sarcasm_signal,needs_audit,polarity_label,polarity_vi,polarity_confidence,polarity_score,score_5,score_10,rating_level_vi,score_POS,score_NEG,score_NEU,emotion_label,emotion_vi,emotion_confidence,pred_nb,pred_lr,pred_svm,pred_lexicon,pred_visobert,pred_dl_primary,emotion_ml_label,gemma_audited,gemma_polarity,gemma_emotion,gemma_emotion_vi,gemma_score_5,gemma_is_sarcasm,gemma_agrees_polarity,gemma_agrees_emotion,gemma_reason
+﻿"comment_id
+(mã bình luận)","username
+(tên tài khoản)","nickname
+(tên hiển thị)","likes
+(lượt thích)","reply_count
+(số phản hồi)","created_at
+(thời gian đăng)","language
+(ngôn ngữ)","original_text
+(nội dung gốc)","cleaned_text
+(nội dung đã làm sạch)","segmented_text
+(văn bản đã tách từ)","is_duplicate
+(bình luận trùng lặp)","has_sarcasm_signal
+(dấu hiệu mỉa mai)","needs_audit
+(cần thẩm định kỹ)","polarity_label
+(nhãn cực tính)","polarity_vi
+(cực tính tiếng việt)","polarity_confidence
+(độ tự tin cực tính)","polarity_score
+(điểm cực tính -1 đến +1)","score_5
+(điểm thang 1-5)","score_10
+(điểm thang 0-10)","rating_level_vi
+(mức độ đánh giá)","score_POS
+(xác suất tích cực)","score_NEG
+(xác suất tiêu cực)","score_NEU
+(xác suất trung tính)","emotion_label
+(nhãn cảm xúc)","emotion_vi
+(cảm xúc 7 cung bậc)","emotion_confidence
+(độ tự tin cảm xúc)","pred_nb
+(dự đoán naive bayes)","pred_lr
+(dự đoán logistic regression)","pred_svm
+(dự đoán linear svm)","pred_lexicon
+(dự đoán từ điển luật)","pred_visobert
+(dự đoán visobert)","pred_dl_primary
+(dự đoán học sâu chính)","emotion_ml_label
+(cảm xúc ml cổ điển)","gemma_audited
+(đã thẩm định gemma)","gemma_polarity
+(cực tính gemma)","gemma_emotion
+(nhãn cảm xúc gemma)","gemma_emotion_vi
+(cảm xúc gemma)","gemma_score_5
+(điểm 1-5 gemma)","gemma_is_sarcasm
+(nói mỉa theo gemma)","gemma_agrees_polarity
+(khớp cực tính với gemma)","gemma_agrees_emotion
+(khớp cảm xúc với gemma)","gemma_reason
+(lý do gemma giải thích)"
 7710578025850946312,unknown19467891,Account Not Found,1325,4,2026-11-21 18:00:55,en,no more love 3000,no more love 3000,no more love 3000,False,False,True,NEU,Trung tính,0.3946,-0.0183,3,4.91,Trung tính,0.3084,0.297,0.3946,Sadness,Buồn bã,0.855,POS,POS,POS,NEG,,NEU,Enjoyment,False,,,,,,,,
 7710537593373475602,sc7ry_suii,PR1MEツ,70,11,2026-11-21 15:24:01,en,THAT'S LA PEAAK!!! EDIT!! MERRY CHRISTMAS 🎬🍿 SEE YOU IN DECEMBER 18 ✌👋👋,THAT'S LA PEAAK!!! EDIT!! MERRY CHRISTMAS 🎬🍿 SEE YOU IN DECEMBER 18 ✌👋👋,THAT'S LA PEAAK ! ! ! EDIT ! ! MERRY CHRISTMAS 🎬 🍿 SEE YOU IN DECEMBER 18 ✌ 👋 👋,False,False,False,POS,Tích cực,0.8913,0.8853,5,9.43,Rất tích cực,0.8913,0.006,0.1027,Other,Trung tính / Khác,0.3949,POS,POS,POS,POS,,POS,Enjoyment,False,,,,,,,,
 7710662806345925407,ray.amv19,visualize,2,1,2026-11-21 23:30:36,en,So cute,So cute,So cute,False,False,False,POS,Tích cực,0.877,0.9013,5,9.51,Rất tích cực,0.877,0.0297,0.0933,Enjoyment,Vui vẻ / Hài lòng,0.9003,POS,POS,POS,POS,,POS,Enjoyment,False,,,,,,,,
