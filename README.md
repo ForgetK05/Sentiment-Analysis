@@ -36,6 +36,11 @@ Sentiment-Analysis/
 └── requirements.txt
 ```
 
+## Tài liệu chi tiết
+
+- [SETUP_LOCAL_AI.md](SETUP_LOCAL_AI.md): Hướng dẫn cài đặt chi tiết **Local AI (`Gemma 4 E2B` qua Docker Ollama)** tối ưu 4 GB VRAM và môi trường `hand_env`.
+- [ARCHITECTURE_AND_DATA_GUIDE.md](ARCHITECTURE_AND_DATA_GUIDE.md): Giải thích toàn bộ cấu trúc mã nguồn, luồng hoạt động End-to-End và từ điển đầy đủ các cột CSV/JSON.
+
 ## Cách sử dụng
 
 1. Khởi động Ollama Docker (`gemma4-e2b-opt`):

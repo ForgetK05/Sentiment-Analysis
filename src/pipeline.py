@@ -25,6 +25,7 @@ from src.models.sentiment_engine import (
     DEFAULT_PHOBERT_EMOTION_MODEL,
     DEFAULT_PHOBERT_SENTIMENT_MODEL,
     DEFAULT_VISOBERT_MODEL,
+    LABEL_VI_MAP,
     AnalyzedComment,
     CommentAnalyzer,
 )
@@ -43,6 +44,154 @@ def load_comments(
     """Đọc danh sách chuỗi bình luận từ CSV / JSON / TXT."""
     df = load_comments_dataframe(comments_source, text_column=text_column)
     return df["comment"].tolist()
+
+
+FINAL_COLUMN_HEADERS: dict[str, str] = {
+    "comment_id": "comment_id\n(mã bình luận)",
+    "username": "username\n(tên tài khoản)",
+    "nickname": "nickname\n(tên hiển thị)",
+    "likes": "likes\n(lượt thích)",
+    "reply_count": "reply_count\n(số phản hồi)",
+    "created_at": "created_at\n(thời gian đăng)",
+    "language": "language\n(ngôn ngữ)",
+    "original_text": "original_text\n(nội dung gốc)",
+    "cleaned_text": "cleaned_text\n(nội dung đã làm sạch)",
+    "segmented_text": "segmented_text\n(văn bản đã tách từ)",
+    "is_duplicate": "is_duplicate\n(bình luận trùng lặp)",
+    "has_sarcasm_signal": "has_sarcasm_signal\n(dấu hiệu mỉa mai)",
+    "needs_audit": "needs_audit\n(cần thẩm định kỹ)",
+    "polarity_label": "polarity_label\n(nhãn cực tính)",
+    "polarity_vi": "polarity_vi\n(cực tính tiếng việt)",
+    "polarity_confidence": "polarity_confidence\n(độ tự tin cực tính)",
+    "polarity_score": "polarity_score\n(điểm cực tính -1 đến +1)",
+    "score_5": "score_5\n(điểm thang 1-5)",
+    "score_10": "score_10\n(điểm thang 0-10)",
+    "rating_level_vi": "rating_level_vi\n(mức độ đánh giá)",
+    "score_POS": "score_POS\n(xác suất tích cực)",
+    "score_NEG": "score_NEG\n(xác suất tiêu cực)",
+    "score_NEU": "score_NEU\n(xác suất trung tính)",
+    "emotion_label": "emotion_label\n(nhãn cảm xúc)",
+    "emotion_vi": "emotion_vi\n(cảm xúc 7 cung bậc)",
+    "emotion_confidence": "emotion_confidence\n(độ tự tin cảm xúc)",
+    "pred_nb": "pred_nb\n(dự đoán naive bayes)",
+    "pred_lr": "pred_lr\n(dự đoán logistic regression)",
+    "pred_svm": "pred_svm\n(dự đoán linear svm)",
+    "pred_lexicon": "pred_lexicon\n(dự đoán từ điển luật)",
+    "pred_visobert": "pred_visobert\n(dự đoán visobert)",
+    "pred_dl_primary": "pred_dl_primary\n(dự đoán học sâu chính)",
+    "emotion_ml_label": "emotion_ml_label\n(cảm xúc ml cổ điển)",
+    "gemma_audited": "gemma_audited\n(đã thẩm định gemma)",
+    "gemma_polarity": "gemma_polarity\n(cực tính gemma)",
+    "gemma_emotion": "gemma_emotion\n(nhãn cảm xúc gemma)",
+    "gemma_emotion_vi": "gemma_emotion_vi\n(cảm xúc gemma)",
+    "gemma_score_5": "gemma_score_5\n(điểm 1-5 gemma)",
+    "gemma_is_sarcasm": "gemma_is_sarcasm\n(nói mỉa theo gemma)",
+    "gemma_agrees_polarity": "gemma_agrees_polarity\n(khớp cực tính với gemma)",
+    "gemma_agrees_emotion": "gemma_agrees_emotion\n(khớp cảm xúc với gemma)",
+    "gemma_reason": "gemma_reason\n(lý do gemma giải thích)",
+}
+
+_CLEANED_CORE_COLUMNS: tuple[str, ...] = (
+    "username",
+    "likes",
+    "created_at",
+    "language",
+    "original_text",
+    "polarity_vi",
+    "score_5",
+    "score_10",
+    "emotion_vi",
+    "polarity_confidence",
+)
+
+_CLEANED_GEMMA_COLUMNS: tuple[str, ...] = (
+    "gemma_polarity_vi",
+    "gemma_score_5",
+    "gemma_is_sarcasm",
+    "gemma_agrees_polarity",
+    "gemma_reason",
+)
+
+CLEANED_COLUMN_HEADERS: dict[str, str] = {
+    "username": "username\n(tên tài khoản)",
+    "likes": "likes\n(lượt thích)",
+    "created_at": "created_at\n(thời gian đăng)",
+    "language": "language\n(ngôn ngữ)",
+    "original_text": "original_text\n(nội dung gốc)",
+    "polarity_vi": "polarity_vi\n(cực tính hệ thống)",
+    "score_5": "score_5\n(điểm thang 1-5)",
+    "score_10": "score_10\n(điểm thang 0-10)",
+    "emotion_vi": "emotion_vi\n(cảm xúc 7 cung bậc)",
+    "polarity_confidence": "polarity_confidence\n(độ tự tin cực tính)",
+    "gemma_polarity_vi": "gemma_polarity_vi\n(cực tính gemma tiếng việt)",
+    "gemma_score_5": "gemma_score_5\n(điểm 1-5 gemma)",
+    "gemma_is_sarcasm": "gemma_is_sarcasm\n(nói mỉa theo gemma)",
+    "gemma_agrees_polarity": "gemma_agrees_polarity\n(khớp cực tính với gemma)",
+    "gemma_reason": "gemma_reason\n(lý do gemma giải thích)",
+}
+
+
+def _strip_row_keys(row: dict[str, Any]) -> dict[str, Any]:
+    """Chuẩn hóa key về tên cột tiếng Anh gốc và dọn giá trị NaN."""
+    cleaned: dict[str, Any] = {}
+    for k, v in row.items():
+        base_k = str(k).split("\n", 1)[0].strip()
+        if pd.isna(v):
+            cleaned[base_k] = ""
+        else:
+            cleaned[base_k] = v
+    return cleaned
+
+
+def format_final_results_df(clean_rows: Sequence[dict[str, Any]]) -> pd.DataFrame:
+    """Tạo DataFrame `final_results.csv` đủ 42 cột kèm chú thích tiếng Việt dưới mỗi tiêu đề."""
+    norm_rows = [_strip_row_keys(r) for r in clean_rows]
+    cols = list(FINAL_COLUMN_HEADERS.keys())
+    df = pd.DataFrame(norm_rows, columns=cols) if norm_rows else pd.DataFrame(columns=cols)
+    return df.rename(columns=FINAL_COLUMN_HEADERS)
+
+
+def build_cleaned_final_results_df(clean_rows: Sequence[dict[str, Any]]) -> pd.DataFrame:
+    """Tạo bản tóm gọn `cleaned_final_results.csv` (15 cột chính, sắp theo likes giảm dần)."""
+    norm_rows = [_strip_row_keys(r) for r in clean_rows]
+    has_gemma = any(str(r.get("gemma_audited", "")).strip().lower() == "true" for r in norm_rows)
+    selected_cols = list(_CLEANED_CORE_COLUMNS) + (list(_CLEANED_GEMMA_COLUMNS) if has_gemma else [])
+
+    out_rows: list[dict[str, Any]] = []
+    for r in norm_rows:
+        g_pol = str(r.get("gemma_polarity", "")).strip()
+        g_score_raw = r.get("gemma_score_5", "")
+        if g_score_raw != "":
+            try:
+                g_score_fmt: Any = int(float(g_score_raw))
+            except (TypeError, ValueError):
+                g_score_fmt = g_score_raw
+        else:
+            g_score_fmt = ""
+
+        item: dict[str, Any] = {
+            "username": r.get("username", ""),
+            "likes": int(float(r.get("likes", 0) or 0)),
+            "created_at": r.get("created_at", ""),
+            "language": r.get("language", ""),
+            "original_text": r.get("original_text", ""),
+            "polarity_vi": r.get("polarity_vi", ""),
+            "score_5": int(float(r.get("score_5", 3) or 3)),
+            "score_10": float(r.get("score_10", 5.0) or 5.0),
+            "emotion_vi": r.get("emotion_vi", ""),
+            "polarity_confidence": float(r.get("polarity_confidence", 0.0) or 0.0),
+            "gemma_polarity_vi": LABEL_VI_MAP.get(g_pol, g_pol),
+            "gemma_score_5": g_score_fmt,
+            "gemma_is_sarcasm": r.get("gemma_is_sarcasm", ""),
+            "gemma_agrees_polarity": r.get("gemma_agrees_polarity", ""),
+            "gemma_reason": r.get("gemma_reason", ""),
+        }
+        out_rows.append({c: item[c] for c in selected_cols})
+
+    df = pd.DataFrame(out_rows, columns=selected_cols) if out_rows else pd.DataFrame(columns=selected_cols)
+    if not df.empty and "likes" in df.columns:
+        df = df.sort_values(by="likes", ascending=False, kind="mergesort").reset_index(drop=True)
+    return df.rename(columns=CLEANED_COLUMN_HEADERS)
 
 
 def _infer_run_name(
@@ -168,8 +317,15 @@ class SentimentPipeline:
                     "gemma_reason": g.gemma_reason if g else "",
                 }
             )
-        pd.DataFrame(clean_rows).to_csv(final_csv, index=False, encoding="utf-8-sig")
+        format_final_results_df(clean_rows).to_csv(final_csv, index=False, encoding="utf-8-sig")
         exported["final_results_csv"] = str(final_csv)
+
+        # 2b. cleaned_final_results.csv (bản sao tóm gọn các cột quan trọng, sắp theo likes giảm dần)
+        cleaned_csv = out_path / "cleaned_final_results.csv"
+        build_cleaned_final_results_df(clean_rows).to_csv(
+            cleaned_csv, index=False, encoding="utf-8-sig"
+        )
+        exported["cleaned_final_results_csv"] = str(cleaned_csv)
 
         # 3. filtered_noise.csv (TÁCH RIÊNG comment nhiễu / ngôn ngữ khác)
         noise_csv = out_path / "filtered_noise.csv"
