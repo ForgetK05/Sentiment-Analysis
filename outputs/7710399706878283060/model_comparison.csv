@@ -1,0 +1,10 @@
+﻿model,family,total_comments,pos_count,neu_count,neg_count,pos_pct,neu_pct,neg_pct,agreement_vs_gemma_pct,macro_f1_vs_gemma,cohen_kappa_vs_gemma,score_5_mae_vs_gemma,inference_time_sec,task
+TF-IDF + Naive Bayes,Classical ML,85.0,42.0,28.0,15.0,49.41,32.94,17.65,,,,,0.044,Polarity (3 lớp)
+TF-IDF + Logistic Regression,Classical ML,85.0,36.0,30.0,19.0,42.35,35.29,22.35,,,,,0.044,Polarity (3 lớp)
+TF-IDF + Linear SVM,Classical ML,85.0,33.0,41.0,11.0,38.82,48.24,12.94,,,,,0.044,Polarity (3 lớp)
+Bilingual Lexicon + Rules,Rule-based NLP,85.0,31.0,47.0,7.0,36.47,55.29,8.24,,,,,0.002,Polarity (3 lớp)
+"ViSoBERT (5CD-AI, VI)",Deep Learning,1.0,1.0,0.0,0.0,100.0,0.0,0.0,,,,,0.499,Polarity (3 lớp)
+PhoBERT (VI) / Twitter-RoBERTa (EN),Deep Learning,85.0,39.0,26.0,20.0,45.88,30.59,23.53,,,,,2.443,Polarity (3 lớp)
+Hybrid Ensemble (Hệ thống chính),Hybrid ML + DL,85.0,36.0,30.0,19.0,42.35,35.29,22.35,,,,,,Polarity (3 lớp)
+TF-IDF + Logistic Regression (Emotion),Classical ML,,,,,,,,,,,,0.008,Emotion (7 cung bậc)
+PhoBERT Emotion (VI) / DistilRoBERTa (EN),Deep Learning,,,,,,,,,,,,1.334,Emotion (7 cung bậc)

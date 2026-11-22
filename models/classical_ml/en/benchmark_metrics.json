@@ -1,0 +1,25 @@
+{
+  "language": "en",
+  "polarity_train_size": 45657,
+  "polarity_test_size": 12284,
+  "polarity_models": {
+    "tfidf_nb": {
+      "accuracy": 0.6143,
+      "macro_f1": 0.61
+    },
+    "tfidf_lr": {
+      "accuracy": 0.6107,
+      "macro_f1": 0.6087
+    },
+    "tfidf_svm": {
+      "accuracy": 0.6025,
+      "macro_f1": 0.5776
+    }
+  },
+  "emotion_train_size": 3425,
+  "emotion_test_size": 1421,
+  "emotion_lr": {
+    "accuracy": 0.7234,
+    "macro_f1": 0.7172
+  }
+}

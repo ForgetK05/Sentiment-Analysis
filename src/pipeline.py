@@ -2,309 +2,452 @@ from __future__ import annotations
 
 import argparse
 import json
+import time
+from collections import Counter
 from pathlib import Path
 from typing import Any, Sequence
 
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from src.comment_classifier import (
-    DEFAULT_MODEL_NAME,
-    CommentClassifier,
-    CommentPrediction,
+from src.ingestion.tiktok_collector import (
+    TikTokMediaBundle,
+    crawl_tiktok_comments,
+    download_tiktok_media,
+    extract_post_id,
+    load_comments_dataframe,
 )
-from src.media_analyzer import MediaAnalysisResult, MediaAnalyzer
-
-COMMENT_COLUMN_CANDIDATES = (
-    "comment",
-    "text",
-    "content",
-    "noi_dung",
-    "binh_luan",
-    "message",
+from src.models.gemma_auditor import GemmaAuditItem, GemmaAuditor, build_model_comparison
+from src.models.media_context import MediaAnalysisResult, MediaAnalyzer
+from src.models.sentiment_engine import (
+    DEFAULT_EN_EMOTION_MODEL,
+    DEFAULT_EN_SENTIMENT_MODEL,
+    DEFAULT_PHOBERT_EMOTION_MODEL,
+    DEFAULT_PHOBERT_SENTIMENT_MODEL,
+    DEFAULT_VISOBERT_MODEL,
+    AnalyzedComment,
+    CommentAnalyzer,
 )
+from src.preprocessing.text_cleaner import (
+    PreprocessedComment,
+    TextPreprocessor,
+    extract_keywords_tfidf,
+)
+from src.visualization import plot_sentiment_dashboard
 
 
 def load_comments(
     comments_source: str | Path | Sequence[str],
     text_column: str | None = None,
 ) -> list[str]:
-    """Đọc danh sách bình luận từ list Python hoặc file CSV / JSON / TXT."""
-    if not isinstance(comments_source, (str, Path)):
-        return [str(item).strip() for item in comments_source if str(item).strip()]
+    """Đọc danh sách chuỗi bình luận từ CSV / JSON / TXT."""
+    df = load_comments_dataframe(comments_source, text_column=text_column)
+    return df["comment"].tolist()
 
-    path = Path(comments_source)
-    if not path.is_file():
-        raise FileNotFoundError(f"Không tìm thấy file comment: {path}")
 
-    ext = path.suffix.lower()
-    if ext == ".csv":
-        df = pd.read_csv(path, encoding="utf-8-sig")
-        if df.empty:
-            return []
-
-        col = text_column
-        if col is None:
-            lower_map = {c.lower(): c for c in df.columns}
-            for candidate in COMMENT_COLUMN_CANDIDATES:
-                if candidate in lower_map:
-                    col = lower_map[candidate]
-                    break
-            if col is None:
-                col = df.columns[0]
-        elif col not in df.columns:
-            raise ValueError(
-                f"Không tìm thấy cột `{col}` trong {path}. Các cột hiện có: {list(df.columns)}"
-            )
-
-        return [
-            str(val).strip()
-            for val in df[col].dropna().tolist()
-            if str(val).strip()
-        ]
-
-    if ext == ".json":
-        with path.open("r", encoding="utf-8") as f:
-            data = json.load(f)
-
-        if isinstance(data, dict):
-            if "comments" in data and isinstance(data["comments"], list):
-                data = data["comments"]
-            else:
-                raise ValueError("File JSON dạng object cần có key `comments` chứa danh sách.")
-
-        if not isinstance(data, list):
-            raise ValueError("File JSON comment phải là danh sách chuỗi hoặc object.")
-
-        comments: list[str] = []
-        for item in data:
-            if isinstance(item, str):
-                if item.strip():
-                    comments.append(item.strip())
-            elif isinstance(item, dict):
-                key = text_column
-                if key is None:
-                    lower_map = {k.lower(): k for k in item.keys()}
-                    for candidate in COMMENT_COLUMN_CANDIDATES:
-                        if candidate in lower_map:
-                            key = lower_map[candidate]
-                            break
-                    if key is None and item:
-                        key = next(iter(item.keys()))
-                if key and item.get(key) is not None and str(item[key]).strip():
-                    comments.append(str(item[key]).strip())
-        return comments
-
-    if ext == ".txt":
-        with path.open("r", encoding="utf-8") as f:
-            return [line.strip() for line in f if line.strip()]
-
-    raise ValueError(f"Định dạng file comment chưa hỗ trợ: {path.suffix} (chỉ hỗ trợ .csv, .json, .txt)")
+def _infer_run_name(
+    tiktok_url: str | None,
+    comments_source: str | Path | Sequence[str] | None,
+    media_input: str | Path | Sequence[str | Path] | None,
+) -> str:
+    if tiktok_url:
+        return extract_post_id(tiktok_url)
+    if isinstance(comments_source, (str, Path)):
+        p = Path(comments_source)
+        # Nếu nằm trong data/<post_id>/raw_comments.csv -> lấy <post_id>
+        if p.stem.lower() in {"raw_comments", "comments"} and p.parent.name not in {"data", "samples", ""}:
+            return p.parent.name
+        return p.stem
+    if isinstance(media_input, (str, Path)):
+        p = Path(media_input)
+        return p.parent.name if p.stem.lower() == "video" and p.parent.name else p.stem
+    return "run"
 
 
 class SentimentPipeline:
-    """Pipeline 2 giai đoạn: Gemma 4 E2B phân tích media + ViSoBERT phân loại comment."""
+    """Pipeline 4 giai đoạn: data/<post_id>/ (thu thập) -> outputs/<post_id>/ (kết quả sau xử lý)."""
 
     def __init__(
         self,
         media_analyzer: MediaAnalyzer | None = None,
-        comment_classifier: CommentClassifier | None = None,
+        text_preprocessor: TextPreprocessor | None = None,
+        comment_analyzer: CommentAnalyzer | None = None,
+        ai_auditor: GemmaAuditor | None = None,
     ) -> None:
         self.media_analyzer = media_analyzer or MediaAnalyzer()
-        self.comment_classifier = comment_classifier or CommentClassifier()
+        self.text_preprocessor = text_preprocessor or TextPreprocessor()
+        self.comment_analyzer = comment_analyzer or CommentAnalyzer()
+        self.ai_auditor = ai_auditor or GemmaAuditor()
+
+    @staticmethod
+    def _build_noise_summary(preprocessed: Sequence[PreprocessedComment]) -> dict[str, Any]:
+        total = len(preprocessed)
+        valid_cnt = sum(1 for p in preprocessed if p.is_valid)
+        noise_items = [p for p in preprocessed if not p.is_valid]
+        dup_cnt = sum(1 for p in preprocessed if p.is_valid and p.is_duplicate)
+        reason_counts = dict(Counter(p.filter_reason for p in noise_items))
+        return {
+            "total_raw_comments": total,
+            "valid_comments": valid_cnt,
+            "filtered_noise_count": len(noise_items),
+            "duplicate_valid_count": dup_cnt,
+            "filter_reasons": reason_counts,
+        }
+
+    @staticmethod
+    def _export_outputs(
+        out_path: Path,
+        report: dict[str, Any],
+        preprocessed: Sequence[PreprocessedComment],
+        metadata_rows: Sequence[dict[str, Any]],
+        analyzed: Sequence[AnalyzedComment],
+        audits: Sequence[GemmaAuditItem],
+    ) -> dict[str, str]:
+        out_path.mkdir(parents=True, exist_ok=True)
+        exported: dict[str, str] = {}
+
+        # 1. report.json
+        report_file = out_path / "report.json"
+        with report_file.open("w", encoding="utf-8") as f:
+            json.dump(report, f, ensure_ascii=False, indent=2)
+        exported["report_json"] = str(report_file)
+
+        # 2. final_results.csv (CHỈ comment sạch / hợp lệ thuộc VI hoặc EN)
+        final_csv = out_path / "final_results.csv"
+        audit_map = {g.comment_index: g for g in audits}
+        clean_rows: list[dict[str, Any]] = []
+        for idx, item in enumerate(analyzed):
+            g = audit_map.get(idx)
+            clean_rows.append(
+                {
+                    "comment_id": item.comment_id,
+                    "username": item.username,
+                    "nickname": item.nickname,
+                    "likes": item.likes,
+                    "reply_count": item.reply_count,
+                    "created_at": item.created_at,
+                    "language": item.language,
+                    "original_text": item.original_text,
+                    "cleaned_text": item.cleaned_text,
+                    "segmented_text": item.segmented_text,
+                    "is_duplicate": item.is_duplicate,
+                    "has_sarcasm_signal": item.has_sarcasm_signal,
+                    "needs_audit": item.needs_audit,
+                    "polarity_label": item.polarity_label,
+                    "polarity_vi": item.polarity_vi,
+                    "polarity_confidence": item.polarity_confidence,
+                    "polarity_score": item.polarity_score,
+                    "score_5": item.score_5,
+                    "score_10": item.score_10,
+                    "rating_level_vi": item.rating_level_vi,
+                    "score_POS": item.polarity_probs.get("POS", 0.0),
+                    "score_NEG": item.polarity_probs.get("NEG", 0.0),
+                    "score_NEU": item.polarity_probs.get("NEU", 0.0),
+                    "emotion_label": item.emotion_label,
+                    "emotion_vi": item.emotion_vi,
+                    "emotion_confidence": item.emotion_confidence,
+                    "pred_nb": item.pred_nb,
+                    "pred_lr": item.pred_lr,
+                    "pred_svm": item.pred_svm,
+                    "pred_lexicon": item.pred_lexicon,
+                    "pred_visobert": item.pred_visobert,
+                    "pred_dl_primary": item.pred_dl_primary,
+                    "emotion_ml_label": item.emotion_ml_label,
+                    "gemma_audited": g.gemma_audited if g else False,
+                    "gemma_polarity": g.gemma_polarity if g else "",
+                    "gemma_emotion": g.gemma_emotion if g else "",
+                    "gemma_emotion_vi": g.gemma_emotion_vi if g else "",
+                    "gemma_score_5": g.gemma_score_5 if (g and g.gemma_audited) else "",
+                    "gemma_is_sarcasm": g.gemma_is_sarcasm if (g and g.gemma_audited) else "",
+                    "gemma_agrees_polarity": (
+                        g.gemma_agrees_polarity if (g and g.gemma_audited) else ""
+                    ),
+                    "gemma_agrees_emotion": (
+                        g.gemma_agrees_emotion if (g and g.gemma_audited) else ""
+                    ),
+                    "gemma_reason": g.gemma_reason if g else "",
+                }
+            )
+        pd.DataFrame(clean_rows).to_csv(final_csv, index=False, encoding="utf-8-sig")
+        exported["final_results_csv"] = str(final_csv)
+
+        # 3. filtered_noise.csv (TÁCH RIÊNG comment nhiễu / ngôn ngữ khác)
+        noise_csv = out_path / "filtered_noise.csv"
+        noise_rows: list[dict[str, Any]] = []
+        for idx, p in enumerate(preprocessed):
+            if p.is_valid:
+                continue
+            meta = metadata_rows[idx] if idx < len(metadata_rows) else {}
+            noise_rows.append(
+                {
+                    "comment_id": str(meta.get("comment_id", "")),
+                    "username": str(meta.get("username", "")),
+                    "nickname": str(meta.get("nickname", "")),
+                    "likes": int(meta.get("likes", 0) or 0),
+                    "language": p.language,
+                    "original_text": p.original_text,
+                    "cleaned_text": p.cleaned_text,
+                    "filter_reason": p.filter_reason,
+                }
+            )
+        pd.DataFrame(
+            noise_rows,
+            columns=[
+                "comment_id",
+                "username",
+                "nickname",
+                "likes",
+                "language",
+                "original_text",
+                "cleaned_text",
+                "filter_reason",
+            ],
+        ).to_csv(noise_csv, index=False, encoding="utf-8-sig")
+        exported["filtered_noise_csv"] = str(noise_csv)
+
+        # 4. model_comparison.csv
+        comp_csv = out_path / "model_comparison.csv"
+        comp_data = report.get("model_comparison") or {}
+        comp_rows = []
+        for row in comp_data.get("polarity_models") or []:
+            r_copy = dict(row)
+            r_copy["task"] = "Polarity (3 lớp)"
+            comp_rows.append(r_copy)
+        for row in comp_data.get("emotion_models") or []:
+            r_copy = dict(row)
+            r_copy["task"] = "Emotion (7 cung bậc)"
+            comp_rows.append(r_copy)
+        pd.DataFrame(comp_rows).to_csv(comp_csv, index=False, encoding="utf-8-sig")
+        exported["model_comparison_csv"] = str(comp_csv)
+
+        return exported
 
     def run(
         self,
+        tiktok_url: str | None = None,
         media_input: str | Path | Sequence[str | Path] | None = None,
         comments_source: str | Path | Sequence[str] | None = None,
         caption: str = "",
         enable_audio: bool = True,
         text_column: str | None = None,
-        unload_ollama_after_stage1: bool = False,
-        output_dir: str | Path | None = None,
+        unload_ollama_after_stage1: bool = True,
+        run_ai_audit: bool = True,
+        audit_limit: int | None = None,
+        max_comments: int = 200,
+        crawl_headless: bool = False,
+        crawl_interactive_pause: bool = True,
+        deduplicate_stats: bool = False,
+        data_dir: str | Path = "data",
+        output_dir: str | Path | None = "outputs",
         show_progress: bool = True,
     ) -> dict[str, Any]:
-        """Chạy tuần tự Giai đoạn 1 và Giai đoạn 2, tùy chọn xuất báo cáo ra đĩa."""
-        if media_input is None and comments_source is None:
-            raise ValueError("Cần cung cấp ít nhất `media_input` hoặc `comments_source`.")
+        """Chạy 4 giai đoạn: dữ liệu thô vào data/<post_id>/, kết quả cuối ra outputs/<post_id>/."""
+        if not tiktok_url and media_input is None and comments_source is None:
+            raise ValueError(
+                "Cần cung cấp ít nhất `tiktok_url`, `media_input`, hoặc `comments_source`."
+            )
 
+        data_root = Path(data_dir)
+        run_name = _infer_run_name(tiktok_url, comments_source, media_input)
+
+        out_path: Path | None = None
+        if output_dir is not None:
+            base_out = Path(output_dir)
+            out_path = base_out / run_name if base_out.name in {"outputs", "output"} else base_out
+
+        tiktok_bundle: TikTokMediaBundle | None = None
+        effective_media = media_input
+        effective_caption = caption
+        effective_comments = comments_source
+
+        # BƯỚC 0: Toàn bộ dữ liệu thu thập thô được lưu vào data/<post_id>/
+        if tiktok_url:
+            print(f"[Bước 0] Đang tải video & metadata vào {data_root / run_name}...")
+            tiktok_bundle = download_tiktok_media(tiktok_url, data_dir=data_root)
+            run_name = tiktok_bundle.post_id
+            if output_dir is not None:
+                base_out = Path(output_dir)
+                out_path = base_out / run_name if base_out.name in {"outputs", "output"} else base_out
+
+            if effective_media is None:
+                effective_media = (
+                    tiktok_bundle.media_paths[0]
+                    if tiktok_bundle.media_type == "video"
+                    else tiktok_bundle.media_paths
+                )
+            if not effective_caption.strip():
+                effective_caption = tiktok_bundle.caption
+
+            if effective_comments is None:
+                raw_csv_path = data_root / tiktok_bundle.post_id / "raw_comments.csv"
+                print(f"[Bước 0] Đang thu thập bình luận vào {raw_csv_path}...")
+                _, crawled_csv = crawl_tiktok_comments(
+                    url=tiktok_url,
+                    output_csv=raw_csv_path,
+                    data_dir=data_root,
+                    max_comments=max_comments,
+                    headless=crawl_headless,
+                    interactive_pause=crawl_interactive_pause,
+                )
+                effective_comments = crawled_csv
+
+        # GIAI ĐOẠN 1 (AI ĐẦU VÀO)
         media_result: MediaAnalysisResult | None = None
-        if media_input is not None:
+        if effective_media is not None:
+            print("[Giai đoạn 1] Gemma 4 E2B đang phân tích ngữ cảnh video/ảnh...")
             media_result = self.media_analyzer.analyze(
-                media_input=media_input,
-                caption=caption,
+                media_input=effective_media,
+                caption=effective_caption,
                 enable_audio=enable_audio,
             )
 
-        if unload_ollama_after_stage1 or self.comment_classifier.device == "cuda":
+        if unload_ollama_after_stage1 and media_result is not None:
             self.media_analyzer.unload_ollama_model()
 
-        predictions: list[CommentPrediction] = []
+        # GIAI ĐOẠN 2 & 3 (NLP + ML + DL SONG NGỮ VI/EN)
+        preprocessed: list[PreprocessedComment] = []
+        metadata_rows: list[dict[str, Any]] = []
+        analyzed: list[AnalyzedComment] = []
+        timings: dict[str, float] = {}
         summary: dict[str, Any] | None = None
-        if comments_source is not None:
-            comments = load_comments(comments_source, text_column=text_column)
-            predictions = self.comment_classifier.predict_batch(
-                comments, show_progress=show_progress
+        keywords_tfidf: dict[str, list[dict[str, Any]]] = {}
+
+        if effective_comments is not None:
+            df_comments = load_comments_dataframe(effective_comments, text_column=text_column)
+            metadata_rows = df_comments.to_dict(orient="records")
+            raw_texts = df_comments["comment"].tolist()
+
+            print(f"[Giai đoạn 2] Lọc nhiễu, nhận diện ngôn ngữ (VI/EN) & tách từ ({len(raw_texts)} bình luận)...")
+            preprocessed = self.text_preprocessor.process_batch(raw_texts)
+            noise_summary = self._build_noise_summary(preprocessed)
+            print(
+                f"  -> Hợp lệ: {noise_summary['valid_comments']} | "
+                f"Đã lọc nhiễu: {noise_summary['filtered_noise_count']}"
             )
-            summary = self.comment_classifier.summarize(predictions)
+
+            print("[Giai đoạn 3] Đang chạy ML cổ điển, Lexicon, Deep Learning (VI/EN) & Hybrid...")
+            analyzed, timings = self.comment_analyzer.analyze_comments(
+                preprocessed=preprocessed,
+                metadata_rows=metadata_rows,
+                show_progress=show_progress,
+            )
+            summary = self.comment_analyzer.summarize(
+                analyzed, deduplicate_stats=deduplicate_stats
+            )
+
+            valid_pre = [p for p in preprocessed if p.is_valid]
+            valid_pols = [a.polarity_label for a in analyzed]
+            keywords_tfidf = extract_keywords_tfidf(valid_pre, valid_pols, top_k=10)
+        else:
+            noise_summary = self._build_noise_summary([])
+
+        # GIAI ĐOẠN 4 (AI ĐẦU RA)
+        audits: list[GemmaAuditItem] = []
+        ai_verdict: dict[str, Any] | None = None
+        if analyzed and run_ai_audit:
+            print("[Giai đoạn 4] Gemma 4 E2B đang thẩm định thực tế bình luận theo ngữ cảnh...")
+            t_aud = time.perf_counter()
+            audits = self.ai_auditor.audit_comments(
+                analyzed=analyzed,
+                media_result=media_result,
+                audit_limit=audit_limit,
+                show_progress=show_progress,
+            )
+            timings["gemma_audit_sec"] = round(time.perf_counter() - t_aud, 3)
+
+        model_comparison = build_model_comparison(
+            analyzed=analyzed,
+            audits=audits,
+            timings=timings,
+        )
+
+        if analyzed and run_ai_audit and audits:
+            ai_verdict = self.ai_auditor.generate_overall_verdict(
+                analyzed=analyzed,
+                audits=audits,
+                model_comparison=model_comparison.get("polarity_models") or [],
+                media_result=media_result,
+            )
+
+        audit_map = {g.comment_index: g for g in audits}
+        comments_payload = []
+        for idx, item in enumerate(analyzed):
+            row_dict = item.to_dict()
+            g = audit_map.get(idx)
+            row_dict["gemma_audit"] = g.to_dict() if g else None
+            comments_payload.append(row_dict)
+
+        noise_payload = [
+            {
+                "language": p.language,
+                "original_text": p.original_text,
+                "cleaned_text": p.cleaned_text,
+                "filter_reason": p.filter_reason,
+            }
+            for p in preprocessed
+            if not p.is_valid
+        ]
 
         report: dict[str, Any] = {
+            "run_name": run_name,
+            "tiktok_metadata": tiktok_bundle.to_dict() if tiktok_bundle else None,
             "media_analysis": media_result.to_dict() if media_result else None,
+            "noise_filter_summary": noise_summary,
+            "keywords_tfidf": keywords_tfidf,
             "sentiment_summary": summary,
-            "comments": [pred.to_dict() for pred in predictions],
+            "model_comparison": model_comparison,
+            "ai_audit_verdict": ai_verdict,
+            "comments": comments_payload,
+            "filtered_noise": noise_payload,
         }
 
-        if output_dir is not None:
-            out_path = Path(output_dir)
-            out_path.mkdir(parents=True, exist_ok=True)
-
-            report_file = out_path / "report.json"
-            with report_file.open("w", encoding="utf-8") as f:
-                json.dump(report, f, ensure_ascii=False, indent=2)
-
-            if predictions:
-                rows = [
-                    {
-                        "original_text": p.original_text,
-                        "cleaned_text": p.cleaned_text,
-                        "label": p.label,
-                        "label_vi": p.label_vi,
-                        "confidence": p.confidence,
-                        "score_POS": p.scores.get("POS", 0.0),
-                        "score_NEG": p.scores.get("NEG", 0.0),
-                        "score_NEU": p.scores.get("NEU", 0.0),
-                    }
-                    for p in predictions
-                ]
-                pd.DataFrame(rows).to_csv(
-                    out_path / "classified_comments.csv",
-                    index=False,
-                    encoding="utf-8-sig",
-                )
+        if out_path is not None:
+            exported = self._export_outputs(
+                out_path=out_path,
+                report=report,
+                preprocessed=preprocessed,
+                metadata_rows=metadata_rows,
+                analyzed=analyzed,
+                audits=audits,
+            )
+            if summary is not None and summary.get("total_valid_comments", 0) > 0:
+                dash_path = out_path / "dashboard.png"
+                fig = plot_sentiment_dashboard(report, save_path=dash_path)
+                plt.close(fig)
+                exported["dashboard_png"] = str(dash_path)
+            report["exported_files"] = exported
 
         return report
 
 
-def plot_sentiment_summary(
-    report: dict[str, Any],
-    save_path: str | Path | None = None,
-) -> plt.Figure:
-    """Vẽ biểu đồ cột ngang và biểu đồ tròn phân bố cảm xúc bình luận."""
-    summary = report.get("sentiment_summary")
-    if not summary or summary.get("total_comments", 0) == 0:
-        raise ValueError("Báo cáo chưa có dữ liệu thống kê cảm xúc để vẽ biểu đồ.")
-
-    counts = summary["counts"]
-    labels = ["Tích cực", "Trung tính", "Tiêu cực"]
-    values = [counts.get("POS", 0), counts.get("NEU", 0), counts.get("NEG", 0)]
-    colors = ["#2ecc71", "#95a5a6", "#e74c3c"]
-
-    fig, (ax_bar, ax_pie) = plt.subplots(1, 2, figsize=(12, 4.8))
-
-    bars = ax_bar.barh(labels, values, color=colors)
-    ax_bar.invert_yaxis()
-    ax_bar.set_xlabel("Số lượng bình luận")
-    ax_bar.set_title("Số lượng theo nhãn cảm xúc")
-    ax_bar.grid(axis="x", linestyle="--", alpha=0.4)
-    for bar, val in zip(bars, values):
-        ax_bar.text(
-            bar.get_width() + max(values, default=1) * 0.02,
-            bar.get_y() + bar.get_height() / 2,
-            str(val),
-            va="center",
-        )
-
-    non_zero = [(lbl, val, col) for lbl, val, col in zip(labels, values, colors) if val > 0]
-    if non_zero:
-        ax_pie.pie(
-            [v for _, v, _ in non_zero],
-            labels=[l for l, _, _ in non_zero],
-            colors=[c for _, _, c in non_zero],
-            autopct="%1.1f%%",
-            startangle=90,
-        )
-    ax_pie.set_title(f"Tỷ lệ cảm xúc (Xu hướng: {summary.get('overall_tendency', '')})")
-
-    media_info = report.get("media_analysis") or {}
-    topic = media_info.get("chu_de_chinh")
-    if topic:
-        fig.suptitle(f"Chủ đề: {topic}", fontsize=13, fontweight="bold")
-
-    fig.tight_layout()
-    if save_path is not None:
-        out_img = Path(save_path)
-        out_img.parent.mkdir(parents=True, exist_ok=True)
-        fig.savefig(out_img, dpi=150, bbox_inches="tight")
-
-    return fig
-
-
 def _build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Hệ thống phân tích nội dung TikTok (Gemma 4 E2B) & cảm xúc comment (ViSoBERT)."
+        description="Hệ thống Sentiment Analysis TikTok Song ngữ (VI/EN): Gemma 4 E2B + ML/DL."
     )
-    parser.add_argument(
-        "--media",
-        nargs="+",
-        default=None,
-        help="Đường dẫn tới video, ảnh hoặc danh sách ảnh / thư mục ảnh.",
-    )
-    parser.add_argument(
-        "--comments",
-        default=None,
-        help="Đường dẫn tới file comment (.csv, .json, .txt).",
-    )
-    parser.add_argument(
-        "--caption",
-        default="",
-        help="Caption hoặc mô tả kèm theo bài đăng TikTok (tùy chọn).",
-    )
-    parser.add_argument(
-        "--text-column",
-        default=None,
-        help="Tên cột chứa nội dung comment nếu dùng CSV/JSON.",
-    )
-    parser.add_argument(
-        "--no-audio",
-        action="store_true",
-        help="Bỏ qua bước tách và nhận dạng giọng nói trong video.",
-    )
-    parser.add_argument(
-        "--device",
-        default="cpu",
-        choices=["cpu", "cuda", "auto"],
-        help="Thiết bị chạy mô hình ViSoBERT (mặc định: cpu để tiết kiệm VRAM).",
-    )
-    parser.add_argument(
-        "--ollama-url",
-        default="http://localhost:11434",
-        help="URL của Ollama API.",
-    )
-    parser.add_argument(
-        "--ollama-model",
-        default="gemma4-e2b-opt",
-        help="Tên model Ollama dùng cho Giai đoạn 1.",
-    )
-    parser.add_argument(
-        "--visobert-model",
-        default=DEFAULT_MODEL_NAME,
-        help="Model Hugging Face dùng cho Giai đoạn 2.",
-    )
-    parser.add_argument(
-        "--whisper-model",
-        default="small",
-        help="Kích thước model faster-whisper (tiny, base, small...).",
-    )
-    parser.add_argument(
-        "--output",
-        default="outputs",
-        help="Thư mục lưu report.json và classified_comments.csv.",
-    )
-    parser.add_argument(
-        "--save-chart",
-        default=None,
-        help="Đường dẫn file ảnh để lưu biểu đồ cảm xúc (tùy chọn).",
-    )
+    parser.add_argument("--url", default=None, help="Link video/bài viết TikTok.")
+    parser.add_argument("--media", nargs="+", default=None, help="Đường dẫn tới video/ảnh cục bộ.")
+    parser.add_argument("--comments", default=None, help="Đường dẫn tới file comment (.csv, .json, .txt).")
+    parser.add_argument("--caption", default="", help="Caption bài đăng TikTok (tùy chọn).")
+    parser.add_argument("--text-column", default=None, help="Tên cột comment nếu dùng CSV/JSON.")
+    parser.add_argument("--no-audio", action="store_true", help="Bỏ qua tách và nhận dạng giọng nói.")
+    parser.add_argument("--skip-audit", action="store_true", help="Bỏ qua bước Gemma 4 E2B thẩm định.")
+    parser.add_argument("--audit-limit", type=int, default=None, help="Giới hạn số comment thẩm định.")
+    parser.add_argument("--max-comments", type=int, default=200, help="Số comment tối đa khi crawl.")
+    parser.add_argument("--headless-crawl", action="store_true", help="Crawl ẩn trình duyệt.")
+    parser.add_argument("--no-crawl-pause", action="store_true", help="Không tạm dừng nhấn Enter.")
+    parser.add_argument("--deduplicate-stats", action="store_true", help="Loại trùng lặp khỏi thống kê.")
+    parser.add_argument("--device", default="cpu", choices=["cpu", "cuda", "auto"])
+    parser.add_argument("--ollama-url", default="http://localhost:11434")
+    parser.add_argument("--ollama-model", default="gemma4-e2b-opt")
+    parser.add_argument("--visobert-model", default=DEFAULT_VISOBERT_MODEL)
+    parser.add_argument("--phobert-model", default=DEFAULT_PHOBERT_SENTIMENT_MODEL)
+    parser.add_argument("--emotion-model", default=DEFAULT_PHOBERT_EMOTION_MODEL)
+    parser.add_argument("--en-sentiment-model", default=DEFAULT_EN_SENTIMENT_MODEL)
+    parser.add_argument("--en-emotion-model", default=DEFAULT_EN_EMOTION_MODEL)
+    parser.add_argument("--whisper-model", default="small")
+    parser.add_argument("--data-dir", default="data", help="Thư mục lưu dữ liệu thô thu thập.")
+    parser.add_argument("--output", default="outputs", help="Thư mục lưu kết quả cuối sau xử lý.")
+    parser.add_argument("--save-chart", default=None, help="Đường dẫn lưu riêng file dashboard (tùy chọn).")
     return parser
 
 
@@ -321,21 +464,38 @@ def main() -> None:
         model_name=args.ollama_model,
         whisper_model=args.whisper_model,
     )
-    classifier = CommentClassifier(
-        model_name=args.visobert_model,
+    comment_analyzer = CommentAnalyzer(
+        visobert_model=args.visobert_model,
+        phobert_sentiment_model=args.phobert_model,
+        phobert_emotion_model=args.emotion_model,
+        en_sentiment_model=args.en_sentiment_model,
+        en_emotion_model=args.en_emotion_model,
         device=args.device,
+    )
+    auditor = GemmaAuditor(
+        ollama_url=args.ollama_url,
+        model_name=args.ollama_model,
     )
     pipeline = SentimentPipeline(
         media_analyzer=analyzer,
-        comment_classifier=classifier,
+        comment_analyzer=comment_analyzer,
+        ai_auditor=auditor,
     )
 
     report = pipeline.run(
+        tiktok_url=args.url,
         media_input=media_input,
         comments_source=args.comments,
         caption=args.caption,
         enable_audio=not args.no_audio,
         text_column=args.text_column,
+        run_ai_audit=not args.skip_audit,
+        audit_limit=args.audit_limit,
+        max_comments=args.max_comments,
+        crawl_headless=args.headless_crawl,
+        crawl_interactive_pause=not args.no_crawl_pause,
+        deduplicate_stats=args.deduplicate_stats,
+        data_dir=args.data_dir,
         output_dir=args.output,
     )
 
@@ -343,26 +503,70 @@ def main() -> None:
     if report["media_analysis"]:
         m = report["media_analysis"]
         print(f"- Chủ đề chính : {m['chu_de_chinh']}")
+        print(f"- Mục đích     : {m['muc_dich_chinh']}")
         print(f"- Quan điểm    : {m['quan_diem_noi_dung']}")
+        print(f"- Sắc thái bài : {m['sac_thai_noi_dung']}")
+        print(f"- Đối tượng    : {', '.join(m['doi_tuong_chinh'])}")
         print(f"- Tóm tắt      : {m['tom_tat_ngan']}")
-        print(f"- Từ khóa      : {', '.join(m['tu_khoa'])}")
-        print(f"- Âm thanh     : {'Có' if m['has_audio'] else 'Không'}")
-        if m["transcript"]:
-            print(f"- Lời thoại    : {m['transcript'][:200]}...")
+
+    nf = report["noise_filter_summary"]
+    print("\n=== LỌC NHIỄU BÌNH LUẬN ===")
+    print(
+        f"- Tổng thô: {nf['total_raw_comments']} | Hợp lệ: {nf['valid_comments']} | "
+        f"Đã lọc: {nf['filtered_noise_count']} | Trùng lặp: {nf['duplicate_valid_count']}"
+    )
+    if nf["filter_reasons"]:
+        print(f"- Chi tiết lý do lọc: {nf['filter_reasons']}")
 
     if report["sentiment_summary"]:
         s = report["sentiment_summary"]
-        print("\n=== THỐNG KÊ BÌNH LUẬN (ViSoBERT) ===")
-        print(f"- Tổng comment : {s['total_comments']}")
-        print(f"- Phân bố      : {s['counts']} | Tỷ lệ (%): {s['percentages']}")
+        print("\n=== THỐNG KÊ ĐA TẦNG (SONG NGỮ VI/EN + THANG ĐIỂM KÉP) ===")
+        print(f"- Ngôn ngữ     : {s['language_counts']}")
+        print(f"- Polarity     : {s['polarity_counts']} | Tỷ lệ (%): {s['polarity_percentages']}")
         print(f"- Xu hướng     : {s['overall_tendency']}")
+        print(
+            f"- Điểm TB      : {s['avg_polarity_score']} [-1..+1] | "
+            f"{s['avg_score_5']}/5 | {s['avg_score_10']}/10"
+        )
+        print(f"- 7 Cảm xúc (%): {s['emotion_percentages']}")
 
         if args.save_chart:
-            fig = plot_sentiment_summary(report, save_path=args.save_chart)
+            fig = plot_sentiment_dashboard(report, save_path=args.save_chart)
             plt.close(fig)
-            print(f"- Đã lưu biểu đồ tại: {args.save_chart}")
 
-    print(f"\nĐã lưu báo cáo chi tiết vào thư mục: {args.output}")
+    comp = report.get("model_comparison") or {}
+    if comp.get("polarity_models"):
+        print("\n=== SO SÁNH CÁC MÔ HÌNH ===")
+        df_comp = pd.DataFrame(comp["polarity_models"])
+        cols = [
+            c
+            for c in [
+                "model",
+                "family",
+                "pos_pct",
+                "neu_pct",
+                "neg_pct",
+                "agreement_vs_gemma_pct",
+                "macro_f1_vs_gemma",
+            ]
+            if c in df_comp.columns
+        ]
+        print(df_comp[cols].to_string(index=False))
+
+    if report.get("ai_audit_verdict"):
+        v = report["ai_audit_verdict"]
+        print("\n=== THẨM ĐỊNH ĐẦU RA (GEMMA 4 E2B) ===")
+        print(f"- Đánh giá chung : {v.get('accuracy_verdict')} | Tốt nhất: {v.get('best_model')}")
+        print(
+            f"- Tỷ lệ mỉa mai  : {v.get('sarcasm_rate_pct')}% "
+            f"({v.get('sarcasm_detected_count')}/{v.get('audited_count')})"
+        )
+        print(f"- Nhận xét       : {v.get('summary_vi')}")
+
+    if report.get("exported_files"):
+        print("\n=== FILE ĐÃ XUẤT ===")
+        for k, v in report["exported_files"].items():
+            print(f"- {k}: {v}")
 
 
 if __name__ == "__main__":

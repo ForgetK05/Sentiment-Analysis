@@ -3,7 +3,7 @@ from __future__ import annotations
 import base64
 import json
 import re
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Sequence
 
@@ -19,29 +19,78 @@ MEDIA_RESPONSE_SCHEMA: dict[str, Any] = {
     "properties": {
         "chu_de_chinh": {
             "type": "string",
-            "description": "Chủ đề chính của video hoặc hình ảnh TikTok.",
+            "description": "Chủ đề cốt lõi của video hoặc hình ảnh TikTok.",
+        },
+        "muc_dich_chinh": {
+            "type": "string",
+            "description": (
+                "Mục đích chính của bài đăng: chọn hoặc mô tả sát nhất trong nhóm "
+                "(Giải trí/Hài hước, Bóc phốt/Chỉ trích/Drama, Đánh giá/Review sản phẩm, "
+                "Chia sẻ thông tin/Tin tức, Tâm sự/Cảm xúc cá nhân, Bán hàng/Quảng cáo, "
+                "Tranh luận quan điểm)."
+            ),
         },
         "quan_diem_noi_dung": {
             "type": "string",
-            "description": "Quan điểm, thông điệp hoặc góc nhìn chính mà nội dung muốn truyền tải.",
+            "description": "Quan điểm, thông điệp hoặc thái độ chính mà tác giả/video thể hiện.",
+        },
+        "doi_tuong_chinh": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "Danh sách nhân vật, nghệ sĩ, thương hiệu, sản phẩm hoặc sự kiện trung tâm được nhắc tới.",
+        },
+        "sac_thai_noi_dung": {
+            "type": "string",
+            "enum": [
+                "Tích cực",
+                "Tiêu cực",
+                "Châm biếm / Mỉa mai",
+                "Tranh cãi",
+                "Trung lập",
+            ],
+            "description": "Sắc thái chủ đạo của bài đăng.",
         },
         "tom_tat_ngan": {
             "type": "string",
-            "description": "Tóm tắt ngắn gọn nội dung từ hình ảnh và âm thanh.",
+            "description": "Tóm tắt chi tiết nội dung trong 3-5 câu dựa trên hình ảnh, chữ trên màn hình, lời thoại và caption.",
         },
         "tu_khoa": {
             "type": "array",
             "items": {"type": "string"},
-            "description": "Danh sách 3-6 từ khóa trọng tâm liên quan đến chủ đề.",
+            "description": "Danh sách 4-8 từ khóa trọng tâm (bao gồm cả tên viết tắt hoặc biệt danh nếu có).",
+        },
+        "luu_y_danh_gia_comment": {
+            "type": "string",
+            "description": (
+                "Hướng dẫn cụ thể để đọc hiểu cảm xúc bình luận dưới bài đăng này "
+                "(vd: dấu hiệu mỉa mai/châm biếm, đối tượng đang bị khen hay bị chê, câu đùa đặc trưng)."
+            ),
         },
     },
     "required": [
         "chu_de_chinh",
+        "muc_dich_chinh",
         "quan_diem_noi_dung",
+        "doi_tuong_chinh",
+        "sac_thai_noi_dung",
         "tom_tat_ngan",
         "tu_khoa",
+        "luu_y_danh_gia_comment",
     ],
 }
+
+_SYSTEM_PROMPT = (
+    "Bạn là chuyên gia phân tích nội dung mạng xã hội TikTok và Social Listening.\n"
+    "Nhiệm vụ của bạn là đọc thật kỹ toàn bộ ngữ cảnh bài đăng để phục vụ đánh giá chính xác "
+    "cảm xúc bình luận của người xem (cả Tiếng Việt lẫn Tiếng Anh).\n"
+    "NGUYÊN TẮC BẮT BUỘC:\n"
+    "1. Đọc kỹ mọi chữ/tiêu đề/phụ đề hiển thị trên các khung hình video (OCR ngữ nghĩa).\n"
+    "2. Lời thoại do Whisper bóc tự động có thể sai chính tả hoặc sai tên riêng. "
+    "Hãy ưu tiên đối chiếu với chữ trên màn hình và Caption/Hashtag để hiểu đúng sự thật.\n"
+    "3. TUYỆT ĐỐI KHÔNG tự bịa ra tên nhân vật, sự kiện hoặc thông điệp không có căn cứ trong khung hình, caption hay lời thoại.\n"
+    "4. Phân biệt rõ nội dung tích cực thật sự với nội dung châm biếm, bóc phốt, drama hoặc tranh cãi.\n"
+    "5. Trả lời bằng tiếng Việt tự nhiên, súc tích và đúng chuẩn JSON schema."
+)
 
 
 @dataclass
@@ -52,19 +101,24 @@ class MediaAnalysisResult:
     source_paths: list[str]
     num_frames_used: int
     has_audio: bool
+    caption: str
     transcript: str
     chu_de_chinh: str
+    muc_dich_chinh: str
     quan_diem_noi_dung: str
-    tom_tat_ngan: str
-    tu_khoa: list[str]
-    raw_response: str
+    doi_tuong_chinh: list[str] = field(default_factory=list)
+    sac_thai_noi_dung: str = "Trung lập"
+    tom_tat_ngan: str = ""
+    tu_khoa: list[str] = field(default_factory=list)
+    luu_y_danh_gia_comment: str = ""
+    raw_response: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
 class MediaAnalyzer:
-    """Giai đoạn 1: Trích xuất khung hình/âm thanh và gọi Gemma 4 E2B qua Ollama."""
+    """Giai đoạn 1 (AI Đầu vào): Trích xuất khung hình/âm thanh và gọi Gemma 4 E2B qua Ollama."""
 
     def __init__(
         self,
@@ -75,6 +129,7 @@ class MediaAnalyzer:
         whisper_compute_type: str = "int8",
         max_frames: int = 10,
         image_size: int = 512,
+        temperature: float = 0.15,
         timeout: int = 180,
     ) -> None:
         self.ollama_url = ollama_url.rstrip("/")
@@ -84,11 +139,11 @@ class MediaAnalyzer:
         self.whisper_compute_type = whisper_compute_type
         self.max_frames = max(1, int(max_frames))
         self.image_size = max(128, int(image_size))
+        self.temperature = float(temperature)
         self.timeout = timeout
         self._whisper: Any = None
 
     def _encode_frame_bgr(self, frame: np.ndarray, max_side: int) -> str:
-        """Resize khung hình giữ nguyên tỷ lệ (cạnh dài <= max_side) và mã hóa base64 JPEG."""
         height, width = frame.shape[:2]
         longest = max(height, width)
         if longest > max_side:
@@ -103,7 +158,6 @@ class MediaAnalyzer:
         return base64.b64encode(buffer.tobytes()).decode("utf-8")
 
     def load_image_base64(self, image_path: str | Path) -> str:
-        """Đọc ảnh an toàn với đường dẫn Unicode trên Windows và trả về chuỗi base64."""
         path = Path(image_path)
         if not path.is_file():
             raise FileNotFoundError(f"Không tìm thấy file ảnh: {path}")
@@ -115,7 +169,6 @@ class MediaAnalyzer:
         return self._encode_frame_bgr(frame, self.image_size)
 
     def extract_video_frames(self, video_path: str | Path) -> list[str]:
-        """Trích xuất tối đa `max_frames` khung hình trải đều từ đầu đến cuối video."""
         path = Path(video_path)
         if not path.is_file():
             raise FileNotFoundError(f"Không tìm thấy file video: {path}")
@@ -140,7 +193,6 @@ class MediaAnalyzer:
                     if ret and frame is not None:
                         frames_b64.append(self._encode_frame_bgr(frame, self.image_size))
             else:
-                # Dự phòng khi container video không báo tổng số frame
                 raw_frames: list[np.ndarray] = []
                 while True:
                     ret, frame = cap.read()
@@ -163,7 +215,6 @@ class MediaAnalyzer:
         return frames_b64
 
     def has_audio_stream(self, video_path: str | Path) -> bool:
-        """Kiểm tra file video có chứa luồng âm thanh hay không."""
         try:
             import av
         except ImportError:
@@ -178,7 +229,6 @@ class MediaAnalyzer:
             return False
 
     def _decode_audio_16k_mono(self, video_path: str | Path) -> tuple[bool, np.ndarray]:
-        """Tự giải mã âm thanh sang mảng float32 mono 16kHz bằng PyAV (tương thích PyAV 19+)."""
         try:
             import av
         except ImportError:
@@ -201,7 +251,6 @@ class MediaAnalyzer:
                         if out_frame is not None:
                             chunks.append(out_frame.to_ndarray().reshape(-1))
 
-                # Flush phần buffer còn lại trong resampler
                 flushed = resampler.resample(None)
                 if flushed is not None:
                     out_frames = flushed if isinstance(flushed, list) else [flushed]
@@ -220,9 +269,12 @@ class MediaAnalyzer:
         return True, np.ascontiguousarray(audio, dtype=np.float32)
 
     def transcribe_audio(
-        self, video_path: str | Path, language: str | None = "vi"
+        self,
+        video_path: str | Path,
+        language: str | None = None,
+        initial_prompt: str | None = None,
     ) -> tuple[bool, str]:
-        """Chuyển lời thoại trong video sang văn bản bằng faster-whisper (nếu có âm thanh)."""
+        """Chuyển lời thoại trong video sang văn bản bằng faster-whisper (tự nhận diện VI/EN khi language=None)."""
         has_audio, audio = self._decode_audio_16k_mono(video_path)
         if not has_audio:
             return False, ""
@@ -232,9 +284,7 @@ class MediaAnalyzer:
         try:
             from faster_whisper import WhisperModel
         except ImportError:
-            print(
-                "[Cảnh báo] Chưa cài `faster-whisper`. Hệ thống chỉ phân tích phần hình ảnh."
-            )
+            print("[Cảnh báo] Chưa cài `faster-whisper`. Hệ thống chỉ phân tích phần hình ảnh.")
             return True, ""
 
         try:
@@ -245,34 +295,50 @@ class MediaAnalyzer:
                     compute_type=self.whisper_compute_type,
                 )
 
-            segments, _ = self._whisper.transcribe(
-                audio,
-                vad_filter=True,
-                beam_size=5,
-                language=language,
-            )
+            transcribe_kwargs: dict[str, Any] = {
+                "vad_filter": True,
+                "beam_size": 5,
+            }
+            if language:
+                transcribe_kwargs["language"] = language
+            if initial_prompt and initial_prompt.strip():
+                transcribe_kwargs["initial_prompt"] = initial_prompt.strip()[:220]
+
+            segments, _ = self._whisper.transcribe(audio, **transcribe_kwargs)
             texts = [seg.text.strip() for seg in segments if seg.text and seg.text.strip()]
             transcript = " ".join(texts).strip()
             return True, transcript
         except Exception as exc:
-            print(
-                f"[Cảnh báo] Lỗi khi nhận dạng giọng nói ({exc}). Tiếp tục phân tích hình ảnh."
-            )
+            print(f"[Cảnh báo] Lỗi khi nhận dạng giọng nói ({exc}). Tiếp tục phân tích hình ảnh.")
             return True, ""
 
+    @staticmethod
+    def _coerce_str_list(value: Any) -> list[str]:
+        if isinstance(value, list):
+            return [str(item).strip() for item in value if str(item).strip()]
+        if isinstance(value, str):
+            return [k.strip() for k in value.split(",") if k.strip()]
+        return []
+
     def _parse_json_response(self, raw_text: str) -> dict[str, Any]:
-        """Giải mã JSON phản hồi từ model, có cơ chế dự phòng nếu output kèm markdown."""
+        default_payload: dict[str, Any] = {
+            "chu_de_chinh": "Chưa xác định",
+            "muc_dich_chinh": "Chưa xác định",
+            "quan_diem_noi_dung": "Chưa xác định",
+            "doi_tuong_chinh": [],
+            "sac_thai_noi_dung": "Trung lập",
+            "tom_tat_ngan": "",
+            "tu_khoa": [],
+            "luu_y_danh_gia_comment": "",
+        }
         cleaned = raw_text.strip()
         if not cleaned:
-            return {
-                "chu_de_chinh": "Chưa xác định",
-                "quan_diem_noi_dung": "Chưa xác định",
-                "tom_tat_ngan": "",
-                "tu_khoa": [],
-            }
+            return default_payload
 
         candidates = [cleaned]
-        fenced = re.sub(r"^```(?:json)?\s*|\s*```$", "", cleaned, flags=re.IGNORECASE | re.DOTALL).strip()
+        fenced = re.sub(
+            r"^```(?:json)?\s*|\s*```$", "", cleaned, flags=re.IGNORECASE | re.DOTALL
+        ).strip()
         if fenced and fenced != cleaned:
             candidates.append(fenced)
 
@@ -284,52 +350,94 @@ class MediaAnalyzer:
             try:
                 parsed = json.loads(candidate)
                 if isinstance(parsed, dict):
-                    keywords = parsed.get("tu_khoa") or []
-                    if isinstance(keywords, str):
-                        keywords = [k.strip() for k in keywords.split(",") if k.strip()]
+                    tone = str(parsed.get("sac_thai_noi_dung", "Trung lập")).strip()
+                    valid_tones = {
+                        "Tích cực",
+                        "Tiêu cực",
+                        "Châm biếm / Mỉa mai",
+                        "Tranh cãi",
+                        "Trung lập",
+                    }
+                    if tone not in valid_tones:
+                        tone = "Trung lập"
                     return {
                         "chu_de_chinh": str(parsed.get("chu_de_chinh", "Chưa xác định")).strip(),
+                        "muc_dich_chinh": str(parsed.get("muc_dich_chinh", "Chưa xác định")).strip(),
                         "quan_diem_noi_dung": str(
                             parsed.get("quan_diem_noi_dung", "Chưa xác định")
                         ).strip(),
+                        "doi_tuong_chinh": self._coerce_str_list(parsed.get("doi_tuong_chinh")),
+                        "sac_thai_noi_dung": tone,
                         "tom_tat_ngan": str(parsed.get("tom_tat_ngan", "")).strip(),
-                        "tu_khoa": [str(k).strip() for k in keywords if str(k).strip()],
+                        "tu_khoa": self._coerce_str_list(parsed.get("tu_khoa")),
+                        "luu_y_danh_gia_comment": str(
+                            parsed.get("luu_y_danh_gia_comment", "")
+                        ).strip(),
                     }
             except json.JSONDecodeError:
                 continue
 
-        return {
-            "chu_de_chinh": "Chưa xác định",
-            "quan_diem_noi_dung": "Chưa xác định",
-            "tom_tat_ngan": cleaned,
-            "tu_khoa": [],
-        }
+        default_payload["tom_tat_ngan"] = cleaned
+        return default_payload
 
-    def _build_prompt(self, media_type: str, caption: str, transcript: str) -> str:
-        """Tạo prompt tiếng Việt hướng dẫn Gemma 4 tổng hợp chủ đề và quan điểm."""
-        media_desc = "chuỗi khung hình từ video TikTok" if media_type == "video" else "hình ảnh bài đăng TikTok"
-        parts = [
-            f"Bạn đang phân tích {media_desc}. Hãy quan sát kỹ chữ hiển thị trên màn hình, hành động, bối cảnh và biểu cảm.",
+    def _build_messages(
+        self,
+        media_type: str,
+        caption: str,
+        transcript: str,
+        images_b64: list[str],
+    ) -> list[dict[str, Any]]:
+        media_desc = (
+            f"chuỗi {len(images_b64)} khung hình trích đều từ đầu đến cuối video TikTok"
+            if media_type == "video"
+            else f"{len(images_b64)} hình ảnh của bài đăng TikTok"
+        )
+
+        sections = [
+            f"Dữ liệu đầu vào gồm {media_desc}. Hãy quan sát kỹ chữ viết trên màn hình, "
+            "bối cảnh, biểu cảm nhân vật và các chi tiết trực quan."
         ]
-        if transcript:
-            parts.append(f"Lời thoại trích xuất từ âm thanh video:\n\"\"\"\n{transcript}\n\"\"\"")
-        else:
-            parts.append("Âm thanh/lời thoại: Không có lời thoại hoặc chỉ có hình ảnh.")
 
         if caption.strip():
-            parts.append(f"Caption/mô tả bài đăng:\n\"\"\"\n{caption.strip()}\n\"\"\"")
+            sections.append(f"Caption / Hashtags bài đăng:\n\"\"\"\n{caption.strip()}\n\"\"\"")
+        else:
+            sections.append("Caption / Hashtags bài đăng: (Không có).")
 
-        parts.append(
-            "Hãy trả về đúng định dạng JSON theo schema với 4 trường tiếng Việt:\n"
-            "- chu_de_chinh: Chủ đề chính của nội dung (ngắn gọn, rõ ràng).\n"
-            "- quan_diem_noi_dung: Quan điểm, thông điệp hoặc thái độ mà tác giả thể hiện.\n"
-            "- tom_tat_ngan: Tóm tắt súc tích nội dung chính trong 2-4 câu.\n"
-            "- tu_khoa: Danh sách 3-6 từ khóa liên quan."
+        if transcript.strip():
+            sections.append(
+                "Lời thoại thô trích xuất từ âm thanh (Whisper ASR — có thể sai tên riêng, "
+                "hãy đối chiếu với chữ trên khung hình và caption để hiệu chỉnh ngữ nghĩa):\n"
+                f"\"\"\"\n{transcript.strip()}\n\"\"\""
+            )
+        else:
+            sections.append("Âm thanh / lời thoại: Không có lời thoại hoặc video chỉ có nhạc nền/hình ảnh.")
+
+        sections.append(
+            "Hãy phân tích kỹ và trả về ĐÚNG JSON theo schema với 8 trường sau:\n"
+            "1. chu_de_chinh: Chủ đề chính của video/bài đăng.\n"
+            "2. muc_dich_chinh: Mục đích đăng bài (Giải trí/Hài hước, Bóc phốt/Chỉ trích/Drama, "
+            "Đánh giá/Review sản phẩm, Chia sẻ thông tin/Tin tức, Tâm sự/Cảm xúc cá nhân, "
+            "Bán hàng/Quảng cáo, Tranh luận quan điểm).\n"
+            "3. quan_diem_noi_dung: Quan điểm, thông điệp hoặc góc nhìn của tác giả video.\n"
+            "4. doi_tuong_chinh: Danh sách nhân vật, thương hiệu, sản phẩm hoặc sự kiện trung tâm.\n"
+            "5. sac_thai_noi_dung: Chọn đúng 1 trong 5 giá trị: "
+            "['Tích cực', 'Tiêu cực', 'Châm biếm / Mỉa mai', 'Tranh cãi', 'Trung lập'].\n"
+            "6. tom_tat_ngan: Tóm tắt chính xác 3-5 câu những gì diễn ra trong video.\n"
+            "7. tu_khoa: 4-8 từ khóa trọng tâm (gồm cả từ viết tắt/biệt danh thường gặp ở comment).\n"
+            "8. luu_y_danh_gia_comment: Chỉ dẫn cách hiểu đúng bình luận dưới bài đăng này."
         )
-        return "\n\n".join(parts)
+
+        return [
+            {"role": "system", "content": _SYSTEM_PROMPT},
+            {
+                "role": "user",
+                "content": "\n\n".join(sections),
+                "images": images_b64,
+            },
+        ]
 
     def unload_ollama_model(self) -> None:
-        """Giải phóng model Gemma 4 khỏi VRAM (hữu ích trước khi chạy DL trên GPU 4GB)."""
+        """Giải phóng model Gemma 4 khỏi VRAM trước khi chạy các mô hình NLP/DL."""
         try:
             requests.post(
                 f"{self.ollama_url}/api/chat",
@@ -342,7 +450,6 @@ class MediaAnalyzer:
     def _resolve_media_input(
         self, media_input: str | Path | Sequence[str | Path]
     ) -> tuple[str, list[Path]]:
-        """Chuẩn hóa đầu vào thành loại media ('video' hoặc 'image') và danh sách đường dẫn."""
         if isinstance(media_input, (str, Path)):
             path = Path(media_input)
             if not path.exists():
@@ -389,7 +496,7 @@ class MediaAnalyzer:
         media_input: str | Path | Sequence[str | Path],
         caption: str = "",
         enable_audio: bool = True,
-        language: str | None = "vi",
+        language: str | None = None,
         think: bool = False,
     ) -> MediaAnalysisResult:
         """Phân tích video hoặc hình ảnh TikTok bằng Gemma 4 E2B."""
@@ -401,14 +508,20 @@ class MediaAnalyzer:
             video_path = paths[0]
             images_b64 = self.extract_video_frames(video_path)
             if enable_audio:
-                has_audio, transcript = self.transcribe_audio(video_path, language=language)
+                whisper_prompt = caption.strip() if caption.strip() else None
+                has_audio, transcript = self.transcribe_audio(
+                    video_path,
+                    language=language,
+                    initial_prompt=whisper_prompt,
+                )
         else:
             images_b64 = [self.load_image_base64(p) for p in paths]
 
-        prompt = self._build_prompt(
+        messages = self._build_messages(
             media_type=media_type,
             caption=caption,
             transcript=transcript,
+            images_b64=images_b64,
         )
 
         payload = {
@@ -416,13 +529,11 @@ class MediaAnalyzer:
             "stream": False,
             "think": think,
             "format": MEDIA_RESPONSE_SCHEMA,
-            "messages": [
-                {
-                    "role": "user",
-                    "content": prompt,
-                    "images": images_b64,
-                }
-            ],
+            "options": {
+                "temperature": self.temperature,
+                "top_p": 0.9,
+            },
+            "messages": messages,
         }
 
         try:
@@ -452,10 +563,15 @@ class MediaAnalyzer:
             source_paths=[str(p) for p in paths],
             num_frames_used=len(images_b64),
             has_audio=has_audio,
+            caption=caption.strip(),
             transcript=transcript,
             chu_de_chinh=parsed["chu_de_chinh"],
+            muc_dich_chinh=parsed["muc_dich_chinh"],
             quan_diem_noi_dung=parsed["quan_diem_noi_dung"],
+            doi_tuong_chinh=parsed["doi_tuong_chinh"],
+            sac_thai_noi_dung=parsed["sac_thai_noi_dung"],
             tom_tat_ngan=parsed["tom_tat_ngan"],
             tu_khoa=parsed["tu_khoa"],
+            luu_y_danh_gia_comment=parsed["luu_y_danh_gia_comment"],
             raw_response=raw_content,
         )

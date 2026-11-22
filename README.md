@@ -1,69 +1,49 @@
-# Hệ thống Phân tích Nội dung TikTok & Cảm xúc Bình luận
+# Hệ thống Phân tích Cảm xúc TikTok Song ngữ (Tiếng Việt & Tiếng Anh)
 
-Hệ thống gồm 2 giai đoạn tách biệt, tối ưu cho máy có **4GB VRAM (RTX 3050 Laptop)**:
-
-1. **Giai đoạn 1 — Phân tích Video/Ảnh bằng Gemma 4 E2B (`gemma4-e2b-opt`)**
-   - Hỗ trợ video (có hoặc không có âm thanh), ảnh đơn hoặc nhiều ảnh (Photo Mode).
-   - Tự động kiểm tra luồng âm thanh bằng `av` và bóc lời thoại tiếng Việt bằng `faster-whisper` (chạy CPU `int8`).
-   - Tổng hợp khung hình + lời thoại + caption thành JSON gồm: `chu_de_chinh`, `quan_diem_noi_dung`, `tom_tat_ngan`, `tu_khoa`.
-2. **Giai đoạn 2 — Phân loại Bình luận thuần Deep Learning (`5CD-AI/Vietnamese-Sentiment-visobert`)**
-   - Sử dụng **ViSoBERT** fine-tune sẵn cho tiếng Việt mạng xã hội (giữ nguyên emoji, chuẩn hóa nhẹ teencode).
-   - Gán nhãn 3 lớp: `POS` (**Tích cực**), `NEG` (**Tiêu cực**), `NEU` (**Trung tính**) kèm xác suất và tổng hợp xu hướng chung.
+Hệ thống thiết kế theo chuẩn **Sentiment Analysis của VNPT AI**, chỉ dùng AI **Gemma 4 E2B** ở **Đầu vào** và **Đầu ra**, toàn bộ lõi phân tích ở giữa dùng **NLP (`underthesea`) + Machine Learning cổ điển + Deep Learning chuyên biệt** cho cả **Tiếng Việt** và **Tiếng Anh** (tự động lọc bỏ các ngôn ngữ khác).
 
 ## Cấu trúc thư mục
 
 ```text
 Sentiment-Analysis/
-├── AI_Local/gemma4-e2b/     # Cấu hình Ollama Docker cho gemma4-e2b-opt
-├── data/
-│   └── sample_comments.csv  # 20 comment TikTok mẫu tiếng Việt
+├── AI_Local/gemma4-e2b/             # Docker Compose + Modelfile Ollama (gemma4-e2b-opt)
+├── data/                            # Dữ liệu thu thập thô
+│   ├── samples/                     # Bộ dữ liệu mẫu (sample_comments.csv, tiktok.csv)
+│   └── <post_id>/                   # Tự tạo theo từng link TikTok: video.mp4, metadata.json, raw_comments.csv
+├── outputs/                         # Kết quả cuối cùng sau xử lý theo từng bài đăng
+│   └── <post_id>/
+│       ├── final_results.csv        # Bình luận sạch (VI/EN) + 2 thang điểm + 7 cảm xúc + ML/DL + Gemma 4
+│       ├── filtered_noise.csv       # Tách riêng bình luận nhiễu (tag, URL, spam, ngôn ngữ khác)
+│       ├── model_comparison.csv     # Bảng so sánh ML cổ điển, Lexicon, Deep Learning & Hybrid
+│       ├── report.json              # Báo cáo JSON đầy đủ 4 giai đoạn
+│       └── dashboard.png            # Biểu đồ tổng hợp 2x2
+├── models/classical_ml/             # Cache mô hình ML cổ điển tách riêng vi/ và en/
 ├── src/
 │   ├── __init__.py
-│   ├── media_analyzer.py    # Giai đoạn 1: OpenCV + faster-whisper + Ollama Gemma 4
-│   ├── comment_classifier.py# Giai đoạn 2: Tiền xử lý + ViSoBERT
-│   └── pipeline.py          # Ghép 2 giai đoạn, CLI, xuất JSON/CSV và vẽ biểu đồ
-├── phase1.ipynb             # Notebook chạy thử và trực quan hóa
-├── crawl_tiktok_comments.ipynb # Notebook thu thập comment từ link TikTok ra CSV
+│   ├── ingestion/                   # Bước 0: Tải video (tương thích máy không có ffmpeg) & crawl comment
+│   │   └── tiktok_collector.py
+│   ├── preprocessing/               # Giai đoạn 2: Lọc nhiễu, nhận diện VI/EN, underthesea & TF-IDF
+│   │   └── text_cleaner.py
+│   ├── models/                      # Các mô hình AI, ML & Deep Learning
+│   │   ├── media_context.py         # AI Đầu vào: Gemma 4 E2B + Whisper auto-language
+│   │   ├── classical_ml.py          # ML cổ điển (NB, LR, SVM, Emotion LR) + Bilingual Lexicon
+│   │   ├── sentiment_engine.py      # ViSoBERT/PhoBERT (VI) + Twitter-RoBERTa/DistilRoBERTa (EN) + Thang điểm nhất quán
+│   │   └── gemma_auditor.py         # AI Đầu ra: Gemma 4 E2B thẩm định & so sánh mô hình
+│   ├── visualization.py             # Vẽ Dashboard 2x2
+│   └── pipeline.py                  # Điều phối End-to-End: data/<post_id>/ -> outputs/<post_id>/
+├── main.ipynb                       # Notebook chạy trọn gói từ Link TikTok
 └── requirements.txt
 ```
 
-## Hướng dẫn cài đặt
+## Cách sử dụng
 
-1. **Khởi động Ollama Docker (`gemma4-e2b-opt`):**
+1. Khởi động Ollama Docker (`gemma4-e2b-opt`):
    ```powershell
    cd E:\A\Sentiment-Analysis\AI_Local\gemma4-e2b
    docker compose up -d
    ```
-
-2. **Tạo môi trường Python (khuyên dùng Python 3.11 hoặc 3.12) và cài thư viện:**
+2. Mở [main.ipynb](main.ipynb) (kernel `hand_env` Python 3.12), nhập link video TikTok và chạy lần lượt các cell.
+3. Hoặc chạy bằng CLI:
    ```powershell
-   cd E:\A\Sentiment-Analysis
-   python -m venv .venv
-   .\.venv\Scripts\Activate.ps1
-   pip install -r requirements.txt
+   python -m src.pipeline --url "https://www.tiktok.com/@username/video/1234567890"
    ```
-
-## Cách sử dụng
-
-### 1. Thu thập comment từ link TikTok (tùy chọn)
-Nếu chưa có sẵn file comment, mở [crawl_tiktok_comments.ipynb](crawl_tiktok_comments.ipynb) (cùng cấp với `phase1.ipynb`):
-1. Đảm bảo đã cài `playwright` (`pip install -r requirements.txt` hoặc `pip install playwright`); notebook dùng trực tiếp **Microsoft Edge** có sẵn trên Windows (`channel="msedge"`) nên không cần tải thêm Chromium.
-2. Dán link video/ảnh TikTok vào `TIKTOK_URL` và chạy các cell.
-3. Notebook xuất file `data/tiktok_comments_<post_id>.csv` (cột đầu tiên `comment`, chuẩn `utf-8-sig`) để bạn gán thẳng vào `COMMENTS_PATH` trong `phase1.ipynb`.
-
-### 2. Chạy phân tích bằng Jupyter Notebook
-Mở [phase1.ipynb](phase1.ipynb), chọn kernel `.venv`, chỉnh `MEDIA_PATH` tới video/ảnh của bạn (và `COMMENTS_PATH` nếu dùng file CSV vừa thu thập) rồi chạy lần lượt từng cell.
-
-### 3. Chạy bằng dòng lệnh (CLI)
-- Chạy thử nhanh phần phân loại comment trên dữ liệu mẫu:
-  ```powershell
-  python -m src.pipeline --comments data/sample_comments.csv --output outputs --save-chart outputs/chart.png
-  ```
-- Chạy đầy đủ cả Video/Ảnh + Comment:
-  ```powershell
-  python -m src.pipeline --media "G:\Download\Download.mp4" --comments data/sample_comments.csv --caption "Caption bài đăng" --output outputs --save-chart outputs/chart.png
-  ```
-- Nếu video không có âm thanh hoặc muốn bỏ qua bước nhận dạng giọng nói:
-  ```powershell
-  python -m src.pipeline --media "video.mp4" --comments data/sample_comments.csv --no-audio --output outputs
-  ```
