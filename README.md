@@ -9,7 +9,7 @@ Sentiment-Analysis/
 ├── AI_Local/gemma4-e2b/             # Docker Compose + Modelfile Ollama (gemma4-e2b-opt)
 ├── data/                            # Dữ liệu thu thập thô
 │   ├── samples/                     # Bộ dữ liệu mẫu (sample_comments.csv, tiktok.csv)
-│   └── <post_id>/                   # Tự tạo theo từng link TikTok: video.mp4, metadata.json, raw_comments.csv
+│   └── <post_id>/                   # Tự tạo theo từng link TikTok: video.mp4 (hoặc images/slide_XX.jpg), metadata.json, raw_comments.csv
 ├── outputs/                         # Kết quả cuối cùng sau xử lý theo từng bài đăng
 │   └── <post_id>/
 │       ├── final_results.csv        # Đầy đủ 42 cột bình luận sạch (VI/EN) + chú thích tiếng Việt
@@ -21,7 +21,7 @@ Sentiment-Analysis/
 ├── models/classical_ml/             # Cache mô hình ML cổ điển tách riêng vi/ và en/
 ├── src/
 │   ├── __init__.py
-│   ├── ingestion/                   # Bước 0: Tải video (tương thích máy không có ffmpeg) & crawl comment
+│   ├── ingestion/                   # Bước 0: Tải video/ảnh Photo Mode (HTTP + Edge) & crawl comment
 │   │   └── tiktok_collector.py
 │   ├── preprocessing/               # Giai đoạn 2: Lọc nhiễu, nhận diện VI/EN, underthesea & TF-IDF
 │   │   └── text_cleaner.py

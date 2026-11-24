@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from src.ingestion import (
         TikTokMediaBundle,
+        collect_tiktok_post,
         crawl_tiktok_comments,
         download_tiktok_media,
         extract_hashtags,
@@ -68,6 +69,7 @@ __all__ = [
     "VietnameseLexiconScorer",
     "build_model_comparison",
     "clean_comment_text",
+    "collect_tiktok_post",
     "compute_dual_scale",
     "crawl_tiktok_comments",
     "detect_language",
@@ -106,6 +108,7 @@ _EXPORT_MAP = {
     "VietnameseLexiconScorer": ("src.models.classical_ml", "VietnameseLexiconScorer"),
     "build_model_comparison": ("src.models.gemma_auditor", "build_model_comparison"),
     "clean_comment_text": ("src.preprocessing.text_cleaner", "clean_comment_text"),
+    "collect_tiktok_post": ("src.ingestion.tiktok_collector", "collect_tiktok_post"),
     "compute_dual_scale": ("src.models.sentiment_engine", "compute_dual_scale"),
     "crawl_tiktok_comments": ("src.ingestion.tiktok_collector", "crawl_tiktok_comments"),
     "detect_language": ("src.preprocessing.text_cleaner", "detect_language"),

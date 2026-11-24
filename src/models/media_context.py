@@ -450,6 +450,12 @@ class MediaAnalyzer:
         except requests.RequestException:
             pass
 
+    def _sample_image_paths(self, paths: list[Path]) -> list[Path]:
+        if len(paths) <= self.max_frames:
+            return paths
+        indices = np.linspace(0, len(paths) - 1, num=self.max_frames, dtype=int)
+        return [paths[idx] for idx in indices.tolist()]
+
     def _resolve_media_input(
         self, media_input: str | Path | Sequence[str | Path]
     ) -> tuple[str, list[Path]]:
@@ -463,7 +469,7 @@ class MediaAnalyzer:
                     p for p in path.iterdir() if p.is_file() and p.suffix.lower() in IMAGE_EXTS
                 )
                 if image_files:
-                    return "image", image_files[: self.max_frames]
+                    return "image", self._sample_image_paths(image_files)
 
                 video_files = sorted(
                     p for p in path.iterdir() if p.is_file() and p.suffix.lower() in VIDEO_EXTS
@@ -492,7 +498,7 @@ class MediaAnalyzer:
                 raise ValueError(
                     f"Khi truyền nhiều file cùng lúc, tất cả phải là file ảnh hợp lệ. File lỗi: {p}"
                 )
-        return "image", paths[: self.max_frames]
+        return "image", self._sample_image_paths(paths)
 
     def analyze(
         self,

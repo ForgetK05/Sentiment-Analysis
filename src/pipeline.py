@@ -12,6 +12,7 @@ import pandas as pd
 
 from src.ingestion.tiktok_collector import (
     TikTokMediaBundle,
+    collect_tiktok_post,
     crawl_tiktok_comments,
     download_tiktok_media,
     extract_post_id,
@@ -418,8 +419,15 @@ class SentimentPipeline:
 
         # BƯỚC 0: Toàn bộ dữ liệu thu thập thô được lưu vào data/<post_id>/
         if tiktok_url:
-            print(f"[Bước 0] Đang tải video & metadata vào {data_root / run_name}...")
-            tiktok_bundle = download_tiktok_media(tiktok_url, data_dir=data_root)
+            print(f"[Bước 0] Đang tải video/ảnh & metadata vào {data_root / run_name}...")
+            tiktok_bundle, crawled_csv = collect_tiktok_post(
+                url=tiktok_url,
+                data_dir=data_root,
+                collect_comments=(effective_comments is None),
+                max_comments=max_comments,
+                headless=crawl_headless,
+                interactive_pause=crawl_interactive_pause,
+            )
             run_name = tiktok_bundle.post_id
             if output_dir is not None:
                 base_out = Path(output_dir)
@@ -434,17 +442,7 @@ class SentimentPipeline:
             if not effective_caption.strip():
                 effective_caption = tiktok_bundle.caption
 
-            if effective_comments is None:
-                raw_csv_path = data_root / tiktok_bundle.post_id / "raw_comments.csv"
-                print(f"[Bước 0] Đang thu thập bình luận vào {raw_csv_path}...")
-                _, crawled_csv = crawl_tiktok_comments(
-                    url=tiktok_url,
-                    output_csv=raw_csv_path,
-                    data_dir=data_root,
-                    max_comments=max_comments,
-                    headless=crawl_headless,
-                    interactive_pause=crawl_interactive_pause,
-                )
+            if effective_comments is None and crawled_csv is not None:
                 effective_comments = crawled_csv
 
         # GIAI ĐOẠN 1 (AI ĐẦU VÀO)
