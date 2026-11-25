@@ -136,6 +136,9 @@ def _format_video_context(media_result: MediaAnalysisResult | dict[str, Any] | N
         f"- Sắc thái bài đăng: {data.get('sac_thai_noi_dung', '')}",
         f"- Tóm tắt: {data.get('tom_tat_ngan', '')}",
     ]
+    key_points = [str(p).strip() for p in (data.get("chi_tiet_va_luan_diem") or []) if str(p).strip()][:5]
+    if key_points:
+        lines.append("- Chi tiết & luận điểm chính: " + " | ".join(key_points))
     note = str(data.get("luu_y_danh_gia_comment") or "").strip()
     if note:
         lines.append(f"- Lưu ý diễn giải bình luận: {note}")
@@ -216,6 +219,8 @@ class GemmaAuditor:
             "options": {
                 "temperature": self.temperature,
                 "top_p": 0.9,
+                "num_ctx": 16384,
+                "repeat_penalty": 1.05,
             },
             "messages": messages,
         }

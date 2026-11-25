@@ -18,12 +18,115 @@ from PIL import Image, UnidentifiedImageError
 
 COMMENT_COLUMN_CANDIDATES = (
     "comment",
+    "original_text",
     "text",
     "content",
     "noi_dung",
     "binh_luan",
     "message",
 )
+
+_COMMENT_CSV_COLUMNS: tuple[str, ...] = (
+    "comment",
+    "comment_id",
+    "is_reply",
+    "parent_comment_id",
+    "reply_to_comment_id",
+    "reply_to_username",
+    "username",
+    "nickname",
+    "likes",
+    "reply_count",
+    "created_at",
+    "post_url",
+)
+
+_VIEW_REPLIES_TEXT_RE = re.compile(
+    r"^(?:"
+    r"xem\s+(?:thêm\s+)?(?:\d+\s+)?(?:câu\s+trả\s+lời|phản\s+hồi)(?:\s+khác)?"
+    r"|xem\s+thêm(?:\s*\(\d+\))?"
+    r"|view\s+(?:\d+\s+)?(?:more\s+)?repl(?:y|ies)"
+    r"|view\s+more(?:\s*\(\d+\))?"
+    r")$",
+    re.IGNORECASE,
+)
+_HIDE_OR_ACTION_TEXT_RE = re.compile(
+    r"^(?:ẩn|hide|thu\s*gọn|collapse|trả\s*lời|reply)(?:\b|\s|$)",
+    re.IGNORECASE,
+)
+
+
+def _clean_id(val: Any) -> str:
+    """Chuẩn hóa ID TikTok dạng chuỗi (trả về '' nếu là None, '0', 'nan')."""
+    if val is None:
+        return ""
+    s = str(val).strip()
+    if not s or s == "0" or s.lower() == "nan":
+        return ""
+    return s
+
+
+def _parse_bool(val: Any) -> bool:
+    """Chuyển đổi an toàn giá trị bool/chuỗi/số sang bool thực thụ."""
+    if isinstance(val, bool):
+        return val
+    if val is None:
+        return False
+    if isinstance(val, (int, float)):
+        try:
+            if pd.isna(val):
+                return False
+        except Exception:
+            pass
+        return bool(val)
+    s = str(val).strip().lower()
+    if s in {"true", "1", "yes", "y"}:
+        return True
+    if s in {"false", "0", "", "no", "n", "nan", "none"}:
+        return False
+    return False
+
+
+def _make_comment_adder(
+    collected: dict[str, dict[str, Any]],
+) -> Callable[[list[dict[str, Any]]], int]:
+    """Tạo hàm thêm bình luận có chống trùng và nâng cấp dòng DOM fallback bằng dữ liệu API."""
+    seen_content_keys: set[str] = set()
+    fallback_key_map: dict[str, str] = {}
+
+    def add_rows(rows: list[dict[str, Any]]) -> int:
+        added = 0
+        for row in rows:
+            cid = _clean_id(row.get("comment_id"))
+            username = str(row.get("username") or "").strip().lower()
+            comment_text = str(row.get("comment") or "").strip()
+            content_key = f"{username}::{comment_text}"
+
+            if cid:
+                if cid in collected:
+                    continue
+                old_fb_key = fallback_key_map.pop(content_key, None)
+                if old_fb_key and old_fb_key in collected:
+                    collected.pop(old_fb_key, None)
+                    collected[cid] = row
+                    seen_content_keys.add(content_key)
+                    continue
+                collected[cid] = row
+                seen_content_keys.add(content_key)
+                added += 1
+            else:
+                if content_key in seen_content_keys:
+                    continue
+                fb_key = f"dom::{content_key}"
+                if fb_key not in collected:
+                    collected[fb_key] = row
+                    seen_content_keys.add(content_key)
+                    fallback_key_map[content_key] = fb_key
+                    added += 1
+        return added
+
+    return add_rows
+
 
 _HASHTAG_RE = re.compile(r"#([^\s#.,!?;:()\[\]{}\"']+)")
 _DEFAULT_BROWSER_HEADERS: dict[str, str] = {
@@ -411,6 +514,146 @@ def _extract_dom_photo_urls(page: Any) -> list[str]:
         return []
 
 
+def _expand_visible_replies(
+    page: Any,
+    collected: dict[str, dict[str, Any]],
+    add_rows: Callable[[list[dict[str, Any]]], int],
+    get_resolved_url: Callable[[], str],
+    max_comments: int,
+    max_replies_per_comment: int | None = None,
+    reply_pause_sec: float = 1.5,
+) -> int:
+    """Tự động bấm các nút 'Xem thêm câu trả lời / View replies' đang hiển thị trên DOM."""
+    total_added = 0
+    consecutive_empty = 0
+
+    while len(collected) < max_comments:
+        try:
+            target_info = page.evaluate(
+                r"""(maxPerComment) => {
+                    const viewRe = /^(?:xem\s+(?:thêm\s+)?(?:\d+\s+)?(?:câu\s+trả\s+lời|phản\s+hồi)(?:\s+khác)?|xem\s+thêm(?:\s*\(\d+\))?|view\s+(?:\d+\s+)?(?:more\s+)?repl(?:y|ies)|view\s+more(?:\s*\(\d+\))?)$/i;
+                    const hideRe = /^(?:ẩn|hide|thu\s*gọn|collapse|trả\s*lời|reply)(?:\b|\s|$)/i;
+
+                    document.querySelectorAll('[data-agy-next-reply-btn]').forEach((el) => {
+                        el.removeAttribute('data-agy-next-reply-btn');
+                    });
+
+                    const selector = [
+                        '[data-e2e="view-more-1"]',
+                        '[data-e2e="view-more-2"]',
+                        '[class*="DivViewRepliesContainer"] p',
+                        '[class*="DivViewRepliesContainer"] span',
+                        '[class*="DivViewRepliesContainer"] button',
+                        '[class*="DivViewMoreRepliesWrapper"] p',
+                        '[class*="DivViewMoreRepliesWrapper"] span',
+                        '[class*="DivViewMoreRepliesWrapper"] button',
+                        '[class*="DivReplyContainer"] p',
+                        '[class*="DivReplyContainer"] span',
+                        '[class*="DivReplyContainer"] button',
+                    ].join(', ');
+
+                    const rawEls = Array.from(document.querySelectorAll(selector));
+                    const matched = [];
+                    for (const el of rawEls) {
+                        const text = (el.innerText || '').replace(/\s+/g, ' ').trim();
+                        if (!text || text.length > 45) continue;
+                        if (hideRe.test(text) || !viewRe.test(text)) continue;
+                        const style = window.getComputedStyle(el);
+                        if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') continue;
+                        const rect = el.getBoundingClientRect();
+                        if (rect.width <= 0 || rect.height <= 0) continue;
+                        matched.push(el);
+                    }
+
+                    // Ưu tiên node bên trong nhất để tránh bấm trùng container cha/con
+                    const innermost = matched.filter(
+                        (el) => !matched.some((other) => other !== el && el.contains(other))
+                    );
+
+                    for (const el of innermost) {
+                        const container = el.closest('[class*="DivCommentObjectWrapper"], [class*="DivCommentItemContainer"]') || el.parentElement;
+                        if (!container) continue;
+                        const stalls = parseInt(container.dataset.agyReplyStalls || '0', 10);
+                        if (stalls >= 2) continue;
+                        const loaded = parseInt(container.dataset.agyRepliesLoaded || '0', 10);
+                        if (maxPerComment !== null && loaded >= maxPerComment) continue;
+
+                        if (!container.dataset.agyThreadId) {
+                            window.__agyThreadSeq = (window.__agyThreadSeq || 0) + 1;
+                            container.dataset.agyThreadId = String(window.__agyThreadSeq);
+                        }
+                        el.setAttribute('data-agy-next-reply-btn', '1');
+                        return { found: true, threadId: container.dataset.agyThreadId };
+                    }
+                    return { found: false, threadId: '' };
+                }""",
+                max_replies_per_comment,
+            )
+        except Exception:
+            break
+
+        if not target_info or not target_info.get("found"):
+            break
+
+        thread_id = str(target_info.get("threadId") or "")
+        before_count = len(collected)
+        btn = page.locator('[data-agy-next-reply-btn="1"]').first
+
+        clicked = False
+        try:
+            btn.scroll_into_view_if_needed(timeout=1500)
+            btn.click(timeout=1500)
+            clicked = True
+        except Exception:
+            try:
+                btn.click(force=True, timeout=1500)
+                clicked = True
+            except Exception:
+                clicked = False
+
+        if clicked:
+            deadline = time.monotonic() + max(0.3, reply_pause_sec)
+            while time.monotonic() < deadline:
+                if len(collected) > before_count:
+                    time.sleep(0.25)
+                    break
+                time.sleep(0.15)
+            if len(collected) == before_count:
+                add_rows(_extract_dom_fallback(page, get_resolved_url(), include_replies=True))
+
+        gained = len(collected) - before_count
+        total_added += gained
+
+        if thread_id:
+            try:
+                page.evaluate(
+                    """({ threadId, gained }) => {
+                        const container = document.querySelector(`[data-agy-thread-id="${threadId}"]`);
+                        if (!container) return;
+                        if (gained > 0) {
+                            const prev = parseInt(container.dataset.agyRepliesLoaded || '0', 10);
+                            container.dataset.agyRepliesLoaded = String(prev + gained);
+                            container.dataset.agyReplyStalls = '0';
+                        } else {
+                            const prevStalls = parseInt(container.dataset.agyReplyStalls || '0', 10);
+                            container.dataset.agyReplyStalls = String(prevStalls + 1);
+                        }
+                    }""",
+                    {"threadId": thread_id, "gained": gained},
+                )
+            except Exception:
+                pass
+
+        if gained > 0:
+            consecutive_empty = 0
+        else:
+            consecutive_empty += 1
+            if consecutive_empty >= 6:
+                break
+
+    return total_added
+
+
 def _scroll_and_collect_comments_on_page(
     page: Any,
     collected: dict[str, dict[str, Any]],
@@ -419,9 +662,22 @@ def _scroll_and_collect_comments_on_page(
     max_comments: int,
     max_scrolls: int,
     scroll_pause_sec: float,
+    include_replies: bool = True,
+    max_replies_per_comment: int | None = None,
+    reply_pause_sec: float = 1.5,
 ) -> None:
-    """Cuộn danh sách bình luận và gom comment trên trang Playwright đang mở."""
-    add_rows(_extract_dom_fallback(page, get_resolved_url()))
+    """Cuộn danh sách bình luận và gom comment (kèm reply nếu bật) trên trang Playwright đang mở."""
+    add_rows(_extract_dom_fallback(page, get_resolved_url(), include_replies=include_replies))
+    if include_replies and len(collected) < max_comments:
+        _expand_visible_replies(
+            page=page,
+            collected=collected,
+            add_rows=add_rows,
+            get_resolved_url=get_resolved_url,
+            max_comments=max_comments,
+            max_replies_per_comment=max_replies_per_comment,
+            reply_pause_sec=reply_pause_sec,
+        )
 
     idle_scrolls = 0
     for step in range(1, max_scrolls + 1):
@@ -431,7 +687,7 @@ def _scroll_and_collect_comments_on_page(
 
         before_count = len(collected)
         for comment_sel in (
-            'div[data-e2e="comment-level-1"]',
+            'div[data-e2e="comment-level-1"], div[data-e2e="comment-level-2"]',
             '[class*="DivCommentItemContainer"]',
             '[class*="DivCommentListContainer"] > div',
         ):
@@ -468,10 +724,29 @@ def _scroll_and_collect_comments_on_page(
         time.sleep(scroll_pause_sec)
 
         if len(collected) == before_count:
-            add_rows(_extract_dom_fallback(page, get_resolved_url()))
+            add_rows(_extract_dom_fallback(page, get_resolved_url(), include_replies=include_replies))
+
+        if include_replies and len(collected) < max_comments:
+            _expand_visible_replies(
+                page=page,
+                collected=collected,
+                add_rows=add_rows,
+                get_resolved_url=get_resolved_url,
+                max_comments=max_comments,
+                max_replies_per_comment=max_replies_per_comment,
+                reply_pause_sec=reply_pause_sec,
+            )
 
         after_count = len(collected)
-        print(f"  Lần cuộn {step}/{max_scrolls}: thu được {after_count} bình luận")
+        if include_replies:
+            reply_cnt = sum(1 for r in collected.values() if r.get("is_reply"))
+            main_cnt = after_count - reply_cnt
+            print(
+                f"  Lần cuộn {step}/{max_scrolls}: thu được {after_count} bình luận "
+                f"({main_cnt} chính, {reply_cnt} reply)"
+            )
+        else:
+            print(f"  Lần cuộn {step}/{max_scrolls}: thu được {after_count} bình luận")
 
         if after_count == before_count:
             idle_scrolls += 1
@@ -497,7 +772,8 @@ def _download_photo_post_playwright(
     max_comments: int = 200,
     max_scrolls: int = 40,
     scroll_pause_sec: float = 3.0,
-    include_replies: bool = False,
+    include_replies: bool = True,
+    max_replies_per_comment: int | None = None,
 ) -> dict[str, Any]:
     """Tầng 2: Dùng Microsoft Edge tải toàn bộ ảnh Photo Mode (và thu thập comment trong cùng phiên nếu cần)."""
     try:
@@ -521,14 +797,7 @@ def _download_photo_post_playwright(
         "post_id": "",
     }
 
-    def add_comment_rows(rows: list[dict[str, Any]]) -> int:
-        added = 0
-        for row in rows:
-            dedup_key = row["comment_id"] or f"{row['username']}::{row['comment']}"
-            if dedup_key not in collected_comments:
-                collected_comments[dedup_key] = row
-                added += 1
-        return added
+    add_comment_rows = _make_comment_adder(collected_comments)
 
     def _run_sync() -> None:
         nonlocal resolved_url, saved_paths
@@ -569,7 +838,14 @@ def _download_photo_post_playwright(
                     return
                 try:
                     payload = response.json()
-                    add_comment_rows(_parse_comment_items(payload, resolved_url))
+                    add_comment_rows(
+                        _parse_comment_items(
+                            payload,
+                            resolved_url,
+                            is_reply_response=is_reply,
+                            include_replies=include_replies,
+                        )
+                    )
                 except Exception:
                     pass
 
@@ -689,6 +965,8 @@ def _download_photo_post_playwright(
                     max_comments=max_comments,
                     max_scrolls=max_scrolls,
                     scroll_pause_sec=scroll_pause_sec,
+                    include_replies=include_replies,
+                    max_replies_per_comment=max_replies_per_comment,
                 )
 
             browser.close()
@@ -767,17 +1045,7 @@ def _build_photo_bundle(
 def _write_comments_csv(rows: list[dict[str, Any]], out_path: Path) -> str:
     """Xuất danh sách bình luận ra file CSV chuẩn utf-8-sig."""
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    columns = [
-        "comment",
-        "comment_id",
-        "username",
-        "nickname",
-        "likes",
-        "reply_count",
-        "created_at",
-        "post_url",
-    ]
-    df = pd.DataFrame(rows, columns=columns)
+    df = pd.DataFrame(rows, columns=list(_COMMENT_CSV_COLUMNS))
     df.to_csv(out_path, index=False, encoding="utf-8-sig")
     return str(out_path)
 
@@ -909,7 +1177,8 @@ def collect_tiktok_post(
     max_comments: int = 200,
     max_scrolls: int = 40,
     scroll_pause_sec: float = 3.0,
-    include_replies: bool = False,
+    include_replies: bool = True,
+    max_replies_per_comment: int | None = None,
     browser_channel: str | None = "msedge",
     headless: bool = False,
     interactive_pause: bool = True,
@@ -944,6 +1213,7 @@ def collect_tiktok_post(
                     max_scrolls=max_scrolls,
                     scroll_pause_sec=scroll_pause_sec,
                     include_replies=include_replies,
+                    max_replies_per_comment=max_replies_per_comment,
                     browser_channel=browser_channel,
                     headless=headless,
                     interactive_pause=interactive_pause,
@@ -971,6 +1241,7 @@ def collect_tiktok_post(
                 max_scrolls=max_scrolls,
                 scroll_pause_sec=scroll_pause_sec,
                 include_replies=include_replies,
+                max_replies_per_comment=max_replies_per_comment,
                 browser_channel=browser_channel,
                 headless=headless,
                 interactive_pause=interactive_pause,
@@ -991,6 +1262,7 @@ def collect_tiktok_post(
             max_scrolls=max_scrolls,
             scroll_pause_sec=scroll_pause_sec,
             include_replies=include_replies,
+            max_replies_per_comment=max_replies_per_comment,
         )
     except Exception as pw_exc:
         _cleanup_empty_dir(post_data_dir)
@@ -1018,8 +1290,53 @@ def _format_unix_ts(ts_value: Any) -> str:
         return ""
 
 
-def _parse_comment_items(payload: dict[str, Any], post_url: str) -> list[dict[str, Any]]:
-    """Chuyển JSON response của API bình luận TikTok thành danh sách dict chuẩn."""
+def _build_comment_row(
+    item: dict[str, Any],
+    post_url: str,
+    *,
+    force_is_reply: bool = False,
+    fallback_parent_id: str = "",
+) -> dict[str, Any] | None:
+    """Chuẩn hóa một object comment/reply TikTok thành dict đầy đủ metadata."""
+    text = str(item.get("text") or "").strip()
+    if not text:
+        return None
+    user = item.get("user") if isinstance(item.get("user"), dict) else {}
+    cid = _clean_id(item.get("cid"))
+    reply_id = _clean_id(item.get("reply_id"))
+    reply_to_reply_id = _clean_id(item.get("reply_to_reply_id"))
+    parent_id = reply_id or fallback_parent_id
+    is_reply = bool(force_is_reply or parent_id)
+    reply_to_username = (
+        str(item.get("reply_to_username") or item.get("reply_to_nickname") or "").strip()
+        if is_reply
+        else ""
+    )
+
+    return {
+        "comment": text,
+        "comment_id": cid,
+        "is_reply": is_reply,
+        "parent_comment_id": parent_id if is_reply else "",
+        "reply_to_comment_id": reply_to_reply_id if is_reply else "",
+        "reply_to_username": reply_to_username,
+        "username": str(user.get("unique_id") or "").strip(),
+        "nickname": str(user.get("nickname") or "").strip(),
+        "likes": int(item.get("digg_count") or 0),
+        "reply_count": int(item.get("reply_comment_total") or 0),
+        "created_at": _format_unix_ts(item.get("create_time")),
+        "post_url": post_url,
+    }
+
+
+def _parse_comment_items(
+    payload: dict[str, Any],
+    post_url: str,
+    *,
+    is_reply_response: bool = False,
+    include_replies: bool = True,
+) -> list[dict[str, Any]]:
+    """Chuyển JSON response của API bình luận TikTok thành danh sách dict chuẩn (gồm cả reply)."""
     if not isinstance(payload, dict):
         return []
     raw_comments = payload.get("comments") or []
@@ -1030,69 +1347,92 @@ def _parse_comment_items(payload: dict[str, Any], post_url: str) -> list[dict[st
     for item in raw_comments:
         if not isinstance(item, dict):
             continue
-        text = str(item.get("text") or "").strip()
-        if not text:
-            continue
-        user = item.get("user") if isinstance(item.get("user"), dict) else {}
-        cid = str(item.get("cid") or "").strip()
-        rows.append(
-            {
-                "comment": text,
-                "comment_id": cid,
-                "username": str(user.get("unique_id") or "").strip(),
-                "nickname": str(user.get("nickname") or "").strip(),
-                "likes": int(item.get("digg_count") or 0),
-                "reply_count": int(item.get("reply_comment_total") or 0),
-                "created_at": _format_unix_ts(item.get("create_time")),
-                "post_url": post_url,
-            }
-        )
+        row = _build_comment_row(item, post_url, force_is_reply=is_reply_response)
+        if row is not None:
+            rows.append(row)
+
+        if include_replies and not is_reply_response:
+            embedded_replies = item.get("reply_comment")
+            if isinstance(embedded_replies, list):
+                parent_cid = row["comment_id"] if row is not None else _clean_id(item.get("cid"))
+                for rep in embedded_replies:
+                    if not isinstance(rep, dict):
+                        continue
+                    rep_row = _build_comment_row(
+                        rep,
+                        post_url,
+                        force_is_reply=True,
+                        fallback_parent_id=parent_cid,
+                    )
+                    if rep_row is not None:
+                        rows.append(rep_row)
     return rows
 
 
-def _extract_dom_fallback(page: Any, post_url: str) -> list[dict[str, Any]]:
+def _extract_dom_fallback(
+    page: Any,
+    post_url: str,
+    include_replies: bool = False,
+) -> list[dict[str, Any]]:
     """Dự phòng đọc bình luận đã render sẵn trên DOM nếu API response xảy ra trước khi gắn listener."""
-    rows: list[dict[str, Any]] = []
-    selectors = [
-        'div[data-e2e="comment-level-1"]',
-        '[class*="DivCommentItemContainer"]',
-    ]
-    elements: list[Any] = []
-    for sel in selectors:
-        found = page.locator(sel).all()
-        if found:
-            elements = found
-            break
+    try:
+        dom_items = page.evaluate(
+            r"""(includeReplies) => {
+                const results = [];
+                const pickItems = (nodes, isReply) => {
+                    for (const el of nodes) {
+                        const textNode = isReply
+                            ? (el.querySelector('span[data-e2e="comment-text"], p[data-e2e="comment-level-2"], span') || el)
+                            : (el.querySelector('span[data-e2e="comment-text"], p[data-e2e="comment-level-1"], span') || el);
+                        const text = (textNode.innerText || el.innerText || '').trim();
+                        if (!text) continue;
+                        const container = el.closest('[class*="DivCommentItemContainer"], [class*="DivReplyContainer"], [class*="DivCommentObjectWrapper"]') || el.parentElement;
+                        let username = '';
+                        if (container) {
+                            const userSel = isReply
+                                ? '[data-e2e="comment-username-2"], [data-e2e="comment-username"]'
+                                : '[data-e2e="comment-username-1"], [data-e2e="comment-username"]';
+                            const uEl = container.querySelector(userSel);
+                            if (uEl) username = (uEl.innerText || '').trim();
+                        }
+                        results.push({ comment: text, username, is_reply: isReply });
+                    }
+                };
 
-    for el in elements:
-        try:
-            text_loc = el.locator(
-                '[data-e2e="comment-level-1"] span, span[data-e2e="comment-text"], p[data-e2e="comment-level-1"]'
-            ).first
-            text = text_loc.inner_text(timeout=500).strip()
-        except Exception:
-            try:
-                text = el.inner_text(timeout=500).strip()
-            except Exception:
-                text = ""
+                let lvl1 = Array.from(document.querySelectorAll('div[data-e2e="comment-level-1"]'));
+                if (!lvl1.length) {
+                    lvl1 = Array.from(document.querySelectorAll('[class*="DivCommentItemContainer"]'));
+                }
+                pickItems(lvl1, false);
+
+                if (includeReplies) {
+                    let lvl2 = Array.from(document.querySelectorAll('div[data-e2e="comment-level-2"], p[data-e2e="comment-level-2"]'));
+                    if (!lvl2.length) {
+                        lvl2 = Array.from(document.querySelectorAll('[class*="DivReplyContainer"] [data-e2e="comment-text"]'));
+                    }
+                    pickItems(lvl2, true);
+                }
+                return results;
+            }""",
+            include_replies,
+        )
+    except Exception:
+        return []
+
+    rows: list[dict[str, Any]] = []
+    for item in dom_items or []:
+        text = str(item.get("comment") or "").strip()
         if not text:
             continue
-
-        username = ""
-        try:
-            username = (
-                el.locator('[data-e2e="comment-username-1"], span[data-e2e="comment-username"]')
-                .first.inner_text(timeout=300)
-                .strip()
-            )
-        except Exception:
-            pass
-
         rows.append(
             {
                 "comment": text,
                 "comment_id": "",
-                "username": username,
+                "is_reply": bool(item.get("is_reply", False)),
+                "parent_comment_id": "",
+                "reply_to_comment_id": "",
+                "reply_to_username": "",
+                "username": str(item.get("username") or "").strip(),
                 "nickname": "",
                 "likes": 0,
                 "reply_count": 0,
@@ -1102,16 +1442,18 @@ def _extract_dom_fallback(page: Any, post_url: str) -> list[dict[str, Any]]:
         )
     return rows
 
+
 def _collect_comments_sync(
     url: str,
     max_comments: int = 200,                  # Giới hạn số bình luận thu thập tối đa
-    max_scrolls: int = 40,                    # Giới hạn số lần cuộn trang để tải thêm bình luận                          
-    scroll_pause_sec: float = 3.0,            # Thời gian chờ sau mỗi lần cuộn (giây) 
-    include_replies: bool = False,            # Có thu thập bình luận trả lời (reply) hay không
+    max_scrolls: int = 40,                    # Giới hạn số lần cuộn trang để tải thêm bình luận
+    scroll_pause_sec: float = 3.0,            # Thời gian chờ sau mỗi lần cuộn (giây)
+    include_replies: bool = True,             # Có thu thập bình luận trả lời (reply) hay không
+    max_replies_per_comment: int | None = None,  # Giới hạn reply mỗi bình luận chính (None = lấy hết tới max_comments)
     browser_channel: str | None = "msedge",   # Trình duyệt Playwright channel (msedge, chrome, chromium, firefox, webkit)
     headless: bool = False,                   # Chạy trình duyệt ở chế độ không có giao diện
-    interactive_pause: bool = True,           # Tạm dừng để người dùng xác minh captcha hoặc đăng nhập nếu cần                          
-) -> tuple[list[dict[str, Any]], str]:      
+    interactive_pause: bool = True,           # Tạm dừng để người dùng xác minh captcha hoặc đăng nhập nếu cần
+) -> tuple[list[dict[str, Any]], str]:
     """Chạy Playwright Sync API để thu thập comment TikTok."""
     try:
         from playwright.sync_api import sync_playwright
@@ -1122,15 +1464,7 @@ def _collect_comments_sync(
 
     collected: dict[str, dict[str, Any]] = {}
     resolved_url = url
-
-    def add_rows(rows: list[dict[str, Any]]) -> int:
-        added = 0
-        for row in rows:
-            dedup_key = row["comment_id"] or f"{row['username']}::{row['comment']}"
-            if dedup_key not in collected:
-                collected[dedup_key] = row
-                added += 1
-        return added
+    add_rows = _make_comment_adder(collected)
 
     with sync_playwright() as p:
         launch_kwargs: dict[str, Any] = {"headless": headless}
@@ -1156,7 +1490,14 @@ def _collect_comments_sync(
                 return
             try:
                 payload = response.json()
-                add_rows(_parse_comment_items(payload, resolved_url))
+                add_rows(
+                    _parse_comment_items(
+                        payload,
+                        resolved_url,
+                        is_reply_response=is_reply,
+                        include_replies=include_replies,
+                    )
+                )
             except Exception:
                 pass
 
@@ -1182,6 +1523,8 @@ def _collect_comments_sync(
             max_comments=max_comments,
             max_scrolls=max_scrolls,
             scroll_pause_sec=scroll_pause_sec,
+            include_replies=include_replies,
+            max_replies_per_comment=max_replies_per_comment,
         )
 
         browser.close()
@@ -1197,7 +1540,8 @@ def crawl_tiktok_comments(
     max_comments: int = 200,
     max_scrolls: int = 40,
     scroll_pause_sec: float = 3.0,
-    include_replies: bool = False,
+    include_replies: bool = True,
+    max_replies_per_comment: int | None = None,
     browser_channel: str | None = "msedge",
     headless: bool = False,
     interactive_pause: bool = True,
@@ -1211,6 +1555,7 @@ def crawl_tiktok_comments(
             max_scrolls,
             scroll_pause_sec,
             include_replies,
+            max_replies_per_comment,
             browser_channel,
             headless,
             interactive_pause,
@@ -1234,6 +1579,10 @@ def _normalize_comments_df(df: pd.DataFrame, comment_col: str) -> pd.DataFrame:
 
     defaults: dict[str, Any] = {
         "comment_id": "",
+        "is_reply": False,
+        "parent_comment_id": "",
+        "reply_to_comment_id": "",
+        "reply_to_username": "",
         "username": "",
         "nickname": "",
         "likes": 0,
@@ -1244,30 +1593,54 @@ def _normalize_comments_df(df: pd.DataFrame, comment_col: str) -> pd.DataFrame:
     for col, default_val in defaults.items():
         if col not in out.columns:
             out[col] = default_val
+        elif col == "is_reply":
+            out[col] = out[col].map(_parse_bool)
         elif col in {"likes", "reply_count"}:
             out[col] = pd.to_numeric(out[col], errors="coerce").fillna(0).astype(int)
         else:
             out[col] = out[col].fillna("").astype(str)
 
-    ordered = [
-        "comment",
-        "comment_id",
-        "username",
-        "nickname",
-        "likes",
-        "reply_count",
-        "created_at",
-        "post_url",
-    ]
+    ordered = list(_COMMENT_CSV_COLUMNS)
     extra_cols = [c for c in out.columns if c not in ordered and c != comment_col]
     return out[ordered + extra_cols]
+
+
+_TABULAR_ID_DTYPES: dict[str, Any] = {
+    "comment_id": str,
+    "parent_comment_id": str,
+    "reply_to_comment_id": str,
+    "reply_to_username": str,
+    "username": str,
+    "nickname": str,
+}
+
+
+def _select_comment_column(
+    columns: Sequence[Any],
+    text_column: str | None,
+    source_path: Path,
+) -> str:
+    """Chọn cột chứa nội dung bình luận từ DataFrame tabular (hỗ trợ tiêu đề 2 dòng)."""
+    col_strs = [str(c) for c in columns]
+    if text_column is not None:
+        if text_column in col_strs:
+            return text_column
+        raise ValueError(
+            f"Không tìm thấy cột `{text_column}` trong {source_path}. Các cột hiện có: {col_strs}"
+        )
+
+    lower_map = {c.lower(): c for c in col_strs}
+    for candidate in COMMENT_COLUMN_CANDIDATES:
+        if candidate in lower_map:
+            return lower_map[candidate]
+    return col_strs[0]
 
 
 def load_comments_dataframe(
     comments_source: str | Path | Sequence[str],
     text_column: str | None = None,
 ) -> pd.DataFrame:
-    """Đọc bình luận từ list Python hoặc file CSV / JSON / TXT, giữ nguyên metadata."""
+    """Đọc bình luận từ list Python hoặc file CSV / Excel (.xlsx, .xls) / JSON / TXT, giữ nguyên metadata."""
     if not isinstance(comments_source, (str, Path)):
         rows = [
             {"comment": str(item).strip()}
@@ -1283,24 +1656,23 @@ def load_comments_dataframe(
         raise FileNotFoundError(f"Không tìm thấy file comment: {path}")
 
     ext = path.suffix.lower()
-    if ext == ".csv":
-        df = pd.read_csv(path, encoding="utf-8-sig")
+    if ext in {".csv", ".xlsx", ".xls"}:
+        if ext == ".csv":
+            df = pd.read_csv(path, encoding="utf-8-sig", dtype=_TABULAR_ID_DTYPES)
+        else:
+            try:
+                df = pd.read_excel(path, dtype=_TABULAR_ID_DTYPES)
+            except ImportError as exc:
+                raise ImportError(
+                    "Đọc file Excel (.xlsx/.xls) cần thư viện `openpyxl`. Hãy chạy: pip install openpyxl"
+                ) from exc
+
         if df.empty:
             return _normalize_comments_df(pd.DataFrame(columns=["comment"]), "comment")
 
-        col = text_column
-        if col is None:
-            lower_map = {c.lower(): c for c in df.columns}
-            for candidate in COMMENT_COLUMN_CANDIDATES:
-                if candidate in lower_map:
-                    col = lower_map[candidate]
-                    break
-            if col is None:
-                col = df.columns[0]
-        elif col not in df.columns:
-            raise ValueError(
-                f"Không tìm thấy cột `{col}` trong {path}. Các cột hiện có: {list(df.columns)}"
-            )
+        # Hỗ trợ file output có tiêu đề 2 dòng dạng "<col>\n(chú thích)"
+        df.columns = [str(c).split("\n", 1)[0].strip() for c in df.columns]
+        col = _select_comment_column(list(df.columns), text_column=text_column, source_path=path)
         return _normalize_comments_df(df, col)
 
     if ext == ".json":
@@ -1346,5 +1718,6 @@ def load_comments_dataframe(
         return _normalize_comments_df(pd.DataFrame(rows), "comment")
 
     raise ValueError(
-        f"Định dạng file comment chưa hỗ trợ: {path.suffix} (chỉ hỗ trợ .csv, .json, .txt)"
+        f"Định dạng file comment chưa hỗ trợ: {path.suffix} "
+        "(hỗ trợ .csv, .xlsx, .xls, .json, .txt)"
     )

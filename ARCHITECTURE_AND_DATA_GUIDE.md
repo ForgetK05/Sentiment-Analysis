@@ -46,11 +46,12 @@ e:\A\Sentiment-Analysis\
 │       └── benchmark_metrics.json
 │
 ├── outputs/                              # KHO KẾT QUẢ CUỐI CÙNG SAU XỬ LÝ (Đầu ra)
-│   └── <post_id>/                        # Khớp mã bài đăng của thư mục trong data/
-│       ├── final_results.csv             # 42 cột chi tiết từng bình luận sạch (kèm chú thích tiếng Việt)
-│       ├── cleaned_final_results.csv     # Bản tóm gọn 15 cột quan trọng nhất (sắp theo likes giảm dần)
+│   └── <run_name>/                       # Khớp mã bài đăng, tên file hoặc tên thư mục nguồn
+│       ├── cleaned_final_results.csv     # Bản tóm gọn 10 cột lõi (hoặc 14 cột khi bật AI Audit, sắp theo likes giảm dần)
+│       ├── final_results.csv             # Các thuộc tính phân tích hữu ích (18 cột lõi, hoặc 24 cột khi bật AI Audit)
+│       ├── detailed_model_outputs.csv    # Thuộc tính kỹ thuật, xác suất & dự đoán từng mô hình (20 cột, hoặc 23 cột khi bật AI Audit)
 │       ├── filtered_noise.csv            # 8 cột tách riêng bình luận nhiễu/ngôn ngữ khác
-│       ├── model_comparison.csv          # 15 cột so sánh đối chiếu 8 mô hình/nhánh
+│       ├── model_comparison.csv          # Bảng so sánh 8 mô hình/nhánh (tự ẩn cột vs_gemma nếu tắt AI Audit)
 │       ├── report.json                   # Toàn bộ dữ liệu tổng hợp dạng JSON phân cấp
 │       └── dashboard.png                 # Biểu đồ 2x2 trực quan hóa kết quả
 │
@@ -102,19 +103,19 @@ Hai tệp cấu hình trong `AI_Local/gemma4-e2b/` quyết định việc mô h�
 
 ```mermaid
 flowchart TD
-    U["Người dùng nhập Link TikTok hoặc dữ liệu cục bộ<br/>(main.ipynb hoặc CLI python -m src.pipeline)"] --> S0
+    U["Người dùng chọn nguồn đầu vào (Link TikTok / File CSV-XLSX-JSON-TXT / Thư mục cục bộ)<br/>(main.ipynb hoặc CLI python -m src.pipeline)"] --> S0
 
-    subgraph B0["Bước 0: Thu thập dữ liệu thô (src/ingestion/tiktok_collector.py)"]
-        S0["collect_tiktok_post(): yt-dlp tải video / Photo Mode 2 tầng (HTTP JSON -> Edge)"] --> D1["Lưu data/<post_id>/video.mp4 hoặc images/slide_XX.jpg & metadata.json"]
-        S0 --> S0B["crawl_tiktok_comments() (hoặc gộp cùng 1 cửa sổ Edge cho Photo Mode)"]
-        S0B --> D2["Lưu data/<post_id>/raw_comments.csv (8 cột)"]
+    subgraph B0["Bước 0: Thu thập / Đọc dữ liệu đầu vào (src/ingestion/tiktok_collector.py)"]
+        S0["collect_tiktok_post() hoặc resolve_local_input_dir()"] --> D1["Lưu/đọc video.mp4 hoặc images/ & metadata.json"]
+        S0 --> S0B["crawl_tiktok_comments() (tự động mở reply) hoặc load_comments_dataframe()"]
+        S0B --> D2["Lưu/đọc raw_comments.csv (12 cột gồm reply) / .xlsx / .json / .txt"]
     end
 
     D1 --> G1A
-    subgraph S1["Giai đoạn 1: AI Đầu vào — Ngữ cảnh đa phương thức (GPU 4GB + CPU)"]
-        G1A["MediaAnalyzer.analyze(): Trích tối đa 10 khung hình (OpenCV)"] --> G1C["Gemma 4 E2B (gemma4-e2b-opt, GPU)<br/>xuất MediaAnalysisResult (JSON 8 trường)"]
-        G1B["PyAV tách tiếng 16kHz + Faster-Whisper (small, CPU)<br/>chép lời tự nhận diện VI/EN"] --> G1C
-        G1C --> G1D["unload_ollama_model(): Gửi keep_alive=0<br/>Giải phóng 100% VRAM GPU"]
+    subgraph S1["Giai đoạn 1: AI Đầu vào — Ngữ cảnh đa phương thức (Tùy chọn, GPU 4GB + CPU)"]
+        G1A["MediaAnalyzer.analyze(): Trích 8 khung hình 768px + nhãn mốc thời gian (F1 00:02)<br/>(Tự động 2-pass nếu slideshow > 8 ảnh)"] --> G1C["Gemma 4 E2B (gemma4-e2b-opt, GPU)<br/>xuất MediaAnalysisResult (JSON Evidence-First 11 trường)"]
+        G1B["PyAV tách tiếng 16kHz + Faster-Whisper (small, CPU)<br/>chép lời kèm mốc thời gian [MM:SS-MM:SS]"] --> G1C
+        G1C --> G1D["unload_ollama_model() + unload_whisper_model()<br/>Giải phóng 100% VRAM GPU & RAM"]
     end
 
     D2 --> G2A
@@ -134,32 +135,32 @@ flowchart TD
         R1 -->|vi| VI_DL["Deep Learning VI: PhoBERT + ViSoBERT + PhoBERT-Emotion"]
         R1 -->|en| EN_ML["ML cổ điển EN (NB, LR, SVM, Emo-LR) + Lexicon EN"]
         R1 -->|en| EN_DL["Deep Learning EN: Twitter-RoBERTa + DistilRoBERTa-Emotion"]
-        VI_ML --> HYB["Hybrid Ensemble + Emotion Cues + compute_dual_scale()<br/>Tạo AnalyzedComment (35 thuộc tính)"]
+        VI_ML --> HYB["Hybrid Ensemble + Emotion Cues + compute_dual_scale()<br/>Tạo AnalyzedComment (37 thuộc tính)"]
         VI_DL --> HYB
         EN_ML --> HYB
         EN_DL --> HYB
     end
 
     HYB --> G4A
-    G1C -. "Truyền JSON Ngữ cảnh 8 trường" .-> G4A
+    G1C -. "Truyền JSON Ngữ cảnh 11 trường" .-> G4A
 
-    subgraph S4["Giai đoạn 4: AI Đầu ra — Thẩm định thực tế (GPU 4GB)"]
+    subgraph S4["Giai đoạn 4: AI Đầu ra — Thẩm định thực tế (Tùy chọn RUN_AI_AUDIT, GPU 4GB)"]
         G4A["GemmaAuditor.audit_comments():<br/>Gemma 4 E2B chấm độc lập theo lô 8 câu + ngữ cảnh"] --> G4B["build_model_comparison():<br/>Agreement %, Macro-F1, Cohen's Kappa, score_5 MAE"]
         G4B --> G4C["generate_overall_verdict():<br/>Nhận định độ chính xác, điểm mạnh/yếu"]
     end
 
     NOISE --> EXP
     G4C --> EXP["SentimentPipeline._export_outputs() + plot_sentiment_dashboard()"]
-    EXP --> OUT["outputs/<post_id>/ :<br/>final_results.csv | cleaned_final_results.csv | filtered_noise.csv<br/>model_comparison.csv | report.json | dashboard.png"]
+    EXP --> OUT["outputs/<run_name>/ :<br/>cleaned_final_results.csv | final_results.csv | detailed_model_outputs.csv<br/>filtered_noise.csv | model_comparison.csv | report.json | dashboard.png"]
 ```
 
 ### 2.2. Chu kỳ quản lý tài nguyên (CPU ↔ GPU 4GB)
 
 Để chạy trơn tru đồng thời **Gemma 4 E2B (VLM)**, **Faster-Whisper** và tối đa **5 mô hình Transformer (PhoBERT/RoBERTa)** trên laptop 4 GB VRAM, đường ống điều phối thứ tự tải tài nguyên theo đúng chu kỳ 3 pha:
 
-1. **Pha 1 — Chiếm GPU (`Giai đoạn 1`):** Ollama nạp `gemma4-e2b-opt` lên GPU 4 GB để đọc 10 khung hình + transcript Whisper và sinh JSON ngữ cảnh. Song song đó, `faster-whisper` bản `small` chạy bằng `int8` trên **CPU** nên không tranh VRAM. Kết thúc pha, `unload_ollama_model()` gửi `"keep_alive": 0` để đẩy toàn bộ trọng số Gemma ra khỏi VRAM.
+1. **Pha 1 — Chiếm GPU (`Giai đoạn 1`, nếu có media & bật `run_media_analysis=True`):** Ollama nạp `gemma4-e2b-opt` lên GPU 4 GB để đọc tối đa 8 khung hình 768px (hoặc chạy 2-pass với slideshow dài) + transcript Whisper có mốc thời gian và sinh JSON ngữ cảnh Evidence-First. Song song đó, `faster-whisper` bản `small` chạy bằng `int8` trên **CPU**. Kết thúc pha, `unload_ollama_model()` gửi `"keep_alive": 0` để đẩy Gemma khỏi VRAM và `unload_whisper_model()` giải phóng Whisper khỏi RAM.
 2. **Pha 2 — Thuần CPU (`Giai đoạn 2 & 3`):** Toàn bộ xử lý `underthesea`, trích TF-IDF, bộ mô hình Scikit-learn (`.joblib`), bộ luật từ điển và các mô hình HuggingFace (`torch`, `device="cpu"`) chạy trên RAM + CPU đa nhân. Các mô hình Transformer được **tải lười (lazy load)** theo đúng ngôn ngữ xuất hiện (ví dụ video toàn tiếng Anh sẽ không nạp 3 mô hình tiếng Việt).
-3. **Pha 3 — Chiếm lại GPU (`Giai đoạn 4`):** Nếu `run_ai_audit=True`, Ollama nạp lại `gemma4-e2b-opt` lên GPU để chấm độc lập theo từng lô 8 bình luận và viết đánh giá tổng kết.
+3. **Pha 3 — Chiếm lại GPU (`Giai đoạn 4`, tùy chọn):** Chỉ chạy khi `run_ai_audit=True` — Ollama nạp lại `gemma4-e2b-opt` lên GPU để chấm độc lập theo từng lô 8 bình luận và viết đánh giá tổng kết. Nếu người dùng chọn tắt Giai đoạn 4 (`run_ai_audit=False` hoặc `--no-ai-audit`), pipeline bỏ qua hoàn toàn pha này.
 
 ### 2.3. Truy vết thực tế một bình luận xuyên suốt 4 giai đoạn (Data Trace)
 
@@ -193,32 +194,32 @@ Lấy đúng 1 bình luận thật từ lần chạy video `7709458511838612744`
 - Khai báo danh sách công khai `__all__` (36 lớp, hàm và hằng số) cùng từ điển ánh xạ `_EXPORT_MAP`.
 - Dùng hàm `__getattr__(name)`: khi người dùng gọi `from src import SentimentPipeline`, Python mới tự động nạp đúng mô-đun con (`src.pipeline`), tránh tình trạng vừa `import src` đã phải kéo theo `torch`, `transformers`, `cv2` gây chậm khởi động.
 
-### 3.2. `src/ingestion/tiktok_collector.py` (714 dòng) — Bước 0: Thu thập dữ liệu
+### 3.2. `src/ingestion/tiktok_collector.py` — Bước 0: Thu thập & Đọc dữ liệu
 
 | Thành phần                                  | Loại                       | Vai trò & logic hoạt động                                                                                                                                                                                                                                                                                                                                                             |
 | :-------------------------------------------- | :-------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `TikTokMediaBundle`                         | `dataclass` (13 trường) | Đóng gói kết quả tải về gồm `url`, `resolved_url`, `post_id`, `media_type` (`"video"` hoặc `"images"`), `media_paths`, `caption`, `hashtags`, `uploader`, `title`, `duration`, `like_count`, `comment_count`, `metadata_path`.                                                                                                                     |
-| `extract_post_id(url)`                      | Hàm                        | Dùng biểu thức chính quy trích chuỗi số ID cuối URL TikTok (`/video/<id>` hoặc `/photo/<id>`). Nếu không khớp thì tạo mã băm `post_<hash>` để đặt tên thư mục.                                                                                                                                                                                               |
-| `_resolve_short_url(url)`                   | Hàm nội bộ               | Gửi HTTP GET cho các link rút gọn như `vt.tiktok.com` / `vm.tiktok.com` để lấy đường dẫn đầy đủ chứa `@username/video/<id>`.                                                                                                                                                                                                                                       |
-| `_build_ytdlp_options(outtmpl, has_ffmpeg)` | Hàm nội bộ               | Nếu `shutil.which("ffmpeg")` có FFmpeg, cho phép `yt-dlp` tải và ghép luồng tốt nhất (`bv*+ba/b`); nếu máy **không có FFmpeg**, ép chọn luồng MP4 ghép sẵn (`b[ext=mp4]/best[ext=mp4]/b`) để tránh lỗi thiếu FFmpeg.                                                                                                                                 |
-| `download_tiktok_media(url, data_dir)`      | Hàm chính                 | Giải quyết short link, tạo thư mục `data/<post_id>/`, chạy `yt-dlp` tải `video.mp4`. Nếu là bài đăng trượt ảnh (Photo Mode) hoặc `yt-dlp` gặp bài slideshow, tự động chạy tải 2 tầng: Tầng 1 đọc JSON nhúng (`__UNIVERSAL_DATA_FOR_REHYDRATION__`), Tầng 2 dự phòng qua Microsoft Edge (`/api/item/detail/` + DOM + cookies trình duyệt), lưu toàn bộ slide chuẩn JPEG (`slide_01.jpg`, `slide_02.jpg`, ...) vào `data/<post_id>/images/` cùng đầy đủ `metadata.json`. |
-| `collect_tiktok_post(...)`                  | Hàm hợp nhất Bước 0       | Điều phối tải media + thu thập comment cho một link TikTok: nếu bài Photo Mode cần fallback sang Edge thì gộp tải toàn bộ ảnh + thu thập comment trong **cùng 1 cửa sổ Edge** để tránh xác minh 2 lần. |
-| `_parse_comment_items(payload)`             | Hàm nội bộ               | Đọc JSON từ API ẩn `api/comment/list` của TikTok mà Playwright bắt được trên mạng: bóc `cid`, `text`, `digg_count` (likes), `reply_comment_total`, `create_time`, `unique_id`, `nickname` (và bình luận trả lời lồng nếu bật `include_replies`).                                                                                                   |
-| `_extract_dom_fallback(page)`               | Hàm dự phòng             | Nếu API mạng không bắt đủ, đọc trực tiếp các thẻ DOM HTML trên trang TikTok (`[data-e2e='comment-item']`...) bằng JavaScript thực thi trên trình duyệt.                                                                                                                                                                                                               |
-| `crawl_tiktok_comments(...)`                | Hàm chính                 | Mở trình duyệt Microsoft Edge thật (`channel="msedge"`, `headless=False`), tạm dừng để người dùng vượt popup đăng nhập/CAPTCHA (nếu có), sau đó tự động cuộn tối đa `max_scrolls=40` lần (dừng sớm nếu đủ `max_comments` hoặc 4 lần cuộn liên tiếp không có thêm bình luận mới). Ghi kết quả ra `data/<post_id>/raw_comments.csv`. |
-| `load_comments_dataframe(source)`           | Hàm tiện ích             | Đọc linh hoạt `.csv`, `.json` hoặc `.txt`, chuẩn hóa tên cột văn bản về `"comment"` và điền mặc định các cột metadata (`comment_id`, `username`, `nickname`, `likes`, `reply_count`, `created_at`, `post_url`).                                                                                                                                  |
+| `TikTokMediaBundle`                         | `dataclass` (13 trường) | Đóng gói kết quả tải về gồm `url`, `resolved_url`, `post_id`, `media_type` (`"video"` hoặc `"image"`), `media_paths`, `caption`, `hashtags`, `uploader`, `title`, `duration`, `like_count`, `comment_count`, `metadata_path`.                                                                                                                     |
+| `extract_post_id(url)`                      | Hàm                        | Dùng biểu thức chính quy trích chuỗi số ID cuối URL TikTok (`/video/<id>` hoặc `/photo/<id>`).                                                                                                                                                                                                                                                          |
+| `_resolve_short_url(url)`                   | Hàm nội bộ               | Gửi HTTP HEAD/GET cho các link rút gọn như `vt.tiktok.com` / `vm.tiktok.com` để lấy đường dẫn đầy đủ chứa `@username/video/<id>`.                                                                                                                                                                                                                       |
+| `_build_ytdlp_options(outtmpl, has_ffmpeg)` | Hàm nội bộ               | Nếu `shutil.which("ffmpeg")` có FFmpeg, cho phép `yt-dlp` tải và ghép luồng tốt nhất (`bv*+ba/b`); nếu máy **không có FFmpeg**, ép chọn luồng MP4 ghép sẵn (`b[ext=mp4]/best[ext=mp4]/b`).                                                                                                                                                            |
+| `download_tiktok_media(url, data_dir)`      | Hàm chính                 | Giải quyết short link, tạo thư mục `data/<post_id>/`, chạy `yt-dlp` tải `video.mp4`. Nếu là bài đăng trượt ảnh (Photo Mode), chạy tải 2 tầng: Tầng 1 HTTP JSON, Tầng 2 dự phòng Microsoft Edge (`/api/item/detail/` + DOM), lưu thành `slide_01.jpg`, ... vào `data/<post_id>/images/`.                                                                       |
+| `collect_tiktok_post(...)`                  | Hàm hợp nhất Bước 0       | Điều phối tải media + thu thập comment (mặc định `include_replies=True`, `max_replies_per_comment=None`): nếu Photo Mode cần fallback sang Edge thì gộp tải ảnh + crawl comment trong **cùng 1 cửa sổ Edge**.                                                                                                                                       |
+| `_expand_visible_replies(...)`              | Hàm nội bộ               | Tự động bấm nút *"Xem X câu trả lời / Xem thêm / View replies"* trên DOM (bỏ qua nút *"Ẩn / Hide / Trả lời / Reply"*), có theo dõi stall theo từng thread để không lặp vô hạn.                                                                                                                                                                         |
+| `_parse_comment_items(payload)`             | Hàm nội bộ               | Đọc JSON từ `/api/comment/list/` (gồm cả `reply_comment` preview) và `/api/comment/list/reply/` để bóc `comment_id`, `is_reply`, `parent_comment_id`, `reply_to_comment_id`, `reply_to_username`, `likes`, `reply_count`, `created_at`.                                                                                                              |
+| `crawl_tiktok_comments(...)`                | Hàm chính                 | Mở Microsoft Edge thật (`channel="msedge"`), tạm dừng xử lý popup/CAPTCHA nếu bật, cuộn + mở rộng reply tới khi đủ `max_comments`, ghi ra `data/<post_id>/raw_comments.csv` (12 cột).                                                                                                                                                               |
+| `load_comments_dataframe(source)`           | Hàm tiện ích             | Đọc linh hoạt `.csv`, `.xlsx`/`.xls`, `.json` hoặc `.txt` (hỗ trợ cả tiêu đề 2 dòng xuất từ pipeline và ép kiểu `str` cho các cột ID 19 chữ số), chuẩn hóa cột `"comment"` cùng đầy đủ metadata.                                                                                                                                                 |
 
-### 3.3. `src/models/media_context.py` (577 dòng) — Giai đoạn 1: AI Đầu vào (Gemma 4 E2B + Whisper)
+### 3.3. `src/models/media_context.py` — Giai đoạn 1: AI Đầu vào (Gemma 4 E2B + Whisper)
 
 | Thành phần                                  | Loại                       | Vai trò & logic hoạt động                                                                                                                                                                                                                                                                                                                                                            |
 | :-------------------------------------------- | :-------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `MEDIA_RESPONSE_SCHEMA`                     | `dict` (JSON Schema)      | Ép Ollama trả về đúng cấu trúc JSON 8 trường bắt buộc: `chu_de_chinh`, `muc_dich_chinh`, `quan_diem_noi_dung`, `doi_tuong_chinh` (mảng chuỗi), `sac_thai_noi_dung` (enum 5 giá trị: `Tích cực`, `Tiêu cực`, `Châm biếm / Mỉa mai`, `Tranh cãi`, `Trung lập`), `tom_tat_ngan`, `tu_khoa` (mảng 4–8 từ) và `luu_y_danh_gia_comment`. |
-| `MediaAnalysisResult`                       | `dataclass` (15 trường) | Lưu toàn bộ 8 trường ngữ cảnh + thông tin kỹ thuật (`media_type`, `source_paths`, `num_frames_used`, `has_audio`, `caption`, `transcript`, `raw_response`).                                                                                                                                                                                                      |
-| `MediaAnalyzer.extract_video_frames(...)`   | Phương thức              | Mở video bằng `cv2.VideoCapture`, chia đều tổng số frame để lấy tối đa `max_frames=10` khung hình, thu nhỏ cạnh dài về tối đa `672px` (`max_image_dim=672`) và mã hóa Base64 JPEG.                                                                                                                                                                          |
-| `MediaAnalyzer._decode_audio_16k_mono(...)` | Phương thức              | Dùng `av` (**PyAV**) đọc luồng audio từ `.mp4` và resample sang mảng `float32` đơn kênh `16.000 Hz` trực tiếp trong RAM, không cần cài FFmpeg.                                                                                                                                                                                                              |
-| `MediaAnalyzer.transcribe_audio(...)`       | Phương thức              | Nạp `WhisperModel("small", device="cpu", compute_type="int8")`, bật bộ lọc khoảng lặng `vad_filter=True`, đặt `language=None` để tự động phát hiện tiếng Việt hoặc tiếng Anh, truyền caption vào `initial_prompt` làm mồi nhận diện tên riêng.                                                                                                        |
-| `MediaAnalyzer.unload_ollama_model()`       | Phương thức              | Gửi HTTP POST tới `/api/generate` với `"keep_alive": 0` để buộc Ollama đẩy Gemma 4 E2B khỏi VRAM ngay sau Giai đoạn 1.                                                                                                                                                                                                                                                    |
-| `MediaAnalyzer.analyze(...)`                | Phương thức chính       | Kết hợp ảnh Base64 + lời thoại Whisper + caption theo `_SYSTEM_PROMPT` (ưu tiên đối chiếu chữ trên màn hình OCR ngữ nghĩa với caption), gọi `/api/chat` (`temperature=0.15`, `format=MEDIA_RESPONSE_SCHEMA`) và phân tích JSON trả về.                                                                                                                    |
+| `MEDIA_RESPONSE_SCHEMA`                     | `dict` (JSON Schema)      | Schema Evidence-First **11 trường** bắt buộc: 3 trường trích xuất bằng chứng trước (`chu_tren_man_hinh`, `dien_bien_hinh_anh`, `chi_tiet_va_luan_diem`) → `tom_tat_ngan` (cốt lõi 3–5 câu) → 7 trường phân loại (`chu_de_chinh`, `muc_dich_chinh`, `quan_diem_noi_dung`, `doi_tuong_chinh`, `sac_thai_noi_dung`, `tu_khoa`, `luu_y_danh_gia_comment`).                                  |
+| `MediaAnalysisResult`                       | `dataclass` (18 trường) | Lưu toàn bộ 11 trường ngữ cảnh + thông tin kỹ thuật (`media_type`, `source_paths`, `num_frames_used`, `has_audio`, `caption`, `transcript`, `raw_response`).                                                                                                                                                                                                      |
+| `MediaAnalyzer.extract_video_frames(...)`   | Phương thức              | Bỏ 3% đầu (fade-in) & 5% cuối (outro), lấy `max_frames=8` khung hình `768px` (JPEG 90), đọc timestamp thực (`CAP_PROP_POS_MSEC`), có fallback đọc tuần tự resize ngay để chống OOM trên video VFR, và đóng dấu nhãn `F1 00:02` sau khi resize.                                                                                                               |
+| `MediaAnalyzer._decode_audio_16k_mono(...)` | Phương thức              | Dùng `av` (**PyAV**) đọc luồng audio từ `.mp4` và resample sang mảng `float32` đơn kênh `16.000 Hz` trực tiếp trong RAM.                                                                                                                                                                                                                                      |
+| `MediaAnalyzer.transcribe_audio(...)`       | Phương thức              | Nạp `WhisperModel("small", device="cpu", compute_type="int8")`, lọc `#hashtag`/`@mention`/URL/emoji trước khi truyền `initial_prompt`, bật `condition_on_previous_text=False`, lọc `no_speech_prob < 0.7`, xuất lời thoại kèm mốc thời gian `[MM:SS-MM:SS]`.                                                                                                  |
+| `MediaAnalyzer.analyze(...)`                | Phương thức chính       | Hỗ trợ tự động **2-pass** khi bài slideshow dài hơn `max_frames` (Pass 1 đọc OCR theo lô 4 ảnh, Pass 2 tổng hợp JSON 11 trường), truyền `num_ctx=16384`, `repeat_penalty=1.1`, `temperature=0.1`.                                                                                                                                                              |
+| `unload_ollama_model() / unload_whisper_model()` | Phương thức         | Đẩy Gemma 4 E2B khỏi VRAM (`keep_alive=0`) và giải phóng Faster-Whisper khỏi RAM (`gc.collect()`) ngay sau Giai đoạn 1.                                                                                                                                                                                                                                      |
 
 ### 3.4. `src/preprocessing/text_cleaner.py` (678 dòng) — Giai đoạn 2: NLP & Lọc nhiễu song ngữ
 
@@ -296,18 +297,22 @@ Lấy đúng 1 bình luận thật từ lần chạy video `7709458511838612744`
 | 12  | `comment_count` | `int`               | Tổng số lượng bình luận hiển thị công khai của bài đăng.                                                                                  |
 | 13  | `metadata_path` | `str`               | Đường dẫn lưu chính tệp `metadata.json` này.                                                                                                 |
 
-### 4.2. `data/<post_id>/raw_comments.csv` — Giải thích đủ 8 cột
+### 4.2. `data/<post_id>/raw_comments.csv` — Giải thích đủ 12 cột (gồm cả bình luận trả lời)
 
-| STT | Tên cột       | Kiểu   | Ví dụ thực tế                                  | Ý nghĩa                                                                                                              |
-| :-- | :-------------- | :------ | :------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------- |
-| 1   | `comment`     | `str` | `"ê làm sao mà D có được cái giọng..."` | Nội dung nguyên văn của bình luận thu thập từ TikTok (chưa qua lọc hay chuẩn hóa).                         |
-| 2   | `comment_id`  | `str` | `"7709509346682979093"`                          | Mã định danh duy nhất của bình luận trên hệ thống TikTok (`cid`), dùng để loại trùng khi cuộn trang. |
-| 3   | `username`    | `str` | `"flaycnn"`                                      | Tên tài khoản (`unique_id`) của người bình luận.                                                             |
-| 4   | `nickname`    | `str` | `"mây trời lơ ngơ ☁️"`                     | Tên hiển thị của người bình luận.                                                                              |
-| 5   | `likes`       | `int` | `3230`                                           | Số lượt thích (tim) của bình luận, dùng để sắp xếp các bình luận tiêu biểu (`top_examples`).        |
-| 6   | `reply_count` | `int` | `16`                                             | Số lượng phản hồi con dưới bình luận này.                                                                    |
-| 7   | `created_at`  | `str` | `"2026-11-18 20:54:06"`                          | Thời điểm đăng bình luận đã quy đổi từ Unix timestamp sang định dạng `YYYY-MM-DD HH:MM:SS`.           |
-| 8   | `post_url`    | `str` | `"https://www.tiktok.com/@ducreaction/..."`      | Đường dẫn bài đăng TikTok nơi thu thập bình luận.                                                           |
+| STT | Tên cột               | Kiểu   | Ví dụ thực tế                                  | Ý nghĩa                                                                                                              |
+| :-- | :---------------------- | :------ | :------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------- |
+| 1   | `comment`             | `str` | `"ê làm sao mà D có được cái giọng..."` | Nội dung nguyên văn của bình luận thu thập từ TikTok (chưa qua lọc hay chuẩn hóa).                         |
+| 2   | `comment_id`          | `str` | `"7709509346682979093"`                          | Mã định danh duy nhất của bình luận trên hệ thống TikTok (`cid`), lưu dưới dạng chuỗi tránh sai số float. |
+| 3   | `is_reply`            | `bool` | `False` / `True`                                | Đánh dấu `True` nếu đây là bình luận trả lời (reply) dưới một bình luận khác.                               |
+| 4   | `parent_comment_id`   | `str` | `"7709509346682979093"`                          | Mã `comment_id` của bình luận gốc (rỗng nếu là bình luận chính).                                              |
+| 5   | `reply_to_comment_id` | `str` | `"7709510000000000001"`                          | Mã `comment_id` của bình luận con được trả lời trực tiếp (nếu reply lồng cấp 2+).                              |
+| 6   | `reply_to_username`   | `str` | `"flaycnn"`                                      | Tài khoản được nhắc/trả lời trong nhánh reply (nếu có).                                                            |
+| 7   | `username`            | `str` | `"flaycnn"`                                      | Tên tài khoản (`unique_id`) của người bình luận.                                                             |
+| 8   | `nickname`            | `str` | `"mây trời lơ ngơ ☁️"`                     | Tên hiển thị của người bình luận.                                                                              |
+| 9   | `likes`               | `int` | `3230`                                           | Số lượt thích (tim) của bình luận, dùng để sắp xếp các bình luận tiêu biểu (`top_examples`).        |
+| 10  | `reply_count`         | `int` | `16`                                             | Số lượng phản hồi con dưới bình luận này.                                                                    |
+| 11  | `created_at`          | `str` | `"2026-11-18 20:54:06"`                          | Thời điểm đăng bình luận đã quy đổi từ Unix timestamp sang định dạng `YYYY-MM-DD HH:MM:SS`.           |
+| 12  | `post_url`            | `str` | `"https://www.tiktok.com/@ducreaction/..."`      | Đường dẫn bài đăng TikTok nơi thu thập bình luận.                                                           |
 
 ### 4.3. Kho đệm mô hình Học máy cổ điển (`models/classical_ml/{vi,en}/`)
 
@@ -319,107 +324,80 @@ Mỗi thư mục ngôn ngữ (`vi/` và `en/`) chứa 3 tệp được sinh tự
 
 ---
 
-## 5. Từ điển dữ liệu kết quả đầu ra (`outputs/<post_id>/`)
+## 5. Từ điển dữ liệu kết quả đầu ra (`outputs/<run_name>/`)
 
-### 5.1. `final_results.csv` — Giải thích đầy đủ toàn bộ 42 cột (kèm chú thích tiếng Việt)
+Để người đọc dễ sử dụng mà không bị rối bởi quá nhiều cột kỹ thuật, kết quả bình luận sạch được tách thành **3 tệp CSV rõ ràng**:
+- **`cleaned_final_results.csv`**: Bản tóm gọn nhanh (10 cột lõi hoặc 14 cột khi bật AI Audit, sắp theo `likes` giảm dần).
+- **`final_results.csv`**: Bản phân tích chuẩn chỉ giữ các **thuộc tính hữu ích** (18 cột lõi hoặc 24 cột khi bật AI Audit).
+- **`detailed_model_outputs.csv`**: Toàn bộ **thuộc tính kỹ thuật phụ, xác suất và dự đoán từng mô hình** (20 cột hoặc 23 cột khi bật AI Audit).
 
-Tệp `final_results.csv` chỉ chứa các **bình luận sạch hợp lệ thuộc Tiếng Việt (`vi`) hoặc Tiếng Anh (`en`)**. Để người đọc mở bằng Excel hiểu ngay ý nghĩa mà không cần tra cứu tài liệu, **tiêu đề mỗi cột đều hiển thị 2 dòng** (dòng trên là tên biến tiếng Anh chuẩn code, dòng dưới là chú thích tiếng Việt trong ngoặc, ví dụ `language` / `(ngôn ngữ)`).
+### 5.1. `final_results.csv` — Các thuộc tính phân tích hữu ích (18 cột lõi + 6 cột AI Audit)
 
-#### Nhóm 1 (Cột 1–6): Thông tin định danh & siêu dữ liệu bình luận (từ Bước 0)
+Tệp `final_results.csv` chỉ chứa các **bình luận sạch hợp lệ thuộc Tiếng Việt (`vi`) hoặc Tiếng Anh (`en`)**, tiêu đề 2 dòng (tên biến tiếng Anh + chú thích tiếng Việt). Nếu tắt Giai đoạn 4 (`run_ai_audit=False`), 6 cột AI (`19–24`) được tự động ẩn đi.
 
-| STT | Tên cột & Chú thích trong CSV               | Kiểu   | Nguồn & Ý nghĩa chi tiết                                                                                |
-| :-- | :---------------------------------------------- | :------ | :---------------------------------------------------------------------------------------------------------- |
-| 1   | `comment_id` `<br>` `(mã bình luận)`   | `str` | Mã định danh bình luận lấy từ TikTok (`cid`), giữ nguyên từ `raw_comments.csv`.               |
-| 2   | `username` `<br>` `(tên tài khoản)`    | `str` | Tên đăng nhập (`@handle`) của người viết bình luận.                                             |
-| 3   | `nickname` `<br>` `(tên hiển thị)`     | `str` | Tên hiển thị hồ sơ của người viết bình luận.                                                     |
-| 4   | `likes` `<br>` `(lượt thích)`          | `int` | Số lượt tim của bình luận; phản ánh mức độ đồng tình của cộng đồng với bình luận đó. |
-| 5   | `reply_count` `<br>` `(số phản hồi)`   | `int` | Số lượng câu trả lời con dưới bình luận gốc.                                                     |
-| 6   | `created_at` `<br>` `(thời gian đăng)` | `str` | Thời gian đăng bình luận (`YYYY-MM-DD HH:MM:SS`).                                                    |
-
-#### Nhóm 2 (Cột 7–13): Tiền xử lý ngôn ngữ tự nhiên & Cờ phân tích (từ Giai đoạn 2 & 3)
-
-| STT | Tên cột & Chú thích trong CSV                          | Kiểu    | Miền giá trị / Ví dụ              | Ý nghĩa chi tiết                                                                                                                                                                                                                                        |
-| :-- | :--------------------------------------------------------- | :------- | :------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 7   | `language` `<br>` `(ngôn ngữ)`                     | `str`  | `"vi"` hoặc `"en"`                | Ngôn ngữ được hàm `detect_language()` xác định để định tuyến qua đúng bộ mô hình ML & Deep Learning của ngôn ngữ đó.                                                                                                             |
-| 8   | `original_text` `<br>` `(nội dung gốc)`            | `str`  | Nguyên văn tiếng Việt/Anh          | Nội dung thô ban đầu người dùng gõ trên TikTok trước khi chuẩn hóa.                                                                                                                                                                           |
-| 9   | `cleaned_text` `<br>` `(nội dung đã làm sạch)`  | `str`  | Văn bản đã chuẩn hóa             | Văn bản sau `normalize_tiktok_emojis()` + `clean_comment_text()`: đã đổi mã `[Cười...]` thành Emoji và đổi teencode an toàn (`mn` → `mọi người`). Là đầu vào cho ViSoBERT, Twitter-RoBERTa, DistilRoBERTa và Gemma 4 E2B. |
-| 10  | `segmented_text` `<br>` `(văn bản đã tách từ)` | `str`  | Có dấu `_` nối từ ghép (`vi`) | Văn bản sau `_safe_word_tokenize()`: với `vi` do `underthesea` tách từ (`phong_kiến`, `cầu_hôn`), dùng làm đầu vào bắt buộc cho **PhoBERT** và bộ **ML cổ điển**.                                                |
-| 11  | `is_duplicate` `<br>` `(bình luận trùng lặp)`    | `bool` | `True` / `False`                   | Đánh dấu `True` nếu nội dung trùng hệt một bình luận hợp lệ đã xuất hiện trước đó (phục vụ tùy chọn `DEDUPLICATE_STATS`).                                                                                                      |
-| 12  | `has_sarcasm_signal` `<br>` `(dấu hiệu mỉa mai)`  | `bool` | `True` / `False`                   | Cờ cảnh báo sớm ở tầng NLP (chưa kết luận chắc chắn): `True` khi có từ khen đi kèm emoji cười cà khịa `😂`/`🤣` hoặc từ khóa mỉa mai.                                                                                         |
-| 13  | `needs_audit` `<br>` `(cần thẩm định kỹ)`       | `bool` | `True` / `False`                   | Cờ gợi ý các bình luận "nhạy cảm cần kiểm tra kỹ": `True` nếu ViSoBERT và PhoBERT bất đồng nhãn, hoặc `polarity_confidence < 0.65`, hoặc `has_sarcasm_signal == True`.                                                            |
-
-#### Nhóm 3 (Cột 14–23): Kết quả Hybrid Ensemble & Hệ thang điểm kép (từ Giai đoạn 3)
-
-| STT | Tên cột & Chú thích trong CSV                               | Kiểu     | Miền giá trị                                       | Ý nghĩa chi tiết                                                                                                                                                            |
-| :-- | :-------------------------------------------------------------- | :-------- | :---------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 14  | `polarity_label` `<br>` `(nhãn cực tính)`              | `str`   | `"POS"`, `"NEU"`, `"NEG"`                       | Nhãn cực tính cuối cùng của hệ thống chính (**Hybrid Ensemble**) chọn theo xác suất lớn nhất sau bước đồng bộ Emotion–Polarity.                      |
-| 15  | `polarity_vi` `<br>` `(cực tính tiếng việt)`          | `str`   | `"Tích cực"`, `"Trung tính"`, `"Tiêu cực"` | Nhãn hiển thị tiếng Việt tương ứng với `polarity_label` (`LABEL_VI_MAP`).                                                                                         |
-| 16  | `polarity_confidence` `<br>` `(độ tự tin cực tính)`  | `float` | `0.0000` .. `1.0000`                              | Mức độ tự tin của hệ thống Hybrid đối với nhãn `polarity_label` đã chọn (`max(score_POS, score_NEG, score_NEU)`).                                            |
-| 17  | `polarity_score` `<br>` `(điểm cực tính -1 đến +1)` | `float` | `-1.0000` .. `+1.0000`                            | Điểm sắc thái liên tục tính bởi `compute_dual_scale()`: luôn khóa `<= -0.21` nếu `NEG`, trong `[-0.19, +0.19]` nếu `NEU`, và `>= +0.21` nếu `POS`. |
-| 18  | `score_5` `<br>` `(điểm thang 1-5)`                     | `int`   | `1`, `2`, `3`, `4`, `5`                     | Điểm thang 5 bậc nhất quán 100% với `polarity_label`: `1` (≤ -0.60), `2` (NEG còn lại), `3` (mọi NEU), `4` (POS còn lại), `5` (≥ +0.60).              |
-| 19  | `score_10` `<br>` `(điểm thang 0-10)`                   | `float` | `0.00` .. `10.00`                                 | Quy đổi tuyến tính từ `polarity_score` sang thang điểm 10: `(polarity_score + 1.0) × 5.0`.                                                                         |
-| 20  | `rating_level_vi` `<br>` `(mức độ đánh giá)`        | `str`   | `"Rất tiêu cực"` .. `"Rất tích cực"`        | Diễn giải tiếng Việt tương ứng với 5 mức `score_5` (`RATING_5_VI_MAP`).                                                                                           |
-| 21  | `score_POS` `<br>` `(xác suất tích cực)`              | `float` | `0.0000` .. `1.0000`                              | Xác suất tổng hợp của lớp **Tích cực (POS)** từ Hybrid Ensemble (tổng 3 cột 21–23 bằng `1.0`).                                                            |
-| 22  | `score_NEG` `<br>` `(xác suất tiêu cực)`              | `float` | `0.0000` .. `1.0000`                              | Xác suất tổng hợp của lớp **Tiêu cực (NEG)** từ Hybrid Ensemble.                                                                                                |
-| 23  | `score_NEU` `<br>` `(xác suất trung tính)`             | `float` | `0.0000` .. `1.0000`                              | Xác suất tổng hợp của lớp **Trung tính (NEU)** từ Hybrid Ensemble.                                                                                               |
-
-#### Nhóm 4 (Cột 24–26): Kết quả phân tích 7 cung bậc cảm xúc (từ Giai đoạn 3)
-
-| STT | Tên cột & Chú thích trong CSV                            | Kiểu     | Miền giá trị                                                                       | Ý nghĩa chi tiết                                                                                                                                                                                           |
-| :-- | :----------------------------------------------------------- | :-------- | :------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 24  | `emotion_label` `<br>` `(nhãn cảm xúc)`             | `str`   | `Anger`, `Sadness`, `Fear`, `Enjoyment`, `Disgust`, `Surprise`, `Other` | Nhãn cảm xúc chi tiết chuẩn UIT-VSMEC (do `visolex/phobert-emotion` với `vi`, hoặc ánh xạ từ `j-hartmann/emotion-english-distilroberta-base` với `en`, kết hợp `_apply_emotion_cues`). |
-| 25  | `emotion_vi` `<br>` `(cảm xúc 7 cung bậc)`          | `str`   | `"Tức giận"`, `"Buồn bã"`, ...                                                | Tên tiếng Việt dễ đọc tương ứng của `emotion_label`.                                                                                                                                              |
-| 26  | `emotion_confidence` `<br>` `(độ tự tin cảm xúc)` | `float` | `0.0000` .. `1.0000`                                                              | Xác suất tự tin của cung bậc cảm xúc chiếm ưu thế nhất.                                                                                                                                            |
-
-#### Nhóm 5 (Cột 27–33): Dự đoán từng mô hình riêng lẻ để so sánh đối chiếu (từ Giai đoạn 3)
-
-| STT | Tên cột & Chú thích trong CSV                              | Kiểu   | Miền giá trị                        | Ý nghĩa chi tiết                                                                                                                                                       |
-| :-- | :------------------------------------------------------------- | :------ | :------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 27  | `pred_nb` `<br>` `(dự đoán naive bayes)`              | `str` | `POS`, `NEU`, `NEG`              | Nhãn dự đoán riêng của mô hình **TF-IDF + Multinomial Naive Bayes** (đúng nhánh `vi` hoặc `en`).                                                    |
-| 28  | `pred_lr` `<br>` `(dự đoán logistic regression)`      | `str` | `POS`, `NEU`, `NEG`              | Nhãn dự đoán riêng của mô hình **TF-IDF + Logistic Regression**.                                                                                            |
-| 29  | `pred_svm` `<br>` `(dự đoán linear svm)`              | `str` | `POS`, `NEU`, `NEG`              | Nhãn dự đoán riêng của mô hình **TF-IDF + Linear SVM (Calibrated)** — mô hình ML tham gia đóng góp 25% vào Hybrid.                                   |
-| 30  | `pred_lexicon` `<br>` `(dự đoán từ điển luật)`    | `str` | `POS`, `NEU`, `NEG`              | Nhãn dự đoán riêng của bộ luật & từ điển **BilingualLexiconScorer** (đóng góp 15% vào Hybrid).                                                       |
-| 31  | `pred_visobert` `<br>` `(dự đoán visobert)`           | `str` | `POS`, `NEU`, `NEG` hoặc `""` | Nhãn dự đoán của **5CD-AI/Vietnamese-Sentiment-visobert**; chỉ có giá trị với comment `vi`, tự động để rỗng (`""`) nếu là comment `en`.     |
-| 32  | `pred_dl_primary` `<br>` `(dự đoán học sâu chính)` | `str` | `POS`, `NEU`, `NEG`              | Nhãn dự đoán của mô hình Học sâu chủ lực đúng ngôn ngữ: **PhoBERT** (khi `language="vi"`) hoặc **Twitter-RoBERTa** (khi `language="en"`). |
-| 33  | `emotion_ml_label` `<br>` `(cảm xúc ml cổ điển)`    | `str` | 1 trong 7 nhãn cảm xúc              | Nhãn cảm xúc dự đoán bởi mô hình **TF-IDF + Logistic Regression (Emotion)** để đối chiếu với Deep Learning Emotion ở cột 24.                       |
-
-#### Nhóm 6 (Cột 34–42): Thẩm định thực tế theo ngữ cảnh của Gemma 4 E2B (từ Giai đoạn 4)
-
-| STT | Tên cột & Chú thích trong CSV                                    | Kiểu              | Miền giá trị                          | Ý nghĩa chi tiết                                                                                                                                                          |
-| :-- | :------------------------------------------------------------------- | :----------------- | :--------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 34  | `gemma_audited` `<br>` `(đã thẩm định gemma)`             | `bool`           | `True` / `False`                     | Xác nhận bình luận này đã được Gemma 4 E2B chấm thực tế ở Giai đoạn 4 hay chưa (sẽ là `False` nếu vượt `AUDIT_LIMIT` hoặc tắt `RUN_AI_AUDIT`). |
-| 35  | `gemma_polarity` `<br>` `(cực tính gemma)`                   | `str`            | `POS`, `NEU`, `NEG` hoặc `""`   | Nhãn cực tính do **Gemma 4 E2B** đánh giá độc lập dựa trên cả bình luận lẫn ngữ cảnh video Giai đoạn 1.                                             |
-| 36  | `gemma_emotion` `<br>` `(nhãn cảm xúc gemma)`               | `str`            | 1 trong 7 nhãn tiếng Anh hoặc `""`  | Cung bậc cảm xúc do Gemma 4 E2B xác định.                                                                                                                              |
-| 37  | `gemma_emotion_vi` `<br>` `(cảm xúc gemma)`                  | `str`            | Tên cảm xúc tiếng Việt hoặc `""` | Tên tiếng Việt của `gemma_emotion`.                                                                                                                                    |
-| 38  | `gemma_score_5` `<br>` `(điểm 1-5 gemma)`                    | `int` \| `""`  | `1..5` (hoặc rỗng)                   | Điểm thang 5 do Gemma 4 E2B chấm (đã qua `_reconcile_polarity_and_score` để `NEG∈{1,2}`, `NEU=3`, `POS∈{4,5}`).                                             |
-| 39  | `gemma_is_sarcasm` `<br>` `(nói mỉa theo gemma)`             | `bool` \| `""` | `True` / `False`                     | Kết luận thực tế của Gemma về việc bình luận này có mang hàm ý **nói mỉa / châm biếm** hay không.                                                    |
-| 40  | `gemma_agrees_polarity` `<br>` `(khớp cực tính với gemma)` | `bool` \| `""` | `True` / `False`                     | `True` khi `gemma_polarity == polarity_label` (Hybrid hệ thống chính đoán đúng khớp với Gemma).                                                                 |
-| 41  | `gemma_agrees_emotion` `<br>` `(khớp cảm xúc với gemma)`   | `bool` \| `""` | `True` / `False`                     | `True` khi `gemma_emotion == emotion_label` (Deep Learning cảm xúc khớp với Gemma).                                                                                  |
-| 42  | `gemma_reason` `<br>` `(lý do gemma giải thích)`            | `str`            | Chuỗi tiếng Việt ngắn                | Lời giải thích ngắn gọn lý do vì sao Gemma 4 E2B chấm nhãn cực tính và cảm xúc như trên (giúp người đọc kiểm chứng minh bạch).                       |
+| STT | Tên cột & Chú thích trong CSV | Kiểu | Nhóm | Ý nghĩa chi tiết |
+| :-: | :--- | :--- | :--- | :--- |
+| 1 | `comment_id` `<br>` `(mã bình luận)` | `str` | Định danh | Mã định danh bình luận từ TikTok (`cid`). |
+| 2 | `is_reply` `<br>` `(là bình luận trả lời)` | `bool` | Hội thoại | `True` nếu là bình luận trả lời (reply), `False` nếu là bình luận chính. |
+| 3 | `parent_comment_id` `<br>` `(mã bình luận gốc)` | `str` | Hội thoại | `comment_id` của bình luận gốc nếu `is_reply=True`. |
+| 4 | `username` `<br>` `(tên tài khoản)` | `str` | Người dùng | Tên đăng nhập (`@handle`) của người viết. |
+| 5 | `likes` `<br>` `(lượt thích)` | `int` | Tương tác | Số lượt tim của bình luận. |
+| 6 | `reply_count` `<br>` `(số phản hồi)` | `int` | Tương tác | Số câu trả lời con dưới bình luận gốc. |
+| 7 | `created_at` `<br>` `(thời gian đăng)` | `str` | Thời gian | Thời gian đăng (`YYYY-MM-DD HH:MM:SS`). |
+| 8 | `language` `<br>` `(ngôn ngữ)` | `str` | Nội dung | Ngôn ngữ phát hiện: `"vi"` hoặc `"en"`. |
+| 9 | `original_text` `<br>` `(nội dung gốc)` | `str` | Nội dung | Nội dung bình luận nguyên văn ban đầu. |
+| 10 | `cleaned_text` `<br>` `(nội dung đã làm sạch)` | `str` | Nội dung | Văn bản đã đổi emoji chữ & chuẩn hóa teencode. |
+| 11 | `polarity_label` `<br>` `(nhãn cực tính)` | `str` | Kết quả | Nhãn cực tính chính của Hybrid (`POS` / `NEU` / `NEG`). |
+| 12 | `polarity_vi` `<br>` `(cực tính tiếng việt)` | `str` | Kết quả | Nhãn hiển thị tiếng Việt (`Tích cực` / `Trung tính` / `Tiêu cực`). |
+| 13 | `polarity_confidence` `<br>` `(độ tự tin cực tính)` | `float` | Kết quả | Độ tự tin của Hybrid đối với nhãn `polarity_label` (`0..1`). |
+| 14 | `score_5` `<br>` `(điểm thang 1-5)` | `int` | Thang điểm | Điểm 1–5 sao nhất quán 100% với `polarity_label`. |
+| 15 | `score_10` `<br>` `(điểm thang 0-10)` | `float` | Thang điểm | Điểm quy đổi tuyến tính thang 0–10 (`0.00..10.00`). |
+| 16 | `rating_level_vi` `<br>` `(mức độ đánh giá)` | `str` | Thang điểm | Diễn giải tiếng Việt của `score_5` (`Rất tiêu cực` .. `Rất tích cực`). |
+| 17 | `emotion_vi` `<br>` `(cảm xúc 7 cung bậc)` | `str` | Cảm xúc | Tên tiếng Việt của 1 trong 7 cung bậc cảm xúc. |
+| 18 | `emotion_confidence` `<br>` `(độ tự tin cảm xúc)` | `float` | Cảm xúc | Độ tự tin của cung bậc cảm xúc chiếm ưu thế (`0..1`). |
+| 19 | `gemma_polarity` `<br>` `(cực tính gemma)` | `str` | AI Audit | Nhãn cực tính do Gemma 4 E2B đánh giá độc lập *(ẩn nếu tắt Audit)*. |
+| 20 | `gemma_emotion_vi` `<br>` `(cảm xúc gemma)` | `str` | AI Audit | Tên cảm xúc tiếng Việt do Gemma 4 E2B chấm *(ẩn nếu tắt Audit)*. |
+| 21 | `gemma_score_5` `<br>` `(điểm 1-5 gemma)` | `int` | AI Audit | Điểm 1–5 của Gemma 4 E2B *(ẩn nếu tắt Audit)*. |
+| 22 | `gemma_is_sarcasm` `<br>` `(nói mỉa theo gemma)` | `bool` | AI Audit | Kết luận nói mỉa / châm biếm của Gemma *(ẩn nếu tắt Audit)*. |
+| 23 | `gemma_agrees_polarity` `<br>` `(khớp cực tính với gemma)` | `bool` | AI Audit | `True` nếu Hybrid trùng nhãn cực tính với Gemma *(ẩn nếu tắt Audit)*. |
+| 24 | `gemma_reason` `<br>` `(lý do gemma giải thích)` | `str` | AI Audit | Giải thích ngắn gọn bằng tiếng Việt của Gemma *(ẩn nếu tắt Audit)*. |
 
 ---
 
-### 5.2. `cleaned_final_results.csv` — Bản sao tóm gọn 15 cột quan trọng (có chú thích tiếng Việt)
+### 5.2. `cleaned_final_results.csv` — Bản tóm gọn nhanh (10 cột lõi, hoặc 14 cột khi bật AI Audit)
 
-Tệp `cleaned_final_results.csv` là bản sao rút gọn trực tiếp từ `final_results.csv`, giữ lại **15 cột quan trọng nhất** (tự động rút còn **10 cột** cốt lõi nếu lượt chạy tắt `RUN_AI_AUDIT = False`) và **sắp xếp sẵn theo `likes` giảm dần** để các bình luận có nhiều lượt tim nhất nổi lên đầu bảng. Tiêu đề mỗi cột cũng chứa tên tiếng Việt nằm ngay dưới tên tiếng Anh.
+Tệp `cleaned_final_results.csv` sắp xếp sẵn theo `likes` giảm dần để đọc nhanh các bình luận nổi bật nhất:
 
-| STT | Tên cột & Chú thích trong CSV                                    | Nhóm thông tin        | Vì sao nên giữ lại & Ý nghĩa                                                                                                                                        |
-| :-: | :------------------------------------------------------------------- | :---------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-|  1  | `username` `<br>` `(tên tài khoản)`                         | Người bình luận     | Biết ai bình luận (gọn hơn giữ đồng thời `comment_id`, `nickname` và `username`).                                                                         |
-|  2  | `likes` `<br>` `(lượt thích)`                               | Tương tác            | Đánh giá mức độ đồng tình của cộng đồng; làm khóa sắp xếp các bình luận nổi bật lên đầu.                                                         |
-|  3  | `created_at` `<br>` `(thời gian đăng)`                      | Thời gian              | Theo dõi diễn biến cảm xúc theo thời điểm đăng bình luận.                                                                                                     |
-|  4  | `language` `<br>` `(ngôn ngữ)`                               | Ngôn ngữ              | Phân biệt ngay bình luận Tiếng Việt (`vi`) hay Tiếng Anh (`en`).                                                                                               |
-|  5  | `original_text` `<br>` `(nội dung gốc)`                      | Nội dung               | Câu bình luận gốc nguyên văn (dễ đọc nhất khi kiểm tra bằng mắt thường).                                                                                   |
-|  6  | `polarity_vi` `<br>` `(cực tính hệ thống)`                 | Kết quả hệ thống    | Nhãn cực tính chính dễ hiểu (`Tích cực` / `Trung tính` / `Tiêu cực`).                                                                                    |
-|  7  | `score_5` `<br>` `(điểm thang 1-5)`                          | Kết quả hệ thống    | Điểm thang `1–5` sao trực quan nhất.                                                                                                                               |
-|  8  | `score_10` `<br>` `(điểm thang 0-10)`                        | Kết quả hệ thống    | Điểm thang `0–10` chi tiết (phân biệt mức độ nhẹ/mạnh trong cùng bậc sao).                                                                                 |
-|  9  | `emotion_vi` `<br>` `(cảm xúc 7 cung bậc)`                  | Kết quả hệ thống    | 1 trong 7 cung bậc cảm xúc chi tiết (`Vui vẻ / Hài lòng`, `Chán ghét / Khó chịu`, `Buồn bã`...).                                                       |
-| 10 | `polarity_confidence` `<br>` `(độ tự tin cực tính)`       | Độ tin cậy           | Biết hệ thống tự tin bao nhiêu (`0.00` – `1.00`) với dự đoán cực tính của mình.                                                                         |
-| 11 | `gemma_polarity_vi` `<br>` `(cực tính gemma tiếng việt)`   | Thẩm định AI         | Quy đổi nhãn của Gemma 4 E2B sang tiếng Việt (`Tích cực` / `Trung tính` / `Tiêu cực`) để đối chiếu ngay cạnh cột 6. *(Tự ẩn nếu tắt Audit)* |
-| 12 | `gemma_score_5` `<br>` `(điểm 1-5 gemma)`                    | Thẩm định AI         | Điểm `1–5` do Gemma 4 E2B chấm để so ngay với cột 7. *(Tự ẩn nếu tắt Audit)*                                                                              |
-| 13 | `gemma_is_sarcasm` `<br>` `(nói mỉa theo gemma)`             | Phát hiện mỉa mai    | Cho biết bình luận có phải nói mỉa / châm biếm hay không (`True` / `False`). *(Tự ẩn nếu tắt Audit)*                                                  |
-| 14 | `gemma_agrees_polarity` `<br>` `(khớp cực tính với gemma)` | Đối chiếu đúng/sai | Trả lời trực tiếp *"Hệ thống chính có đoán khớp với Gemma không?"*. *(Tự ẩn nếu tắt Audit)*                                                          |
-| 15 | `gemma_reason` `<br>` `(lý do gemma giải thích)`            | Giải thích AI         | Lý do ngắn gọn bằng tiếng Việt vì sao Gemma đánh giá như vậy. *(Tự ẩn nếu tắt Audit)*                                                                   |
+| STT | Tên cột & Chú thích trong CSV | Nhóm thông tin | Ý nghĩa |
+| :-: | :--- | :--- | :--- |
+| 1 | `username` `<br>` `(tên tài khoản)` | Người dùng | Tên tài khoản người bình luận. |
+| 2 | `is_reply` `<br>` `(là bình luận trả lời)` | Hội thoại | Phân biệt comment chính (`False`) và reply (`True`). |
+| 3 | `likes` `<br>` `(lượt thích)` | Tương tác | Số lượt tim, dùng làm khóa sắp xếp giảm dần. |
+| 4 | `created_at` `<br>` `(thời gian đăng)` | Thời gian | Thời điểm đăng bình luận. |
+| 5 | `language` `<br>` `(ngôn ngữ)` | Ngôn ngữ | `vi` hoặc `en`. |
+| 6 | `original_text` `<br>` `(nội dung gốc)` | Nội dung | Nội dung gốc nguyên văn. |
+| 7 | `polarity_vi` `<br>` `(cực tính hệ thống)` | Kết quả | `Tích cực` / `Trung tính` / `Tiêu cực`. |
+| 8 | `score_5` `<br>` `(điểm thang 1-5)` | Thang điểm | Điểm sao `1..5`. |
+| 9 | `score_10` `<br>` `(điểm thang 0-10)` | Thang điểm | Điểm chi tiết `0.00..10.00`. |
+| 10 | `emotion_vi` `<br>` `(cảm xúc 7 cung bậc)` | Cảm xúc | Cảm xúc tiếng Việt 7 cung bậc. |
+| 11 | `gemma_polarity_vi` `<br>` `(cực tính gemma tiếng việt)` | AI Audit | Cực tính tiếng Việt theo Gemma *(tự ẩn nếu tắt Audit)*. |
+| 12 | `gemma_score_5` `<br>` `(điểm 1-5 gemma)` | AI Audit | Điểm `1..5` theo Gemma *(tự ẩn nếu tắt Audit)*. |
+| 13 | `gemma_is_sarcasm` `<br>` `(nói mỉa theo gemma)` | AI Audit | Cờ nói mỉa của Gemma *(tự ẩn nếu tắt Audit)*. |
+| 14 | `gemma_reason` `<br>` `(lý do gemma giải thích)` | AI Audit | Lý do ngắn của Gemma *(tự ẩn nếu tắt Audit)*. |
+
+---
+
+### 5.2b. `detailed_model_outputs.csv` — Chi tiết kỹ thuật, xác suất & dự đoán từng mô hình (20 cột lõi + 3 cột AI Audit)
+
+Tệp `detailed_model_outputs.csv` lưu toàn bộ các thuộc tính kỹ thuật phục vụ nghiên cứu, gỡ lỗi và đối chiếu từng mô hình mà không làm nặng `final_results.csv`:
+
+| Nhóm cột | Các cột bao gồm |
+| :--- | :--- |
+| **Khóa liên kết (3)** | `comment_id`, `username`, `original_text` |
+| **NLP & Metadata phụ (5)** | `nickname`, `segmented_text`, `is_duplicate`, `has_sarcasm_signal`, `needs_audit` |
+| **Xác suất & Điểm liên tục (5)** | `polarity_score` (`-1..+1`), `score_POS`, `score_NEG`, `score_NEU`, `emotion_label` (nhãn chuẩn tiếng Anh) |
+| **Dự đoán 7 mô hình đơn lẻ (7)** | `pred_nb`, `pred_lr`, `pred_svm`, `pred_lexicon`, `pred_visobert`, `pred_dl_primary`, `emotion_ml_label` |
+| **Gemma Audit bổ sung (3 — tự ẩn nếu tắt Audit)** | `gemma_audited`, `gemma_emotion`, `gemma_agrees_emotion` |
 
 ---
 
@@ -507,13 +485,17 @@ Biểu đồ do `plot_sentiment_dashboard()` trong `src/visualization.py` sinh r
 | Tham số (`SentimentPipeline.run`) | Cờ CLI (`python -m src.pipeline`) | Mặc định   | Tác dụng & Khuyến nghị chỉnh                                                                                                                                                    |
 | :----------------------------------- | :----------------------------------- | :------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `tiktok_url`                       | `--url`                            | `None`      | Dán link video/ảnh TikTok (hỗ trợ cả `vt.tiktok.com` lẫn `www.tiktok.com`).                                                                                                |
+| `input_dir`                        | `--input-dir`                      | `None`      | Trỏ thẳng vào thư mục cục bộ đã có sẵn comment/media/metadata (ví dụ `data/<post_id>`).                                                                                       |
 | `media_input`                      | `--media`                          | `None`      | Truyền đường dẫn video/ảnh cục bộ nếu không tải từ link TikTok.                                                                                                          |
-| `comments_source`                  | `--comments`                       | `None`      | Truyền tệp `.csv`, `.json`, hoặc `.txt` nếu muốn chạy lại trên dữ liệu bình luận đã có sẵn.                                                                    |
-| `enable_audio`                     | `--no-audio`                       | `True`      | Bật/tắt bước giải mã âm thanh bằng PyAV + Whisper ở Giai đoạn 1. Giữ `True` với video nói/review; có thể tắt nếu là bài ảnh hoặc clip chỉ có nhạc nền.   |
-| `run_ai_audit`                     | `--skip-audit`                     | `True`      | Bật/tắt Giai đoạn 4 (Gemma 4 E2B thẩm định đầu ra). Bật khi cần kiểm chứng thực tế & chấm điểm đối chiếu; tắt nếu chỉ cần thống kê nhanh trong ~10 giây. |
-| `audit_limit`                      | `--audit-limit`                    | `None`      | `None` = chấm **100%** bình luận hợp lệ; đặt số nguyên (ví dụ `80`) nếu muốn giới hạn thời gian chạy trên video có quá nhiều bình luận.             |
-| `max_comments`                     | `--max-comments`                   | `200`       | Số lượng bình luận thô tối đa cuộn thu thập trên trình duyệt Edge.                                                                                                      |
+| `comments_source`                  | `--comments`                       | `None`      | Truyền trực tiếp tệp `.csv`, `.xlsx`, `.xls`, `.json`, hoặc `.txt` (hỗ trợ nạp lại cả file output 2 dòng tiêu đề).                                                       |
+| `run_media_analysis`               | `--skip-media`                     | `True`      | Bật/tắt Giai đoạn 1 (Gemma 4 E2B đọc video/ảnh) ngay cả khi có media.                                                                                                            |
+| `enable_audio`                     | `--no-audio`                       | `True`      | Bật/tắt bước giải mã âm thanh bằng PyAV + Whisper ở Giai đoạn 1.                                                                                                                 |
+| `run_ai_audit`                     | `--ai-audit` / `--no-ai-audit` / `--skip-audit` | `True` | Bật/tắt Giai đoạn 4 (Gemma 4 E2B thẩm định kết quả Giai đoạn 3). Tắt nếu chỉ cần kết quả ML/DL nhanh mà không cần kiểm tra lại bằng AI.                         |
+| `audit_limit`                      | `--audit-limit`                    | `None`      | `None` = chấm **100%** bình luận hợp lệ; đặt số nguyên (ví dụ `80`) nếu muốn giới hạn thời gian chạy.                                                                      |
+| `max_comments`                     | `--max-comments`                   | `200`       | Số lượng bình luận thô tối đa (bao gồm cả reply nếu bật) khi crawl trên trình duyệt Edge.                                                                                     |
+| `include_replies`                  | `--no-replies`                     | `True`      | Bật/tắt tự động bấm mở rộng và thu thập các bình luận trả lời (reply).                                                                                                         |
+| `max_replies_per_comment`          | `--max-replies-per-comment`        | `None`      | Giới hạn số reply tối đa cho mỗi bình luận chính (`None` = lấy hết cho tới khi chạm `max_comments`).                                                                          |
 | `deduplicate_stats`                | `--deduplicate-stats`              | `False`     | Đặt `True` nếu muốn loại bỏ các bình luận copy-paste lặp lại (`is_duplicate=True`) khỏi bảng tỷ lệ `%` tổng hợp.                                              |
-| `unload_ollama_after_stage1`       | *(mặc định bật)*               | `True`      | Tự động gửi `keep_alive=0` sau Giai đoạn 1 để giải phóng VRAM 4 GB; giữ nguyên `True`.                                                                               |
+| `unload_ollama_after_stage1`       | *(mặc định bật)*               | `True`      | Tự động xả VRAM Gemma (`keep_alive=0`) và RAM Whisper (`unload_whisper_model()`) ngay sau Giai đoạn 1.                                                                        |
 | `data_dir`                         | `--data-dir`                       | `"data"`    | Thư mục gốc lưu toàn bộ dữ liệu thu thập thô (`data/<post_id>/`).                                                                                                        |
-| `output_dir`                       | `--output`                         | `"outputs"` | Thư mục gốc xuất toàn bộ kết quả xử lý cuối cùng (`outputs/<post_id>/`).                                                                                               |
+| `output_dir`                       | `--output`                         | `"outputs"` | Thư mục gốc xuất toàn bộ kết quả xử lý cuối cùng (`outputs/<run_name>/`).                                                                                               |

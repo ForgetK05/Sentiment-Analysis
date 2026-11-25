@@ -102,6 +102,8 @@ class AnalyzedComment:
     pred_dl_primary: str   # PhoBERT (cho 'vi') / Twitter-RoBERTa (cho 'en')
     emotion_ml_label: str
     model_probs: dict[str, dict[str, float]] = field(default_factory=dict)
+    is_reply: bool = False
+    parent_comment_id: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -535,6 +537,15 @@ class CommentAnalyzer:
             if viso_probs is not None:
                 model_probs_entry["visobert"] = viso_probs
 
+            raw_is_reply = meta.get("is_reply", False)
+            if isinstance(raw_is_reply, str):
+                is_reply_val = raw_is_reply.strip().lower() in {"true", "1", "yes", "y"}
+            else:
+                try:
+                    is_reply_val = bool(raw_is_reply) and not pd.isna(raw_is_reply)
+                except Exception:
+                    is_reply_val = bool(raw_is_reply)
+
             analyzed.append(
                 AnalyzedComment(
                     comment_id=str(meta.get("comment_id", "")),
@@ -572,6 +583,8 @@ class CommentAnalyzer:
                     pred_dl_primary=dl_lbl,
                     emotion_ml_label=emo_ml_label,
                     model_probs=model_probs_entry,
+                    is_reply=is_reply_val,
+                    parent_comment_id=str(meta.get("parent_comment_id", "") or "").strip(),
                 )
             )
 

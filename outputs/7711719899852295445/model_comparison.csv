@@ -1,0 +1,10 @@
+﻿model,family,total_comments,pos_count,neu_count,neg_count,pos_pct,neu_pct,neg_pct,inference_time_sec,task
+TF-IDF + Naive Bayes,Classical ML,197.0,35.0,56.0,106.0,17.77,28.43,53.81,0.068,Polarity (3 lớp)
+TF-IDF + Logistic Regression,Classical ML,197.0,34.0,87.0,76.0,17.26,44.16,38.58,0.068,Polarity (3 lớp)
+TF-IDF + Linear SVM,Classical ML,197.0,45.0,45.0,107.0,22.84,22.84,54.31,0.068,Polarity (3 lớp)
+Bilingual Lexicon + Rules,Rule-based NLP,197.0,29.0,159.0,9.0,14.72,80.71,4.57,0.002,Polarity (3 lớp)
+"ViSoBERT (5CD-AI, VI)",Deep Learning,197.0,83.0,20.0,94.0,42.13,10.15,47.72,17.64,Polarity (3 lớp)
+PhoBERT + underthesea (wonrax),Deep Learning,197.0,37.0,83.0,77.0,18.78,42.13,39.09,15.5,Polarity (3 lớp)
+Hybrid Ensemble (Hệ thống chính),Hybrid ML + DL,197.0,41.0,78.0,78.0,20.81,39.59,39.59,,Polarity (3 lớp)
+TF-IDF + Logistic Regression (Emotion),Classical ML,,,,,,,,0.026,Emotion (7 cung bậc)
+PhoBERT Emotion (visolex/UIT-VSMEC),Deep Learning,,,,,,,,14.681,Emotion (7 cung bậc)

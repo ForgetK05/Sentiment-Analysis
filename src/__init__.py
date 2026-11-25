@@ -34,7 +34,14 @@ if TYPE_CHECKING:
         build_model_comparison,
         compute_dual_scale,
     )
-    from src.pipeline import SentimentPipeline, load_comments
+    from src.pipeline import (
+        SentimentPipeline,
+        build_cleaned_final_results_df,
+        build_detailed_model_outputs_df,
+        format_final_results_df,
+        load_comments,
+        resolve_local_input_dir,
+    )
     from src.preprocessing import (
         PreprocessedComment,
         TextPreprocessor,
@@ -67,6 +74,8 @@ __all__ = [
     "TextPreprocessor",
     "TikTokMediaBundle",
     "VietnameseLexiconScorer",
+    "build_cleaned_final_results_df",
+    "build_detailed_model_outputs_df",
     "build_model_comparison",
     "clean_comment_text",
     "collect_tiktok_post",
@@ -77,10 +86,12 @@ __all__ = [
     "extract_hashtags",
     "extract_keywords_tfidf",
     "extract_post_id",
+    "format_final_results_df",
     "load_comments",
     "load_comments_dataframe",
     "plot_sentiment_dashboard",
     "plot_sentiment_summary",
+    "resolve_local_input_dir",
 ]
 
 _EXPORT_MAP = {
@@ -106,6 +117,8 @@ _EXPORT_MAP = {
     "TextPreprocessor": ("src.preprocessing.text_cleaner", "TextPreprocessor"),
     "TikTokMediaBundle": ("src.ingestion.tiktok_collector", "TikTokMediaBundle"),
     "VietnameseLexiconScorer": ("src.models.classical_ml", "VietnameseLexiconScorer"),
+    "build_cleaned_final_results_df": ("src.pipeline", "build_cleaned_final_results_df"),
+    "build_detailed_model_outputs_df": ("src.pipeline", "build_detailed_model_outputs_df"),
     "build_model_comparison": ("src.models.gemma_auditor", "build_model_comparison"),
     "clean_comment_text": ("src.preprocessing.text_cleaner", "clean_comment_text"),
     "collect_tiktok_post": ("src.ingestion.tiktok_collector", "collect_tiktok_post"),
@@ -116,10 +129,12 @@ _EXPORT_MAP = {
     "extract_hashtags": ("src.ingestion.tiktok_collector", "extract_hashtags"),
     "extract_keywords_tfidf": ("src.preprocessing.text_cleaner", "extract_keywords_tfidf"),
     "extract_post_id": ("src.ingestion.tiktok_collector", "extract_post_id"),
+    "format_final_results_df": ("src.pipeline", "format_final_results_df"),
     "load_comments": ("src.pipeline", "load_comments"),
     "load_comments_dataframe": ("src.ingestion.tiktok_collector", "load_comments_dataframe"),
     "plot_sentiment_dashboard": ("src.visualization", "plot_sentiment_dashboard"),
     "plot_sentiment_summary": ("src.visualization", "plot_sentiment_summary"),
+    "resolve_local_input_dir": ("src.pipeline", "resolve_local_input_dir"),
 }
 
 
