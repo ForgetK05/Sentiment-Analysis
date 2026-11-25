@@ -16,14 +16,14 @@ def plot_sentiment_dashboard(
     report: dict[str, Any],
     save_path: str | Path | None = None,
 ) -> plt.Figure:
-    """Vẽ dashboard 2x2: Polarity (Hệ thống vs Gemma 4), 7 Cảm xúc, Thang điểm 1-5 & So sánh mô hình."""
+    """Vẽ dashboard 2x2: Polarity, 7 Cảm xúc, Bám sát nội dung video (hoặc Ngôn ngữ) & So sánh mô hình."""
     summary = report.get("sentiment_summary")
     if not summary or summary.get("total_valid_comments", 0) == 0:
         raise ValueError("Báo cáo chưa có dữ liệu thống kê bình luận để vẽ biểu đồ.")
 
     fig, axes = plt.subplots(2, 2, figsize=(15, 10))
     ax_pol, ax_emo = axes[0, 0], axes[0, 1]
-    ax_s5, ax_comp = axes[1, 0], axes[1, 1]
+    ax_ctx, ax_comp = axes[1, 0], axes[1, 1]
 
     # 1. Polarity: Hệ thống Hybrid vs Gemma 4 (nếu có)
     pol_counts = summary["polarity_counts"]
@@ -98,33 +98,70 @@ def plot_sentiment_dashboard(
             va="center",
         )
 
-    # 3. Thang điểm 1 - 5
-    s5_counts = summary["score_5_counts"]
-    s5_labels = [
-        "1\n(Rất tiêu cực)",
-        "2\n(Tiêu cực)",
-        "3\n(Trung tính)",
-        "4\n(Tích cực)",
-        "5\n(Rất tích cực)",
-    ]
-    s5_vals = [s5_counts.get(str(i), 0) for i in range(1, 6)]
-    s5_colors = ["#c0392b", "#e67e22", "#95a5a6", "#27ae60", "#16a085"]
-    bars_s = ax_s5.bar(s5_labels, s5_vals, color=s5_colors)
-    for bar in bars_s:
-        ax_s5.text(
-            bar.get_x() + bar.get_width() / 2,
-            bar.get_height() + 0.5,
-            str(int(bar.get_height())),
-            ha="center",
-            va="bottom",
-            fontsize=9,
+    # 3. Phân bố sắc thái theo mức độ bám sát nội dung video (hoặc fallback Ngôn ngữ)
+    on_topic_info = summary.get("on_topic_summary")
+    if on_topic_info:
+        on_pol = on_topic_info.get("on_topic_polarity_counts") or {}
+        on_vals = [int(on_pol.get("POS", 0)), int(on_pol.get("NEU", 0)), int(on_pol.get("NEG", 0))]
+        off_vals = [
+            max(0, int(pol_counts.get("POS", 0)) - on_vals[0]),
+            max(0, int(pol_counts.get("NEU", 0)) - on_vals[1]),
+            max(0, int(pol_counts.get("NEG", 0)) - on_vals[2]),
+        ]
+        ctx_x = [0, 1, 2]
+        w_ctx = 0.36
+        b_on = ax_ctx.bar(
+            [x - w_ctx / 2 for x in ctx_x],
+            on_vals,
+            width=w_ctx,
+            label=f"Bám sát video ({on_topic_info.get('on_topic_count', 0)})",
+            color="#2980b9",
         )
-    ax_s5.set_ylabel("Số bình luận")
-    ax_s5.set_title(
-        f"Thang điểm 1–5 (TB: {summary.get('avg_score_5', 0)}/5 | "
-        f"Thang 10: {summary.get('avg_score_10', 0)}/10)"
-    )
-    ax_s5.grid(axis="y", linestyle="--", alpha=0.35)
+        b_off = ax_ctx.bar(
+            [x + w_ctx / 2 for x in ctx_x],
+            off_vals,
+            width=w_ctx,
+            label=f"Ngoài lề ({on_topic_info.get('off_topic_count', 0)})",
+            color="#bdc3c7",
+        )
+        for bar in list(b_on) + list(b_off):
+            ax_ctx.text(
+                bar.get_x() + bar.get_width() / 2,
+                bar.get_height() + 0.5,
+                str(int(bar.get_height())),
+                ha="center",
+                va="bottom",
+                fontsize=9,
+            )
+        ax_ctx.set_xticks(ctx_x)
+        ax_ctx.set_xticklabels(["Tích cực (POS)", "Trung tính (NEU)", "Tiêu cực (NEG)"])
+        ax_ctx.set_ylabel("Số bình luận")
+        ax_ctx.set_title(
+            f"Bám sát nội dung video: {on_topic_info.get('on_topic_pct', 0)}% "
+            f"({on_topic_info.get('on_topic_count', 0)}/{summary.get('total_valid_comments', 0)})"
+        )
+        ax_ctx.legend(fontsize=8.5)
+        ax_ctx.grid(axis="y", linestyle="--", alpha=0.35)
+    else:
+        lang_map = summary.get("language_counts") or {}
+        lang_labels = ["Tiếng Việt (vi)", "Tiếng Anh (en)"]
+        lang_vals = [int(lang_map.get("vi", 0)), int(lang_map.get("en", 0))]
+        bars_l = ax_ctx.bar(lang_labels, lang_vals, color=["#1abc9c", "#3498db"])
+        for bar in bars_l:
+            ax_ctx.text(
+                bar.get_x() + bar.get_width() / 2,
+                bar.get_height() + 0.5,
+                str(int(bar.get_height())),
+                ha="center",
+                va="bottom",
+                fontsize=9,
+            )
+        ax_ctx.set_ylabel("Số bình luận")
+        ax_ctx.set_title(
+            f"Phân bố ngôn ngữ (Cực tính TB: {summary.get('avg_polarity_score', 0)} | "
+            f"Tự tin TB: {summary.get('avg_confidence', 0)})"
+        )
+        ax_ctx.grid(axis="y", linestyle="--", alpha=0.35)
 
     # 4. So sánh các mô hình ML cổ điển vs Deep Learning vs Hybrid
     non_ref_models = [r for r in pol_models if "Gemma 4" not in str(r.get("model", ""))]
@@ -187,6 +224,3 @@ def plot_sentiment_dashboard(
         fig.savefig(out_img, dpi=150, bbox_inches="tight")
 
     return fig
-
-
-plot_sentiment_summary = plot_sentiment_dashboard

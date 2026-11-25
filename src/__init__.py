@@ -6,8 +6,6 @@ if TYPE_CHECKING:
     from src.ingestion import (
         TikTokMediaBundle,
         collect_tiktok_post,
-        crawl_tiktok_comments,
-        download_tiktok_media,
         extract_hashtags,
         extract_post_id,
         load_comments_dataframe,
@@ -21,7 +19,6 @@ if TYPE_CHECKING:
         EMOTION_LABELS,
         EMOTION_VI_MAP,
         LABEL_VI_MAP,
-        RATING_5_VI_MAP,
         AnalyzedComment,
         BilingualLexiconScorer,
         ClassicalMLSuite,
@@ -30,16 +27,13 @@ if TYPE_CHECKING:
         GemmaAuditor,
         MediaAnalysisResult,
         MediaAnalyzer,
-        VietnameseLexiconScorer,
         build_model_comparison,
-        compute_dual_scale,
+        compute_polarity_score,
     )
     from src.pipeline import (
         SentimentPipeline,
-        build_cleaned_final_results_df,
         build_detailed_model_outputs_df,
         format_final_results_df,
-        load_comments,
         resolve_local_input_dir,
     )
     from src.preprocessing import (
@@ -49,7 +43,7 @@ if TYPE_CHECKING:
         detect_language,
         extract_keywords_tfidf,
     )
-    from src.visualization import plot_sentiment_dashboard, plot_sentiment_summary
+    from src.visualization import plot_sentiment_dashboard
 
 __all__ = [
     "AnalyzedComment",
@@ -69,28 +63,21 @@ __all__ = [
     "MediaAnalysisResult",
     "MediaAnalyzer",
     "PreprocessedComment",
-    "RATING_5_VI_MAP",
     "SentimentPipeline",
     "TextPreprocessor",
     "TikTokMediaBundle",
-    "VietnameseLexiconScorer",
-    "build_cleaned_final_results_df",
     "build_detailed_model_outputs_df",
     "build_model_comparison",
     "clean_comment_text",
     "collect_tiktok_post",
-    "compute_dual_scale",
-    "crawl_tiktok_comments",
+    "compute_polarity_score",
     "detect_language",
-    "download_tiktok_media",
     "extract_hashtags",
     "extract_keywords_tfidf",
     "extract_post_id",
     "format_final_results_df",
-    "load_comments",
     "load_comments_dataframe",
     "plot_sentiment_dashboard",
-    "plot_sentiment_summary",
     "resolve_local_input_dir",
 ]
 
@@ -112,28 +99,21 @@ _EXPORT_MAP = {
     "MediaAnalysisResult": ("src.models.media_context", "MediaAnalysisResult"),
     "MediaAnalyzer": ("src.models.media_context", "MediaAnalyzer"),
     "PreprocessedComment": ("src.preprocessing.text_cleaner", "PreprocessedComment"),
-    "RATING_5_VI_MAP": ("src.models.sentiment_engine", "RATING_5_VI_MAP"),
     "SentimentPipeline": ("src.pipeline", "SentimentPipeline"),
     "TextPreprocessor": ("src.preprocessing.text_cleaner", "TextPreprocessor"),
     "TikTokMediaBundle": ("src.ingestion.tiktok_collector", "TikTokMediaBundle"),
-    "VietnameseLexiconScorer": ("src.models.classical_ml", "VietnameseLexiconScorer"),
-    "build_cleaned_final_results_df": ("src.pipeline", "build_cleaned_final_results_df"),
     "build_detailed_model_outputs_df": ("src.pipeline", "build_detailed_model_outputs_df"),
     "build_model_comparison": ("src.models.gemma_auditor", "build_model_comparison"),
     "clean_comment_text": ("src.preprocessing.text_cleaner", "clean_comment_text"),
     "collect_tiktok_post": ("src.ingestion.tiktok_collector", "collect_tiktok_post"),
-    "compute_dual_scale": ("src.models.sentiment_engine", "compute_dual_scale"),
-    "crawl_tiktok_comments": ("src.ingestion.tiktok_collector", "crawl_tiktok_comments"),
+    "compute_polarity_score": ("src.models.sentiment_engine", "compute_polarity_score"),
     "detect_language": ("src.preprocessing.text_cleaner", "detect_language"),
-    "download_tiktok_media": ("src.ingestion.tiktok_collector", "download_tiktok_media"),
     "extract_hashtags": ("src.ingestion.tiktok_collector", "extract_hashtags"),
     "extract_keywords_tfidf": ("src.preprocessing.text_cleaner", "extract_keywords_tfidf"),
     "extract_post_id": ("src.ingestion.tiktok_collector", "extract_post_id"),
     "format_final_results_df": ("src.pipeline", "format_final_results_df"),
-    "load_comments": ("src.pipeline", "load_comments"),
     "load_comments_dataframe": ("src.ingestion.tiktok_collector", "load_comments_dataframe"),
     "plot_sentiment_dashboard": ("src.visualization", "plot_sentiment_dashboard"),
-    "plot_sentiment_summary": ("src.visualization", "plot_sentiment_summary"),
     "resolve_local_input_dir": ("src.pipeline", "resolve_local_input_dir"),
 }
 

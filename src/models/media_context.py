@@ -100,12 +100,19 @@ MEDIA_RESPONSE_SCHEMA: dict[str, Any] = {
                 "Tranh cãi",
                 "Trung lập",
             ],
-            "description": "Sắc thái chủ đạo của bài đăng.",
+            "description": (
+                "Sắc thái chủ đạo của bài đăng: CHỈ chọn 'Châm biếm / Mỉa mai' khi tác giả cố ý nói ngược/cà khịa; "
+                "video chia sẻ tích cực/đời thường chọn 'Tích cực'; video phân tích/nêu quan điểm dễ gây tranh luận chọn 'Tranh cãi' hoặc 'Trung lập'; "
+                "video bóc phốt/chỉ trích chọn 'Tiêu cực'."
+            ),
         },
         "tu_khoa": {
             "type": "array",
             "items": {"type": "string"},
-            "description": "4-8 từ khóa trọng tâm (gồm cả tên riêng, tiếng lóng, viết tắt nếu có).",
+            "description": (
+                "4-8 từ khóa trọng tâm (gồm cả tên riêng, tiếng lóng, viết tắt; "
+                "nếu video/caption dùng tiếng Anh thì bổ sung thêm từ khóa tiếng Anh gốc quan trọng)."
+            ),
         },
         "luu_y_danh_gia_comment": {
             "type": "string",
@@ -163,8 +170,9 @@ _SYSTEM_PROMPT = (
     "     (3) Các chi tiết, con số, hành động, bằng chứng nổi bật trong video ->\n"
     "     (4) Kết quả, cú twist cuối video hoặc thông điệp/kết luận của tác giả.\n"
     "   - Người đọc chỉ cần đọc `tom_tat_ngan` là nắm trọn nội dung chính mà không cần mở xem lại video.\n"
-    "3. PHỤC VỤ HIỂU BÌNH LUẬN:\n"
+    "3. PHỤC VỤ HIỂU BÌNH LUẬN & CHỌN ĐÚNG `sac_thai_noi_dung`:\n"
     "   - Trong `luu_y_danh_gia_comment`, chỉ rõ: nếu người xem chê/chửi thì họ đang chê nhân vật/sản phẩm trong video (tức đồng tình với tác giả) hay đang chê chính tác giả; nêu rõ các chi tiết dễ gây tranh cãi hoặc meme/câu đùa ở cuối video.\n"
+    "   - Về `sac_thai_noi_dung`: CHỈ chọn \"Châm biếm / Mỉa mai\" khi tác giả thực sự nói ngược/cà khịa có chủ ý. Video chia sẻ tích cực/đời thường chọn \"Tích cực\"; video phân tích/bàn luận quan điểm dễ gây tranh luận chọn \"Tranh cãi\" hoặc \"Trung lập\"; video bóc phốt/chỉ trích chọn \"Tiêu cực\".\n"
     "   - Viết tiếng Việt tự nhiên, rõ ràng, giữ nguyên tên riêng và thuật ngữ/từ lóng tiếng Anh gốc.\n"
     "CHỈ trả về duy nhất một đối tượng JSON hợp lệ khớp đúng schema, không thêm lời dẫn hay markdown."
 )
@@ -188,13 +196,74 @@ class MediaAnalysisResult:
     tom_tat_ngan: str = ""
     tu_khoa: list[str] = field(default_factory=list)
     luu_y_danh_gia_comment: str = ""
-    raw_response: str = ""
     chu_tren_man_hinh: list[str] = field(default_factory=list)
     dien_bien_hinh_anh: list[str] = field(default_factory=list)
     chi_tiet_va_luan_diem: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "MediaAnalysisResult":
+        """Khôi phục MediaAnalysisResult từ dict (bỏ qua key lạ và điền mặc định an toàn)."""
+        if not isinstance(data, dict):
+            raise ValueError("Dữ liệu media_context phải là dict JSON hợp lệ.")
+
+        def _as_list(val: Any) -> list[str]:
+            return MediaAnalyzer._coerce_str_list(val)
+
+        valid_tones = {
+            "Tích cực",
+            "Tiêu cực",
+            "Châm biếm / Mỉa mai",
+            "Tranh cãi",
+            "Trung lập",
+        }
+        tone = str(data.get("sac_thai_noi_dung") or "Trung lập").strip()
+        if tone not in valid_tones:
+            tone = "Trung lập"
+
+        try:
+            num_frames = int(data.get("num_frames_used", 0) or 0)
+        except (TypeError, ValueError):
+            num_frames = 0
+
+        return cls(
+            media_type=str(data.get("media_type") or "video").strip(),
+            source_paths=_as_list(data.get("source_paths")),
+            num_frames_used=num_frames,
+            has_audio=bool(data.get("has_audio", False)),
+            caption=str(data.get("caption") or "").strip(),
+            transcript=str(data.get("transcript") or "").strip(),
+            chu_de_chinh=str(data.get("chu_de_chinh") or "Chưa xác định").strip(),
+            muc_dich_chinh=str(data.get("muc_dich_chinh") or "Chưa xác định").strip(),
+            quan_diem_noi_dung=str(data.get("quan_diem_noi_dung") or "Chưa xác định").strip(),
+            doi_tuong_chinh=_as_list(data.get("doi_tuong_chinh")),
+            sac_thai_noi_dung=tone,
+            tom_tat_ngan=str(data.get("tom_tat_ngan") or "").strip(),
+            tu_khoa=_as_list(data.get("tu_khoa")),
+            luu_y_danh_gia_comment=str(data.get("luu_y_danh_gia_comment") or "").strip(),
+            chu_tren_man_hinh=_as_list(data.get("chu_tren_man_hinh")),
+            dien_bien_hinh_anh=_as_list(data.get("dien_bien_hinh_anh")),
+            chi_tiet_va_luan_diem=_as_list(data.get("chi_tiet_va_luan_diem")),
+        )
+
+    def save_json(self, path: str | Path) -> Path:
+        """Lưu MediaAnalysisResult ra tệp JSON UTF-8 trong thư mục data/."""
+        out_path = Path(path)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(
+            json.dumps(self.to_dict(), ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        return out_path
+
+    @classmethod
+    def load_json(cls, path: str | Path) -> "MediaAnalysisResult":
+        """Đọc MediaAnalysisResult từ tệp JSON đã lưu sẵn."""
+        in_path = Path(path)
+        payload = json.loads(in_path.read_text(encoding="utf-8"))
+        return cls.from_dict(payload)
 
 
 class MediaAnalyzer:
@@ -392,20 +461,6 @@ class MediaAnalyzer:
             label = f"F{i} {sec // 60:02d}:{sec % 60:02d}"
             frames_b64.append(self._encode_frame_bgr(resized, self.image_size, label=label))
         return frames_b64
-
-    def has_audio_stream(self, video_path: str | Path) -> bool:
-        try:
-            import av
-        except ImportError:
-            print("[Cảnh báo] Chưa cài thư viện `av`. Bỏ qua bước kiểm tra âm thanh.")
-            return False
-
-        try:
-            with av.open(str(video_path)) as container:
-                return len(container.streams.audio) > 0
-        except Exception as exc:
-            print(f"[Cảnh báo] Không thể kiểm tra luồng âm thanh của video: {exc}")
-            return False
 
     def _decode_audio_16k_mono(self, video_path: str | Path) -> tuple[bool, np.ndarray]:
         try:
@@ -865,7 +920,6 @@ class MediaAnalyzer:
             tom_tat_ngan=parsed["tom_tat_ngan"],
             tu_khoa=parsed["tu_khoa"],
             luu_y_danh_gia_comment=parsed["luu_y_danh_gia_comment"],
-            raw_response=raw_content,
             chu_tren_man_hinh=parsed["chu_tren_man_hinh"],
             dien_bien_hinh_anh=parsed["dien_bien_hinh_anh"],
             chi_tiet_va_luan_diem=parsed["chi_tiet_va_luan_diem"],

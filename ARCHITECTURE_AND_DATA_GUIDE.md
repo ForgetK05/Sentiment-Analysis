@@ -28,12 +28,12 @@ e:\A\Sentiment-Analysis\
 │   ├── ollama_models/                    # Lưu trữ trọng số GGUF của Gemma 4 E2B trên ổ E:
 │   └── test.ipynb                        # Notebook kiểm thử kết nối Ollama độc lập
 │
-├── data/                                 # KHO DỮ LIỆU THU THẬP THÔ (Đầu vào)
-│   ├── samples/                          # Dữ liệu mẫu tĩnh (sample_comments.csv)
+├── data/                                 # KHO DỮ LIỆU CHUẨN BỊ ĐẦU VÀO
 │   └── <post_id>/                        # Tự động sinh theo từng link TikTok
 │       ├── video.mp4 (hoặc images/)      # Video gốc tải về (hoặc bộ ảnh Photo Mode)
 │       ├── metadata.json                 # Siêu dữ liệu bài đăng (caption, likes, duration...)
-│       └── raw_comments.csv              # Toàn bộ bình luận thô thu thập từ trình duyệt
+│       ├── raw_comments.csv              # Toàn bộ bình luận thô thu thập từ trình duyệt
+│       └── media_context.json            # Nội dung video/ảnh do Whisper + Gemma 4 trích xuất (tái sử dụng cho Giai đoạn 2–3)
 │
 ├── models/classical_ml/                  # BỘ ĐỆM MÔ HÌNH HỌC MÁY CỔ ĐIỂN (Cache .joblib)
 │   ├── vi/                               # Nhánh Tiếng Việt: NB, LR, Linear SVM, Emotion LR
@@ -45,30 +45,29 @@ e:\A\Sentiment-Analysis\
 │       ├── emotion_ml_model.joblib
 │       └── benchmark_metrics.json
 │
-├── outputs/                              # KHO KẾT QUẢ CUỐI CÙNG SAU XỬ LÝ (Đầu ra)
-│   └── <run_name>/                       # Khớp mã bài đăng, tên file hoặc tên thư mục nguồn
-│       ├── cleaned_final_results.csv     # Bản tóm gọn 10 cột lõi (hoặc 14 cột khi bật AI Audit, sắp theo likes giảm dần)
-│       ├── final_results.csv             # Các thuộc tính phân tích hữu ích (18 cột lõi, hoặc 24 cột khi bật AI Audit)
-│       ├── detailed_model_outputs.csv    # Thuộc tính kỹ thuật, xác suất & dự đoán từng mô hình (20 cột, hoặc 23 cột khi bật AI Audit)
-│       ├── filtered_noise.csv            # 8 cột tách riêng bình luận nhiễu/ngôn ngữ khác
-│       ├── model_comparison.csv          # Bảng so sánh 8 mô hình/nhánh (tự ẩn cột vs_gemma nếu tắt AI Audit)
-│       ├── report.json                   # Toàn bộ dữ liệu tổng hợp dạng JSON phân cấp
+├── outputs/                              # KHO KẾT QUẢ CUỐI CÙNG SAU XỬ LÝ (6 tệp gọn)
+│   └── <run_name>/                       # Khớp mã bài đăng hoặc tên thư mục nguồn
+│       ├── final_results.csv             # Bảng kết quả dễ đọc cho người xem (12 cột lõi hoặc 16 cột khi bật AI Audit; tiêu đề 1 dòng, sắp theo lượt thích giảm dần)
+│       ├── detailed_model_outputs.csv    # Thuộc tính kỹ thuật, ID gốc, ngữ cảnh video, xác suất & dự đoán từng mô hình (29 cột hoặc 34 cột khi bật AI Audit, khớp 1-1 theo stt)
+│       ├── filtered_noise.csv            # 9 cột tách riêng bình luận nhiễu kèm lý do tiếng Việt
+│       ├── model_comparison.csv          # Bảng so sánh 8 mô hình/nhánh (11 cột hoặc 14 cột khi bật AI Audit, tiêu đề 1 dòng tiếng Việt)
+│       ├── report.json                   # Báo cáo tổng hợp JSON gọn (không nhân bản mảng comments/noise)
 │       └── dashboard.png                 # Biểu đồ 2x2 trực quan hóa kết quả
 │
 ├── src/                                  # MÃ NGUỒN CHÍNH (Package Python)
 │   ├── __init__.py                       # Xuất biểu tượng (Lazy Export) cho toàn gói src
 │   ├── ingestion/
 │   │   ├── __init__.py
-│   │   └── tiktok_collector.py           # Bước 0: Tải video/ảnh & crawl bình luận TikTok
+│   │   └── tiktok_collector.py           # Chuẩn bị dữ liệu: Tải video/ảnh & crawl bình luận TikTok
 │   ├── preprocessing/
 │   │   ├── __init__.py
-│   │   └── text_cleaner.py               # Giai đoạn 2: Lọc nhiễu, nhận diện VI/EN, underthesea, TF-IDF
+│   │   └── text_cleaner.py               # Giai đoạn 2: Lọc nhiễu bảo vệ thực thể video, nhận diện VI/EN, underthesea, TF-IDF ngữ cảnh
 │   ├── models/
 │   │   ├── __init__.py
-│   │   ├── media_context.py              # Giai đoạn 1: OpenCV + PyAV/Whisper + Gemma 4 E2B (Input)
+│   │   ├── media_context.py              # Giai đoạn 1: OpenCV + PyAV/Whisper + Gemma 4 E2B -> lưu/nạp media_context.json
 │   │   ├── classical_ml.py               # Giai đoạn 3A: Từ điển song ngữ + NB/LR/SVM + Benchmark
-│   │   ├── sentiment_engine.py           # Giai đoạn 3B: PhoBERT/ViSoBERT/RoBERTa + Hybrid + Thang điểm
-│   │   └── gemma_auditor.py              # Giai đoạn 4: Gemma 4 E2B (Output) thẩm định & so sánh mô hình
+│   │   ├── sentiment_engine.py           # Giai đoạn 3B: PhoBERT/ViSoBERT/RoBERTa + Context Alignment + Điểm cực tính liên tục
+│   │   └── gemma_auditor.py              # Giai đoạn 4 (mặc định tắt): Gemma 4 E2B thẩm định ca mỉa mai sâu & so sánh mô hình
 │   ├── visualization.py                  # Vẽ bảng điều khiển dashboard.png (2x2)
 │   └── pipeline.py                       # Điều phối End-to-End & Giao diện dòng lệnh CLI
 │
@@ -103,17 +102,17 @@ Hai tệp cấu hình trong `AI_Local/gemma4-e2b/` quyết định việc mô h�
 
 ```mermaid
 flowchart TD
-    U["Người dùng chọn nguồn đầu vào (Link TikTok / File CSV-XLSX-JSON-TXT / Thư mục cục bộ)<br/>(main.ipynb hoặc CLI python -m src.pipeline)"] --> S0
+    U["Người dùng chọn nguồn đầu vào (1. Link TikTok | 2. Thư mục đã chuẩn bị sẵn)<br/>(main.ipynb hoặc CLI python -m src.pipeline)"] --> S0
 
-    subgraph B0["Bước 0: Thu thập / Đọc dữ liệu đầu vào (src/ingestion/tiktok_collector.py)"]
+    subgraph B0["Chuẩn bị dữ liệu (src/ingestion/tiktok_collector.py -> data/<post_id>/)"]
         S0["collect_tiktok_post() hoặc resolve_local_input_dir()"] --> D1["Lưu/đọc video.mp4 hoặc images/ & metadata.json"]
         S0 --> S0B["crawl_tiktok_comments() (tự động mở reply) hoặc load_comments_dataframe()"]
-        S0B --> D2["Lưu/đọc raw_comments.csv (12 cột gồm reply) / .xlsx / .json / .txt"]
+        S0B --> D2["Lưu/đọc raw_comments.csv (12 cột gồm reply)"]
     end
 
     D1 --> G1A
-    subgraph S1["Giai đoạn 1: AI Đầu vào — Ngữ cảnh đa phương thức (Tùy chọn, GPU 4GB + CPU)"]
-        G1A["MediaAnalyzer.analyze(): Trích 8 khung hình 768px + nhãn mốc thời gian (F1 00:02)<br/>(Tự động 2-pass nếu slideshow > 8 ảnh)"] --> G1C["Gemma 4 E2B (gemma4-e2b-opt, GPU)<br/>xuất MediaAnalysisResult (JSON Evidence-First 11 trường)"]
+    subgraph S1["Giai đoạn 1: Trích xuất & lưu/nạp ngữ cảnh video (GPU 4GB + CPU -> data/<post_id>/media_context.json)"]
+        G1A["Nếu đã có media_context.json -> nạp thẳng; ngược lại trích 8 khung hình 768px (F1 00:02)"] --> G1C["Gemma 4 E2B (gemma4-e2b-opt, GPU)<br/>xuất MediaAnalysisResult (11 trường) & lưu media_context.json"]
         G1B["PyAV tách tiếng 16kHz + Faster-Whisper (small, CPU)<br/>chép lời kèm mốc thời gian [MM:SS-MM:SS]"] --> G1C
         G1C --> G1D["unload_ollama_model() + unload_whisper_model()<br/>Giải phóng 100% VRAM GPU & RAM"]
     end
@@ -121,37 +120,39 @@ flowchart TD
     D2 --> G2A
     G1D --> G2A
 
-    subgraph S2["Giai đoạn 2: Tiền xử lý NLP & Lọc nhiễu (100% CPU, không dùng LLM)"]
+    subgraph S2["Giai đoạn 2: Tiền xử lý NLP & Lọc nhiễu có ngữ cảnh video (100% CPU)"]
         G2A["normalize_tiktok_emojis() + clean_comment_text()<br/>Chuẩn hóa Emoji [Cười...] & Teencode"] --> G2B["detect_language(): Phân loại lai VI / EN / OTHER"]
-        G2B --> G2C["_detect_filter_reason() + underthesea POS/NER<br/>Lọc 7 loại nhiễu"]
+        G2B --> G2C["_detect_filter_reason() + underthesea POS/NER<br/>Lọc 7 loại nhiễu (bảo vệ thực thể video)"]
         G2C -->|Không hợp lệ| NOISE["Nhánh nhiễu: filtered_noise.csv (8 cột)"]
-        G2C -->|Hợp lệ vi/en| G2D["underthesea word_tokenize (vi) + TF-IDF Keywords<br/>+ Gắn cờ is_duplicate, has_sarcasm_signal"]
+        G2C -->|Hợp lệ vi/en| G2D["underthesea word_tokenize + TF-IDF Cosine ngữ cảnh<br/>Gắn cờ is_on_topic, context_relevance, matched_video_terms"]
     end
 
     G2D --> R1
-    subgraph S3["Giai đoạn 3: Lõi Phân tích Cảm xúc Song ngữ (100% CPU)"]
+    subgraph S3["Giai đoạn 3: Lõi Phân tích Cảm xúc Song ngữ + Context Alignment (100% CPU)"]
         R1{"Định tuyến ngôn ngữ<br/>vi hay en?"}
         R1 -->|vi| VI_ML["ML cổ điển (NB, LR, SVM, Emo-LR) + Lexicon VI"]
         R1 -->|vi| VI_DL["Deep Learning VI: PhoBERT + ViSoBERT + PhoBERT-Emotion"]
         R1 -->|en| EN_ML["ML cổ điển EN (NB, LR, SVM, Emo-LR) + Lexicon EN"]
         R1 -->|en| EN_DL["Deep Learning EN: Twitter-RoBERTa + DistilRoBERTa-Emotion"]
-        VI_ML --> HYB["Hybrid Ensemble + Emotion Cues + compute_dual_scale()<br/>Tạo AnalyzedComment (37 thuộc tính)"]
+        VI_ML --> HYB["Hybrid Ensemble + Context Alignment + compute_polarity_score()<br/>Tạo AnalyzedComment (cập nhật needs_audit cho ca mỉa mai sâu)"]
         VI_DL --> HYB
         EN_ML --> HYB
         EN_DL --> HYB
     end
 
     HYB --> G4A
+    G1C -. "Đọc từ media_context.json" .-> G2D
+    G1C -. "Đọc từ media_context.json" .-> HYB
     G1C -. "Truyền JSON Ngữ cảnh 11 trường" .-> G4A
 
-    subgraph S4["Giai đoạn 4: AI Đầu ra — Thẩm định thực tế (Tùy chọn RUN_AI_AUDIT, GPU 4GB)"]
-        G4A["GemmaAuditor.audit_comments():<br/>Gemma 4 E2B chấm độc lập theo lô 8 câu + ngữ cảnh"] --> G4B["build_model_comparison():<br/>Agreement %, Macro-F1, Cohen's Kappa, score_5 MAE"]
+    subgraph S4["Giai đoạn 4: AI Đầu ra — Thẩm định ca mỉa mai sâu (Mặc định TẮT RUN_AI_AUDIT=False)"]
+        G4A["GemmaAuditor.audit_comments():<br/>Gemma 4 E2B chấm độc lập theo lô 8 câu + ngữ cảnh"] --> G4B["build_model_comparison():<br/>Agreement %, Macro-F1, Cohen's Kappa"]
         G4B --> G4C["generate_overall_verdict():<br/>Nhận định độ chính xác, điểm mạnh/yếu"]
     end
 
     NOISE --> EXP
     G4C --> EXP["SentimentPipeline._export_outputs() + plot_sentiment_dashboard()"]
-    EXP --> OUT["outputs/<run_name>/ :<br/>cleaned_final_results.csv | final_results.csv | detailed_model_outputs.csv<br/>filtered_noise.csv | model_comparison.csv | report.json | dashboard.png"]
+    EXP --> OUT["outputs/<run_name>/ (6 tệp):<br/>final_results.csv | detailed_model_outputs.csv<br/>filtered_noise.csv | model_comparison.csv | report.json | dashboard.png"]
 ```
 
 ### 2.2. Chu kỳ quản lý tài nguyên (CPU ↔ GPU 4GB)
@@ -166,7 +167,7 @@ flowchart TD
 
 Lấy đúng 1 bình luận thật từ lần chạy video `7709458511838612744` (`"Phim Việt thoại sảng phết 2026: Chị Chị Em Em 3 - Phần 1"`):
 
-1. **Bước 0 (`data/7709458511838612744/raw_comments.csv`):**
+1. **Chuẩn bị dữ liệu (`data/7709458511838612744/raw_comments.csv` & `media_context.json`):**
    - `comment_id = "7710022854226035457"`, `username = "19036388441017tech"`, `nickname = "Babydon'tcry"`, `likes = 153`, `reply_count = 11`, `created_at = "2026-11-20 06:06:49"`.
    - `comment` gốc: `"Thời phong kiến đã có trao nhẫn cầu hôn rồi à mn lại còn trao nhẫn nữa"`.
 2. **Giai đoạn 2 (`PreprocessedComment`):**
@@ -180,10 +181,10 @@ Lấy đúng 1 bình luận thật từ lần chạy video `7709458511838612744`
      + `TF-IDF + NB` → `NEG`, `TF-IDF + LR` → `POS`, `TF-IDF + Linear SVM` → `POS`, `Lexicon` → `NEU`, `ViSoBERT` → `NEG`, `PhoBERT` → `POS`, `Emotion ML` → `Disgust`.
      + `PhoBERT Emotion` dự đoán → `emotion_label = "Surprise"` (`emotion_vi = "Ngạc nhiên"`, `emotion_confidence = 0.9666`).
      + Cộng trọng số Hybrid `0.40 PhoBERT + 0.20 ViSoBERT + 0.25 SVM + 0.15 Lexicon` → `score_POS = 0.5683`, `score_NEG = 0.2687`, `score_NEU = 0.1629` → `polarity_label = "POS"`, `polarity_confidence = 0.5683`.
-     + `compute_dual_scale` tính `polarity_score = +0.2996`, `score_5 = 4`, `score_10 = 6.50`, `rating_level_vi = "Tích cực"`.
+     + `compute_polarity_score` tính `polarity_score = +0.2996`.
      + Vì `PhoBERT (POS) != ViSoBERT (NEG)` và `polarity_confidence = 0.5683 < 0.65` → gắn cờ `needs_audit = True`.
 4. **Giai đoạn 4 (`GemmaAuditItem` & dòng số 2 của `outputs/7709458511838612744/final_results.csv`):**
-   - Gemma 4 E2B đọc bình luận kèm ngữ cảnh video review phim phong kiến → đánh giá câu này thực chất chỉ đang nhận xét trung lập về chi tiết cốt truyện → `gemma_polarity = "NEU"`, `gemma_score_5 = 3`, `gemma_emotion = "Other"` (`"Trung tính / Khác"`), `gemma_is_sarcasm = False`, `gemma_agrees_polarity = False`, `gemma_agrees_emotion = False`, `gemma_reason = "Đây là một nhận xét mang tính chất suy ngẫm về cốt truyện/tình tiết."`.
+   - Gemma 4 E2B đọc bình luận kèm ngữ cảnh video review phim phong kiến → đánh giá câu này thực chất chỉ đang nhận xét trung lập về chi tiết cốt truyện → `gemma_polarity = "NEU"`, `gemma_emotion = "Other"` (`"Trung tính / Khác"`), `gemma_is_sarcasm = False`, `gemma_agrees_polarity = False`, `gemma_agrees_emotion = False`, `gemma_reason = "Đây là một nhận xét mang tính chất suy ngẫm về cốt truyện/tình tiết."`.
 
 ---
 
@@ -194,7 +195,7 @@ Lấy đúng 1 bình luận thật từ lần chạy video `7709458511838612744`
 - Khai báo danh sách công khai `__all__` (36 lớp, hàm và hằng số) cùng từ điển ánh xạ `_EXPORT_MAP`.
 - Dùng hàm `__getattr__(name)`: khi người dùng gọi `from src import SentimentPipeline`, Python mới tự động nạp đúng mô-đun con (`src.pipeline`), tránh tình trạng vừa `import src` đã phải kéo theo `torch`, `transformers`, `cv2` gây chậm khởi động.
 
-### 3.2. `src/ingestion/tiktok_collector.py` — Bước 0: Thu thập & Đọc dữ liệu
+### 3.2. `src/ingestion/tiktok_collector.py` — Chuẩn bị dữ liệu: Thu thập & Đọc dữ liệu
 
 | Thành phần                                  | Loại                       | Vai trò & logic hoạt động                                                                                                                                                                                                                                                                                                                                                             |
 | :-------------------------------------------- | :-------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -203,18 +204,18 @@ Lấy đúng 1 bình luận thật từ lần chạy video `7709458511838612744`
 | `_resolve_short_url(url)`                   | Hàm nội bộ               | Gửi HTTP HEAD/GET cho các link rút gọn như `vt.tiktok.com` / `vm.tiktok.com` để lấy đường dẫn đầy đủ chứa `@username/video/<id>`.                                                                                                                                                                                                                       |
 | `_build_ytdlp_options(outtmpl, has_ffmpeg)` | Hàm nội bộ               | Nếu `shutil.which("ffmpeg")` có FFmpeg, cho phép `yt-dlp` tải và ghép luồng tốt nhất (`bv*+ba/b`); nếu máy **không có FFmpeg**, ép chọn luồng MP4 ghép sẵn (`b[ext=mp4]/best[ext=mp4]/b`).                                                                                                                                                            |
 | `download_tiktok_media(url, data_dir)`      | Hàm chính                 | Giải quyết short link, tạo thư mục `data/<post_id>/`, chạy `yt-dlp` tải `video.mp4`. Nếu là bài đăng trượt ảnh (Photo Mode), chạy tải 2 tầng: Tầng 1 HTTP JSON, Tầng 2 dự phòng Microsoft Edge (`/api/item/detail/` + DOM), lưu thành `slide_01.jpg`, ... vào `data/<post_id>/images/`.                                                                       |
-| `collect_tiktok_post(...)`                  | Hàm hợp nhất Bước 0       | Điều phối tải media + thu thập comment (mặc định `include_replies=True`, `max_replies_per_comment=None`): nếu Photo Mode cần fallback sang Edge thì gộp tải ảnh + crawl comment trong **cùng 1 cửa sổ Edge**.                                                                                                                                       |
+| `collect_tiktok_post(...)`                  | Hàm chuẩn bị dữ liệu       | Điều phối tải media + thu thập comment (mặc định `include_replies=True`, `max_replies_per_comment=None`): nếu Photo Mode cần fallback sang Edge thì gộp tải ảnh + crawl comment trong **cùng 1 cửa sổ Edge**.                                                                                                                                       |
 | `_expand_visible_replies(...)`              | Hàm nội bộ               | Tự động bấm nút *"Xem X câu trả lời / Xem thêm / View replies"* trên DOM (bỏ qua nút *"Ẩn / Hide / Trả lời / Reply"*), có theo dõi stall theo từng thread để không lặp vô hạn.                                                                                                                                                                         |
 | `_parse_comment_items(payload)`             | Hàm nội bộ               | Đọc JSON từ `/api/comment/list/` (gồm cả `reply_comment` preview) và `/api/comment/list/reply/` để bóc `comment_id`, `is_reply`, `parent_comment_id`, `reply_to_comment_id`, `reply_to_username`, `likes`, `reply_count`, `created_at`.                                                                                                              |
 | `crawl_tiktok_comments(...)`                | Hàm chính                 | Mở Microsoft Edge thật (`channel="msedge"`), tạm dừng xử lý popup/CAPTCHA nếu bật, cuộn + mở rộng reply tới khi đủ `max_comments`, ghi ra `data/<post_id>/raw_comments.csv` (12 cột).                                                                                                                                                               |
-| `load_comments_dataframe(source)`           | Hàm tiện ích             | Đọc linh hoạt `.csv`, `.xlsx`/`.xls`, `.json` hoặc `.txt` (hỗ trợ cả tiêu đề 2 dòng xuất từ pipeline và ép kiểu `str` cho các cột ID 19 chữ số), chuẩn hóa cột `"comment"` cùng đầy đủ metadata.                                                                                                                                                 |
+| `load_comments_dataframe(source)`           | Hàm tiện ích             | Đọc `.csv` hoặc `.json` (hỗ trợ cả tiêu đề 2 dòng xuất từ pipeline và ép kiểu `str` cho các cột ID 19 chữ số), chuẩn hóa cột `"comment"` cùng đầy đủ metadata.                                                                                                                                                 |
 
 ### 3.3. `src/models/media_context.py` — Giai đoạn 1: AI Đầu vào (Gemma 4 E2B + Whisper)
 
 | Thành phần                                  | Loại                       | Vai trò & logic hoạt động                                                                                                                                                                                                                                                                                                                                                            |
 | :-------------------------------------------- | :-------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `MEDIA_RESPONSE_SCHEMA`                     | `dict` (JSON Schema)      | Schema Evidence-First **11 trường** bắt buộc: 3 trường trích xuất bằng chứng trước (`chu_tren_man_hinh`, `dien_bien_hinh_anh`, `chi_tiet_va_luan_diem`) → `tom_tat_ngan` (cốt lõi 3–5 câu) → 7 trường phân loại (`chu_de_chinh`, `muc_dich_chinh`, `quan_diem_noi_dung`, `doi_tuong_chinh`, `sac_thai_noi_dung`, `tu_khoa`, `luu_y_danh_gia_comment`).                                  |
-| `MediaAnalysisResult`                       | `dataclass` (18 trường) | Lưu toàn bộ 11 trường ngữ cảnh + thông tin kỹ thuật (`media_type`, `source_paths`, `num_frames_used`, `has_audio`, `caption`, `transcript`, `raw_response`).                                                                                                                                                                                                      |
+| `MediaAnalysisResult`                       | `dataclass` (17 trường) | Lưu toàn bộ 11 trường ngữ cảnh + thông tin kỹ thuật (`media_type`, `source_paths`, `num_frames_used`, `has_audio`, `caption`, `transcript`).                                                                                                                                                                                                      |
 | `MediaAnalyzer.extract_video_frames(...)`   | Phương thức              | Bỏ 3% đầu (fade-in) & 5% cuối (outro), lấy `max_frames=8` khung hình `768px` (JPEG 90), đọc timestamp thực (`CAP_PROP_POS_MSEC`), có fallback đọc tuần tự resize ngay để chống OOM trên video VFR, và đóng dấu nhãn `F1 00:02` sau khi resize.                                                                                                               |
 | `MediaAnalyzer._decode_audio_16k_mono(...)` | Phương thức              | Dùng `av` (**PyAV**) đọc luồng audio từ `.mp4` và resample sang mảng `float32` đơn kênh `16.000 Hz` trực tiếp trong RAM.                                                                                                                                                                                                                                      |
 | `MediaAnalyzer.transcribe_audio(...)`       | Phương thức              | Nạp `WhisperModel("small", device="cpu", compute_type="int8")`, lọc `#hashtag`/`@mention`/URL/emoji trước khi truyền `initial_prompt`, bật `condition_on_previous_text=False`, lọc `no_speech_prob < 0.7`, xuất lời thoại kèm mốc thời gian `[MM:SS-MM:SS]`.                                                                                                  |
@@ -246,34 +247,34 @@ Lấy đúng 1 bình luận thật từ lần chạy video `7709458511838612744`
 | `_LanguageMLBundle`                       | Lớp per-language       | Quản lý riêng cho từng ngôn ngữ (`vi` hoặc `en`): huấn luyện 3 bộ phân loại cực tính (`MultinomialNB`, `LogisticRegression`, `CalibratedClassifierCV(LinearSVC, cv=3)`) và 1 bộ phân loại 7 cảm xúc (`LogisticRegression`), tính Accuracy/Macro-F1 lưu vào `benchmark_metrics.json`, và cache model xuống đĩa dưới dạng `.joblib`.                                                                                                                                                                                                                                                                                                                            |
 | `ClassicalMLSuite`                        | Lớp tổng hợp         | Cung cấp giao diện thống nhất `ensure_loaded(lang)`, `predict_polarity_all(texts, languages)`, `predict_emotion(texts, languages)` tự định tuyến từng câu về đúng `_LanguageMLBundle("vi")` hoặc `_LanguageMLBundle("en")`.                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 
-### 3.6. `src/models/sentiment_engine.py` (684 dòng) — Giai đoạn 3B: Học sâu, Hybrid Ensemble & Thang điểm kép
+### 3.6. `src/models/sentiment_engine.py` — Giai đoạn 3B: Học sâu, Hybrid Ensemble & Context Alignment
 
 | Thành phần                                       | Chi tiết xử lý                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | :------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `AnalyzedComment` (`dataclass`, 35 trường)   | Lưu toàn bộ metadata, kết quả tiền xử lý, xác suất/nhãn/điểm số của Hybrid (`polarity_*`, `score_5`, `score_10`, `emotion_*`), nhãn dự đoán của 7 mô hình riêng lẻ (`pred_nb` .. `emotion_ml_label`), và từ điển `model_probs`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| `compute_dual_scale(...)`                        | Quy đổi xác suất Hybrid thành 3 thang điểm nhất quán tuyệt đối với `polarity_label`:1. Tính độ hích cảm xúc `nudge`: `-0.08 * emo_conf` (nếu `Anger`/`Disgust` ≥ 0.5), `-0.04 * emo_conf` (nếu `Sadness`/`Fear` ≥ 0.5), `+0.06 * emo_conf` (nếu `Enjoyment` ≥ 0.5).2. `raw = p_pos - p_neg + nudge`.3. Khóa vùng theo nhãn:   - `NEG`: kẹp `polarity_score` trong `[-1.0, -0.21]`; `score_5 = 1` nếu `<= -0.60`, ngược lại `2`.   - `POS`: kẹp `polarity_score` trong `[+0.21, +1.0]`; `score_5 = 5` nếu `>= +0.60`, ngược lại `4`.   - `NEU`: kẹp `raw * (1 - 0.5 * p_neu)` trong `[-0.19, +0.19]`; khóa cứng `score_5 = 3`.4. `score_10 = round((polarity_score + 1.0) * 5.0, 2)`. |
+| `AnalyzedComment` (`dataclass`)   | Lưu toàn bộ metadata, kết quả tiền xử lý, xác suất/nhãn/điểm cực tính của Hybrid (`polarity_*`, `emotion_*`), ngữ cảnh video (`is_on_topic`, `context_relevance`, `matched_video_terms`, `context_alignment`), nhãn dự đoán của 7 mô hình riêng lẻ (`pred_nb` .. `emotion_ml_label`), và từ điển `model_probs`.                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `compute_polarity_score(...)`                    | Quy đổi xác suất Hybrid thành điểm cực tính liên tục `[-1.0, +1.0]` nhất quán tuyệt đối với `polarity_label`:1. Tính độ hích cảm xúc `nudge`: `-0.08 * emo_conf` (nếu `Anger`/`Disgust` ≥ 0.5), `-0.04 * emo_conf` (nếu `Sadness`/`Fear` ≥ 0.5), `+0.06 * emo_conf` (nếu `Enjoyment` ≥ 0.5).2. `raw = p_pos - p_neg + nudge`.3. Khóa vùng theo nhãn: `NEG` trong `[-1.0, -0.21]`, `POS` trong `[+0.21, +1.0]`, `NEU` trong `[-0.19, +0.19]`. |
 | `_HFSequenceClassifier`                          | Wrapper tải lười mô hình `AutoModelForSequenceClassification` + `AutoTokenizer` trên `CPU` (`batch_size=32`, `max_length=256`, suy luận dưới `torch.inference_mode()`), áp dụng Softmax và chuẩn hóa nhãn qua `_norm_vi_polarity_label`, `_norm_en_polarity_label`, `_norm_emotion_label`.                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | `CommentAnalyzer._apply_emotion_cues(...)`       | Cộng thêm xác suất `0.15–0.30` vào đúng cung bậc cảm xúc khi câu chứa cụm từ chỉ báo mạnh (`_FEAR_CUES` như `"scared"`, `"sợ quá"`; `_ANGER_CUES`; `_DISGUST_CUES`; `_SADNESS_CUES`; `_JOY_CUES` như `"peak"`, `"fire"`) rồi chuẩn hóa tổng = 1.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | Trọng số `Hybrid Ensemble`                     | - **Nhánh Tiếng Việt (`lang == "vi"`):** `0.40 * PhoBERT + 0.20 * ViSoBERT + 0.25 * Linear_SVM_VI + 0.15 * Lexicon_VI`.- **Nhánh Tiếng Anh (`lang == "en"`):** `0.60 * Twitter_RoBERTa + 0.25 * Linear_SVM_EN + 0.15 * Lexicon_EN`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| Đồng bộ `Emotion–Polarity` & `needs_audit` | Nếu `emotion_label ∈ {Anger, Disgust, Fear}` (`conf >= 0.55`) VÀ `Lexicon(NEG) >= 0.50` → cộng `+0.25` vào `NEG`, nhân `0.65` vào `POS` rồi chuẩn hóa lại.Gắn `needs_audit = True` nếu `(ViSoBERT != PhoBERT)` hoặc `(polarity_confidence < 0.65)` hoặc `(has_sarcasm_signal == True)`.                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| `CommentAnalyzer.summarize(...)`                 | Tổng hợp thống kê toàn bài (`language_counts`, `polarity_counts/percentages`, `emotion_counts/percentages`, `score_5_counts`, điểm trung bình, `overall_tendency` — nếu cả POS và NEG đều ≥ 35% thì kết luận `"Tranh cãi (Trái chiều)"`, và `top_examples` xếp hạng theo `likes` giảm dần). Nếu `deduplicate_stats=True`, các bình luận `is_duplicate=True` bị loại khỏi phép tính thống kê tỷ lệ.                                                                                                                                                                                                                                                                                                                        |
+| Đồng bộ `Emotion–Polarity` & `needs_audit` | Nếu `emotion_label ∈ {Anger, Disgust, Fear}` (`conf >= 0.55`) VÀ `Lexicon(NEG) >= 0.50` → cộng `+0.25` vào `NEG`, nhân `0.65` vào `POS` rồi chuẩn hóa lại.Gắn `needs_audit = True` nếu `(ViSoBERT != PhoBERT)` hoặc `(polarity_confidence < 0.65)` hoặc `(has_sarcasm_signal == True)` hoặc phát hiện ca nghi ngờ mỉa mai/ẩn ý qua `_compute_context_alignment()`.                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `CommentAnalyzer.summarize(...)`                 | Tổng hợp thống kê toàn bài (`language_counts`, `polarity_counts/percentages`, `emotion_counts/percentages`, `avg_polarity_score`, `avg_confidence`, `overall_tendency`, `on_topic_summary`, và `top_examples` xếp hạng theo `likes` giảm dần). Nếu `deduplicate_stats=True`, các bình luận `is_duplicate=True` bị loại khỏi phép tính thống kê tỷ lệ.                                                                                                                                                                                                                                                                                                                        |
 
-### 3.7. `src/models/gemma_auditor.py` (653 dòng) — Giai đoạn 4: AI Đầu ra (Thẩm định & Đối chiếu)
+### 3.7. `src/models/gemma_auditor.py` — Giai đoạn 4: AI Đầu ra (Thẩm định & Đối chiếu)
 
-- **`GemmaAuditItem` (`dataclass`, 10 trường):** Chứa kết quả thẩm định độc lập của Gemma cho từng bình luận (`comment_index`, `gemma_audited`, `gemma_polarity`, `gemma_emotion`, `gemma_emotion_vi`, `gemma_score_5`, `gemma_is_sarcasm`, `gemma_agrees_polarity`, `gemma_agrees_emotion`, `gemma_reason`).
+- **`GemmaAuditItem` (`dataclass`, 9 trường):** Chứa kết quả thẩm định độc lập của Gemma cho từng bình luận (`comment_index`, `gemma_audited`, `gemma_polarity`, `gemma_emotion`, `gemma_emotion_vi`, `gemma_is_sarcasm`, `gemma_agrees_polarity`, `gemma_agrees_emotion`, `gemma_reason`).
 - **`_format_video_context(media_result)`:** Đóng gói 8 trường ngữ cảnh video từ Giai đoạn 1 thành văn bản ngắn gọn để đưa vào đầu mỗi batch gửi Gemma chấm bình luận.
-- **`GemmaAuditor.audit_comments(...)`:** Chia 100% bình luận hợp lệ (hoặc giới hạn `audit_limit` nếu đặt) thành các lô **`chunk_size = 8` bình luận**, gọi `/api/chat` (`temperature=0.1`, ép `BATCH_AUDIT_SCHEMA`). Mỗi câu sau khi nhận JSON đều qua hàm `_reconcile_polarity_and_score()` để bảo đảm `POS ∈ {4, 5}`, `NEU = 3`, `NEG ∈ {1, 2}`.
-- **`build_model_comparison(analyzed, audits, timings)`:** Tính phân bố POS/NEU/NEG (%) cho 7 mô hình/nhánh cực tính (`NB`, `LR`, `SVM`, `Lexicon`, `ViSoBERT`, `PhoBERT/RoBERTa`, `Hybrid Ensemble`) + hàng chuẩn `Gemma 4 E2B`, và 2 mô hình cảm xúc (`Emotion LR`, `PhoBERT-Emotion/DistilRoBERTa`). Nếu có dữ liệu thẩm định Gemma, dùng `scikit-learn` tính **4 thước đo đối chiếu**: `Agreement (%)`, `Macro-F1`, `Cohen's Kappa` và `score_5 MAE` (riêng cho Hybrid).
+- **`GemmaAuditor.audit_comments(...)`:** Chia 100% bình luận hợp lệ (hoặc giới hạn `audit_limit` nếu đặt) thành các lô **`chunk_size = 8` bình luận**, gọi `/api/chat` (`temperature=0.1`, ép `BATCH_AUDIT_SCHEMA`). Mỗi câu sau khi nhận JSON đều qua hàm `_normalize_gemma_polarity()` để chuẩn hóa nhãn `POS / NEU / NEG`.
+- **`build_model_comparison(analyzed, audits, timings)`:** Tính phân bố POS/NEU/NEG (%) cho 7 mô hình/nhánh cực tính (`NB`, `LR`, `SVM`, `Lexicon`, `ViSoBERT`, `PhoBERT/RoBERTa`, `Hybrid Ensemble`) + hàng chuẩn `Gemma 4 E2B`, và 2 mô hình cảm xúc (`Emotion LR`, `PhoBERT-Emotion/DistilRoBERTa`). Nếu có dữ liệu thẩm định Gemma, dùng `scikit-learn` tính **3 thước đo đối chiếu**: `Agreement (%)`, `Macro-F1` và `Cohen's Kappa`.
 - **`GemmaAuditor.generate_overall_verdict(...)`:** Gửi bảng tổng hợp đối chiếu để Gemma 4 E2B sinh JSON theo `VERDICT_SCHEMA` gồm `accuracy_verdict`, `best_model`, danh sách `strengths`, `weaknesses` và đoạn tóm tắt `summary_vi`.
 
-### 3.8. `src/visualization.py` (192 dòng) & `src/pipeline.py` (573 dòng)
+### 3.8. `src/visualization.py` & `src/pipeline.py`
 
 - **`plot_sentiment_dashboard(report, save_path)`:** Vẽ lưới 2×2 biểu đồ kích thước `(15, 10)` inch:
   + Ô `[0, 0]`: Nếu có Gemma Audit → vẽ cột đôi **Hybrid System vs Gemma 4 E2B**; nếu không → vẽ cột đơn **POS / NEU / NEG**.
   + Ô `[0, 1]`: Thanh ngang sắp xếp giảm dần **7 cung bậc cảm xúc**.
-  + Ô `[1, 0]`: Biểu đồ cột **Thang điểm 1–5** kèm tiêu đề hiển thị điểm TB thang 5 và thang 10.
+  + Ô `[1, 0]`: Biểu đồ cột đôi **Bám sát nội dung video (`On-topic` vs `Off-topic`)** theo `POS / NEU / NEG` (hoặc fallback biểu đồ **Phân bố ngôn ngữ `VI / EN`** nếu tắt phân tích ngữ cảnh).
   + Ô `[1, 1]`: Nếu có Gemma Audit → thanh ngang đôi **Agreement (%) & Macro-F1 (%) vs Gemma 4**; nếu không → thanh chồng 100% phân bố `POS / NEU / NEG` của 7 mô hình.
-- **`SentimentPipeline` (`src/pipeline.py`):** Điều phối khép kín từ `_infer_run_name()` → Bước 0 → Giai đoạn 1 → Xả VRAM → Giai đoạn 2 → Giai đoạn 3 → Giai đoạn 4 → `_export_outputs()` xuất 4 tệp JSON/CSV + `plot_sentiment_dashboard()` xuất `dashboard.png`. Đồng thời cung cấp `main()` chạy bằng dòng lệnh CLI.
+- **`SentimentPipeline` (`src/pipeline.py`):** Điều phối khép kín từ `_infer_run_name()` → Chuẩn bị dữ liệu (`data/<post_id>/`) → Giai đoạn 1 (hoặc nạp lại `media_context.json`) → Xả VRAM → Giai đoạn 2 (có ngữ cảnh) → Giai đoạn 3 (có Context Alignment) → Giai đoạn 4 (mặc định tắt) → `_export_outputs()` xuất 4 tệp CSV/JSON + `plot_sentiment_dashboard()` xuất `dashboard.png`. Đồng thời cung cấp `main()` chạy bằng dòng lệnh CLI.
 
 ---
 
@@ -326,95 +327,65 @@ Mỗi thư mục ngôn ngữ (`vi/` và `en/`) chứa 3 tệp được sinh tự
 
 ## 5. Từ điển dữ liệu kết quả đầu ra (`outputs/<run_name>/`)
 
-Để người đọc dễ sử dụng mà không bị rối bởi quá nhiều cột kỹ thuật, kết quả bình luận sạch được tách thành **3 tệp CSV rõ ràng**:
-- **`cleaned_final_results.csv`**: Bản tóm gọn nhanh (10 cột lõi hoặc 14 cột khi bật AI Audit, sắp theo `likes` giảm dần).
-- **`final_results.csv`**: Bản phân tích chuẩn chỉ giữ các **thuộc tính hữu ích** (18 cột lõi hoặc 24 cột khi bật AI Audit).
-- **`detailed_model_outputs.csv`**: Toàn bộ **thuộc tính kỹ thuật phụ, xác suất và dự đoán từng mô hình** (20 cột hoặc 23 cột khi bật AI Audit).
+Để người đọc dễ sử dụng mà không bị rối bởi quá nhiều cột kỹ thuật, kết quả bình luận sạch được tách thành **2 tệp CSV tiêu đề 1 dòng rõ ràng, đồng bộ thứ tự 1–1 theo `STT` và `Lượt thích` giảm dần**:
+- **`final_results.csv`**: Bảng kết quả thân thiện cho người xem/báo cáo (12 cột lõi hoặc 16 cột khi bật AI Audit) — đưa **Nội dung bình luận** và **Kết quả cảm xúc** lên ngay bên trái.
+- **`detailed_model_outputs.csv`**: Toàn bộ **ID gốc, thuộc tính kỹ thuật phụ, ngữ cảnh video, xác suất và dự đoán từng mô hình** (29 cột lõi hoặc 34 cột khi bật AI Audit).
 
-### 5.1. `final_results.csv` — Các thuộc tính phân tích hữu ích (18 cột lõi + 6 cột AI Audit)
+### 5.1. `final_results.csv` — Bảng kết quả dễ đọc (12 cột lõi + 4 cột AI Audit)
 
-Tệp `final_results.csv` chỉ chứa các **bình luận sạch hợp lệ thuộc Tiếng Việt (`vi`) hoặc Tiếng Anh (`en`)**, tiêu đề 2 dòng (tên biến tiếng Anh + chú thích tiếng Việt). Nếu tắt Giai đoạn 4 (`run_ai_audit=False`), 6 cột AI (`19–24`) được tự động ẩn đi.
+Tệp `final_results.csv` chỉ chứa các **bình luận sạch hợp lệ thuộc Tiếng Việt (`vi`) hoặc Tiếng Anh (`en`)**, tiêu đề 1 dòng tiếng Việt gọn gàng, sắp theo `Lượt thích` giảm dần. Nếu tắt Giai đoạn 4 (`run_ai_audit=False`), 4 cột AI (`Gemma sắc thái` .. `Lý do Gemma`) được tự động ẩn đi.
 
-| STT | Tên cột & Chú thích trong CSV | Kiểu | Nhóm | Ý nghĩa chi tiết |
+| STT | Tên cột trong CSV | Kiểu | Nhóm | Ý nghĩa chi tiết |
 | :-: | :--- | :--- | :--- | :--- |
-| 1 | `comment_id` `<br>` `(mã bình luận)` | `str` | Định danh | Mã định danh bình luận từ TikTok (`cid`). |
-| 2 | `is_reply` `<br>` `(là bình luận trả lời)` | `bool` | Hội thoại | `True` nếu là bình luận trả lời (reply), `False` nếu là bình luận chính. |
-| 3 | `parent_comment_id` `<br>` `(mã bình luận gốc)` | `str` | Hội thoại | `comment_id` của bình luận gốc nếu `is_reply=True`. |
-| 4 | `username` `<br>` `(tên tài khoản)` | `str` | Người dùng | Tên đăng nhập (`@handle`) của người viết. |
-| 5 | `likes` `<br>` `(lượt thích)` | `int` | Tương tác | Số lượt tim của bình luận. |
-| 6 | `reply_count` `<br>` `(số phản hồi)` | `int` | Tương tác | Số câu trả lời con dưới bình luận gốc. |
-| 7 | `created_at` `<br>` `(thời gian đăng)` | `str` | Thời gian | Thời gian đăng (`YYYY-MM-DD HH:MM:SS`). |
-| 8 | `language` `<br>` `(ngôn ngữ)` | `str` | Nội dung | Ngôn ngữ phát hiện: `"vi"` hoặc `"en"`. |
-| 9 | `original_text` `<br>` `(nội dung gốc)` | `str` | Nội dung | Nội dung bình luận nguyên văn ban đầu. |
-| 10 | `cleaned_text` `<br>` `(nội dung đã làm sạch)` | `str` | Nội dung | Văn bản đã đổi emoji chữ & chuẩn hóa teencode. |
-| 11 | `polarity_label` `<br>` `(nhãn cực tính)` | `str` | Kết quả | Nhãn cực tính chính của Hybrid (`POS` / `NEU` / `NEG`). |
-| 12 | `polarity_vi` `<br>` `(cực tính tiếng việt)` | `str` | Kết quả | Nhãn hiển thị tiếng Việt (`Tích cực` / `Trung tính` / `Tiêu cực`). |
-| 13 | `polarity_confidence` `<br>` `(độ tự tin cực tính)` | `float` | Kết quả | Độ tự tin của Hybrid đối với nhãn `polarity_label` (`0..1`). |
-| 14 | `score_5` `<br>` `(điểm thang 1-5)` | `int` | Thang điểm | Điểm 1–5 sao nhất quán 100% với `polarity_label`. |
-| 15 | `score_10` `<br>` `(điểm thang 0-10)` | `float` | Thang điểm | Điểm quy đổi tuyến tính thang 0–10 (`0.00..10.00`). |
-| 16 | `rating_level_vi` `<br>` `(mức độ đánh giá)` | `str` | Thang điểm | Diễn giải tiếng Việt của `score_5` (`Rất tiêu cực` .. `Rất tích cực`). |
-| 17 | `emotion_vi` `<br>` `(cảm xúc 7 cung bậc)` | `str` | Cảm xúc | Tên tiếng Việt của 1 trong 7 cung bậc cảm xúc. |
-| 18 | `emotion_confidence` `<br>` `(độ tự tin cảm xúc)` | `float` | Cảm xúc | Độ tự tin của cung bậc cảm xúc chiếm ưu thế (`0..1`). |
-| 19 | `gemma_polarity` `<br>` `(cực tính gemma)` | `str` | AI Audit | Nhãn cực tính do Gemma 4 E2B đánh giá độc lập *(ẩn nếu tắt Audit)*. |
-| 20 | `gemma_emotion_vi` `<br>` `(cảm xúc gemma)` | `str` | AI Audit | Tên cảm xúc tiếng Việt do Gemma 4 E2B chấm *(ẩn nếu tắt Audit)*. |
-| 21 | `gemma_score_5` `<br>` `(điểm 1-5 gemma)` | `int` | AI Audit | Điểm 1–5 của Gemma 4 E2B *(ẩn nếu tắt Audit)*. |
-| 22 | `gemma_is_sarcasm` `<br>` `(nói mỉa theo gemma)` | `bool` | AI Audit | Kết luận nói mỉa / châm biếm của Gemma *(ẩn nếu tắt Audit)*. |
-| 23 | `gemma_agrees_polarity` `<br>` `(khớp cực tính với gemma)` | `bool` | AI Audit | `True` nếu Hybrid trùng nhãn cực tính với Gemma *(ẩn nếu tắt Audit)*. |
-| 24 | `gemma_reason` `<br>` `(lý do gemma giải thích)` | `str` | AI Audit | Giải thích ngắn gọn bằng tiếng Việt của Gemma *(ẩn nếu tắt Audit)*. |
+| 1 | `STT` | `int` | Liên kết | Số thứ tự `1..N` khớp 1–1 với cột `stt` trong `detailed_model_outputs.csv`. |
+| 2 | `Nội dung bình luận` | `str` | Nội dung | Nội dung bình luận nguyên văn ban đầu (`original_text`). |
+| 3 | `Sắc thái` | `str` | Kết quả | Nhãn cực tính tiếng Việt (`Tích cực` / `Trung tính` / `Tiêu cực`). |
+| 4 | `Độ tự tin sắc thái (%)` | `str` | Kết quả | Độ tự tin của Hybrid hiển thị dạng phần trăm (`67.9%`). |
+| 5 | `Cảm xúc` | `str` | Cảm xúc | Tên tiếng Việt của 1 trong 7 cung bậc cảm xúc. |
+| 6 | `Độ tự tin cảm xúc (%)` | `str` | Cảm xúc | Độ tự tin của cung bậc cảm xúc chiếm ưu thế (`54.5%`). |
+| *7* | `Gemma sắc thái` | `str` | AI Audit | Nhãn sắc thái tiếng Việt do Gemma 4 E2B chấm *(ẩn nếu tắt Audit)*. |
+| *8* | `Gemma cảm xúc` | `str` | AI Audit | Tên cảm xúc tiếng Việt do Gemma 4 E2B chấm *(ẩn nếu tắt Audit)*. |
+| *9* | `Nói mỉa (Gemma)` | `str` | AI Audit | `Có` / `Không` theo Gemma *(ẩn nếu tắt Audit)*. |
+| *10* | `Lý do Gemma` | `str` | AI Audit | Giải thích ngắn gọn bằng tiếng Việt của Gemma *(ẩn nếu tắt Audit)*. |
+| 7 (11) | `Lượt thích` | `int` | Tương tác | Số lượt tim của bình luận (khóa sắp xếp giảm dần). |
+| 8 (12) | `Loại bình luận` | `str` | Hội thoại | `Bình luận chính` hoặc `Trả lời`. |
+| 9 (13) | `Tài khoản` | `str` | Người dùng | Tên đăng nhập (`@handle`) của người viết. |
+| 10 (14) | `Ngôn ngữ` | `str` | Nội dung | `Tiếng Việt` hoặc `Tiếng Anh`. |
+| 11 (15) | `Thời gian đăng` | `str` | Thời gian | Thời gian đăng (`YYYY-MM-DD HH:MM:SS`). |
+| 12 (16) | `Số phản hồi` | `int` | Tương tác | Số câu trả lời con dưới bình luận gốc. |
 
 ---
 
-### 5.2. `cleaned_final_results.csv` — Bản tóm gọn nhanh (10 cột lõi, hoặc 14 cột khi bật AI Audit)
+### 5.2. `detailed_model_outputs.csv` — Chi tiết kỹ thuật, ID gốc, ngữ cảnh video, xác suất & dự đoán từng mô hình (29 cột lõi + 5 cột AI Audit)
 
-Tệp `cleaned_final_results.csv` sắp xếp sẵn theo `likes` giảm dần để đọc nhanh các bình luận nổi bật nhất:
-
-| STT | Tên cột & Chú thích trong CSV | Nhóm thông tin | Ý nghĩa |
-| :-: | :--- | :--- | :--- |
-| 1 | `username` `<br>` `(tên tài khoản)` | Người dùng | Tên tài khoản người bình luận. |
-| 2 | `is_reply` `<br>` `(là bình luận trả lời)` | Hội thoại | Phân biệt comment chính (`False`) và reply (`True`). |
-| 3 | `likes` `<br>` `(lượt thích)` | Tương tác | Số lượt tim, dùng làm khóa sắp xếp giảm dần. |
-| 4 | `created_at` `<br>` `(thời gian đăng)` | Thời gian | Thời điểm đăng bình luận. |
-| 5 | `language` `<br>` `(ngôn ngữ)` | Ngôn ngữ | `vi` hoặc `en`. |
-| 6 | `original_text` `<br>` `(nội dung gốc)` | Nội dung | Nội dung gốc nguyên văn. |
-| 7 | `polarity_vi` `<br>` `(cực tính hệ thống)` | Kết quả | `Tích cực` / `Trung tính` / `Tiêu cực`. |
-| 8 | `score_5` `<br>` `(điểm thang 1-5)` | Thang điểm | Điểm sao `1..5`. |
-| 9 | `score_10` `<br>` `(điểm thang 0-10)` | Thang điểm | Điểm chi tiết `0.00..10.00`. |
-| 10 | `emotion_vi` `<br>` `(cảm xúc 7 cung bậc)` | Cảm xúc | Cảm xúc tiếng Việt 7 cung bậc. |
-| 11 | `gemma_polarity_vi` `<br>` `(cực tính gemma tiếng việt)` | AI Audit | Cực tính tiếng Việt theo Gemma *(tự ẩn nếu tắt Audit)*. |
-| 12 | `gemma_score_5` `<br>` `(điểm 1-5 gemma)` | AI Audit | Điểm `1..5` theo Gemma *(tự ẩn nếu tắt Audit)*. |
-| 13 | `gemma_is_sarcasm` `<br>` `(nói mỉa theo gemma)` | AI Audit | Cờ nói mỉa của Gemma *(tự ẩn nếu tắt Audit)*. |
-| 14 | `gemma_reason` `<br>` `(lý do gemma giải thích)` | AI Audit | Lý do ngắn của Gemma *(tự ẩn nếu tắt Audit)*. |
-
----
-
-### 5.2b. `detailed_model_outputs.csv` — Chi tiết kỹ thuật, xác suất & dự đoán từng mô hình (20 cột lõi + 3 cột AI Audit)
-
-Tệp `detailed_model_outputs.csv` lưu toàn bộ các thuộc tính kỹ thuật phục vụ nghiên cứu, gỡ lỗi và đối chiếu từng mô hình mà không làm nặng `final_results.csv`:
+Tệp `detailed_model_outputs.csv` dùng tiêu đề 1 dòng `snake_case`, giữ toàn bộ ID gốc và thuộc tính kỹ thuật phục vụ nghiên cứu, đối chiếu ngữ cảnh video và từng mô hình mà không làm nặng `final_results.csv`:
 
 | Nhóm cột | Các cột bao gồm |
 | :--- | :--- |
-| **Khóa liên kết (3)** | `comment_id`, `username`, `original_text` |
-| **NLP & Metadata phụ (5)** | `nickname`, `segmented_text`, `is_duplicate`, `has_sarcasm_signal`, `needs_audit` |
-| **Xác suất & Điểm liên tục (5)** | `polarity_score` (`-1..+1`), `score_POS`, `score_NEG`, `score_NEU`, `emotion_label` (nhãn chuẩn tiếng Anh) |
+| **Khóa & liên kết (6)** | `stt` (khớp 1–1 với `STT` của `final_results.csv`), `comment_id`, `parent_comment_id`, `username`, `nickname`, `likes` |
+| **Văn bản & Tiền xử lý (6)** | `original_text`, `cleaned_text`, `segmented_text`, `is_duplicate`, `has_sarcasm_signal`, `needs_audit` |
+| **Ngữ cảnh Video (4)** | `is_on_topic` (bám sát nội dung video), `context_relevance` (độ liên quan `0..1`), `matched_video_terms` (từ khóa video khớp), `context_alignment` (mối liên hệ với nội dung video) |
+| **Nhãn, Xác suất & Điểm liên tục (6)** | `polarity_label` (`POS`/`NEU`/`NEG`), `polarity_score` (`-1..+1`), `score_POS`, `score_NEG`, `score_NEU`, `emotion_label` (nhãn chuẩn tiếng Anh) |
 | **Dự đoán 7 mô hình đơn lẻ (7)** | `pred_nb`, `pred_lr`, `pred_svm`, `pred_lexicon`, `pred_visobert`, `pred_dl_primary`, `emotion_ml_label` |
-| **Gemma Audit bổ sung (3 — tự ẩn nếu tắt Audit)** | `gemma_audited`, `gemma_emotion`, `gemma_agrees_emotion` |
+| **Gemma Audit bổ sung (5 — tự ẩn nếu tắt Audit)** | `gemma_audited`, `gemma_polarity`, `gemma_emotion`, `gemma_agrees_polarity`, `gemma_agrees_emotion` |
 
 ---
 
-### 5.3. `filtered_noise.csv` — Giải thích đủ 8 cột & 7 mã lọc nhiễu
+### 5.3. `filtered_noise.csv` — Giải thích đủ 9 cột (sắp theo `Lượt thích` giảm dần)
 
-Tệp này lưu toàn bộ bình luận bị loại bỏ khỏi phân tích cảm xúc để người dùng đối chiếu không lo hệ thống "xóa nhầm dữ liệu mà không báo".
+Tệp này lưu toàn bộ bình luận bị loại bỏ khỏi phân tích cảm xúc để người dùng đối chiếu rõ lý do lọc bằng tiếng Việt:
 
-| STT | Tên cột         | Kiểu   | Ý nghĩa                                                                                                                                         |
-| :-- | :---------------- | :------ | :------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1   | `comment_id`    | `str` | Mã định danh bình luận trên TikTok.                                                                                                         |
-| 2   | `username`      | `str` | Tài khoản người bình luận.                                                                                                                  |
-| 3   | `nickname`      | `str` | Tên hiển thị của người bình luận.                                                                                                         |
-| 4   | `likes`         | `int` | Số lượt thích của bình luận bị lọc.                                                                                                      |
-| 5   | `language`      | `str` | Kết quả nhận diện ngôn ngữ từ Giai đoạn 2: `"vi"`, `"en"`, hoặc `"other"` (ví dụ câu tiếng Nga, Tây Ban Nha, Bồ Đào Nha). |
-| 6   | `original_text` | `str` | Nội dung gốc nguyên văn của bình luận bị loại.                                                                                           |
-| 7   | `cleaned_text`  | `str` | Nội dung sau bước làm sạch khoảng trắng / chuẩn hóa emoji chữ.                                                                          |
-| 8   | `filter_reason` | `str` | Mã lý do lọc (1 trong 7 giá trị chuẩn dưới đây).                                                                                        |
+| STT | Tên cột | Kiểu | Ý nghĩa |
+| :-: | :--- | :--- | :--- |
+| 1 | `STT` | `int` | Số thứ tự bình luận bị lọc (sắp theo `Lượt thích` giảm dần). |
+| 2 | `Nội dung gốc` | `str` | Nội dung gốc nguyên văn của bình luận bị loại. |
+| 3 | `Lý do lọc` | `str` | Giải thích tiếng Việt thân thiện (từ `FILTER_REASON_VI_MAP`). |
+| 4 | `Mã lý do` | `str` | Mã chuẩn kỹ thuật (`FILTERED_*`, 1 trong 7 giá trị dưới đây). |
+| 5 | `Ngôn ngữ` | `str` | `Tiếng Việt`, `Tiếng Anh`, hoặc `Ngôn ngữ khác`. |
+| 6 | `Lượt thích` | `int` | Số lượt thích của bình luận bị lọc. |
+| 7 | `Tài khoản` | `str` | Tài khoản người bình luận. |
+| 8 | `Tên hiển thị` | `str` | Tên hiển thị của người bình luận. |
+| 9 | `Mã bình luận` | `str` | Mã định danh bình luận trên TikTok (`comment_id`). |
 
 **Ý nghĩa 7 giá trị của cột `filter_reason`:**
 
@@ -428,44 +399,42 @@ Tệp này lưu toàn bộ bình luận bị loại bỏ khỏi phân tích cả
 
 ---
 
-### 5.4. `model_comparison.csv` — Giải thích đủ 15 cột
+### 5.4. `model_comparison.csv` — Giải thích đủ 14 cột (tiêu đề 1 dòng tiếng Việt)
 
-Tệp này tổng hợp bảng so sánh hiệu năng toàn diện giữa ML cổ điển, Luật từ điển, Deep Learning, Hybrid Ensemble và Gemma 4 E2B (có tối đa 10 dòng: 8 dòng cho bài toán `Polarity (3 lớp)` và 2 dòng cho bài toán `Emotion (7 cung bậc)`).
+Tệp này tổng hợp bảng so sánh hiệu năng toàn diện giữa ML cổ điển, Luật từ điển, Deep Learning, Hybrid Ensemble và Gemma 4 E2B (các ô không áp dụng ở dòng `Emotion` hoặc thời gian `Hybrid` hiển thị `"—"` thay vì `.0`/trống):
 
-| STT | Tên cột                  | Kiểu              | Ý nghĩa & Giải thích các trường hợp ô trống                                                                                                                                                                                                                       |
-| :-- | :------------------------- | :----------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | `model`                  | `str`            | Tên mô hình hoặc tổ hợp (ví dụ `TF-IDF + Linear SVM`, `Hybrid Ensemble (Hệ thống chính)`, `Gemma 4 E2B (Thẩm định ngữ cảnh)`).                                                                                                                        |
-| 2   | `family`                 | `str`            | Họ phương pháp: `Classical ML`, `Rule-based NLP`, `Deep Learning`, `Hybrid ML + DL`, hoặc `Multimodal LLM Reference`.                                                                                                                                        |
-| 3   | `total_comments`         | `float`          | Số lượng bình luận mà mô hình này dự đoán trên tập hợp lệ (ví dụ ViSoBERT chỉ đếm riêng các bình luận `vi`, còn Hybrid đếm tất cả `vi + en`). Để trống ở 2 hàng bài toán Emotion.                                                  |
-| 4   | `pos_count`              | `float`          | Số bình luận được mô hình dự đoán là Tích cực (`POS`).                                                                                                                                                                                                      |
-| 5   | `neu_count`              | `float`          | Số bình luận được mô hình dự đoán là Trung tính (`NEU`).                                                                                                                                                                                                     |
-| 6   | `neg_count`              | `float`          | Số bình luận được mô hình dự đoán là Tiêu cực (`NEG`).                                                                                                                                                                                                      |
-| 7   | `pos_pct`                | `float`          | Tỷ lệ `%` dự đoán `POS` tính trên `total_comments` của mô hình đó.                                                                                                                                                                                        |
-| 8   | `neu_pct`                | `float`          | Tỷ lệ `%` dự đoán `NEU`.                                                                                                                                                                                                                                           |
-| 9   | `neg_pct`                | `float`          | Tỷ lệ `%` dự đoán `NEG`.                                                                                                                                                                                                                                           |
-| 10  | `agreement_vs_gemma_pct` | `float` \| rỗng | Tỷ lệ `%` mô hình đoán trùng nhãn với Gemma 4 E2B (đối với hàng Emotion là tỷ lệ trùng 7 cung bậc cảm xúc). **Rỗng nếu `RUN_AI_AUDIT = False`**.                                                                                            |
-| 11  | `macro_f1_vs_gemma`      | `float` \| rỗng | Điểm cân bằng `Macro-F1` (0..1) so với nhãn Gemma 4 E2B; giúp phát hiện mô hình bị đoán thiên lệch 1 lớp.                                                                                                                                                |
-| 12  | `cohen_kappa_vs_gemma`   | `float` \| rỗng | Hệ số đồng thuận Cohen's Kappa (-1..+1) đã trừ yếu tố trùng hợp ngẫu nhiên. Để trống ở 2 hàng Emotion.                                                                                                                                                   |
-| 13  | `score_5_mae_vs_gemma`   | `float` \| rỗng | Sai số tuyệt đối trung bình trên thang 1–5 sao so với `gemma_score_5`. **Chỉ có giá trị ở hàng `Hybrid Ensemble` và `Gemma 4 E2B (0.0)`** vì các mô hình đơn lẻ không xuất điểm 5 bậc.                                               |
-| 14  | `inference_time_sec`     | `float` \| rỗng | Thời gian chạy thực tế (giây) đo bằng `time.perf_counter()` cho mô hình/nhánh tương ứng (3 mô hình NB/LR/SVM dùng chung tổng thời gian của bước `classical_ml_polarity_sec`; hàng Hybrid là phép cộng trọng số tức thời nên để trống). |
-| 15  | `task`                   | `str`            | Phân loại bài toán của hàng đó: `"Polarity (3 lớp)"` hoặc `"Emotion (7 cung bậc)"`.                                                                                                                                                                          |
+| STT | Tên cột | Kiểu | Ý nghĩa |
+| :-- | :--- | :--- | :--- |
+| 1 | `Nhiệm vụ` | `str` | `"Polarity (3 lớp)"` hoặc `"Emotion (7 cung bậc)"`. |
+| 2 | `Mô hình` | `str` | Tên mô hình hoặc tổ hợp (ví dụ `TF-IDF + Linear SVM`, `Hybrid Ensemble (Hệ thống chính)`). |
+| 3 | `Nhóm phương pháp` | `str` | `Classical ML`, `Rule-based NLP`, `Deep Learning`, `Hybrid ML + DL`, hoặc `Multimodal LLM Reference`. |
+| 4 | `Số bình luận` | `int` | Số lượng bình luận mà mô hình dự đoán trên tập hợp lệ (hiển thị nguyên sạch). |
+| 5 | `Tích cực (SL)` | `int` | Số bình luận dự đoán `POS`. |
+| 6 | `Trung tính (SL)` | `int` | Số bình luận dự đoán `NEU`. |
+| 7 | `Tiêu cực (SL)` | `int` | Số bình luận dự đoán `NEG`. |
+| 8 | `Tích cực (%)` | `str` | Tỷ lệ `%` dự đoán `POS` kèm dấu `%`. |
+| 9 | `Trung tính (%)` | `str` | Tỷ lệ `%` dự đoán `NEU` kèm dấu `%`. |
+| 10 | `Tiêu cực (%)` | `str` | Tỷ lệ `%` dự đoán `NEG` kèm dấu `%`. |
+| *11* | `Khớp Gemma (%)` | `str` | Tỷ lệ `%` trùng nhãn với Gemma 4 *(ẩn nếu tắt Audit)*. |
+| *12* | `Macro-F1 vs Gemma` | `float` | Điểm `Macro-F1` so với Gemma 4 *(ẩn nếu tắt Audit)*. |
+| *13* | `Cohen Kappa vs Gemma` | `float` | Hệ số Cohen's Kappa *(ẩn nếu tắt Audit)*. |
+| 11 (14) | `Thời gian chạy (giây)` | `float` | Thời gian chạy thực tế đo bằng `time.perf_counter()`. |
 
 ---
 
-### 5.5. `report.json` — Giải thích cấu trúc 10 nhánh JSON gốc
+### 5.5. `report.json` — Giải thích cấu trúc 8 nhánh JSON tổng hợp gọn
 
 | STT | Khóa gốc (`report.json`) | Kiểu                | Nội dung lưu trữ                                                                                                                                                                                                                                                |
 | :-- | :--------------------------- | :------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1   | `run_name`                 | `str`              | Mã định danh lượt chạy (`<post_id>`, ví dụ `"7709458511838612744"`).                                                                                                                                                                                   |
-| 2   | `tiktok_metadata`          | `dict` \| `null` | Toàn bộ 13 trường của `metadata.json` (sẽ là `null` nếu người dùng chạy thẳng từ tệp CSV cục bộ mà không qua `TIKTOK_URL`).                                                                                                               |
-| 3   | `media_analysis`           | `dict` \| `null` | Toàn bộ 15 trường từ Giai đoạn 1 (`transcript`, `chu_de_chinh`, `muc_dich_chinh`, `quan_diem_noi_dung`, `doi_tuong_chinh`, `sac_thai_noi_dung`, `tom_tat_ngan`, `tu_khoa`, `luu_y_danh_gia_comment`...).                                  |
+| 2   | `tiktok_metadata`          | `dict` \| `null` | Toàn bộ 13 trường của `metadata.json` (sẽ là `null` nếu người dùng chạy từ thư mục `input_dir` cục bộ).                                                                                                                                                  |
+| 3   | `media_analysis`           | `dict` \| `null` | Toàn bộ 17 trường ngữ cảnh từ `media_context.json` (`transcript`, `chu_de_chinh`, `muc_dich_chinh`, `quan_diem_noi_dung`, `doi_tuong_chinh`, `sac_thai_noi_dung`, `tom_tat_ngan`, `tu_khoa`, `luu_y_danh_gia_comment`...).                           |
 | 4   | `noise_filter_summary`     | `dict`             | Gồm 5 khóa: `total_raw_comments`, `valid_comments`, `filtered_noise_count`, `duplicate_valid_count`, và `filter_reasons` (đếm số lượng từng mã lỗi).                                                                                          |
 | 5   | `keywords_tfidf`           | `dict`             | Gồm 3 danh sách (`overall`, `positive`, `negative`), mỗi phần tử gồm `keyword` và `tfidf_score` (Top 10 từ khóa sạch nổi bật nhất).                                                                                                         |
-| 6   | `sentiment_summary`        | `dict`             | Gồm 16 trường thống kê tổng hợp từ `CommentAnalyzer.summarize()`: phân bố ngôn ngữ, polarity, 7 cảm xúc, thang điểm 1–5, điểm trung bình 3 thang, `overall_tendency`, `classical_ml_benchmark`, `model_timings_sec`, `top_examples`. |
+| 6   | `sentiment_summary`        | `dict`             | Thống kê tổng hợp từ `CommentAnalyzer.summarize()`: phân bố ngôn ngữ, polarity, 7 cảm xúc, điểm cực tính TB, độ tự tin TB, `overall_tendency`, `on_topic_summary`, `classical_ml_benchmark`, `model_timings_sec`, `top_examples`. |
 | 7   | `model_comparison`         | `dict`             | Gồm 2 danh sách: `polarity_models` và `emotion_models` (dữ liệu nguồn để xuất `model_comparison.csv`).                                                                                                                                              |
 | 8   | `ai_audit_verdict`         | `dict` \| `null` | Tổng kết từ Gemma 4 E2B ở cuối Giai đoạn 4: `accuracy_verdict`, `best_model`, `strengths`, `weaknesses`, `summary_vi`, `audited_count`, `sarcasm_detected_count`, `sarcasm_rate_pct`.                                                       |
-| 9   | `comments`                 | `list[dict]`       | Danh sách đầy đủ từng bình luận hợp lệ gồm toàn bộ 35 trường của `AnalyzedComment` (kèm từ điển xác suất `model_probs` của từng mô hình) + nhánh con `gemma_audit`.                                                               |
-| 10  | `filtered_noise`           | `list[dict]`       | Danh sách các bình luận nhiễu (`language`, `original_text`, `cleaned_text`, `filter_reason`).                                                                                                                                                         |
+*(Chi tiết từng bình luận và bình luận nhiễu đã được lưu riêng trong `final_results.csv`, `detailed_model_outputs.csv` và `filtered_noise.csv` để tránh làm phình dung lượng `report.json`.)*
 
 ---
 
@@ -475,7 +444,7 @@ Biểu đồ do `plot_sentiment_dashboard()` trong `src/visualization.py` sinh r
 
 - **Góc trên – trái (`Sắc thái Polarity`):** Khi có thẩm định Gemma (`RUN_AI_AUDIT=True`), vẽ biểu đồ cột đôi so sánh trực tiếp số lượng `POS / NEU / NEG` giữa **Hybrid System** và **Gemma 4 E2B**. Khi tắt audit (`RUN_AI_AUDIT=False`), vẽ cột đơn phân bố 3 nhãn kèm xu hướng chung.
 - **Góc trên – phải (`Phân bố 7 cung bậc cảm xúc`):** Biểu đồ thanh ngang xếp từ cảm xúc xuất hiện nhiều nhất xuống ít nhất (`Vui vẻ / Hài lòng`, `Chán ghét / Khó chịu`, `Buồn bã`, `Ngạc nhiên`, `Tức giận`, `Lo lắng / Sợ hãi`, `Trung tính / Khác`).
-- **Góc dưới – trái (`Thang điểm 1–5`):** Đếm số bình luận rơi vào từng mức sao từ `1 (Rất tiêu cực)` đến `5 (Rất tích cực)` kèm giá trị trung bình thang 5 và thang 10 trên tiêu đề phụ.
+- **Góc dưới – trái (`Bám sát nội dung video`):** Biểu đồ cột đôi so sánh `POS / NEU / NEG` giữa nhóm bình luận **Bám sát video (`On-topic`)** và **Ngoài lề (`Off-topic`)** kèm tỷ lệ `%` bám sát nội dung video (nếu tắt ngữ cảnh video sẽ tự chuyển sang biểu đồ phân bố ngôn ngữ `VI / EN`).
 - **Góc dưới – phải (`So sánh các mô hình`):** Khi có Gemma Audit, vẽ thanh ngang so sánh **Agreement (%)** và **Macro-F1 (%)** của từng mô hình (`NB`, `LR`, `SVM`, `Lexicon`, `ViSoBERT`, `PhoBERT/Twitter-RoBERTa`, `Hybrid Ensemble`) so với Gemma 4 E2B. Khi chưa chạy Audit, tự động chuyển sang biểu đồ thanh chồng 100% tỷ lệ `POS % / NEU % / NEG %` để đối chiếu độ thiên lệch giữa các mô hình.
 
 ---
@@ -485,12 +454,12 @@ Biểu đồ do `plot_sentiment_dashboard()` trong `src/visualization.py` sinh r
 | Tham số (`SentimentPipeline.run`) | Cờ CLI (`python -m src.pipeline`) | Mặc định   | Tác dụng & Khuyến nghị chỉnh                                                                                                                                                    |
 | :----------------------------------- | :----------------------------------- | :------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `tiktok_url`                       | `--url`                            | `None`      | Dán link video/ảnh TikTok (hỗ trợ cả `vt.tiktok.com` lẫn `www.tiktok.com`).                                                                                                |
-| `input_dir`                        | `--input-dir`                      | `None`      | Trỏ thẳng vào thư mục cục bộ đã có sẵn comment/media/metadata (ví dụ `data/<post_id>`).                                                                                       |
-| `media_input`                      | `--media`                          | `None`      | Truyền đường dẫn video/ảnh cục bộ nếu không tải từ link TikTok.                                                                                                          |
-| `comments_source`                  | `--comments`                       | `None`      | Truyền trực tiếp tệp `.csv`, `.xlsx`, `.xls`, `.json`, hoặc `.txt` (hỗ trợ nạp lại cả file output 2 dòng tiêu đề).                                                       |
-| `run_media_analysis`               | `--skip-media`                     | `True`      | Bật/tắt Giai đoạn 1 (Gemma 4 E2B đọc video/ảnh) ngay cả khi có media.                                                                                                            |
+| `input_dir`                        | `--input-dir`                      | `None`      | Trỏ thẳng vào thư mục cục bộ đã chuẩn bị sẵn (`data/<post_id>`).                                                                                                               |
+| `run_media_analysis`               | `--skip-media`                     | `True`      | Bật/tắt nạp/trích xuất ngữ cảnh video/ảnh (`media_context.json`).                                                                                                                |
+| `force_reanalyze_media`            | `--reanalyze-media`                | `False`     | Đặt `True` nếu muốn buộc Gemma 4 + Whisper chạy lại ngay cả khi đã có `data/<post_id>/media_context.json`.                                                                     |
+| `prepare_only`                     | `--prepare-only`                   | `False`     | Đặt `True` nếu chỉ muốn chuẩn bị đủ dữ liệu vào `data/<post_id>/` rồi dừng trước Giai đoạn 2–3.                                                                                  |
 | `enable_audio`                     | `--no-audio`                       | `True`      | Bật/tắt bước giải mã âm thanh bằng PyAV + Whisper ở Giai đoạn 1.                                                                                                                 |
-| `run_ai_audit`                     | `--ai-audit` / `--no-ai-audit` / `--skip-audit` | `True` | Bật/tắt Giai đoạn 4 (Gemma 4 E2B thẩm định kết quả Giai đoạn 3). Tắt nếu chỉ cần kết quả ML/DL nhanh mà không cần kiểm tra lại bằng AI.                         |
+| `run_ai_audit`                     | `--ai-audit` / `--no-ai-audit` / `--skip-audit` | `False` | Bật/tắt Giai đoạn 4 (mặc định **tắt**; bật `--ai-audit` khi cần Gemma 4 E2B thẩm định các ca mỉa mai sâu & kết quả Giai đoạn 3).                                               |
 | `audit_limit`                      | `--audit-limit`                    | `None`      | `None` = chấm **100%** bình luận hợp lệ; đặt số nguyên (ví dụ `80`) nếu muốn giới hạn thời gian chạy.                                                                      |
 | `max_comments`                     | `--max-comments`                   | `200`       | Số lượng bình luận thô tối đa (bao gồm cả reply nếu bật) khi crawl trên trình duyệt Edge.                                                                                     |
 | `include_replies`                  | `--no-replies`                     | `True`      | Bật/tắt tự động bấm mở rộng và thu thập các bình luận trả lời (reply).                                                                                                         |

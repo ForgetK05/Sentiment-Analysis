@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
@@ -30,14 +31,6 @@ LABEL_VI_MAP: dict[str, str] = {
     "NEU": "Trung tính",
 }
 
-RATING_5_VI_MAP: dict[int, str] = {
-    1: "Rất tiêu cực",
-    2: "Tiêu cực",
-    3: "Trung tính",
-    4: "Tích cực",
-    5: "Rất tích cực",
-}
-
 _FEAR_CUES = (
     "sợ quá", "lo quá", "lo lắng", "hoang mang", "hãi", "run quá", "ớn lạnh",
     "scared", "terrified", "afraid", "creepy", "fear",
@@ -59,10 +52,91 @@ _JOY_CUES = (
     "peak", "fire", "smooth", "incredible", "so cute", "freaking good",
 )
 
+_AGREEMENT_CUE_PATTERN = re.compile(
+    r"(?<!\w)("
+    r"đúng rồi|đồng tình|đồng ý|chuẩn luôn|chuẩn quá|chuẩn|chính xác|quá đúng|nói đúng|"
+    r"rất đúng|ủng hộ|công nhận|hợp lý|thuyết phục|tán thành|thật sự đúng|"
+    r"so true|totally agree|agreed|agree|facts|preach|spot on|exactly|well said|fair point|"
+    r"valid point|couldn't agree more|you're right|that's true"
+    r")(?!\w)",
+    flags=re.IGNORECASE | re.UNICODE,
+)
+_DISAGREEMENT_CUE_PATTERN = re.compile(
+    r"(?<!\w)("
+    r"sai rồi|không đúng|vô lý|xạo|bịp|lấp liếm|nói bừa|nói phét|nói xàm|tào lao|dắt mũi|"
+    r"ngụy biện|phản đối|không đồng ý|cố chấp|ảo tưởng|lạc hậu|chẳng đúng|đâu có đúng|"
+    r"disagree|not true|wrong|bullshit|cap|lying|liar|nonsense|propaganda|biased|delusional|"
+    r"makes no sense|fake|clickbait"
+    r")(?!\w)",
+    flags=re.IGNORECASE | re.UNICODE,
+)
+_CONTROVERSY_MARKERS = (
+    "bóc phốt", "chỉ trích", "drama", "tranh luận", "tranh cãi", "phản biện", "tiêu cực",
+)
+
+
+def _coerce_media_dict(media_result: Any) -> dict[str, Any] | None:
+    if media_result is None:
+        return None
+    if hasattr(media_result, "to_dict"):
+        data = media_result.to_dict()
+        return data if isinstance(data, dict) else None
+    if isinstance(media_result, dict):
+        return media_result
+    return None
+
+
+def _compute_context_alignment(
+    cleaned_text: str,
+    polarity_label: str,
+    polarity_confidence: float,
+    has_sarcasm_signal: bool,
+    is_on_topic: bool,
+    media_dict: dict[str, Any] | None,
+) -> tuple[str, bool]:
+    """Xác định mối liên hệ cảm xúc giữa bình luận với nội dung video và cờ cần thẩm định sâu."""
+    if not media_dict:
+        return "", False
+
+    if has_sarcasm_signal:
+        return "Nghi ngờ mỉa mai / Cần AI kiểm tra ngữ cảnh", True
+
+    has_agree = bool(_AGREEMENT_CUE_PATTERN.search(cleaned_text or ""))
+    has_disagree = bool(_DISAGREEMENT_CUE_PATTERN.search(cleaned_text or ""))
+
+    context_meta_text = " ".join(
+        str(media_dict.get(k) or "")
+        for k in ("muc_dich_chinh", "sac_thai_noi_dung", "quan_diem_noi_dung")
+    ).lower()
+    is_controversial_video = any(m in context_meta_text for m in _CONTROVERSY_MARKERS)
+
+    if not is_on_topic:
+        if polarity_label == "POS" and has_agree:
+            return "Ủng hộ / Tích cực với video", False
+        if polarity_label == "NEG" and has_disagree:
+            return "Phản bác / Tiêu cực với video", False
+        return "Ít liên quan / Bình luận ngoài lề", False
+
+    if polarity_label == "POS":
+        if has_disagree:
+            return "Nghi ngờ mỉa mai / Phản bác (cần AI kiểm tra)", True
+        return "Ủng hộ / Tích cực với nội dung video", False
+
+    if polarity_label == "NEG":
+        if has_disagree:
+            return "Phản bác / Chỉ trích nội dung video", False
+        if has_agree or is_controversial_video:
+            return "Bức xúc / Tiêu cực về chủ đề video (cần xét đồng tình hay công kích)", True
+        return "Tiêu cực đối với nội dung video", False
+
+    if polarity_confidence < 0.70:
+        return "Thảo luận trung lập về chủ đề video (cần kiểm tra ẩn ý)", True
+    return "Thảo luận trung lập về chủ đề video", False
+
 
 @dataclass
 class AnalyzedComment:
-    """Kết quả phân tích đa tầng song ngữ (ML cổ điển + DL chuyên biệt + Hybrid + Thang điểm nhất quán)."""
+    """Kết quả phân tích đa tầng song ngữ (ML cổ điển + DL chuyên biệt + Hybrid + Ngữ cảnh video)."""
 
     comment_id: str
     username: str
@@ -83,10 +157,7 @@ class AnalyzedComment:
     polarity_label: str
     polarity_vi: str
     polarity_confidence: float
-    polarity_score: float  # Thang [-1.0, +1.0] nhất quán với polarity_label
-    score_5: int           # Thang [1..5] nhất quán với polarity_label (NEG:1-2, NEU:3, POS:4-5)
-    score_10: float        # Thang [0.0..10.0]
-    rating_level_vi: str
+    polarity_score: float  # Điểm cực tính liên tục [-1.0, +1.0] nhất quán với polarity_label
     polarity_probs: dict[str, float]
     # Cảm xúc 7 cung bậc
     emotion_label: str
@@ -104,18 +175,22 @@ class AnalyzedComment:
     model_probs: dict[str, dict[str, float]] = field(default_factory=dict)
     is_reply: bool = False
     parent_comment_id: str = ""
+    is_on_topic: bool = False
+    context_relevance: float = 0.0
+    matched_video_terms: list[str] = field(default_factory=list)
+    context_alignment: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
-def compute_dual_scale(
+def compute_polarity_score(
     probs: dict[str, float],
     polarity_label: str,
     emotion_label: str,
     emotion_conf: float,
-) -> tuple[float, int, float, str]:
-    """Quy đổi xác suất thành Thang [-1,+1], [1..5] và [0..10] nhất quán tuyệt đối với polarity_label."""
+) -> float:
+    """Tính điểm cực tính liên tục [-1.0, +1.0] nhất quán với polarity_label."""
     p_pos = float(probs.get("POS", 0.0))
     p_neg = float(probs.get("NEG", 0.0))
     p_neu = float(probs.get("NEU", 0.0))
@@ -132,17 +207,12 @@ def compute_dual_scale(
 
     if polarity_label == "NEG":
         polarity_score = float(np.clip(min(raw, -0.21), -1.0, -0.21))
-        score_5 = 1 if polarity_score <= -0.60 else 2
     elif polarity_label == "POS":
         polarity_score = float(np.clip(max(raw, 0.21), 0.21, 1.0))
-        score_5 = 5 if polarity_score >= 0.60 else 4
     else:
         polarity_score = float(np.clip(raw * (1.0 - 0.5 * p_neu), -0.19, 0.19))
-        score_5 = 3
 
-    polarity_score = round(polarity_score, 4)
-    score_10 = round((polarity_score + 1.0) * 5.0, 2)
-    return polarity_score, score_5, score_10, RATING_5_VI_MAP[score_5]
+    return round(polarity_score, 4)
 
 
 class _HFSequenceClassifier:
@@ -360,9 +430,11 @@ class CommentAnalyzer:
         self,
         preprocessed: Sequence[PreprocessedComment],
         metadata_rows: Sequence[dict[str, Any]] | None = None,
+        media_result: Any = None,
         show_progress: bool = True,
     ) -> tuple[list[AnalyzedComment], dict[str, float]]:
         """Phân tích toàn bộ comment hợp lệ (tự định tuyến VI/EN qua mô hình đúng ngôn ngữ)."""
+        media_dict = _coerce_media_dict(media_result)
         valid_indices = [idx for idx, item in enumerate(preprocessed) if item.is_valid]
         if not valid_indices:
             self.last_model_timings = {}
@@ -514,17 +586,30 @@ class CommentAnalyzer:
             pol_label = max(hybrid_probs, key=hybrid_probs.get)  # type: ignore[arg-type]
             pol_conf = round(float(hybrid_probs[pol_label]), 4)
 
-            polarity_score, score_5, score_10, rating_vi = compute_dual_scale(
+            polarity_score = compute_polarity_score(
                 hybrid_probs,
                 polarity_label=pol_label,
                 emotion_label=emo_label,
                 emotion_conf=emo_conf,
             )
 
+            is_on_topic = bool(getattr(item, "is_on_topic", False))
+            context_relevance = float(getattr(item, "context_relevance", 0.0) or 0.0)
+            matched_video_terms = list(getattr(item, "matched_video_terms", []) or [])
+            context_alignment, extra_needs_audit = _compute_context_alignment(
+                cleaned_text=item.cleaned_text,
+                polarity_label=pol_label,
+                polarity_confidence=pol_conf,
+                has_sarcasm_signal=item.has_sarcasm_signal,
+                is_on_topic=is_on_topic,
+                media_dict=media_dict,
+            )
+
             needs_audit = (
                 (bool(viso_lbl) and dl_lbl != viso_lbl)
                 or (pol_conf < 0.65)
                 or item.has_sarcasm_signal
+                or extra_needs_audit
             )
 
             model_probs_entry: dict[str, dict[str, float]] = {
@@ -538,13 +623,12 @@ class CommentAnalyzer:
                 model_probs_entry["visobert"] = viso_probs
 
             raw_is_reply = meta.get("is_reply", False)
-            if isinstance(raw_is_reply, str):
+            if raw_is_reply is None or (isinstance(raw_is_reply, float) and np.isnan(raw_is_reply)):
+                is_reply_val = False
+            elif isinstance(raw_is_reply, str):
                 is_reply_val = raw_is_reply.strip().lower() in {"true", "1", "yes", "y"}
             else:
-                try:
-                    is_reply_val = bool(raw_is_reply) and not pd.isna(raw_is_reply)
-                except Exception:
-                    is_reply_val = bool(raw_is_reply)
+                is_reply_val = bool(raw_is_reply)
 
             analyzed.append(
                 AnalyzedComment(
@@ -567,9 +651,6 @@ class CommentAnalyzer:
                     polarity_vi=LABEL_VI_MAP[pol_label],
                     polarity_confidence=pol_conf,
                     polarity_score=polarity_score,
-                    score_5=score_5,
-                    score_10=score_10,
-                    rating_level_vi=rating_vi,
                     polarity_probs=hybrid_probs,
                     emotion_label=emo_label,
                     emotion_vi=EMOTION_VI_MAP.get(emo_label, emo_label),
@@ -585,6 +666,10 @@ class CommentAnalyzer:
                     model_probs=model_probs_entry,
                     is_reply=is_reply_val,
                     parent_comment_id=str(meta.get("parent_comment_id", "") or "").strip(),
+                    is_on_topic=is_on_topic,
+                    context_relevance=round(context_relevance, 4),
+                    matched_video_terms=matched_video_terms,
+                    context_alignment=context_alignment,
                 )
             )
 
@@ -605,7 +690,6 @@ class CommentAnalyzer:
         total = len(items)
         pol_counts = {"POS": 0, "NEG": 0, "NEU": 0}
         emo_counts = {lbl: 0 for lbl in EMOTION_LABELS}
-        score_5_counts = {str(i): 0 for i in range(1, 6)}
         lang_counts = {"vi": 0, "en": 0}
 
         if total == 0:
@@ -616,22 +700,18 @@ class CommentAnalyzer:
                 "polarity_percentages": {"POS": 0.0, "NEG": 0.0, "NEU": 0.0},
                 "emotion_counts": emo_counts,
                 "emotion_percentages": {lbl: 0.0 for lbl in EMOTION_LABELS},
-                "score_5_counts": score_5_counts,
                 "avg_polarity_score": 0.0,
-                "avg_score_5": 0.0,
-                "avg_score_10": 0.0,
                 "avg_confidence": 0.0,
                 "overall_tendency": "Không có dữ liệu",
                 "sarcasm_flagged_count": 0,
                 "classical_ml_benchmark": self.classical_suite.benchmark_metrics,
                 "model_timings_sec": self.last_model_timings,
                 "top_examples": {"POS": [], "NEG": [], "NEU": []},
+                "on_topic_summary": None,
             }
 
         conf_sum = 0.0
         pol_score_sum = 0.0
-        s5_sum = 0
-        s10_sum = 0.0
         sarcasm_count = 0
         grouped: dict[str, list[AnalyzedComment]] = {"POS": [], "NEG": [], "NEU": []}
 
@@ -639,11 +719,8 @@ class CommentAnalyzer:
             lang_counts[a.language] = lang_counts.get(a.language, 0) + 1
             pol_counts[a.polarity_label] = pol_counts.get(a.polarity_label, 0) + 1
             emo_counts[a.emotion_label] = emo_counts.get(a.emotion_label, 0) + 1
-            score_5_counts[str(a.score_5)] = score_5_counts.get(str(a.score_5), 0) + 1
             conf_sum += a.polarity_confidence
             pol_score_sum += a.polarity_score
-            s5_sum += a.score_5
-            s10_sum += a.score_10
             if a.has_sarcasm_signal:
                 sarcasm_count += 1
             grouped.setdefault(a.polarity_label, []).append(a)
@@ -669,13 +746,43 @@ class CommentAnalyzer:
                     "comment": it.original_text,
                     "language": it.language,
                     "likes": it.likes,
-                    "score_5": it.score_5,
                     "polarity_score": it.polarity_score,
                     "emotion": it.emotion_vi,
                     "confidence": it.polarity_confidence,
                 }
                 for it in sorted_items
             ]
+
+        has_context_info = any(bool(a.context_alignment) for a in items)
+        on_topic_summary: dict[str, Any] | None = None
+        if has_context_info:
+            on_items = [a for a in items if a.is_on_topic]
+            on_cnt = len(on_items)
+            on_pol_counts = {"POS": 0, "NEG": 0, "NEU": 0}
+            for a in on_items:
+                on_pol_counts[a.polarity_label] = on_pol_counts.get(a.polarity_label, 0) + 1
+            on_pol_pcts = (
+                {k: round(v * 100.0 / on_cnt, 2) for k, v in on_pol_counts.items()}
+                if on_cnt > 0
+                else {"POS": 0.0, "NEG": 0.0, "NEU": 0.0}
+            )
+            alignment_counts: dict[str, int] = {}
+            rel_sum = 0.0
+            for a in items:
+                rel_sum += float(a.context_relevance or 0.0)
+                if a.context_alignment:
+                    alignment_counts[a.context_alignment] = (
+                        alignment_counts.get(a.context_alignment, 0) + 1
+                    )
+            on_topic_summary = {
+                "on_topic_count": on_cnt,
+                "on_topic_pct": round(on_cnt * 100.0 / total, 2),
+                "off_topic_count": total - on_cnt,
+                "avg_context_relevance": round(rel_sum / total, 4),
+                "on_topic_polarity_counts": on_pol_counts,
+                "on_topic_polarity_percentages": on_pol_pcts,
+                "alignment_counts": alignment_counts,
+            }
 
         return {
             "total_valid_comments": total,
@@ -684,14 +791,12 @@ class CommentAnalyzer:
             "polarity_percentages": pol_pcts,
             "emotion_counts": emo_counts,
             "emotion_percentages": emo_pcts,
-            "score_5_counts": score_5_counts,
             "avg_polarity_score": round(pol_score_sum / total, 4),
-            "avg_score_5": round(s5_sum / total, 2),
-            "avg_score_10": round(s10_sum / total, 2),
             "avg_confidence": round(conf_sum / total, 4),
             "overall_tendency": tendency,
             "sarcasm_flagged_count": sarcasm_count,
             "classical_ml_benchmark": self.classical_suite.benchmark_metrics,
             "model_timings_sec": self.last_model_timings,
             "top_examples": top_examples,
+            "on_topic_summary": on_topic_summary,
         }

@@ -271,9 +271,6 @@ class BilingualLexiconScorer:
         ]
 
 
-# Alias tương thích ngược
-VietnameseLexiconScorer = BilingualLexiconScorer
-
 _FALLBACK_VI_POLARITY_DATA: list[tuple[str, str]] = [
     ("sản_phẩm tuyệt_vời rất thích ủng_hộ", "POS"),
     ("hay quá giỏi thật luôn xuất_sắc", "POS"),
