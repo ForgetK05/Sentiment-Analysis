@@ -11,10 +11,10 @@ Sentiment-Analysis/
 │   └── <post_id>/                   # Tự tạo theo từng link TikTok: video.mp4 (hoặc images/slide_XX.jpg), metadata.json, raw_comments.csv, media_context.json
 ├── outputs/                         # Kết quả cuối cùng sau xử lý theo từng lượt chạy (6 tệp)
 │   └── <run_name>/
-│       ├── final_results.csv         # Bảng kết quả dễ đọc cho người xem (12 cột lõi hoặc 16 cột khi bật AI Audit; tiêu đề tiếng Việt 1 dòng, sắp theo lượt thích giảm dần)
-│       ├── detailed_model_outputs.csv # Chi tiết kỹ thuật, ID gốc, ngữ cảnh video, xác suất & dự đoán từng mô hình (29 cột lõi hoặc 34 cột khi bật AI Audit, khớp 1-1 theo stt)
-│       ├── filtered_noise.csv        # Tách riêng bình luận nhiễu kèm giải thích tiếng Việt (9 cột)
-│       ├── model_comparison.csv      # Bảng so sánh ML cổ điển, Lexicon, Deep Learning & Hybrid (tiêu đề tiếng Việt 1 dòng)
+│       ├── final_results.csv         # Bảng kết quả dễ đọc cho người xem (12 cột lõi hoặc 16 cột khi bật AI Audit; tiêu đề song ngữ 2 dòng Anh–Việt, sắp theo lượt thích giảm dần)
+│       ├── detailed_model_outputs.csv # Chi tiết kỹ thuật, ID gốc, ngữ cảnh video, xác suất & dự đoán từng mô hình (29 cột lõi hoặc 34 cột khi bật AI Audit; tiêu đề song ngữ 2 dòng Anh–Việt, khớp 1-1 theo stt)
+│       ├── filtered_noise.csv        # Tách riêng bình luận nhiễu kèm giải thích tiếng Việt (9 cột; tiêu đề song ngữ 2 dòng Anh–Việt)
+│       ├── model_comparison.csv      # Bảng so sánh ML cổ điển, Lexicon, Deep Learning & Hybrid (tiêu đề song ngữ 2 dòng Anh–Việt)
 │       ├── report.json               # Báo cáo tổng hợp JSON gọn (metadata, ngữ cảnh media, thống kê & so sánh mô hình)
 │       └── dashboard.png             # Biểu đồ tổng hợp 2x2
 ├── models/classical_ml/             # Cache mô hình ML cổ điển tách riêng vi/ và en/

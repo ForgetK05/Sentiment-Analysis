@@ -1,4 +1,16 @@
-﻿STT,Nội dung bình luận,Sắc thái,Độ tự tin sắc thái (%),Cảm xúc,Độ tự tin cảm xúc (%),Lượt thích,Loại bình luận,Tài khoản,Ngôn ngữ,Thời gian đăng,Số phản hồi
+﻿"stt
+(số thứ tự)","original_text
+(nội dung bình luận)","polarity_vi
+(sắc thái)","polarity_confidence
+(độ tự tin sắc thái %)","emotion_vi
+(cảm xúc)","emotion_confidence
+(độ tự tin cảm xúc %)","likes
+(lượt thích)","comment_type
+(loại bình luận)","username
+(tài khoản)","language
+(ngôn ngữ)","created_at
+(thời gian đăng)","reply_count
+(số phản hồi)"
 1,"Cách đây gần 20 năm trên diễn đàn hoangsa tôi có nói : để vn yên ổn phât triển 20 chắc chắn chúng ta sẽ làm dc tàu chiến, và tàu ngầm. Vì lúc đó vấn đề biển đảo với trung quốc đang rất nóng nhưng vn có lực lượng hải quân yếu. Giờ đây tôi nói một lần nữa: Nếu VN có 20 năm yên ổn làm ăn nữa thì chắc chắn VN sẽ là nc giàu mạnh top đầu thế giới. Vì phẩm chất của người VN hoàn toàn có thể trở thành cường quốc top đầu. Chúng ta có ý chí, tham vọng và sức mạnh đoàn kết , linh hoạt cùng vị trí chiến lược thì ko có lý do gì là một nước tầm trung cả. Hãy để thời gian chứng minh lời tôi nói.",Tích cực,67.9%,Trung tính / Khác,54.5%,165,Bình luận chính,vn.qu.hng.ti.p.lm,Tiếng Việt,2026-11-24 20:50:32,10
 2,trước khi nhật bản nó đi xâm lược thì bản thân nhật bản nó cũng đã là cường quốc rồi lấp liếm quá,Tiêu cực,80.0%,Chán ghét / Khó chịu,98.4%,80,Bình luận chính,allehap28,Tiếng Việt,2026-11-24 20:54:13,32
 3,Trọng nhân tài bằng gì? Bằng tiền! Tiền ở đâu ra? Ở trên clip,Trung tính,51.9%,Trung tính / Khác,88.9%,79,Trả lời,datquandiem,Tiếng Việt,2026-11-24 21:17:55,0

@@ -54,27 +54,46 @@ FILTER_REASON_VI_MAP: dict[str, str] = {
     "FILTERED_MEANINGLESS": "Từ rác / seeding ngắn vô nghĩa",
 }
 
-_FINAL_CORE_HEADERS: tuple[str, ...] = (
-    "STT",
-    "Nội dung bình luận",
-    "Sắc thái",
-    "Độ tự tin sắc thái (%)",
-    "Cảm xúc",
-    "Độ tự tin cảm xúc (%)",
-    "Lượt thích",
-    "Loại bình luận",
-    "Tài khoản",
-    "Ngôn ngữ",
-    "Thời gian đăng",
-    "Số phản hồi",
+_FINAL_CORE_COLUMNS: tuple[str, ...] = (
+    "stt",
+    "original_text",
+    "polarity_vi",
+    "polarity_confidence",
+    "emotion_vi",
+    "emotion_confidence",
+    "likes",
+    "comment_type",
+    "username",
+    "language",
+    "created_at",
+    "reply_count",
 )
 
-_FINAL_GEMMA_HEADERS: tuple[str, ...] = (
-    "Gemma sắc thái",
-    "Gemma cảm xúc",
-    "Nói mỉa (Gemma)",
-    "Lý do Gemma",
+_FINAL_GEMMA_COLUMNS: tuple[str, ...] = (
+    "gemma_polarity_vi",
+    "gemma_emotion_vi",
+    "gemma_is_sarcasm",
+    "gemma_reason",
 )
+
+FINAL_COLUMN_HEADERS: dict[str, str] = {
+    "stt": "stt\n(số thứ tự)",
+    "original_text": "original_text\n(nội dung bình luận)",
+    "polarity_vi": "polarity_vi\n(sắc thái)",
+    "polarity_confidence": "polarity_confidence\n(độ tự tin sắc thái %)",
+    "emotion_vi": "emotion_vi\n(cảm xúc)",
+    "emotion_confidence": "emotion_confidence\n(độ tự tin cảm xúc %)",
+    "gemma_polarity_vi": "gemma_polarity_vi\n(sắc thái gemma)",
+    "gemma_emotion_vi": "gemma_emotion_vi\n(cảm xúc gemma)",
+    "gemma_is_sarcasm": "gemma_is_sarcasm\n(nói mỉa theo gemma)",
+    "gemma_reason": "gemma_reason\n(lý do gemma giải thích)",
+    "likes": "likes\n(lượt thích)",
+    "comment_type": "comment_type\n(loại bình luận)",
+    "username": "username\n(tài khoản)",
+    "language": "language\n(ngôn ngữ)",
+    "created_at": "created_at\n(thời gian đăng)",
+    "reply_count": "reply_count\n(số phản hồi)",
+}
 
 _DETAILED_CORE_COLUMNS: tuple[str, ...] = (
     "stt",
@@ -115,6 +134,84 @@ _DETAILED_GEMMA_COLUMNS: tuple[str, ...] = (
     "gemma_agrees_polarity",
     "gemma_agrees_emotion",
 )
+
+DETAILED_COLUMN_HEADERS: dict[str, str] = {
+    "stt": "stt\n(số thứ tự)",
+    "comment_id": "comment_id\n(mã bình luận)",
+    "parent_comment_id": "parent_comment_id\n(mã bình luận gốc)",
+    "username": "username\n(tài khoản)",
+    "nickname": "nickname\n(tên hiển thị)",
+    "likes": "likes\n(lượt thích)",
+    "original_text": "original_text\n(nội dung gốc)",
+    "cleaned_text": "cleaned_text\n(nội dung đã làm sạch)",
+    "segmented_text": "segmented_text\n(văn bản đã tách từ)",
+    "is_duplicate": "is_duplicate\n(bình luận trùng lặp)",
+    "has_sarcasm_signal": "has_sarcasm_signal\n(dấu hiệu mỉa mai)",
+    "needs_audit": "needs_audit\n(cần thẩm định kỹ)",
+    "is_on_topic": "is_on_topic\n(bám sát chủ đề video)",
+    "context_relevance": "context_relevance\n(độ liên quan video 0-1)",
+    "matched_video_terms": "matched_video_terms\n(từ khóa video khớp)",
+    "context_alignment": "context_alignment\n(liên hệ với nội dung video)",
+    "polarity_label": "polarity_label\n(nhãn sắc thái chuẩn)",
+    "polarity_score": "polarity_score\n(điểm cực tính -1 đến +1)",
+    "score_POS": "score_POS\n(xác suất tích cực)",
+    "score_NEG": "score_NEG\n(xác suất tiêu cực)",
+    "score_NEU": "score_NEU\n(xác suất trung tính)",
+    "emotion_label": "emotion_label\n(nhãn cảm xúc chuẩn)",
+    "pred_nb": "pred_nb\n(dự đoán naive bayes)",
+    "pred_lr": "pred_lr\n(dự đoán logistic regression)",
+    "pred_svm": "pred_svm\n(dự đoán linear svm)",
+    "pred_lexicon": "pred_lexicon\n(dự đoán từ điển luật)",
+    "pred_visobert": "pred_visobert\n(dự đoán visobert)",
+    "pred_dl_primary": "pred_dl_primary\n(dự đoán học sâu chính)",
+    "emotion_ml_label": "emotion_ml_label\n(cảm xúc ml cổ điển)",
+    "gemma_audited": "gemma_audited\n(đã thẩm định gemma)",
+    "gemma_polarity": "gemma_polarity\n(nhãn sắc thái gemma)",
+    "gemma_emotion": "gemma_emotion\n(nhãn cảm xúc gemma)",
+    "gemma_agrees_polarity": "gemma_agrees_polarity\n(khớp sắc thái với gemma)",
+    "gemma_agrees_emotion": "gemma_agrees_emotion\n(khớp cảm xúc với gemma)",
+}
+
+_NOISE_COLUMNS: tuple[str, ...] = (
+    "stt",
+    "original_text",
+    "filter_reason_vi",
+    "filter_reason",
+    "language",
+    "likes",
+    "username",
+    "nickname",
+    "comment_id",
+)
+
+NOISE_COLUMN_HEADERS: dict[str, str] = {
+    "stt": "stt\n(số thứ tự)",
+    "original_text": "original_text\n(nội dung gốc)",
+    "filter_reason_vi": "filter_reason_vi\n(lý do lọc)",
+    "filter_reason": "filter_reason\n(mã lý do lọc)",
+    "language": "language\n(ngôn ngữ)",
+    "likes": "likes\n(lượt thích)",
+    "username": "username\n(tài khoản)",
+    "nickname": "nickname\n(tên hiển thị)",
+    "comment_id": "comment_id\n(mã bình luận)",
+}
+
+COMPARISON_COLUMN_HEADERS: dict[str, str] = {
+    "task": "task\n(nhiệm vụ)",
+    "model": "model\n(mô hình)",
+    "family": "family\n(nhóm phương pháp)",
+    "total_comments": "total_comments\n(số bình luận)",
+    "pos_count": "pos_count\n(tích cực SL)",
+    "neu_count": "neu_count\n(trung tính SL)",
+    "neg_count": "neg_count\n(tiêu cực SL)",
+    "pos_pct": "pos_pct\n(tích cực %)",
+    "neu_pct": "neu_pct\n(trung tính %)",
+    "neg_pct": "neg_pct\n(tiêu cực %)",
+    "agreement_vs_gemma_pct": "agreement_vs_gemma_pct\n(khớp gemma %)",
+    "macro_f1_vs_gemma": "macro_f1_vs_gemma\n(macro-f1 so với gemma)",
+    "cohen_kappa_vs_gemma": "cohen_kappa_vs_gemma\n(cohen kappa so với gemma)",
+    "inference_time_sec": "inference_time_sec\n(thời gian chạy giây)",
+}
 
 
 def _strip_row_keys(row: dict[str, Any]) -> dict[str, Any]:
@@ -167,14 +264,14 @@ def _sort_rows_by_likes_desc(norm_rows: Sequence[dict[str, Any]]) -> list[dict[s
 
 
 def format_final_results_df(clean_rows: Sequence[dict[str, Any]]) -> pd.DataFrame:
-    """Tạo DataFrame `final_results.csv` (1 dòng tiêu đề tiếng Việt, 12 cột lõi hoặc 16 cột khi bật AI Audit, sắp theo lượt thích giảm dần)."""
+    """Tạo DataFrame `final_results.csv` (tiêu đề song ngữ 2 dòng Anh–Việt, 12 cột lõi hoặc 16 cột khi bật AI Audit, sắp theo lượt thích giảm dần)."""
     norm_rows = _sort_rows_by_likes_desc([_strip_row_keys(r) for r in clean_rows])
     has_gemma = _has_gemma_audit_rows(norm_rows)
 
-    cols = list(_FINAL_CORE_HEADERS[:6])
+    cols = list(_FINAL_CORE_COLUMNS[:6])
     if has_gemma:
-        cols.extend(_FINAL_GEMMA_HEADERS)
-    cols.extend(_FINAL_CORE_HEADERS[6:])
+        cols.extend(_FINAL_GEMMA_COLUMNS)
+    cols.extend(_FINAL_CORE_COLUMNS[6:])
 
     out_rows: list[dict[str, Any]] = []
     for stt, r in enumerate(norm_rows, start=1):
@@ -182,34 +279,35 @@ def format_final_results_df(clean_rows: Sequence[dict[str, Any]]) -> pd.DataFram
         g_audited = _parse_bool_flag(r.get("gemma_audited", False))
         lang_code = str(r.get("language", "")).strip().lower()
         row_out: dict[str, Any] = {
-            "STT": stt,
-            "Nội dung bình luận": r.get("original_text", ""),
-            "Sắc thái": r.get("polarity_vi", ""),
-            "Độ tự tin sắc thái (%)": _format_pct_str(r.get("polarity_confidence", "")),
-            "Cảm xúc": r.get("emotion_vi", ""),
-            "Độ tự tin cảm xúc (%)": _format_pct_str(r.get("emotion_confidence", "")),
-            "Gemma sắc thái": LABEL_VI_MAP.get(g_pol, g_pol) if g_audited else "",
-            "Gemma cảm xúc": r.get("gemma_emotion_vi", "") if g_audited else "",
-            "Nói mỉa (Gemma)": (
+            "stt": stt,
+            "original_text": r.get("original_text", ""),
+            "polarity_vi": r.get("polarity_vi", ""),
+            "polarity_confidence": _format_pct_str(r.get("polarity_confidence", "")),
+            "emotion_vi": r.get("emotion_vi", ""),
+            "emotion_confidence": _format_pct_str(r.get("emotion_confidence", "")),
+            "gemma_polarity_vi": LABEL_VI_MAP.get(g_pol, g_pol) if g_audited else "",
+            "gemma_emotion_vi": r.get("gemma_emotion_vi", "") if g_audited else "",
+            "gemma_is_sarcasm": (
                 ("Có" if _parse_bool_flag(r.get("gemma_is_sarcasm", False)) else "Không")
                 if g_audited
                 else ""
             ),
-            "Lý do Gemma": r.get("gemma_reason", "") if g_audited else "",
-            "Lượt thích": _safe_int(r.get("likes"), 0),
-            "Loại bình luận": "Trả lời" if _parse_bool_flag(r.get("is_reply", False)) else "Bình luận chính",
-            "Tài khoản": r.get("username", ""),
-            "Ngôn ngữ": _LANG_VI_MAP.get(lang_code, lang_code),
-            "Thời gian đăng": r.get("created_at", ""),
-            "Số phản hồi": _safe_int(r.get("reply_count"), 0),
+            "gemma_reason": r.get("gemma_reason", "") if g_audited else "",
+            "likes": _safe_int(r.get("likes"), 0),
+            "comment_type": "Trả lời" if _parse_bool_flag(r.get("is_reply", False)) else "Bình luận chính",
+            "username": r.get("username", ""),
+            "language": _LANG_VI_MAP.get(lang_code, lang_code),
+            "created_at": r.get("created_at", ""),
+            "reply_count": _safe_int(r.get("reply_count"), 0),
         }
         out_rows.append({c: row_out[c] for c in cols})
 
-    return pd.DataFrame(out_rows, columns=cols) if out_rows else pd.DataFrame(columns=cols)
+    df = pd.DataFrame(out_rows, columns=cols) if out_rows else pd.DataFrame(columns=cols)
+    return df.rename(columns=FINAL_COLUMN_HEADERS)
 
 
 def build_detailed_model_outputs_df(clean_rows: Sequence[dict[str, Any]]) -> pd.DataFrame:
-    """Tạo bảng `detailed_model_outputs.csv` (tiêu đề 1 dòng snake_case, đồng bộ STT & likes giảm dần với final_results.csv)."""
+    """Tạo bảng `detailed_model_outputs.csv` (tiêu đề song ngữ 2 dòng Anh–Việt, đồng bộ STT & likes giảm dần với final_results.csv)."""
     norm_rows = _sort_rows_by_likes_desc([_strip_row_keys(r) for r in clean_rows])
     has_gemma = _has_gemma_audit_rows(norm_rows)
     cols = list(_DETAILED_CORE_COLUMNS) + (list(_DETAILED_GEMMA_COLUMNS) if has_gemma else [])
@@ -221,7 +319,8 @@ def build_detailed_model_outputs_df(clean_rows: Sequence[dict[str, Any]]) -> pd.
         row_copy["likes"] = _safe_int(row_copy.get("likes"), 0)
         out_rows.append({c: row_copy.get(c, "") for c in cols})
 
-    return pd.DataFrame(out_rows, columns=cols) if out_rows else pd.DataFrame(columns=cols)
+    df = pd.DataFrame(out_rows, columns=cols) if out_rows else pd.DataFrame(columns=cols)
+    return df.rename(columns=DETAILED_COLUMN_HEADERS)
 
 
 def resolve_local_input_dir(input_dir: str | Path) -> dict[str, Any]:
@@ -427,7 +526,7 @@ class SentimentPipeline:
         )
         exported["detailed_model_outputs_csv"] = str(detailed_csv)
 
-        # 3. filtered_noise.csv (TÁCH RIÊNG comment nhiễu / ngôn ngữ khác — tiêu đề tiếng Việt 1 dòng, sắp theo lượt thích giảm dần)
+        # 3. filtered_noise.csv (TÁCH RIÊNG comment nhiễu / ngôn ngữ khác — tiêu đề song ngữ 2 dòng Anh–Việt, sắp theo lượt thích giảm dần)
         noise_csv = out_path / "filtered_noise.csv"
         raw_noise_items: list[dict[str, Any]] = []
         for idx, p in enumerate(preprocessed):
@@ -438,9 +537,9 @@ class SentimentPipeline:
             raw_noise_items.append(
                 {
                     "original_text": p.original_text,
-                    "reason_vi": FILTER_REASON_VI_MAP.get(p.filter_reason, p.filter_reason),
+                    "filter_reason_vi": FILTER_REASON_VI_MAP.get(p.filter_reason, p.filter_reason),
                     "filter_reason": p.filter_reason,
-                    "language_vi": _LANG_VI_MAP.get(lang_code, lang_code),
+                    "language": _LANG_VI_MAP.get(lang_code, lang_code),
                     "likes": _safe_int(meta.get("likes"), 0),
                     "username": str(meta.get("username", "")),
                     "nickname": str(meta.get("nickname", "")),
@@ -450,35 +549,30 @@ class SentimentPipeline:
         raw_noise_items.sort(key=lambda r: r["likes"], reverse=True)
         noise_rows = [
             {
-                "STT": stt,
-                "Nội dung gốc": r["original_text"],
-                "Lý do lọc": r["reason_vi"],
-                "Mã lý do": r["filter_reason"],
-                "Ngôn ngữ": r["language_vi"],
-                "Lượt thích": r["likes"],
-                "Tài khoản": r["username"],
-                "Tên hiển thị": r["nickname"],
-                "Mã bình luận": r["comment_id"],
+                "stt": stt,
+                "original_text": r["original_text"],
+                "filter_reason_vi": r["filter_reason_vi"],
+                "filter_reason": r["filter_reason"],
+                "language": r["language"],
+                "likes": r["likes"],
+                "username": r["username"],
+                "nickname": r["nickname"],
+                "comment_id": r["comment_id"],
             }
             for stt, r in enumerate(raw_noise_items, start=1)
         ]
-        noise_cols = [
-            "STT",
-            "Nội dung gốc",
-            "Lý do lọc",
-            "Mã lý do",
-            "Ngôn ngữ",
-            "Lượt thích",
-            "Tài khoản",
-            "Tên hiển thị",
-            "Mã bình luận",
-        ]
-        pd.DataFrame(noise_rows, columns=noise_cols).to_csv(
+        noise_cols = list(_NOISE_COLUMNS)
+        df_noise = (
+            pd.DataFrame(noise_rows, columns=noise_cols)
+            if noise_rows
+            else pd.DataFrame(columns=noise_cols)
+        )
+        df_noise.rename(columns=NOISE_COLUMN_HEADERS).to_csv(
             noise_csv, index=False, encoding="utf-8-sig"
         )
         exported["filtered_noise_csv"] = str(noise_csv)
 
-        # 4. model_comparison.csv (tiêu đề tiếng Việt 1 dòng, số nguyên sạch & ký hiệu "—" cho ô không áp dụng)
+        # 4. model_comparison.csv (tiêu đề song ngữ 2 dòng Anh–Việt, số nguyên sạch & ký hiệu "—" cho ô không áp dụng)
         comp_csv = out_path / "model_comparison.csv"
         comp_data = report.get("model_comparison") or {}
         has_gemma = _has_gemma_audit_rows(clean_rows)
@@ -505,42 +599,47 @@ class SentimentPipeline:
             comp_raw_items.append(("Emotion (7 cung bậc)", row))
 
         comp_cols = [
-            "Nhiệm vụ",
-            "Mô hình",
-            "Nhóm phương pháp",
-            "Số bình luận",
-            "Tích cực (SL)",
-            "Trung tính (SL)",
-            "Tiêu cực (SL)",
-            "Tích cực (%)",
-            "Trung tính (%)",
-            "Tiêu cực (%)",
+            "task",
+            "model",
+            "family",
+            "total_comments",
+            "pos_count",
+            "neu_count",
+            "neg_count",
+            "pos_pct",
+            "neu_pct",
+            "neg_pct",
         ]
         if has_gemma:
-            comp_cols.extend(["Khớp Gemma (%)", "Macro-F1 vs Gemma", "Cohen Kappa vs Gemma"])
-        comp_cols.append("Thời gian chạy (giây)")
+            comp_cols.extend(["agreement_vs_gemma_pct", "macro_f1_vs_gemma", "cohen_kappa_vs_gemma"])
+        comp_cols.append("inference_time_sec")
 
         comp_formatted_rows: list[dict[str, Any]] = []
         for task_label, row in comp_raw_items:
             item_out: dict[str, Any] = {
-                "Nhiệm vụ": task_label,
-                "Mô hình": row.get("model", ""),
-                "Nhóm phương pháp": row.get("family", ""),
-                "Số bình luận": _fmt_int_cell(row.get("total_comments")),
-                "Tích cực (SL)": _fmt_int_cell(row.get("pos_count")),
-                "Trung tính (SL)": _fmt_int_cell(row.get("neu_count")),
-                "Tiêu cực (SL)": _fmt_int_cell(row.get("neg_count")),
-                "Tích cực (%)": _fmt_pct_cell(row.get("pos_pct")),
-                "Trung tính (%)": _fmt_pct_cell(row.get("neu_pct")),
-                "Tiêu cực (%)": _fmt_pct_cell(row.get("neg_pct")),
-                "Khớp Gemma (%)": _fmt_pct_cell(row.get("agreement_vs_gemma_pct")),
-                "Macro-F1 vs Gemma": _fmt_float_cell(row.get("macro_f1_vs_gemma"), 4),
-                "Cohen Kappa vs Gemma": _fmt_float_cell(row.get("cohen_kappa_vs_gemma"), 4),
-                "Thời gian chạy (giây)": _fmt_float_cell(row.get("inference_time_sec"), 3),
+                "task": task_label,
+                "model": row.get("model", ""),
+                "family": row.get("family", ""),
+                "total_comments": _fmt_int_cell(row.get("total_comments")),
+                "pos_count": _fmt_int_cell(row.get("pos_count")),
+                "neu_count": _fmt_int_cell(row.get("neu_count")),
+                "neg_count": _fmt_int_cell(row.get("neg_count")),
+                "pos_pct": _fmt_pct_cell(row.get("pos_pct")),
+                "neu_pct": _fmt_pct_cell(row.get("neu_pct")),
+                "neg_pct": _fmt_pct_cell(row.get("neg_pct")),
+                "agreement_vs_gemma_pct": _fmt_pct_cell(row.get("agreement_vs_gemma_pct")),
+                "macro_f1_vs_gemma": _fmt_float_cell(row.get("macro_f1_vs_gemma"), 4),
+                "cohen_kappa_vs_gemma": _fmt_float_cell(row.get("cohen_kappa_vs_gemma"), 4),
+                "inference_time_sec": _fmt_float_cell(row.get("inference_time_sec"), 3),
             }
             comp_formatted_rows.append({c: item_out[c] for c in comp_cols})
 
-        pd.DataFrame(comp_formatted_rows, columns=comp_cols).to_csv(
+        df_comp = (
+            pd.DataFrame(comp_formatted_rows, columns=comp_cols)
+            if comp_formatted_rows
+            else pd.DataFrame(columns=comp_cols)
+        )
+        df_comp.rename(columns=COMPARISON_COLUMN_HEADERS).to_csv(
             comp_csv, index=False, encoding="utf-8-sig"
         )
         exported["model_comparison_csv"] = str(comp_csv)

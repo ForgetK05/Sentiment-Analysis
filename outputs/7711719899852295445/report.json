@@ -280,13 +280,13 @@
       }
     },
     "model_timings_sec": {
-      "classical_ml_setup_sec": 0.483,
+      "classical_ml_setup_sec": 0.525,
       "classical_ml_polarity_sec": 0.029,
       "classical_ml_emotion_sec": 0.024,
       "lexicon_rules_sec": 0.002,
-      "visobert_sec": 13.361,
-      "phobert_sentiment_sec": 11.357,
-      "phobert_emotion_sec": 10.919
+      "visobert_sec": 12.848,
+      "phobert_sentiment_sec": 9.878,
+      "phobert_emotion_sec": 9.981
     },
     "top_examples": {
       "POS": [
@@ -470,7 +470,7 @@
         "agreement_vs_gemma_pct": null,
         "macro_f1_vs_gemma": null,
         "cohen_kappa_vs_gemma": null,
-        "inference_time_sec": 13.361
+        "inference_time_sec": 12.848
       },
       {
         "model": "PhoBERT + underthesea (wonrax)",
@@ -485,7 +485,7 @@
         "agreement_vs_gemma_pct": null,
         "macro_f1_vs_gemma": null,
         "cohen_kappa_vs_gemma": null,
-        "inference_time_sec": 11.357
+        "inference_time_sec": 9.878
       },
       {
         "model": "Hybrid Ensemble (Hệ thống chính)",
@@ -516,7 +516,7 @@
         "family": "Deep Learning",
         "agreement_vs_gemma_pct": null,
         "macro_f1_vs_gemma": null,
-        "inference_time_sec": 10.919
+        "inference_time_sec": 9.981
       }
     ]
   },

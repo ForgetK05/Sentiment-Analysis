@@ -1,4 +1,16 @@
-﻿STT,Nội dung bình luận,Sắc thái,Độ tự tin sắc thái (%),Cảm xúc,Độ tự tin cảm xúc (%),Lượt thích,Loại bình luận,Tài khoản,Ngôn ngữ,Thời gian đăng,Số phản hồi
+﻿"stt
+(số thứ tự)","original_text
+(nội dung bình luận)","polarity_vi
+(sắc thái)","polarity_confidence
+(độ tự tin sắc thái %)","emotion_vi
+(cảm xúc)","emotion_confidence
+(độ tự tin cảm xúc %)","likes
+(lượt thích)","comment_type
+(loại bình luận)","username
+(tài khoản)","language
+(ngôn ngữ)","created_at
+(thời gian đăng)","reply_count
+(số phản hồi)"
 1,she was the one who really got it going 🥹💕,Tích cực,72.8%,Vui vẻ / Hài lòng,50.8%,22278,Bình luận chính,phewwwie,Tiếng Anh,2026-09-24 05:19:48,23
 2,She was like “Bro”,Trung tính,75.7%,Trung tính / Khác,46.5%,9514,Bình luận chính,astigraphy_,Tiếng Anh,2026-09-22 17:57:18,19
 3,"You won’t even see them after that, but once in your lifetime you both share a nice short moment. Isn’t that so nice to think about?",Tích cực,88.2%,Trung tính / Khác,68.8%,4170,Bình luận chính,martin_arce26,Tiếng Anh,2026-09-22 21:46:00,16

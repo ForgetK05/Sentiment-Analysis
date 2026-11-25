@@ -1,4 +1,33 @@
-﻿stt,comment_id,parent_comment_id,username,nickname,likes,original_text,cleaned_text,segmented_text,is_duplicate,has_sarcasm_signal,needs_audit,is_on_topic,context_relevance,matched_video_terms,context_alignment,polarity_label,polarity_score,score_POS,score_NEG,score_NEU,emotion_label,pred_nb,pred_lr,pred_svm,pred_lexicon,pred_visobert,pred_dl_primary,emotion_ml_label
+﻿"stt
+(số thứ tự)","comment_id
+(mã bình luận)","parent_comment_id
+(mã bình luận gốc)","username
+(tài khoản)","nickname
+(tên hiển thị)","likes
+(lượt thích)","original_text
+(nội dung gốc)","cleaned_text
+(nội dung đã làm sạch)","segmented_text
+(văn bản đã tách từ)","is_duplicate
+(bình luận trùng lặp)","has_sarcasm_signal
+(dấu hiệu mỉa mai)","needs_audit
+(cần thẩm định kỹ)","is_on_topic
+(bám sát chủ đề video)","context_relevance
+(độ liên quan video 0-1)","matched_video_terms
+(từ khóa video khớp)","context_alignment
+(liên hệ với nội dung video)","polarity_label
+(nhãn sắc thái chuẩn)","polarity_score
+(điểm cực tính -1 đến +1)","score_POS
+(xác suất tích cực)","score_NEG
+(xác suất tiêu cực)","score_NEU
+(xác suất trung tính)","emotion_label
+(nhãn cảm xúc chuẩn)","pred_nb
+(dự đoán naive bayes)","pred_lr
+(dự đoán logistic regression)","pred_svm
+(dự đoán linear svm)","pred_lexicon
+(dự đoán từ điển luật)","pred_visobert
+(dự đoán visobert)","pred_dl_primary
+(dự đoán học sâu chính)","emotion_ml_label
+(cảm xúc ml cổ điển)"
 1,7711734997489042228,,vn.qu.hng.ti.p.lm,Bánh Chưng,165,"Cách đây gần 20 năm trên diễn đàn hoangsa tôi có nói : để vn yên ổn phât triển 20 chắc chắn chúng ta sẽ làm dc tàu chiến, và tàu ngầm. Vì lúc đó vấn đề biển đảo với trung quốc đang rất nóng nhưng vn có lực lượng hải quân yếu. Giờ đây tôi nói một lần nữa: Nếu VN có 20 năm yên ổn làm ăn nữa thì chắc chắn VN sẽ là nc giàu mạnh top đầu thế giới. Vì phẩm chất của người VN hoàn toàn có thể trở thành cường quốc top đầu. Chúng ta có ý chí, tham vọng và sức mạnh đoàn kết , linh hoạt cùng vị trí chiến lược thì ko có lý do gì là một nước tầm trung cả. Hãy để thời gian chứng minh lời tôi nói.","Cách đây gần 20 năm trên diễn đàn hoangsa tôi có nói : để vn yên ổn phât triển 20 chắc chắn chúng ta sẽ làm được tàu chiến, và tàu ngầm. Vì lúc đó vấn đề biển đảo với trung quốc đang rất nóng nhưng vn có lực lượng hải quân yếu. Giờ đây tôi nói một lần nữa: Nếu VN có 20 năm yên ổn làm ăn nữa thì chắc chắn VN sẽ là nc giàu mạnh top đầu thế giới. Vì phẩm chất của người VN hoàn toàn có thể trở thành cường quốc top đầu. Chúng ta có ý chí, tham vọng và sức mạnh đoàn kết , linh hoạt cùng vị trí chiến lược thì không có lý do gì là một nước tầm trung cả. Hãy để thời gian chứng minh lời tôi nói.","Cách đây gần 20 năm trên diễn_đàn hoangsa tôi có nói : để vn yên_ổn phât triển 20 chắc_chắn chúng_ta sẽ làm được tàu_chiến , và tàu ngầm . Vì lúc đó vấn_đề biển đảo với trung_quốc đang rất nóng nhưng vn có lực_lượng hải_quân yếu . Giờ_đây tôi nói một lần nữa : Nếu VN có 20 năm yên_ổn làm_ăn nữa thì chắc_chắn VN sẽ là nc giàu_mạnh top đầu thế_giới . Vì phẩm_chất của người VN hoàn_toàn có_thể trở_thành cường_quốc top đầu . Chúng_ta có ý_chí , tham_vọng và sức_mạnh đoàn_kết , linh_hoạt cùng vị_trí chiến_lược thì không có lý_do gì là một nước tầm trung_cả . Hãy để thời_gian chứng_minh lời tôi nói .",False,False,False,True,0.4733,Trung Quốc,Ủng hộ / Tích cực với nội dung video,POS,0.5271,0.6792,0.1521,0.1686,Other,NEG,POS,NEG,NEU,POS,POS,Other
 2,7711735949935395636,,allehap28,bơ 😲😲,80,trước khi nhật bản nó đi xâm lược thì bản thân nhật bản nó cũng đã là cường quốc rồi lấp liếm quá,trước khi nhật bản nó đi xâm lược thì bản thân nhật bản nó cũng đã là cường quốc rồi lấp liếm quá,trước khi nhật_bản nó đi xâm_lược thì bản_thân nhật_bản nó cũng đã là cường_quốc rồi lấp liếm quá,False,False,False,True,0.4524,Nhật Bản,Phản bác / Chỉ trích nội dung video,NEG,-0.8362,0.0428,0.8003,0.157,Disgust,NEG,NEG,NEG,NEU,NEG,NEG,Other
 3,7711742028246680341,7711735442383684353,datquandiem,Đạt quan điểm,79,Trọng nhân tài bằng gì? Bằng tiền! Tiền ở đâu ra? Ở trên clip,Trọng nhân tài bằng gì? Bằng tiền! Tiền ở đâu ra? Ở trên clip,Trọng_nhân_tài bằng gì ?_Bằng tiền !_Tiền ở đâu ra ? Ở trên clip,False,False,True,False,0.043,,Ít liên quan / Bình luận ngoài lề,NEU,-0.1035,0.1707,0.3105,0.5188,Other,NEG,NEU,NEU,NEU,NEG,NEU,Disgust

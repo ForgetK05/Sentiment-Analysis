@@ -1,4 +1,33 @@
-﻿stt,comment_id,parent_comment_id,username,nickname,likes,original_text,cleaned_text,segmented_text,is_duplicate,has_sarcasm_signal,needs_audit,is_on_topic,context_relevance,matched_video_terms,context_alignment,polarity_label,polarity_score,score_POS,score_NEG,score_NEU,emotion_label,pred_nb,pred_lr,pred_svm,pred_lexicon,pred_visobert,pred_dl_primary,emotion_ml_label
+﻿"stt
+(số thứ tự)","comment_id
+(mã bình luận)","parent_comment_id
+(mã bình luận gốc)","username
+(tài khoản)","nickname
+(tên hiển thị)","likes
+(lượt thích)","original_text
+(nội dung gốc)","cleaned_text
+(nội dung đã làm sạch)","segmented_text
+(văn bản đã tách từ)","is_duplicate
+(bình luận trùng lặp)","has_sarcasm_signal
+(dấu hiệu mỉa mai)","needs_audit
+(cần thẩm định kỹ)","is_on_topic
+(bám sát chủ đề video)","context_relevance
+(độ liên quan video 0-1)","matched_video_terms
+(từ khóa video khớp)","context_alignment
+(liên hệ với nội dung video)","polarity_label
+(nhãn sắc thái chuẩn)","polarity_score
+(điểm cực tính -1 đến +1)","score_POS
+(xác suất tích cực)","score_NEG
+(xác suất tiêu cực)","score_NEU
+(xác suất trung tính)","emotion_label
+(nhãn cảm xúc chuẩn)","pred_nb
+(dự đoán naive bayes)","pred_lr
+(dự đoán logistic regression)","pred_svm
+(dự đoán linear svm)","pred_lexicon
+(dự đoán từ điển luật)","pred_visobert
+(dự đoán visobert)","pred_dl_primary
+(dự đoán học sâu chính)","emotion_ml_label
+(cảm xúc ml cổ điển)"
 1,7688858769435001630,,phewwwie,heyrachelbaby,22278,she was the one who really got it going 🥹💕,she was the one who really got it going 🥹💕,she was the one who really got it going 🥹 💕,False,False,False,False,0.0,,Ít liên quan / Bình luận ngoài lề,POS,0.6557,0.7284,0.1032,0.1684,Enjoyment,NEG,NEG,NEU,POS,,POS,Enjoyment
 2,7688311930814268168,,astigraphy_,astigraphy_,9514,She was like “Bro”,She was like “Bro”,She was like “ Bro ”,False,False,False,False,0.0,,Ít liên quan / Bình luận ngoài lề,NEU,0.0185,0.1363,0.1066,0.7572,Other,NEG,NEU,NEU,NEU,,NEU,Sadness
 3,7688370904674272008,,martin_arce26,Martin,4170,"You won’t even see them after that, but once in your lifetime you both share a nice short moment. Isn’t that so nice to think about?","You won’t even see them after that, but once in your lifetime you both share a nice short moment. Isn’t that so nice to think about?","You won ’ t even see them after that , but once in your lifetime you both share a nice short moment . Isn ’ t that so nice to think about ?",False,False,False,False,0.0,,Ít liên quan / Bình luận ngoài lề,POS,0.8468,0.8816,0.0348,0.0836,Other,POS,POS,POS,POS,,POS,Enjoyment

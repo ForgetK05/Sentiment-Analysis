@@ -1,4 +1,13 @@
-﻿STT,Nội dung gốc,Lý do lọc,Mã lý do,Ngôn ngữ,Lượt thích,Tài khoản,Tên hiển thị,Mã bình luận
+﻿"stt
+(số thứ tự)","original_text
+(nội dung gốc)","filter_reason_vi
+(lý do lọc)","filter_reason
+(mã lý do lọc)","language
+(ngôn ngữ)","likes
+(lượt thích)","username
+(tài khoản)","nickname
+(tên hiển thị)","comment_id
+(mã bình luận)"
 1,mira como le sonríes a la pantalla 🥹,Ngôn ngữ khác ngoài Tiếng Việt / Tiếng Anh,FILTERED_UNSUPPORTED_LANG,Ngôn ngữ khác,400,dimedun,Dun🦕,7688469780089684757
 2,"Ооооо, я там был!!! Зарисовку сделал >:3",Ngôn ngữ khác ngoài Tiếng Việt / Tiếng Anh,FILTERED_UNSUPPORTED_LANG,Ngôn ngữ khác,25,rayn1ed,rayn1ed,7688351294066574101
 3,А почему я плачу,Ngôn ngữ khác ngoài Tiếng Việt / Tiếng Anh,FILTERED_UNSUPPORTED_LANG,Ngôn ngữ khác,7,illya.su0,illya.su,7688392421646091015

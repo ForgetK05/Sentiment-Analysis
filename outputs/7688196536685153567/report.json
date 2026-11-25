@@ -272,15 +272,15 @@
       }
     },
     "model_timings_sec": {
-      "classical_ml_setup_sec": 1.729,
-      "classical_ml_polarity_sec": 0.039,
-      "classical_ml_emotion_sec": 0.03,
-      "lexicon_rules_sec": 0.01,
-      "visobert_sec": 2.109,
-      "phobert_sentiment_sec": 1.645,
-      "phobert_emotion_sec": 1.56,
-      "en_roberta_sentiment_sec": 12.024,
-      "en_roberta_emotion_sec": 6.094
+      "classical_ml_setup_sec": 0.887,
+      "classical_ml_polarity_sec": 0.035,
+      "classical_ml_emotion_sec": 0.026,
+      "lexicon_rules_sec": 0.009,
+      "visobert_sec": 2.04,
+      "phobert_sentiment_sec": 1.709,
+      "phobert_emotion_sec": 1.681,
+      "en_roberta_sentiment_sec": 13.431,
+      "en_roberta_emotion_sec": 6.881
     },
     "top_examples": {
       "POS": [
@@ -401,7 +401,7 @@
         "agreement_vs_gemma_pct": null,
         "macro_f1_vs_gemma": null,
         "cohen_kappa_vs_gemma": null,
-        "inference_time_sec": 0.039
+        "inference_time_sec": 0.035
       },
       {
         "model": "TF-IDF + Logistic Regression",
@@ -416,7 +416,7 @@
         "agreement_vs_gemma_pct": null,
         "macro_f1_vs_gemma": null,
         "cohen_kappa_vs_gemma": null,
-        "inference_time_sec": 0.039
+        "inference_time_sec": 0.035
       },
       {
         "model": "TF-IDF + Linear SVM",
@@ -431,7 +431,7 @@
         "agreement_vs_gemma_pct": null,
         "macro_f1_vs_gemma": null,
         "cohen_kappa_vs_gemma": null,
-        "inference_time_sec": 0.039
+        "inference_time_sec": 0.035
       },
       {
         "model": "Bilingual Lexicon + Rules",
@@ -446,7 +446,7 @@
         "agreement_vs_gemma_pct": null,
         "macro_f1_vs_gemma": null,
         "cohen_kappa_vs_gemma": null,
-        "inference_time_sec": 0.01
+        "inference_time_sec": 0.009
       },
       {
         "model": "ViSoBERT (5CD-AI, VI)",
@@ -461,7 +461,7 @@
         "agreement_vs_gemma_pct": null,
         "macro_f1_vs_gemma": null,
         "cohen_kappa_vs_gemma": null,
-        "inference_time_sec": 2.109
+        "inference_time_sec": 2.04
       },
       {
         "model": "PhoBERT (VI) / Twitter-RoBERTa (EN)",
@@ -476,7 +476,7 @@
         "agreement_vs_gemma_pct": null,
         "macro_f1_vs_gemma": null,
         "cohen_kappa_vs_gemma": null,
-        "inference_time_sec": 13.669
+        "inference_time_sec": 15.14
       },
       {
         "model": "Hybrid Ensemble (Hệ thống chính)",
@@ -500,14 +500,14 @@
         "family": "Classical ML",
         "agreement_vs_gemma_pct": null,
         "macro_f1_vs_gemma": null,
-        "inference_time_sec": 0.03
+        "inference_time_sec": 0.026
       },
       {
         "model": "PhoBERT Emotion (VI) / DistilRoBERTa (EN)",
         "family": "Deep Learning",
         "agreement_vs_gemma_pct": null,
         "macro_f1_vs_gemma": null,
-        "inference_time_sec": 7.654
+        "inference_time_sec": 8.562
       }
     ]
   },
