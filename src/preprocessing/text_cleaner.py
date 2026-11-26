@@ -193,7 +193,7 @@ _EN_SIGNAL_WORDS = _EN_NEUTRAL_STOPWORDS | {
     "ride", "angel", "gold", "hard", "find", "even", "used", "less",
     "witnessing", "transition", "transitions", "cinema", "masterpiece",
     "cringe", "trash", "mid", "boring", "disappointed", "terrible",
-    "awesome", "great", "perfect", "december", "doom", "marvel",
+    "great", "perfect", "december", "doom", "marvel",
 }
 
 _VI_UNACCENTED_WORDS = {

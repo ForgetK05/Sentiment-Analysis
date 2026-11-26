@@ -163,10 +163,11 @@ def plot_sentiment_dashboard(
         )
         ax_ctx.grid(axis="y", linestyle="--", alpha=0.35)
 
-    # 4. So sánh các mô hình ML cổ điển vs Deep Learning vs Hybrid
+    # 4. So sánh các mô hình Classical ML, Deep Learning (nếu có) & Ensemble
     non_ref_models = [r for r in pol_models if "Gemma 4" not in str(r.get("model", ""))]
+    has_dl_models = any(r.get("family") == "Deep Learning" for r in non_ref_models)
     if non_ref_models and non_ref_models[0].get("agreement_vs_gemma_pct") is not None:
-        m_names = [r["model"].replace(" (Hệ thống chính)", "\n(Hybrid)") for r in non_ref_models]
+        m_names = [r["model"].replace(" (Hệ thống chính)", "\n(Chính)") for r in non_ref_models]
         agrees = [float(r.get("agreement_vs_gemma_pct") or 0.0) for r in non_ref_models]
         f1s = [float(r.get("macro_f1_vs_gemma") or 0.0) * 100.0 for r in non_ref_models]
         y_pos = list(range(len(m_names)))
@@ -178,15 +179,19 @@ def plot_sentiment_dashboard(
             [y + h / 2 for y in y_pos], f1s, height=h, label="Macro-F1 (%) vs Gemma 4", color="#8e44ad"
         )
         ax_comp.set_yticks(y_pos)
-        ax_comp.set_yticklabels(m_names, fontsize=8.5)
+        ax_comp.set_yticklabels(m_names, fontsize=7.5)
         ax_comp.invert_yaxis()
         ax_comp.set_xlim(0, 108)
         ax_comp.set_xlabel("Tỷ lệ khớp thực tế (%)")
-        ax_comp.set_title("So sánh mô hình ML cổ điển vs Deep Learning vs Hybrid")
+        ax_comp.set_title(
+            "So sánh Classical ML vs Deep Learning vs Hybrid"
+            if has_dl_models
+            else "So sánh hiệu năng các mô hình Classical ML"
+        )
         ax_comp.legend(fontsize=8)
         ax_comp.grid(axis="x", linestyle="--", alpha=0.35)
     elif non_ref_models:
-        m_names = [r["model"].replace(" (Hệ thống chính)", "\n(Hybrid)") for r in non_ref_models]
+        m_names = [r["model"].replace(" (Hệ thống chính)", "\n(Chính)") for r in non_ref_models]
         pos_p = [float(r["pos_pct"]) for r in non_ref_models]
         neu_p = [float(r["neu_pct"]) for r in non_ref_models]
         neg_p = [float(r["neg_pct"]) for r in non_ref_models]
@@ -196,11 +201,15 @@ def plot_sentiment_dashboard(
         left_neg = [a + b for a, b in zip(pos_p, neu_p)]
         ax_comp.barh(y_pos, neg_p, left=left_neg, label="NEG %", color="#e74c3c")
         ax_comp.set_yticks(y_pos)
-        ax_comp.set_yticklabels(m_names, fontsize=8.5)
+        ax_comp.set_yticklabels(m_names, fontsize=7.5)
         ax_comp.invert_yaxis()
         ax_comp.set_xlim(0, 100)
         ax_comp.set_xlabel("Phân bố (%)")
-        ax_comp.set_title("Phân bố dự đoán giữa các mô hình ML & DL")
+        ax_comp.set_title(
+            "Phân bố dự đoán giữa các mô hình ML & DL"
+            if has_dl_models
+            else "Phân bố dự đoán giữa các mô hình Classical ML"
+        )
         ax_comp.legend(fontsize=8)
 
     media_info = report.get("media_analysis") or {}

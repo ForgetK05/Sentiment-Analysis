@@ -1,7 +1,7 @@
 # Tài liệu Giải thích Chi tiết Cấu trúc, Cách hoạt động & Từ điển Dữ liệu Dự án
 
 > **Đối tượng dự án:** Hệ thống Phân tích Cảm xúc Bình luận TikTok Song ngữ (`vi` / `en`) Đa phương thức (`e:\A\Sentiment-Analysis`).
-> **Nguyên tắc kiến trúc cốt lõi:** Chỉ dùng mô hình AI tạo sinh (**Gemma 4 E2B**) tại **Đầu vào** (đọc ngữ cảnh video/ảnh) và **Đầu ra** (thẩm định thực tế & tổng kết); toàn bộ phần lõi ở giữa chạy bằng **NLP (`underthesea`) + Học máy cổ điển + Luật từ điển + Học sâu chuyên biệt** trên CPU.
+> **Nguyên tắc kiến trúc cốt lõi:** Chỉ dùng mô hình AI tạo sinh (**Gemma 4 E2B**) tại **Đầu vào** (đọc ngữ cảnh video/ảnh) và **Đầu ra** (tùy chọn thẩm định thực tế & tổng kết); toàn bộ phần lõi ở giữa chạy trên CPU với **NLP (`underthesea`) + 5 họ Classical ML v3 (`LinearSVC`/`NBSVM`/`RBF-SVM`, `NB`/`CNB`, `LR`/`Ridge`/`SGD`, `RF`/`HistGB` + Smart Meta-Ensemble) + Luật từ điển + Deep Learning (`PhoBERT`, `ViSoBERT`, `Twitter-RoBERTa`)**, hỗ trợ chuyển nhanh qua `--engine hybrid | classical`.
 
 ---
 
@@ -25,8 +25,7 @@ e:\A\Sentiment-Analysis\
 ├── AI_Local/gemma4-e2b/                  # Hạ tầng AI cục bộ chạy qua Docker Ollama
 │   ├── docker-compose.yml                # Cấu hình container GPU, bộ nhớ KV Cache 4GB VRAM
 │   ├── Modelfile                         # Định nghĩa mô hình tùy biến `gemma4-e2b-opt`
-│   ├── ollama_models/                    # Lưu trữ trọng số GGUF của Gemma 4 E2B trên ổ E:
-│   └── test.ipynb                        # Notebook kiểm thử kết nối Ollama độc lập
+│   └── ollama_models/                    # Lưu trữ trọng số GGUF của Gemma 4 E2B trên ổ E:
 │
 ├── data/                                 # KHO DỮ LIỆU CHUẨN BỊ ĐẦU VÀO
 │   └── <post_id>/                        # Tự động sinh theo từng link TikTok
@@ -35,12 +34,12 @@ e:\A\Sentiment-Analysis\
 │       ├── raw_comments.csv              # Toàn bộ bình luận thô thu thập từ trình duyệt
 │       └── media_context.json            # Nội dung video/ảnh do Whisper + Gemma 4 trích xuất (tái sử dụng cho Giai đoạn 2–3)
 │
-├── models/classical_ml/                  # BỘ ĐỆM MÔ HÌNH HỌC MÁY CỔ ĐIỂN (Cache .joblib)
-│   ├── vi/                               # Nhánh Tiếng Việt: NB, LR, Linear SVM, Emotion LR
+├── models/classical_ml/                  # BỘ ĐỆM MÔ HÌNH CLASSICAL ML v3 (Cache .joblib)
+│   ├── vi/                               # Nhánh Tiếng Việt: 10+1 Polarity & 6+1 Emotion (5 họ ML, 3 biến thể SVM)
 │   │   ├── polarity_models.joblib
 │   │   ├── emotion_ml_model.joblib
 │   │   └── benchmark_metrics.json
-│   └── en/                               # Nhánh Tiếng Anh: NB, LR, Linear SVM, Emotion LR
+│   └── en/                               # Nhánh Tiếng Anh: 10+1 Polarity & 6+1 Emotion (5 họ ML, 3 biến thể SVM)
 │       ├── polarity_models.joblib
 │       ├── emotion_ml_model.joblib
 │       └── benchmark_metrics.json
@@ -48,9 +47,9 @@ e:\A\Sentiment-Analysis\
 ├── outputs/                              # KHO KẾT QUẢ CUỐI CÙNG SAU XỬ LÝ (6 tệp gọn)
 │   └── <run_name>/                       # Khớp mã bài đăng hoặc tên thư mục nguồn
 │       ├── final_results.csv             # Bảng kết quả dễ đọc (12 cột lõi hoặc 16 cột khi bật AI Audit; tiêu đề song ngữ 2 dòng Anh–Việt, sắp theo lượt thích giảm dần)
-│       ├── detailed_model_outputs.csv    # Thuộc tính kỹ thuật, ID gốc, ngữ cảnh video, xác suất & dự đoán từng mô hình (29 cột lõi hoặc 34 cột khi bật AI Audit; tiêu đề song ngữ 2 dòng Anh–Việt, khớp 1-1 theo stt)
+│       ├── detailed_model_outputs.csv    # Thuộc tính kỹ thuật, ID gốc, ngữ cảnh video, xác suất & dự đoán đầy đủ 5 họ ML + DL (46 cột ở Hybrid / 42 cột ở Classical; +5 cột khi bật AI Audit)
 │       ├── filtered_noise.csv            # 9 cột tách riêng bình luận nhiễu kèm lý do tiếng Việt (tiêu đề song ngữ 2 dòng Anh–Việt)
-│       ├── model_comparison.csv          # Bảng so sánh các mô hình/nhánh (11 cột lõi hoặc 14 cột khi bật AI Audit; tiêu đề song ngữ 2 dòng Anh–Việt)
+│       ├── model_comparison.csv          # Bảng so sánh toàn diện các mô hình/nhánh (11 cột lõi hoặc 14 cột khi bật AI Audit; tiêu đề song ngữ 2 dòng Anh–Việt)
 │       ├── report.json                   # Báo cáo tổng hợp JSON gọn (không nhân bản mảng comments/noise)
 │       └── dashboard.png                 # Biểu đồ 2x2 trực quan hóa kết quả
 │
@@ -65,8 +64,8 @@ e:\A\Sentiment-Analysis\
 │   ├── models/
 │   │   ├── __init__.py
 │   │   ├── media_context.py              # Giai đoạn 1: OpenCV + PyAV/Whisper + Gemma 4 E2B -> lưu/nạp media_context.json
-│   │   ├── classical_ml.py               # Giai đoạn 3A: Từ điển song ngữ + NB/LR/SVM + Benchmark
-│   │   ├── sentiment_engine.py           # Giai đoạn 3B: PhoBERT/ViSoBERT/RoBERTa + Context Alignment + Điểm cực tính liên tục
+│   │   ├── classical_ml.py               # Giai đoạn 3A: FeatureUnion (Word+Char TF-IDF + 15 Social Features), 5 họ ML (3 biến thể SVM) + Smart Meta-Ensemble & CLI benchmark
+│   │   ├── sentiment_engine.py           # Giai đoạn 3B: Dual-mode Hybrid (ML v3 + PhoBERT/ViSoBERT/RoBERTa) hoặc Classical thuần (--engine classical) + Context Alignment
 │   │   └── gemma_auditor.py              # Giai đoạn 4 (mặc định tắt): Gemma 4 E2B thẩm định ca mỉa mai sâu & so sánh mô hình
 │   ├── visualization.py                  # Vẽ bảng điều khiển dashboard.png (2x2)
 │   └── pipeline.py                       # Điều phối End-to-End & Giao diện dòng lệnh CLI
@@ -90,9 +89,9 @@ Hai tệp cấu hình trong `AI_Local/gemma4-e2b/` quyết định việc mô h�
 | `docker-compose.yml` | `OLLAMA_MAX_LOADED_MODELS`    | `1`                                  | Chỉ cho phép nạp tối đa 1 mô hình vào VRAM tại một thời điểm, ngăn lỗi tràn bộ nhớ GPU.                                                                                                      |
 | `docker-compose.yml` | `OLLAMA_KEEP_ALIVE`           | `10m`                                | Tự động giữ mô hình trên VRAM trong 10 phút giữa các batch liên tiếp ở Giai đoạn 4 để tránh nạp lại nhiều lần.                                                                           |
 | `Modelfile`          | `FROM gemma4:e2b`             | `gemma4:e2b`                         | Kế thừa ảnh mô hình nền đa phương thức Gemma 4 E2B của Google.                                                                                                                                      |
-| `Modelfile`          | `PARAMETER num_ctx`           | `16384`                              | Mở rộng cửa sổ ngữ cảnh từ 4.096 mặc định lên **16.384 tokens** (đủ chứa tối đa 10 khung hình video + lời thoại Whisper + Prompt), nhưng không quá lớn để làm tràn 4 GB VRAM. |
+| `Modelfile`          | `PARAMETER num_ctx`           | `16384`                              | Mở rộng cửa sổ ngữ cảnh từ 4.096 mặc định lên **16.384 tokens** (đủ chứa tối đa 8 khung hình video `768px` + lời thoại Whisper + Prompt), nhưng không quá lớn để làm tràn 4 GB VRAM. |
 | `Modelfile`          | `PARAMETER num_gpu`           | `99`                                 | Ép đẩy toàn bộ các lớp mạng của Gemma 4 E2B lên GPU rời để đạt tốc độ suy luận cao nhất.                                                                                                   |
-| `Modelfile`          | `temperature / top_p / top_k` | `1.0 / 0.95 / 64`                    | Giá trị mặc định ở cấp Modelfile; khi gọi API ở Giai đoạn 1 và Giai đoạn 4, code Python ghi đè xuống `0.15` và `0.10` để AI trả lời chuẩn xác theo JSON Schema.                    |
+| `Modelfile`          | `temperature / top_p / top_k` | `1.0 / 0.95 / 64`                    | Giá trị mặc định ở cấp Modelfile; khi gọi API ở Giai đoạn 1 và Giai đoạn 4, code Python ghi đè xuống `0.10` để AI trả lời chuẩn xác theo JSON Schema.                    |
 
 ---
 
@@ -128,13 +127,13 @@ flowchart TD
     end
 
     G2D --> R1
-    subgraph S3 ["Giai đoạn 3: Lõi Phân tích Cảm xúc Song ngữ + Context Alignment (100% CPU)"]
+    subgraph S3 ["Giai đoạn 3: Lõi Phân tích Cảm xúc Song ngữ (Dual Mode: hybrid hoặc classical trên CPU)"]
         R1{"Định tuyến ngôn ngữ<br/>vi hay en?"}
-        R1 -->|"vi"| VI_ML["ML cổ điển VI (NB, LR, SVM, Emo-LR) + Lexicon VI"]
-        R1 -->|"vi"| VI_DL["Deep Learning VI: PhoBERT + ViSoBERT + PhoBERT-Emotion"]
-        R1 -->|"en"| EN_ML["ML cổ điển EN (NB, LR, SVM, Emo-LR) + Lexicon EN"]
-        R1 -->|"en"| EN_DL["Deep Learning EN: Twitter-RoBERTa + DistilRoBERTa-Emotion"]
-        VI_ML --> HYB["Hybrid Ensemble + Context Alignment + compute_polarity_score()<br/>Tạo AnalyzedComment (tách riêng pred_phobert, pred_visobert, pred_roberta)"]
+        R1 -->|"vi"| VI_ML["Classical ML v3 VI (5 họ ML, 3 biến thể SVM + Smart Ensemble) + Lexicon VI"]
+        R1 -->|"vi, nếu engine=hybrid"| VI_DL["Deep Learning VI: PhoBERT + ViSoBERT + PhoBERT-Emotion"]
+        R1 -->|"en"| EN_ML["Classical ML v3 EN (5 họ ML, 3 biến thể SVM + Smart Ensemble) + Lexicon EN"]
+        R1 -->|"en, nếu engine=hybrid"| EN_DL["Deep Learning EN: Twitter-RoBERTa + DistilRoBERTa-Emotion"]
+        VI_ML --> HYB["Hybrid Ensemble (hoặc ML 85% + Lexicon 15% khi engine=classical) + Context Alignment<br/>Tạo AnalyzedComment đầy đủ cột ML v3 và DL"]
         VI_DL --> HYB
         EN_ML --> HYB
         EN_DL --> HYB
@@ -173,7 +172,7 @@ Lấy đúng 1 bình luận thật từ lần chạy video `7709458511838612744`
 2. **Giai đoạn 2 (`PreprocessedComment`):**
    - `detect_language` phát hiện ký tự đặc trưng tiếng Việt (`ơ, ê, à, ầ, ô, ữ`) → `language = "vi"`.
    - `clean_comment_text` thay teencode `"mn"` thành `"mọi người"` → `cleaned_text = "Thời phong kiến đã có trao nhẫn cầu hôn rồi à mọi người lại còn trao nhẫn nữa"`.
-   - Kiểm tra qua 7 tầng lọc nhiễu → vượt qua hết → `is_valid = True`, `filter_reason = "VALID"`.
+   - Kiểm tra qua 7 tầng lọc nhiễu → vượt qua hết → `is_valid = True`, `filter_reason = ""`.
    - `underthesea.word_tokenize` nối từ ghép → `segmented_text = "Thời phong_kiến đã có trao nhẫn cầu_hôn rồi à mọi người lại còn trao_nhẫn nữa"`.
    - Không trùng lặp (`is_duplicate = False`), không có emoji/cụm cà khịa (`has_sarcasm_signal = False`).
 3. **Giai đoạn 3 (`AnalyzedComment`):**
@@ -192,7 +191,7 @@ Lấy đúng 1 bình luận thật từ lần chạy video `7709458511838612744`
 
 ### 3.1. `src/__init__.py` — Cơ chế xuất biểu tượng lười (Lazy Export)
 
-- Khai báo danh sách công khai `__all__` (36 lớp, hàm và hằng số) cùng từ điển ánh xạ `_EXPORT_MAP`.
+- Khai báo danh sách công khai `__all__` (33 lớp, hàm và hằng số) cùng từ điển ánh xạ `_EXPORT_MAP`.
 - Dùng hàm `__getattr__(name)`: khi người dùng gọi `from src import SentimentPipeline`, Python mới tự động nạp đúng mô-đun con (`src.pipeline`), tránh tình trạng vừa `import src` đã phải kéo theo `torch`, `transformers`, `cv2` gây chậm khởi động.
 
 ### 3.2. `src/ingestion/tiktok_collector.py` — Chuẩn bị dữ liệu: Thu thập & Đọc dữ liệu
@@ -222,59 +221,58 @@ Lấy đúng 1 bình luận thật từ lần chạy video `7709458511838612744`
 | `MediaAnalyzer.analyze(...)`                | Phương thức chính       | Hỗ trợ tự động **2-pass** khi bài slideshow dài hơn `max_frames` (Pass 1 đọc OCR theo lô 4 ảnh, Pass 2 tổng hợp JSON 11 trường), truyền `num_ctx=16384`, `repeat_penalty=1.1`, `temperature=0.1`.                                                                                                                                                              |
 | `unload_ollama_model() / unload_whisper_model()` | Phương thức         | Đẩy Gemma 4 E2B khỏi VRAM (`keep_alive=0`) và giải phóng Faster-Whisper khỏi RAM (`gc.collect()`) ngay sau Giai đoạn 1.                                                                                                                                                                                                                                      |
 
-### 3.4. `src/preprocessing/text_cleaner.py` (678 dòng) — Giai đoạn 2: NLP & Lọc nhiễu song ngữ
+### 3.4. `src/preprocessing/text_cleaner.py` — Giai đoạn 2: NLP & Lọc nhiễu song ngữ
 
 | Thành phần                                        | Loại                       | Vai trò & logic hoạt động                                                                                                                                                                                                                                                                                                                                                                      |
 | :-------------------------------------------------- | :-------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `PreprocessedComment`                             | `dataclass` (10 trường) | Chứa `original_text`, `cleaned_text`, `segmented_text`, `ml_text`, `language` (`vi` \| `en` \| `other`), `tokens`, `is_valid`, `filter_reason`, `is_duplicate`, `has_sarcasm_signal`.                                                                                                                                                                                   |
+| `PreprocessedComment`                             | `dataclass` (13 trường) | Chứa `original_text`, `cleaned_text`, `segmented_text`, `ml_text`, `tokens`, `language` (`vi` \| `en` \| `other`), `is_valid`, `filter_reason`, `is_duplicate`, `has_sarcasm_signal`, `matched_video_terms`, `context_relevance`, `is_on_topic`.                                                                                                                     |
 | `normalize_tiktok_emojis(text)`                   | Hàm                        | Chuyển hơn 25 mã emoji chữ của TikTok như `[Cười chảy nước mắt]`, `[Khóc]`, `[Yêu]`, `[Phẫn nộ]` về đúng ký tự Unicode (`😂`, `😭`, `😍`, `😡`).                                                                                                                                                                                                              |
 | `detect_language(text)`                           | Hàm 4 tầng                | 1) Có chữ ngoài Latin (Nga, Trung, Nhật, Hàn, Ả Rập...) → `other`; 2) Có từ chức năng/ký tự riêng Tây Ban Nha/Bồ Đào Nha/Pháp nhưng thiếu dấu riêng tiếng Việt → `other`; 3) Có dấu riêng Việt (`ă, â, đ, ê, ô, ơ, ư`, thanh hỏi/ngã/nặng...) hoặc ≥ 2 từ chức năng Việt → `vi`; 4) Chữ ASCII / có từ chức năng tiếng Anh → `en`. |
 | `clean_comment_text(...)`                         | Hàm                        | Chuẩn hóa Unicode NFKC, xóa khoảng trắng thừa; với tiếng Việt thay thế hơn 40 từ **teencode an toàn** (`ko`/`k` → `không`, `dc`/`đc` → `được`, `mn` → `mọi người`, `tr` → `trời`...) và chủ động giữ nguyên các từ dễ gây hiểu nhầm (`bt`, `v`, `t`).                                                                        |
 | `_safe_word_tokenize / _safe_pos_tag / _safe_ner` | Hàm bọc `underthesea`   | Gọi thư viện `underthesea` cho tiếng Việt (`word_tokenize(..., format="text")` để nối từ ghép bằng `_`), với tiếng Anh tách từ đơn giản giữ lại nguyên âm và emoji.                                                                                                                                                                                                   |
 | `_is_name_only_comment(...)`                      | Hàm                        | Dùng `pos_tag` (`Np`) và `ner` (`PER`) kiểm tra xem toàn bộ câu có phải chỉ là tên người hay không. Có 3 lá chắn chống lọc nhầm: bỏ qua chuỗi viết hoa toàn bộ (`ALL-CAPS` như `"HOLY TRANSITION"`), yêu cầu ít nhất 2 từ chữ cái, và kiểm tra không chứa từ ngữ cảm xúc theo token nguyên vẹn.                                             |
-| `_detect_filter_reason(...)`                      | Hàm                        | Quyết định mã lọc: `FILTERED_EMPTY`, `FILTERED_UNSUPPORTED_LANG`, `FILTERED_URL_OR_SYMBOL`, `FILTERED_TAG_FRIEND`, `FILTERED_NAME_ONLY`, `FILTERED_SPAM_AD`, `FILTERED_MEANINGLESS`, hoặc `"VALID"`.                                                                                                                                                                         |
+| `_detect_filter_reason(...)`                      | Hàm                        | Quyết định mã lọc: `FILTERED_EMPTY`, `FILTERED_UNSUPPORTED_LANG`, `FILTERED_URL_OR_SYMBOL`, `FILTERED_TAG_FRIEND`, `FILTERED_NAME_ONLY`, `FILTERED_SPAM_AD`, `FILTERED_MEANINGLESS`, hoặc `""` (hợp lệ).                                                                                                                                                                         |
 | `_has_sarcasm_signal(...)`                        | Hàm                        | Gắn `True` nếu phát hiện dấu hiệu nói mỉa như `cười muốn bịnh`, `cười xỉu`, `diễn sâu`, `hề hước`, hoặc từ khen đi kèm emoji `😂`/`🤣`/`🙄`/`🤡`.                                                                                                                                                                                                       |
 | `TextPreprocessor.process_batch(comments)`        | Phương thức              | Xử lý hàng loạt tất cả bình luận, chuẩn hóa và đánh dấu cờ trùng lặp `is_duplicate` (không phân biệt chữ hoa/thường sau khi đã thấy bản đầu tiên).                                                                                                                                                                                                                 |
 | `extract_keywords_tfidf(...)`                     | Hàm                        | Dùng `TfidfVectorizer(ngram_range=(1, 2))` trên tập `ml_text` (đã loại stopword song ngữ Việt–Anh) để lấy Top 10 từ khóa cho 3 nhóm: `overall`, `positive`, `negative`.                                                                                                                                                                                                   |
 
-### 3.5. `src/models/classical_ml.py` (886 dòng) — Giai đoạn 3A: ML cổ điển & Bộ từ điển song ngữ
+### 3.5. `src/models/classical_ml.py` — Giai đoạn 3A: Classical ML v3 (5 họ thuật toán + OOF Meta-Ensemble) & Từ điển song ngữ
 
-| Thành phần                                | Loại                   | Vai trò & logic hoạt động                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| :------------------------------------------ | :---------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `BilingualLexiconScorer`                  | Lớp luật & từ điển | Chấm điểm cảm xúc dựa trên từ điển dương/âm riêng cho `vi` (`_VI_POSITIVE_LEXICON`, `_VI_NEGATIVE_LEXICON`) và `en` (`_EN_POSITIVE_LEXICON`, `_EN_NEGATIVE_LEXICON`). Áp dụng tăng/giảm cường độ trong cửa sổ `±2` từ (`quá`, `rất`, `freaking` → nhân `1.35`; `hơi`, `slightly` → nhân `0.70`), xử lý phủ định trong cửa sổ `2` từ trước (`VI`: đảo từ dương sang âm × `0.90`, đảo từ âm sang dương × `0.40`; `EN`: tương ứng × `0.85` và × `0.45`; hỗ trợ cấu trúc leo thang `"chứ không"` / `"no more"`), và quy đổi về `{POS, NEG, NEU}` qua hàm mũ `exp(...)` (mặc định `{0.15, 0.15, 0.70}` khi tổng điểm `< 0.15`). |
-| `_build_tfidf_vectorizer()`               | Hàm                    | Tạo `FeatureUnion` gồm 2 nhánh TF-IDF song song: mức từ (`word`, `1–2 n-gram`, `max_features=25000`, `sublinear_tf=True`) và mức ký tự trong biên từ (`char_wb`, `3–5 n-gram`, `max_features=25000`, `sublinear_tf=True`). |
-| `_load_vi_corpora() / _load_en_corpora()` | Hàm tải dữ liệu     | Tải trực tiếp file CSV/TXT qua `huggingface_hub` và GitHub raw (`h-i-e-u/vietnamese-SA-dataset` + `ura-hcmut/UIT-VSMEC` cho VI; `cardiffnlp/tweeteval` cho EN), tránh hoàn toàn thư viện `datasets`/`pyarrow` bị chặn DLL trên Windows.                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| `_LanguageMLBundle`                       | Lớp per-language       | Quản lý riêng cho từng ngôn ngữ (`vi` hoặc `en`): huấn luyện 3 bộ phân loại cực tính (`MultinomialNB`, `LogisticRegression`, `CalibratedClassifierCV(LinearSVC, cv=3)`) và 1 bộ phân loại 7 cảm xúc (`LogisticRegression`), tính Accuracy/Macro-F1 lưu vào `benchmark_metrics.json`, và cache model xuống đĩa dưới dạng `.joblib`.                                                                                                                                                                                                                                                                                                                            |
-| `ClassicalMLSuite`                        | Lớp tổng hợp         | Cung cấp giao diện thống nhất `ensure_loaded(lang)`, `predict_polarity_all(texts, languages)`, `predict_emotion(texts, languages)` tự định tuyến từng câu về đúng `_LanguageMLBundle("vi")` hoặc `_LanguageMLBundle("en")`.                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Thành phần | Loại | Vai trò & logic hoạt động |
+| :--- | :--- | :--- |
+| `BilingualLexiconScorer` | Lớp luật & từ điển | Chấm điểm cảm xúc dựa trên từ điển dương/âm riêng cho `vi` và `en`, xử lý tăng/giảm cường độ (`±2` từ: ×`1.35` / ×`0.70`), phủ định (`2` từ trước, hỗ trợ `"chứ không"` / `"no more"`), quy đổi qua hàm mũ `exp(...)` về `{POS, NEG, NEU}`. |
+| `_SocialLexiconFeatureTransformer` & `_SVDSocialFeatureExtractor` | Bộ trích xuất đặc trưng | Tạo **3 nhánh song song**: **Word TF-IDF (`1–3 n-gram`, `max_features=35000`)**, **Char-WB TF-IDF (`3–5 n-gram`, `max_features=30000`)**, và **15 Social/Lexicon Features** (độ dài, viết hoa, `!`, `?`, emoji cười/buồn/giận, từ khóa cảm xúc, độ lệch từ điển). Nhánh Tree & RBF-SVM dùng `TruncatedSVD(96)` nối trực tiếp với **15 Social Features nguyên bản** để không bị nén mờ. |
+| `_load_vi_corpora() / _load_en_corpora()` | Hàm tải dữ liệu | Tải CSV/Parquet trực tiếp không cần `datasets`/`pyarrow`: Polarity VI (`uit_vsfc` + `vietnamese-SA-dataset`), Polarity EN (`cardiffnlp/tweeteval`), Emotion VI (`UIT-VSMEC`), Emotion EN (`dair-ai/emotion` ánh xạ về 7 lớp VSMEC). |
+| `_LanguageMLBundle` (`ML_BUNDLE_SCHEMA_VERSION = 3`) | Lớp per-language | Huấn luyện & chọn lọc hyperparameter cho **10 mô hình Polarity thuộc 5 họ** (`MultinomialNB`, `ComplementNB(norm=False)`, `LogisticRegression`, `RidgeClassifier` + softmax calibration, `SGDClassifier(log_loss)`, `LinearSVC`, `NBSVM`, `Subsampled Calibrated RBF-SVM`, `RandomForest`, `HistGradientBoosting`), **Smart OOF Meta-Ensemble** (`oof_stacking_lr` hoặc `top4_weighted_soft_vote` / `top4_uniform_soft_vote` chọn tự động theo OOF Macro-F1), và **6 mô hình ML Emotion** (`ComplementNB`, `LogisticRegression`, `Ridge`, `LinearSVC`, `NBSVM`, `SGD`) + **Emotion Soft-Vote Ensemble**. Cache vào `.joblib` + `benchmark_metrics.json`. |
+| `ClassicalMLSuite` | Lớp tổng hợp | Cung cấp `ensure_loaded(lang)`, `predict_polarity_all(texts, languages)`, `predict_emotion_all(texts, languages)` tự định tuyến từng câu về `_LanguageMLBundle("vi")` hoặc `_LanguageMLBundle("en")`; hỗ trợ chạy CLI độc lập `python -m src.models.classical_ml --lang vi en --retrain`. |
 
-### 3.6. `src/models/sentiment_engine.py` — Giai đoạn 3B: Học sâu, Hybrid Ensemble & Context Alignment
+### 3.6. `src/models/sentiment_engine.py` — Giai đoạn 3B: Dual-Mode (`hybrid` / `classical`), Học sâu & Context Alignment
 
-| Thành phần                                       | Chi tiết xử lý                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| :------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `AnalyzedComment` (`dataclass`)   | Lưu toàn bộ metadata, kết quả tiền xử lý, xác suất/nhãn/điểm cực tính của Hybrid (`polarity_*`, `emotion_*`), ngữ cảnh video (`is_on_topic`, `context_relevance`, `matched_video_terms`, `context_alignment`), nhãn dự đoán của 7 mô hình riêng lẻ (`pred_nb` .. `emotion_ml_label`), và từ điển `model_probs`.                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| `compute_polarity_score(...)`                    | Quy đổi xác suất Hybrid thành điểm cực tính liên tục `[-1.0, +1.0]` nhất quán tuyệt đối với `polarity_label`:1. Tính độ hích cảm xúc `nudge`: `-0.08 * emo_conf` (nếu `Anger`/`Disgust` ≥ 0.5), `-0.04 * emo_conf` (nếu `Sadness`/`Fear` ≥ 0.5), `+0.06 * emo_conf` (nếu `Enjoyment` ≥ 0.5).2. `raw = p_pos - p_neg + nudge`.3. Khóa vùng theo nhãn: `NEG` trong `[-1.0, -0.21]`, `POS` trong `[+0.21, +1.0]`, `NEU` trong `[-0.19, +0.19]`. |
-| `_HFSequenceClassifier`                          | Wrapper tải lười mô hình `AutoModelForSequenceClassification` + `AutoTokenizer` trên `CPU` (`batch_size=32`, `max_length=256`, suy luận dưới `torch.inference_mode()`), áp dụng Softmax và chuẩn hóa nhãn qua `_norm_vi_polarity_label`, `_norm_en_polarity_label`, `_norm_emotion_label`.                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| `CommentAnalyzer._apply_emotion_cues(...)`       | Cộng thêm xác suất `0.15–0.30` vào đúng cung bậc cảm xúc khi câu chứa cụm từ chỉ báo mạnh (`_FEAR_CUES` như `"scared"`, `"sợ quá"`; `_ANGER_CUES`; `_DISGUST_CUES`; `_SADNESS_CUES`; `_JOY_CUES` như `"peak"`, `"fire"`) rồi chuẩn hóa tổng = 1.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| Trọng số `Hybrid Ensemble`                     | - **Nhánh Tiếng Việt (`lang == "vi"`):** `0.40 * PhoBERT + 0.20 * ViSoBERT + 0.25 * Linear_SVM_VI + 0.15 * Lexicon_VI`.- **Nhánh Tiếng Anh (`lang == "en"`):** `0.60 * Twitter_RoBERTa + 0.25 * Linear_SVM_EN + 0.15 * Lexicon_EN`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| Đồng bộ `Emotion–Polarity` & `needs_audit` | Nếu `emotion_label ∈ {Anger, Disgust, Fear}` (`conf >= 0.55`) VÀ `Lexicon(NEG) >= 0.50` → cộng `+0.25` vào `NEG`, nhân `0.65` vào `POS` rồi chuẩn hóa lại.Gắn `needs_audit = True` nếu `(ViSoBERT != PhoBERT)` hoặc `(polarity_confidence < 0.65)` hoặc `(has_sarcasm_signal == True)` hoặc phát hiện ca nghi ngờ mỉa mai/ẩn ý qua `_compute_context_alignment()`.                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| `CommentAnalyzer.summarize(...)`                 | Tổng hợp thống kê toàn bài (`language_counts`, `polarity_counts/percentages`, `emotion_counts/percentages`, `avg_polarity_score`, `avg_confidence`, `overall_tendency`, `on_topic_summary`, và `top_examples` xếp hạng theo `likes` giảm dần). Nếu `deduplicate_stats=True`, các bình luận `is_duplicate=True` bị loại khỏi phép tính thống kê tỷ lệ.                                                                                                                                                                                                                                                                                                                        |
+| Thành phần | Chi tiết xử lý |
+| :--- | :--- |
+| `AnalyzedComment` (`dataclass`) | Lưu toàn bộ metadata, tiền xử lý, kết quả chính (`polarity_*`, `emotion_*`), ngữ cảnh video (`is_on_topic`, `context_relevance`, `matched_video_terms`, `context_alignment`), nhãn dự đoán riêng của **10 mô hình Polarity ML v3 + ML Ensemble + Lexicon**, các mô hình Deep Learning (`pred_phobert`, `pred_visobert`, `pred_roberta`), và **6 mô hình Emotion ML** (`pred_emo_cnb` .. `pred_emo_sgd`) + `emotion_ml_label`. |
+| `CommentAnalyzer(engine_mode="hybrid" \| "classical")` | - **Chế độ `hybrid` (mặc định):** Giữ nguyên các mô hình Transformer (`PhoBERT`, `ViSoBERT`, `Twitter-RoBERTa`, `PhoBERT-Emotion`, `DistilRoBERTa-Emotion`) kết hợp với `ML Meta-Ensemble v3` và `Lexicon`.<br>- **Chế độ `classical`:** Bỏ qua hoàn toàn giai đoạn tải & suy luận `torch`/`transformers` (0% Deep Learning), dùng trực tiếp **`0.85 * ML_Ensemble + 0.15 * Lexicon`** cho Polarity và **`ML_Emotion_Ensemble`** cho Emotion. |
+| Trọng số `Ensemble` theo chế độ | - **Hybrid (`vi`):** `0.40 * PhoBERT + 0.20 * ViSoBERT + 0.25 * ML_Ensemble_VI + 0.15 * Lexicon_VI`<br>- **Hybrid (`en`):** `0.60 * Twitter-RoBERTa + 0.25 * ML_Ensemble_EN + 0.15 * Lexicon_EN`<br>- **Classical (`vi` & `en`):** `0.85 * ML_Ensemble + 0.15 * Lexicon` |
+| `compute_polarity_score(...)` | Quy đổi xác suất cuối thành điểm liên tục `[-1.0, +1.0]` nhất quán với `polarity_label` (`NEG` trong `[-1.0, -0.21]`, `POS` trong `[+0.21, +1.0]`, `NEU` trong `[-0.19, +0.19]`), có cộng `nudge` cảm xúc. |
+| Đồng bộ `Emotion–Polarity` & `needs_audit` | Nếu `emotion_label ∈ {Anger, Disgust, Fear}` (`conf >= 0.55`) VÀ `Lexicon(NEG) >= 0.50` → cộng `+0.25` vào `NEG`, nhân `0.65` vào `POS` rồi chuẩn hóa. Đánh dấu `needs_audit = True` nếu mô hình chính bất đồng (`ViSoBERT != PhoBERT` ở Hybrid, hoặc tỷ lệ bất đồng giữa `ML_Ensemble` và `Lexicon`/các họ ML lớn), `polarity_confidence < 0.65`, hoặc `has_sarcasm_signal == True`. |
+| `CommentAnalyzer.summarize(...)` | Tổng hợp thống kê toàn bài (`engine_mode`, `language_counts`, `polarity_*`, `emotion_*`, `avg_polarity_score`, `avg_confidence`, `overall_tendency`, `on_topic_summary`, `top_examples`). Nếu `deduplicate_stats=True`, bình luận `is_duplicate=True` bị loại khỏi phép tính tỷ lệ. |
 
 ### 3.7. `src/models/gemma_auditor.py` — Giai đoạn 4: AI Đầu ra (Thẩm định & Đối chiếu)
 
 - **`GemmaAuditItem` (`dataclass`, 9 trường):** Chứa kết quả thẩm định độc lập của Gemma cho từng bình luận (`comment_index`, `gemma_audited`, `gemma_polarity`, `gemma_emotion`, `gemma_emotion_vi`, `gemma_is_sarcasm`, `gemma_agrees_polarity`, `gemma_agrees_emotion`, `gemma_reason`).
-- **`_format_video_context(media_result)`:** Đóng gói 8 trường ngữ cảnh video từ Giai đoạn 1 thành văn bản ngắn gọn để đưa vào đầu mỗi batch gửi Gemma chấm bình luận.
-- **`GemmaAuditor.audit_comments(...)`:** Chia 100% bình luận hợp lệ (hoặc giới hạn `audit_limit` nếu đặt) thành các lô **`chunk_size = 8` bình luận**, gọi `/api/chat` (`temperature=0.1`, ép `BATCH_AUDIT_SCHEMA`). Mỗi câu sau khi nhận JSON đều qua hàm `_normalize_gemma_polarity()` để chuẩn hóa nhãn `POS / NEU / NEG`.
-- **`build_model_comparison(analyzed, audits, timings)`:** Tính phân bố POS/NEU/NEG (%) cho 7 mô hình/nhánh cực tính (`NB`, `LR`, `SVM`, `Lexicon`, `ViSoBERT`, `PhoBERT/RoBERTa`, `Hybrid Ensemble`) + hàng chuẩn `Gemma 4 E2B`, và 2 mô hình cảm xúc (`Emotion LR`, `PhoBERT-Emotion/DistilRoBERTa`). Nếu có dữ liệu thẩm định Gemma, dùng `scikit-learn` tính **3 thước đo đối chiếu**: `Agreement (%)`, `Macro-F1` và `Cohen's Kappa`.
-- **`GemmaAuditor.generate_overall_verdict(...)`:** Gửi bảng tổng hợp đối chiếu để Gemma 4 E2B sinh JSON theo `VERDICT_SCHEMA` gồm `accuracy_verdict`, `best_model`, danh sách `strengths`, `weaknesses` và đoạn tóm tắt `summary_vi`.
+- **`_format_video_context(media_result)`:** Đóng gói ngữ cảnh video từ Giai đoạn 1 thành văn bản ngắn gọn đưa vào đầu mỗi batch gửi Gemma chấm bình luận.
+- **`GemmaAuditor.audit_comments(...)`:** Chia 100% bình luận hợp lệ (hoặc giới hạn `audit_limit` nếu đặt) thành từng lô `chunk_size = 8`, gọi `/api/chat` (`temperature=0.1`, ép `BATCH_AUDIT_SCHEMA`), chuẩn hóa mỉa mai qua `_normalize_gemma_polarity()`.
+- **`build_model_comparison(analyzed, audits, timings)`:** Tính phân bố POS/NEU/NEG (%) cho toàn bộ **10 mô hình Classical ML v3 + `Classical ML Meta-Ensemble` + `Bilingual Lexicon`** (+ các mô hình DL & `Hybrid Ensemble` khi chạy `--engine hybrid`, hoặc `ML Ensemble + Lexicon` khi chạy `--engine classical`), hàng chuẩn `Gemma 4 E2B` (nếu bật Audit), và **6+1 mô hình Emotion ML** (+ Emotion DL ở chế độ Hybrid, hoặc `ML Emotion Ensemble + Cues` ở chế độ Classical). Tổng cộng **21 dòng** ở `--engine classical`, **23–24 dòng** ở `--engine hybrid` (chưa bật Audit). Nếu có Gemma Audit, tính thêm `Agreement (%)`, `Macro-F1` và `Cohen's Kappa`.
+- **`GemmaAuditor.generate_overall_verdict(...)`:** Gửi bảng tổng hợp đối chiếu để Gemma 4 E2B sinh JSON theo `VERDICT_SCHEMA` gồm `accuracy_verdict`, `best_model`, `strengths`, `weaknesses`, và `summary_vi`.
 
 ### 3.8. `src/visualization.py` & `src/pipeline.py`
 
 - **`plot_sentiment_dashboard(report, save_path)`:** Vẽ lưới 2×2 biểu đồ kích thước `(15, 10)` inch:
-  + Ô `[0, 0]`: Nếu có Gemma Audit → vẽ cột đôi **Hybrid System vs Gemma 4 E2B**; nếu không → vẽ cột đơn **POS / NEU / NEG**.
+  + Ô `[0, 0]`: Nếu có Gemma Audit → cột đôi **System vs Gemma 4 E2B**; nếu không → cột đơn **POS / NEU / NEG**.
   + Ô `[0, 1]`: Thanh ngang sắp xếp giảm dần **7 cung bậc cảm xúc**.
-  + Ô `[1, 0]`: Biểu đồ cột đôi **Bám sát nội dung video (`On-topic` vs `Off-topic`)** theo `POS / NEU / NEG` (hoặc fallback biểu đồ **Phân bố ngôn ngữ `VI / EN`** nếu tắt phân tích ngữ cảnh).
-  + Ô `[1, 1]`: Nếu có Gemma Audit → thanh ngang đôi **Agreement (%) & Macro-F1 (%) vs Gemma 4**; nếu không → thanh chồng 100% phân bố `POS / NEU / NEG` của 7 mô hình.
-- **`SentimentPipeline` (`src/pipeline.py`):** Điều phối khép kín từ `_infer_run_name()` → Chuẩn bị dữ liệu (`data/<post_id>/`) → Giai đoạn 1 (hoặc nạp lại `media_context.json`) → Xả VRAM → Giai đoạn 2 (có ngữ cảnh) → Giai đoạn 3 (có Context Alignment) → Giai đoạn 4 (mặc định tắt) → `_export_outputs()` xuất 4 tệp CSV/JSON + `plot_sentiment_dashboard()` xuất `dashboard.png`. Đồng thời cung cấp `main()` chạy bằng dòng lệnh CLI.
+  + Ô `[1, 0]`: Biểu đồ cột đôi **Bám sát nội dung video (`On-topic` vs `Off-topic`)** (hoặc fallback phân bố ngôn ngữ `VI / EN`).
+  + Ô `[1, 1]`: Nếu có Gemma Audit → thanh ngang đôi **Agreement (%) & Macro-F1 (%) vs Gemma 4**; nếu không → thanh chồng 100% phân bố `POS / NEU / NEG` của tất cả mô hình trong `model_comparison` (tự co cỡ chữ cho 10–16 mô hình).
+- **`SentimentPipeline` (`src/pipeline.py`):** Điều phối khép kín theo `--engine hybrid | classical` (và `--retrain-ml`) từ chuẩn bị dữ liệu (`data/<post_id>/`) → Giai đoạn 1 (hoặc nạp `media_context.json`) → Giai đoạn 2 → Giai đoạn 3 → Giai đoạn 4 (tùy chọn) → xuất 5 tệp (`final_results.csv`, `detailed_model_outputs.csv`, `filtered_noise.csv`, `model_comparison.csv`, `report.json`) + `dashboard.png`.
 
 ---
 
@@ -317,11 +315,11 @@ Lấy đúng 1 bình luận thật từ lần chạy video `7709458511838612744`
 
 ### 4.3. Kho đệm mô hình Học máy cổ điển (`models/classical_ml/{vi,en}/`)
 
-Mỗi thư mục ngôn ngữ (`vi/` và `en/`) chứa 3 tệp được sinh tự động ở lần chạy đầu tiên và tái sử dụng ngay ở các lần chạy sau:
+Mỗi thư mục ngôn ngữ (`vi/` và `en/`) chứa 3 tệp chuẩn **schema v3** (`ML_BUNDLE_SCHEMA_VERSION = 3`) được sinh tự động ở lần chạy đầu tiên (hoặc huấn luyện lại bằng `--retrain-ml` / `python -m src.models.classical_ml --retrain`) và tái sử dụng ngay trong `< 1–2` giây ở các lần chạy sau:
 
-- **`polarity_models.joblib`**: Lưu từ điển gồm bộ vector hóa TF-IDF hỗn hợp (`FeatureUnion` word + char) cùng 3 mô hình đã khớp (`tfidf_nb`, `tfidf_lr`, `tfidf_svm`).
-- **`emotion_ml_model.joblib`**: Lưu bộ vector hóa TF-IDF hỗn hợp và mô hình `LogisticRegression` cho bài toán 7 cung bậc cảm xúc.
-- **`benchmark_metrics.json`**: Chứa đúng 6 khóa gốc ghi lại kết quả kiểm chứng trên tập test công khai: `polarity_train_size`, `polarity_test_size`, `polarity_models` (có `accuracy`, `macro_f1` cho `tfidf_nb`, `tfidf_lr`, `tfidf_svm`), `emotion_train_size`, `emotion_test_size`, `emotion_lr`.
+- **`polarity_models.joblib`**: Lưu `schema_version = 3`, bộ trích xuất đặc trưng 3 nhánh (`word 1–3`, `char_wb 3–5`, `15 Social/Lexicon Features` + `TruncatedSVD(96)`), **10 mô hình Polarity đã tuning hyperparameter** (`tfidf_nb`, `tfidf_cnb`, `tfidf_lr`, `tfidf_ridge`, `tfidf_sgd`, `tfidf_svm`, `tfidf_nbsvm`, `tfidf_rbf_svm`, `tfidf_rf`, `tfidf_tree`) và **OOF Meta-Ensemble** (`ml_ensemble`) kèm `ensemble_strategy`.
+- **`emotion_ml_model.joblib`**: Lưu bộ trích xuất đặc trưng cảm xúc cùng **6 mô hình phân loại 7 cung bậc cảm xúc** (`emo_cnb`, `emo_lr`, `emo_ridge`, `emo_svm`, `emo_nbsvm`, `emo_sgd`) tạo thành **Emotion Soft-Vote Ensemble** (`emo_ensemble`).
+- **`benchmark_metrics.json`**: Ghi lại `schema_version`, `polarity_train_size`, `polarity_test_size`, `oof_pool`, `ensemble_strategy`, `polarity_models` (`accuracy`, `macro_f1`, `best_params` cho đủ 10 mô hình + `ml_ensemble`), `emotion_train_size`, `emotion_test_size`, và `emotion_models` (`emo_cnb`..`emo_sgd`, `emo_ensemble`).
 
 ---
 
@@ -330,9 +328,9 @@ Mỗi thư mục ngôn ngữ (`vi/` và `en/`) chứa 3 tệp được sinh tự
 Để người đọc vừa dễ theo dõi kết quả chính vừa tra cứu được toàn bộ thông số kỹ thuật/mô hình, toàn bộ **4 tệp CSV** đầu ra đều dùng **tiêu đề song ngữ 2 dòng** theo chuẩn `english_key\n(mô tả tiếng việt)` (tương thích 100% với hàm `load_comments_dataframe()` nhờ cơ chế tách dòng đầu tiên), đồng bộ thứ tự dòng 1–1 qua `stt` và sắp xếp ổn định theo `likes` giảm dần:
 
 - **`final_results.csv`**: Bảng kết quả dễ đọc cho người xem/báo cáo (**12 cột lõi** hoặc **16 cột** khi bật AI Audit) — đưa **Nội dung bình luận** và **Kết quả cảm xúc** lên ngay bên trái.
-- **`detailed_model_outputs.csv`**: Toàn bộ **ID gốc, thuộc tính tiền xử lý, ngữ cảnh video, xác suất và dự đoán từng mô hình** (**29 cột lõi** hoặc **34 cột** khi bật AI Audit).
+- **`detailed_model_outputs.csv`**: Toàn bộ **ID gốc, thuộc tính tiền xử lý, ngữ cảnh video, xác suất và dự đoán từng mô hình** (tối đa **46 cột lõi** ở chế độ `hybrid`, **42 cột lõi** ở chế độ `classical`; +5 cột nếu bật AI Audit).
 - **`filtered_noise.csv`**: Tách riêng bình luận nhiễu/ngôn ngữ không hỗ trợ (**9 cột**), sắp theo `likes` giảm dần.
-- **`model_comparison.csv`**: Bảng so sánh toàn diện các mô hình/nhánh (**11 cột lõi** hoặc **14 cột** khi bật AI Audit).
+- **`model_comparison.csv`**: Bảng so sánh toàn diện các mô hình/nhánh (**11 cột lõi** hoặc **14 cột** khi bật AI Audit; **21 dòng** ở `--engine classical`, **23–24 dòng** ở `--engine hybrid` khi chưa bật Audit).
 
 ---
 
@@ -362,18 +360,24 @@ Tệp `final_results.csv` chỉ chứa các **bình luận sạch hợp lệ thu
 #### Chi tiết công thức tính các cột chính trong `final_results.csv`
 
 1. **Cách tính `polarity_vi` (`Sắc thái`) và `polarity_confidence` (`Độ tự tin sắc thái %`):**
-   - **Bước 1 — Tổ hợp xác suất có trọng số (`Hybrid Ensemble`)** cho từng lớp $c \in \{\text{POS}, \text{NEG}, \text{NEU}\}$ tùy theo ngôn ngữ của bình luận:
-     - **Nhánh Tiếng Việt (`language == "vi"`):**
+   - **Bước 1 — Tổ hợp xác suất có trọng số (`Hybrid` hoặc `Classical`)** cho từng lớp $c \in \{\text{POS}, \text{NEG}, \text{NEU}\}$ tùy theo `--engine` và ngôn ngữ:
+     - **Chế độ `hybrid` — Nhánh Tiếng Việt (`language == "vi"`):**
 
        $$
-       P_{\text{raw}}(c) = 0.40 \cdot P_{\text{PhoBERT}}(c) + 0.20 \cdot P_{\text{ViSoBERT}}(c) + 0.25 \cdot P_{\text{SVM\_VI}}(c) + 0.15 \cdot P_{\text{Lexicon\_VI}}(c)
+       P_{\text{raw}}(c) = 0.40 \cdot P_{\text{PhoBERT}}(c) + 0.20 \cdot P_{\text{ViSoBERT}}(c) + 0.25 \cdot P_{\text{ML\_Ensemble\_VI}}(c) + 0.15 \cdot P_{\text{Lexicon\_VI}}(c)
        $$
 
-       *(Trong đó `PhoBERT` và `SVM_VI` chạy trên `segmented_text`, `ViSoBERT` chạy trên `cleaned_text`, `Lexicon_VI` kết hợp cả `segmented_text` và `cleaned_text`.)*
-     - **Nhánh Tiếng Anh (`language == "en"`):**
+       *(Trong đó `PhoBERT` và `ML_Ensemble_VI` chạy trên `segmented_text`, `ViSoBERT` chạy trên `cleaned_text`, `Lexicon_VI` kết hợp cả `segmented_text` và `cleaned_text`.)*
+     - **Chế độ `hybrid` — Nhánh Tiếng Anh (`language == "en"`):**
 
        $$
-       P_{\text{raw}}(c) = 0.60 \cdot P_{\text{Twitter-RoBERTa}}(c) + 0.25 \cdot P_{\text{SVM\_EN}}(c) + 0.15 \cdot P_{\text{Lexicon\_EN}}(c)
+       P_{\text{raw}}(c) = 0.60 \cdot P_{\text{Twitter-RoBERTa}}(c) + 0.25 \cdot P_{\text{ML\_Ensemble\_EN}}(c) + 0.15 \cdot P_{\text{Lexicon\_EN}}(c)
+       $$
+
+     - **Chế độ `classical` (`vi` & `en` — 0% Deep Learning):**
+
+       $$
+       P_{\text{raw}}(c) = 0.85 \cdot P_{\text{ML\_Ensemble}}(c) + 0.15 \cdot P_{\text{Lexicon}}(c)
        $$
 
    - **Bước 2 — Cơ chế đồng bộ `Emotion–Polarity`:**
@@ -386,16 +390,16 @@ Tệp `final_results.csv` chỉ chứa các **bình luận sạch hợp lệ thu
    - **Bước 3 — Chuẩn hóa tổng xác suất về $1.0$ và chọn nhãn cuối:**
 
      $$
-     P_{\text{hybrid}}(c) = \text{round}\left(\frac{P_{\text{raw}}(c)}{P_{\text{raw}}(\text{POS}) + P_{\text{raw}}(\text{NEG}) + P_{\text{raw}}(\text{NEU})},\; 4\right)
+     P_{\text{final}}(c) = \text{round}\left(\frac{P_{\text{raw}}(c)}{P_{\text{raw}}(\text{POS}) + P_{\text{raw}}(\text{NEG}) + P_{\text{raw}}(\text{NEU})},\; 4\right)
      $$
 
-     - `polarity_label = argmax_c P_hybrid(c)`, rồi ánh xạ qua `LABEL_VI_MAP` (`POS → "Tích cực"`, `NEG → "Tiêu cực"`, `NEU → "Trung tính"`) thành `polarity_vi`.
-     - `polarity_confidence = round(P_hybrid(polarity_label), 4)`, hiển thị trong CSV dưới dạng `f"{polarity_confidence * 100:.1f}%"`.
+     - `polarity_label = argmax_c P_final(c)`, rồi ánh xạ qua `LABEL_VI_MAP` (`POS → "Tích cực"`, `NEG → "Tiêu cực"`, `NEU → "Trung tính"`) thành `polarity_vi`.
+     - `polarity_confidence = round(P_final(polarity_label), 4)`, hiển thị trong CSV dưới dạng `f"{polarity_confidence * 100:.1f}%"`.
 
 2. **Cách tính `emotion_vi` (`Cảm xúc`) và `emotion_confidence` (`Độ tự tin cảm xúc %`):**
-   - **Bước 1 — Softmax từ mô hình Deep Learning cảm xúc chuyên biệt:**
-     - Nếu `vi`: chạy `visolex/phobert-emotion` trên `segmented_text` → $P_{\text{DL\_emo}}(e)$ cho 7 lớp (`Anger`, `Sadness`, `Fear`, `Enjoyment`, `Disgust`, `Surprise`, `Other`).
-     - Nếu `en`: chạy `j-hartmann/emotion-english-distilroberta-base` trên `cleaned_text` → chuẩn hóa nhãn `joy→Enjoyment`, `neutral→Other`, `angry→Anger`, `sad→Sadness` thành $P_{\text{DL\_emo}}(e)$.
+   - **Bước 1 — Phân phối xác suất gốc:**
+     - **Chế độ `hybrid`:** Chạy `visolex/phobert-emotion` (`vi` trên `segmented_text`) hoặc `j-hartmann/emotion-english-distilroberta-base` (`en` trên `cleaned_text`).
+     - **Chế độ `classical`:** Dùng **Emotion Soft-Vote Ensemble** (trung bình xác suất từ 6 mô hình Classical ML Emotion v3 đã khớp trên `UIT-VSMEC` cho `vi` / `dair-ai/emotion` cho `en`).
    - **Bước 2 — Tăng cường từ khóa chỉ báo (`_apply_emotion_cues()` trên `cleaned_text.lower()`):**
      - Nếu chứa từ khóa `_ANGER_CUES` (`"tức quá"`, `"bực mình"`, `"furious"`, ...): cộng `+0.25` vào `Anger`.
      - Nếu chứa `_DISGUST_CUES` (`"mắc ói"`, `"vô duyên"`, `"disgusting"`, `"cringe"`, ...): cộng `+0.25` vào `Disgust`.
@@ -426,7 +430,7 @@ Tệp `final_results.csv` chỉ chứa các **bình luận sạch hợp lệ thu
 
 ### 5.2. `detailed_model_outputs.csv` — Toàn bộ thông số kỹ thuật, ngữ cảnh video, xác suất & dự đoán từng mô hình
 
-Tệp `detailed_model_outputs.csv` giữ lại toàn bộ thông số kỹ thuật (tối đa **32 cột lõi** hoặc **37 cột** khi bật AI Audit; tự động ẩn cột mô hình `pred_phobert`/`pred_visobert` nếu bài chỉ có Tiếng Anh, hoặc ẩn `pred_roberta` nếu bài chỉ có Tiếng Việt) để phục vụ kiểm thử, đối chiếu mô hình và nghiên cứu chuyên sâu, đồng bộ thứ tự dòng 1–1 với `final_results.csv` theo cột `stt`.
+Tệp `detailed_model_outputs.csv` giữ lại toàn bộ thông số kỹ thuật (tối đa **46 cột lõi** ở chế độ `hybrid` hoặc **42 cột lõi** ở chế độ `classical`, +5 cột khi bật AI Audit; tự động ẩn cột `pred_phobert`/`pred_visobert` nếu chỉ có `en`, ẩn `pred_roberta` nếu chỉ có `vi`, hoặc ẩn cả 4 cột DL nếu chạy `--engine classical`), đồng bộ thứ tự dòng 1–1 với `final_results.csv` theo cột `stt`.
 
 #### Bảng chi tiết các cột (theo đúng thứ tự cột trong file)
 
@@ -455,20 +459,34 @@ Tệp `detailed_model_outputs.csv` giữ lại toàn bộ thông số kỹ thu�
 | 21 | `score_NEG` / `(xác suất tiêu cực)` | `float` | GĐ 3 | Xác suất lớp Tiêu cực $P_{\text{hybrid}}(\text{NEG})$ (làm tròn 4 chữ số thập phân). |
 | 22 | `score_NEU` / `(xác suất trung tính)` | `float` | GĐ 3 | Xác suất lớp Trung tính $P_{\text{hybrid}}(\text{NEU})$ (làm tròn 4 chữ số thập phân). |
 | 23 | `emotion_label` / `(nhãn cảm xúc chuẩn)` | `str` | GĐ 3 | Nhãn tiếng Anh 1 trong 7 cảm xúc (`Anger`, `Sadness`, `Fear`, `Enjoyment`, `Disgust`, `Surprise`, `Other`). |
-| 24 | `pred_nb` / `(dự đoán naive bayes)` | `str` | GĐ 3A | Nhãn `POS`/`NEU`/`NEG` riêng của **TF-IDF + Multinomial Naive Bayes** (`alpha=0.5`). |
-| 25 | `pred_lr` / `(dự đoán logistic regression)` | `str` | GĐ 3A | Nhãn riêng của **TF-IDF + Logistic Regression** (`C=2.0, class_weight="balanced"`). |
-| 26 | `pred_svm` / `(dự đoán linear svm)` | `str` | GĐ 3A | Nhãn riêng của **TF-IDF + Calibrated LinearSVC** (`C=1.0, cv=3`). |
-| 27 | `pred_lexicon` / `(dự đoán từ điển luật)` | `str` | GĐ 3A | Nhãn riêng của **BilingualLexiconScorer** (từ điển song ngữ + luật phủ định/cường độ). |
-| 28 | `dl_primary_model` / `(mô hình học sâu sử dụng)` | `str` | GĐ 3B | Tên mô hình Deep Learning chủ lực đã chạy cho dòng đó (`PhoBERT` hoặc `Twitter-RoBERTa`). |
-| 29 | `pred_phobert` / `(dự đoán phobert - vi)` | `str` | GĐ 3B | Nhãn riêng của **PhoBERT** (`wonrax/...`) cho `vi` (`—` với dòng `en`; tự ẩn nếu bài không có `vi`). |
-| 30 | `pred_visobert` / `(dự đoán visobert - vi)` | `str` | GĐ 3B | Nhãn riêng của **ViSoBERT** (`5CD-AI/...`) cho `vi` (`—` với dòng `en`; tự ẩn nếu bài không có `vi`). |
-| 31 | `pred_roberta` / `(dự đoán twitter-roberta - en)` | `str` | GĐ 3B | Nhãn riêng của **Twitter-RoBERTa** (`cardiffnlp/...`) cho `en` (`—` với dòng `vi`; tự ẩn nếu bài không có `en`). |
-| 32 | `emotion_ml_label` / `(cảm xúc ml cổ điển)` | `str` | GĐ 3A | Nhãn 7 cảm xúc riêng của **TF-IDF + Logistic Regression (Emotion)** để đối chiếu với Emotion DL. |
-| *33* | `gemma_audited` / `(đã thẩm định gemma)` | `bool` | GĐ 4 | `True` nếu bình luận này đã được Gemma 4 E2B chấm thành công *(ẩn nếu tắt Audit)*. |
-| *34* | `gemma_polarity` / `(nhãn sắc thái gemma)` | `str` | GĐ 4 | Nhãn chuẩn `POS`/`NEU`/`NEG` của Gemma 4 E2B *(ẩn nếu tắt Audit)*. |
-| *35* | `gemma_emotion` / `(nhãn cảm xúc gemma)` | `str` | GĐ 4 | Nhãn chuẩn 1 trong 7 cảm xúc tiếng Anh của Gemma 4 E2B *(ẩn nếu tắt Audit)*. |
-| *36* | `gemma_agrees_polarity` / `(khớp sắc thái với gemma)` | `bool` | GĐ 4 | Kết quả phép so sánh `gemma_polarity == polarity_label` *(ẩn nếu tắt Audit)*. |
-| *37* | `gemma_agrees_emotion` / `(khớp cảm xúc với gemma)` | `bool` | GĐ 4 | Kết quả phép so sánh `gemma_emotion == emotion_label` *(ẩn nếu tắt Audit)*. |
+| 24 | `pred_nb` / `(dự đoán naive bayes)` | `str` | GĐ 3A | Nhãn riêng của **TF-IDF + Multinomial Naive Bayes**. |
+| 25 | `pred_cnb` / `(dự đoán complement nb)` | `str` | GĐ 3A | Nhãn riêng của **TF-IDF + Complement Naive Bayes (`norm=False`)**. |
+| 26 | `pred_lr` / `(dự đoán logistic regression)` | `str` | GĐ 3A | Nhãn riêng của **TF-IDF + Logistic Regression**. |
+| 27 | `pred_ridge` / `(dự đoán ridge classifier)` | `str` | GĐ 3A | Nhãn riêng của **TF-IDF + Ridge Classifier** (hiệu chỉnh xác suất softmax). |
+| 28 | `pred_sgd` / `(dự đoán sgd classifier)` | `str` | GĐ 3A | Nhãn riêng của **TF-IDF + SGD Classifier (`log_loss`)**. |
+| 29 | `pred_svm` / `(dự đoán linear svm)` | `str` | GĐ 3A | Nhãn riêng của **TF-IDF + Calibrated LinearSVC**. |
+| 30 | `pred_nbsvm` / `(dự đoán nbsvm)` | `str` | GĐ 3A | Nhãn riêng của **NBSVM** (Log-Count Ratio Naive Bayes + Linear SVM). |
+| 31 | `pred_rbf_svm` / `(dự đoán rbf svm)` | `str` | GĐ 3A | Nhãn riêng của **SVD + Social RBF-SVM** (Calibrated Kernel SVC). |
+| 32 | `pred_rf` / `(dự đoán random forest)` | `str` | GĐ 3A | Nhãn riêng của **SVD + Social Random Forest**. |
+| 33 | `pred_tree` / `(dự đoán hist gradient boosting)` | `str` | GĐ 3A | Nhãn riêng của **SVD + Social HistGradientBoosting**. |
+| 34 | `pred_ml_ensemble` / `(dự đoán ml ensemble)` | `str` | GĐ 3A | Nhãn tổng hợp của **Classical ML Meta-Ensemble v3** (`oof_stacking_lr` / soft-vote). |
+| 35 | `pred_lexicon` / `(dự đoán từ điển luật)` | `str` | GĐ 3A | Nhãn riêng của **BilingualLexiconScorer** (từ điển song ngữ + luật phủ định/cường độ). |
+| 36 | `dl_primary_model` / `(mô hình học sâu sử dụng)` | `str` | GĐ 3B | Tên mô hình Deep Learning chủ lực (`PhoBERT` hoặc `Twitter-RoBERTa`; tự ẩn khi `--engine classical`). |
+| 37 | `pred_phobert` / `(dự đoán phobert - vi)` | `str` | GĐ 3B | Nhãn riêng của **PhoBERT** cho `vi` (`—` với dòng `en`; tự ẩn khi không có `vi` hoặc `--engine classical`). |
+| 38 | `pred_visobert` / `(dự đoán visobert - vi)` | `str` | GĐ 3B | Nhãn riêng của **ViSoBERT** cho `vi` (`—` với dòng `en`; tự ẩn khi không có `vi` hoặc `--engine classical`). |
+| 39 | `pred_roberta` / `(dự đoán twitter-roberta - en)` | `str` | GĐ 3B | Nhãn riêng của **Twitter-RoBERTa** cho `en` (`—` với dòng `vi`; tự ẩn khi không có `en` hoặc `--engine classical`). |
+| 40 | `emotion_ml_label` / `(cảm xúc ml ensemble)` | `str` | GĐ 3A | Nhãn 7 cảm xúc tổng hợp từ **Emotion Soft-Vote Ensemble** (6 mô hình ML Emotion). |
+| 41 | `pred_emo_cnb` / `(cảm xúc complement nb)` | `str` | GĐ 3A | Nhãn 7 cảm xúc riêng của **Emotion ComplementNB**. |
+| 42 | `pred_emo_lr` / `(cảm xúc logistic regression)` | `str` | GĐ 3A | Nhãn 7 cảm xúc riêng của **Emotion Logistic Regression**. |
+| 43 | `pred_emo_ridge` / `(cảm xúc ridge classifier)` | `str` | GĐ 3A | Nhãn 7 cảm xúc riêng của **Emotion Ridge Classifier**. |
+| 44 | `pred_emo_svm` / `(cảm xúc linear svm)` | `str` | GĐ 3A | Nhãn 7 cảm xúc riêng của **Emotion LinearSVC**. |
+| 45 | `pred_emo_nbsvm` / `(cảm xúc nbsvm)` | `str` | GĐ 3A | Nhãn 7 cảm xúc riêng của **Emotion NBSVM**. |
+| 46 | `pred_emo_sgd` / `(cảm xúc sgd classifier)` | `str` | GĐ 3A | Nhãn 7 cảm xúc riêng của **Emotion SGD Classifier**. |
+| *47* | `gemma_audited` / `(đã thẩm định gemma)` | `bool` | GĐ 4 | `True` nếu bình luận này đã được Gemma 4 E2B chấm thành công *(ẩn nếu tắt Audit)*. |
+| *48* | `gemma_polarity` / `(nhãn sắc thái gemma)` | `str` | GĐ 4 | Nhãn chuẩn `POS`/`NEU`/`NEG` của Gemma 4 E2B *(ẩn nếu tắt Audit)*. |
+| *49* | `gemma_emotion` / `(nhãn cảm xúc gemma)` | `str` | GĐ 4 | Nhãn chuẩn 1 trong 7 cảm xúc tiếng Anh của Gemma 4 E2B *(ẩn nếu tắt Audit)*. |
+| *50* | `gemma_agrees_polarity` / `(khớp sắc thái với gemma)` | `bool` | GĐ 4 | Kết quả phép so sánh `gemma_polarity == polarity_label` *(ẩn nếu tắt Audit)*. |
+| *51* | `gemma_agrees_emotion` / `(khớp cảm xúc với gemma)` | `bool` | GĐ 4 | Kết quả phép so sánh `gemma_emotion == emotion_label` *(ẩn nếu tắt Audit)*. |
 
 #### Chi tiết công thức tính từng nhóm cột trong `detailed_model_outputs.csv`
 
@@ -561,10 +579,10 @@ Tệp `detailed_model_outputs.csv` giữ lại toàn bộ thông số kỹ thu�
 
      *(Đảm bảo bình luận `NEG` luôn `< 0`, `POS` luôn `> 0`, và `NEU` luôn nằm gọn gần `0` trong `[-0.19, +0.19]`.)*
 
-4. **Cách tính của 7 mô hình đơn lẻ (`pred_nb` .. `emotion_ml_label`):**
-   - **4 mô hình Classical ML (`pred_nb`, `pred_lr`, `pred_svm`, `emotion_ml_label`):**
-     - Dùng `FeatureUnion` gồm **Word TF-IDF** (`ngram=(1, 2)`, `max_features=25000`, `sublinear_tf=True`) ghép **Char-WB TF-IDF** (`ngram=(3, 5)`, `max_features=25000`, `sublinear_tf=True`) chạy trên `segmented_text`, định tuyến riêng cho bộ model `vi` (`h-i-e-u/vietnamese-SA-dataset` + `UIT-VSMEC`) hoặc `en` (`tweet_eval`).
-     - `pred_nb` = `MultinomialNB(alpha=0.5)`; `pred_lr` = `LogisticRegression(C=2.0, max_iter=1000, class_weight="balanced")`; `pred_svm` = `CalibratedClassifierCV(LinearSVC(C=1.0, class_weight="balanced"), cv=3)`; `emotion_ml_label` = `LogisticRegression(C=2.0, class_weight="balanced")` trên 7 lớp cảm xúc. Mỗi mô hình chọn nhãn có `predict_proba` cao nhất.
+4. **Cách tính của các mô hình đơn lẻ (`pred_nb` .. `pred_emo_sgd`):**
+   - **10 mô hình Polarity & 6 mô hình Emotion Classical ML v3:**
+     - Dùng bộ trích xuất **Word TF-IDF (`1–3`)** + **Char-WB TF-IDF (`3–5`)** + **15 Social/Lexicon Features** (`_SocialLexiconFeatureTransformer`). Nhánh Tree (`RandomForest`, `HistGradientBoosting`) và `RBF-SVM` dùng **TruncatedSVD (96 chiều) + 15 Social Features nguyên bản** (`_SVDSocialFeatureExtractor`).
+     - 10 mô hình Polarity được chọn siêu tham số qua validation split (`MultinomialNB`, `ComplementNB(norm=False)`, `LogisticRegression`, `RidgeClassifier`, `SGDClassifier`, `LinearSVC`, `NBSVM`, `Subsampled Calibrated RBF-SVM`, `RandomForest`, `HistGradientBoosting`) và kết hợp thành **Smart OOF Meta-Ensemble** (`oof_stacking_lr` hoặc top-4 soft vote). 6 mô hình Emotion (`ComplementNB`, `LogisticRegression`, `RidgeClassifier`, `LinearSVC`, `NBSVM`, `SGDClassifier`) được soft-vote thành `emotion_ml_label`.
    - **Mô hình `BilingualLexiconScorer` (`pred_lexicon`):**
      - Quét từng token trong từ điển `_VI_*_LEXICON` (hoặc `_EN_*_LEXICON` kèm chuẩn hóa kéo dài chữ cái như `peakkkk → peakk / peak`).
      - Nhân hệ số cường độ trong cửa sổ $\pm 2$ từ lân cận: từ tăng mạnh (`quá`, `rất`, `freaking`...) nhân `1.35`; từ giảm nhẹ (`hơi`, `slightly`...) nhân `0.70`.
@@ -620,7 +638,7 @@ Tệp này tách riêng toàn bộ bình luận không đưa vào phân tích c�
 
 ### 5.4. `model_comparison.csv` — Bảng so sánh các mô hình (11 cột lõi + 3 cột AI Audit)
 
-Tệp này tổng hợp kết quả đối chiếu giữa **Classical ML**, **Lexicon**, **Deep Learning**, **Hybrid Ensemble** và **Gemma 4 E2B** (sinh bởi `build_model_comparison()` trong `src/models/gemma_auditor.py`). Các ô không áp dụng (như cột đếm POS/NEU/NEG ở 2 dòng `Emotion` hoặc thời gian ở `Hybrid`) hiển thị ký hiệu **`"—"`**.
+Tệp này tổng hợp kết quả đối chiếu giữa **10 mô hình Classical ML v3 + Meta-Ensemble**, **Lexicon**, **Deep Learning**, **Hybrid / Classical Final Ensemble** và **Gemma 4 E2B** (tổng cộng **21 dòng** ở `--engine classical`, **23–24 dòng** ở `--engine hybrid` khi chưa bật Audit; sinh bởi `build_model_comparison()` trong `src/models/gemma_auditor.py`). Các ô không áp dụng (như cột đếm POS/NEU/NEG ở các dòng `Emotion` hoặc thời gian ở bước tổng hợp `Ensemble`) hiển thị ký hiệu **`"—"`**.
 
 | STT | Tên cột song ngữ (`dòng 1 / dòng 2`) | Kiểu | Nguồn & Công thức tính chi tiết |
 | :-: | :--- | :--- | :--- |
@@ -653,6 +671,7 @@ Tệp này tổng hợp kết quả đối chiếu giữa **Classical ML**, **Le
 | 6 | `sentiment_summary` | `dict` | Thống kê từ `CommentAnalyzer.summarize()` (nếu `deduplicate_stats=True` thì loại các bản ghi `is_duplicate=True`):<br>• `avg_polarity_score`: trung bình cộng `polarity_score` toàn tập.<br>• `avg_confidence`: trung bình cộng `polarity_confidence` toàn tập.<br>• `overall_tendency`: `"Tranh cãi (Trái chiều)"` nếu `POS% >= 35%` **và** `NEG% >= 35%`; ngược lại lấy nhãn chiếm số lượng cao nhất.<br>• `on_topic_summary`: thống kê nhóm `is_on_topic == True` (`on_topic_count`, `on_topic_pct`, `off_topic_count`, `avg_context_relevance`, phân bố `POS/NEU/NEG` nội bộ nhóm bám sát video, và `alignment_counts`).<br>• `top_examples`: Top 3 bình luận tiêu biểu mỗi lớp `POS`/`NEG`/`NEU` sắp theo `(likes, polarity_confidence)` giảm dần.<br>• `classical_ml_benchmark` & `model_timings_sec`: kết quả kiểm chứng trên tập test công khai và thời gian chạy từng mô hình. |
 | 7 | `model_comparison` | `dict` | Dữ liệu JSON nguồn của `model_comparison.csv` (`polarity_models` và `emotion_models`). |
 | 8 | `ai_audit_verdict` | `dict` \| `null` | Tổng kết từ Gemma 4 E2B ở cuối Giai đoạn 4 (`accuracy_verdict`, `best_model`, `strengths`, `weaknesses`, `summary_vi`, `audited_count`, `sarcasm_detected_count`, `sarcasm_rate_pct`). |
+| 9 | `ai_audit_status` | `dict` | Trạng thái thực thi Giai đoạn 4 (`requested`, `scope`, `ollama_ready`, `audited_count`, `total_comments`, `message`) giúp phân biệt rõ tắt thủ công vs lỗi kết nối Ollama. |
 
 *(Chi tiết từng bình luận và bình luận nhiễu được lưu tách biệt trong `final_results.csv`, `detailed_model_outputs.csv` và `filtered_noise.csv` để giữ `report.json` gọn nhẹ.)*
 
@@ -679,12 +698,15 @@ Biểu đồ do `plot_sentiment_dashboard()` trong `src/visualization.py` sinh r
 | `force_reanalyze_media`            | `--reanalyze-media`                | `False`     | Đặt `True` nếu muốn buộc Gemma 4 + Whisper chạy lại ngay cả khi đã có `data/<post_id>/media_context.json`.                                                                     |
 | `prepare_only`                     | `--prepare-only`                   | `False`     | Đặt `True` nếu chỉ muốn chuẩn bị đủ dữ liệu vào `data/<post_id>/` rồi dừng trước Giai đoạn 2–3.                                                                                  |
 | `enable_audio`                     | `--no-audio`                       | `True`      | Bật/tắt bước giải mã âm thanh bằng PyAV + Whisper ở Giai đoạn 1.                                                                                                                 |
-| `run_ai_audit`                     | `--ai-audit` / `--no-ai-audit` / `--skip-audit` | `False` | Bật/tắt Giai đoạn 4 (mặc định **tắt**; bật `--ai-audit` khi cần Gemma 4 E2B thẩm định các ca mỉa mai sâu & kết quả Giai đoạn 3).                                               |
-| `audit_limit`                      | `--audit-limit`                    | `None`      | `None` = chấm **100%** bình luận hợp lệ; đặt số nguyên (ví dụ `80`) nếu muốn giới hạn thời gian chạy.                                                                      |
-| `max_comments`                     | `--max-comments`                   | `200`       | Số lượng bình luận thô tối đa (bao gồm cả reply nếu bật) khi crawl trên trình duyệt Edge.                                                                                     |
-| `include_replies`                  | `--no-replies`                     | `True`      | Bật/tắt tự động bấm mở rộng và thu thập các bình luận trả lời (reply).                                                                                                         |
-| `max_replies_per_comment`          | `--max-replies-per-comment`        | `None`      | Giới hạn số reply tối đa cho mỗi bình luận chính (`None` = lấy hết cho tới khi chạm `max_comments`).                                                                          |
-| `deduplicate_stats`                | `--deduplicate-stats`              | `False`     | Đặt `True` nếu muốn loại bỏ các bình luận copy-paste lặp lại (`is_duplicate=True`) khỏi bảng tỷ lệ `%` tổng hợp.                                              |
+| `run_ai_audit` | `--ai-audit` / `--no-ai-audit` / `--skip-audit` | `None` (notebook hỏi) / `False` (CLI) | Bật/tắt Giai đoạn 4 (dùng Gemma 4 E2B kiểm tra mỉa mai sâu & đối chiếu mô hình; kiểm tra sẵn sàng Ollama trước khi chạy). |
+| `audit_scope` | `--audit-scope` (`all` / `uncertain`) | `"all"` | Chọn thẩm định toàn bộ bình luận hợp lệ (`all`) hay chỉ các ca khó có cờ `needs_audit=True` (`uncertain`). |
+| `audit_limit` | `--audit-limit` | `None` | Giới hạn số lượng tối đa câu gửi Gemma 4 sau khi đã lọc theo `audit_scope` (`None` = chấm 100%). |
+| `max_comments` | `--max-comments` | `200` | Số lượng bình luận thô tối đa (bao gồm cả reply nếu bật) khi crawl trên trình duyệt Edge. |
+| `include_replies` | `--no-replies` | `True` | Bật/tắt tự động bấm mở rộng và thu thập các bình luận trả lời (reply). |
+| `max_replies_per_comment` | `--max-replies-per-comment` | `None` | Giới hạn số reply tối đa cho mỗi bình luận chính (`None` = lấy hết cho tới khi chạm `max_comments`). |
+| `deduplicate_stats` | `--deduplicate-stats` | `False` | Đặt `True` nếu muốn loại bỏ các bình luận copy-paste lặp lại (`is_duplicate=True`) khỏi bảng tỷ lệ `%` tổng hợp. |
+| `engine_mode` | `--engine` (`1`/`classical` hoặc `2`/`hybrid`) | `"hybrid"` *(notebook hỏi `1/2`)* | Chọn `1` / `classical` (ML truyền thống v3, 0% Deep Learning) hoặc `2` / `hybrid` (như hiện tại: ML v3 + Deep Learning VI/EN). |
+| *(CLI only)*                       | `--retrain-ml`                     | `False`     | Huấn luyện lại cụm mô hình Classical ML v3 (VI & EN) trước khi chạy pipeline.                                                                                                    |
 | `unload_ollama_after_stage1`       | *(mặc định bật)*               | `True`      | Tự động xả VRAM Gemma (`keep_alive=0`) và RAM Whisper (`unload_whisper_model()`) ngay sau Giai đoạn 1.                                                                        |
 | `data_dir`                         | `--data-dir`                       | `"data"`    | Thư mục gốc lưu toàn bộ dữ liệu thu thập thô (`data/<post_id>/`).                                                                                                        |
 | `output_dir`                       | `--output`                         | `"outputs"` | Thư mục gốc xuất toàn bộ kết quả xử lý cuối cùng (`outputs/<run_name>/`).                                                                                               |

@@ -26,9 +26,9 @@ Tài liệu này hướng dẫn từng bước từ máy trắng để thiết l
 
 | Giai đoạn | Thành phần / Mã mô hình | Vai trò trong Pipeline | Thiết bị chạy | Vị trí lưu trữ cục bộ |
 | :--- | :--- | :--- | :--- | :--- |
-| **Giai đoạn 1** (AI Đầu vào) | `gemma4-e2b-opt` (build từ `gemma4:e2b`) | Đọc tối đa 10 khung hình (`512px`, JPEG `85%`) + caption + transcript, xuất JSON ngữ cảnh 8 trường (`temperature=0.15`) | **GPU (4 GB VRAM)** | `AI_Local/gemma4-e2b/ollama_models/` (~4.27 GB) |
+| **Giai đoạn 1** (AI Đầu vào) | `gemma4-e2b-opt` (build từ `gemma4:e2b`) | Đọc tối đa 8 khung hình (`768px`, JPEG `90%`, tự động 2-pass cho slideshow dài) + caption + transcript, xuất JSON ngữ cảnh 11 trường (`temperature=0.1`) | **GPU (4 GB VRAM)** | `AI_Local/gemma4-e2b/ollama_models/` (~4.27 GB) |
 | **Giai đoạn 1** (ASR) | `Faster-Whisper` (`small`, `int8`) + `PyAV` | Tách luồng âm thanh 16 kHz mono trong RAM (không cần FFmpeg) & chép lời tự nhận diện `vi` / `en` (`vad_filter=True`, `beam_size=5`) | **CPU + RAM** | Cache HuggingFace (`%USERPROFILE%\.cache\huggingface` hoặc `HF_HOME`) |
-| **Giai đoạn 3A** (ML cổ điển) | `MultinomialNB`, `LogisticRegression`, `CalibratedClassifierCV(LinearSVC)` + `Emotion LR` | Huấn luyện & suy luận TF-IDF (`word` + `char_wb`) song ngữ từ `h-i-e-u/vietnamese-SA-dataset`, `ura-hcmut/UIT-VSMEC` và `cardiffnlp/tweeteval` | **CPU + RAM** | `models/classical_ml/vi/` & `models/classical_ml/en/` (`.joblib`) |
+| **Giai đoạn 3A** (ML cổ điển) | `5 họ Classical ML v3` (10+1 Polarity & 6+1 Emotion, Word+Char TF-IDF + 15 Social Features) | Huấn luyện & suy luận song ngữ từ `h-i-e-u/vietnamese-SA-dataset`, `ura-hcmut/UIT-VSMEC`, `cardiffnlp/tweeteval` và `dair-ai/emotion` | **CPU + RAM** | `models/classical_ml/vi/` & `models/classical_ml/en/` (`.joblib`) |
 | **Giai đoạn 3B** (DL Tiếng Việt) | `5CD-AI/Vietnamese-Sentiment-visobert`, `wonrax/phobert-base-vietnamese-sentiment`, `visolex/phobert-emotion` | Tải lười (chỉ nạp khi có comment `vi`), suy luận cực tính 3 lớp & cảm xúc 7 cung bậc (`batch_size=32`, `max_length=256`) | **CPU + RAM** | Cache HuggingFace |
 | **Giai đoạn 3B** (DL Tiếng Anh) | `cardiffnlp/twitter-roberta-base-sentiment-latest`, `j-hartmann/emotion-english-distilroberta-base` | Tải lười (chỉ nạp khi có comment `en`), suy luận cực tính 3 lớp & cảm xúc 7 cung bậc | **CPU + RAM** | Cache HuggingFace |
 | **Giai đoạn 4** (AI Đầu ra) | `gemma4-e2b-opt` | Thẩm định độc lập theo lô `batch_size=8` (`temperature=0.1`), phát hiện mỉa mai (`sarcasm`) & viết đánh giá tổng kết | **GPU (4 GB VRAM)** | `AI_Local/gemma4-e2b/ollama_models/` |
@@ -202,9 +202,9 @@ PARAMETER top_k 64
 ```
 
 **Giải thích tham số `Modelfile` & cách mã Python ghi đè:**
-- `num_ctx 16384`: Mở rộng cửa sổ ngữ cảnh từ 4.096 mặc định lên **16.384 tokens** (đủ chứa tối đa `max_frames=10` khung hình `512px` + transcript Whisper + caption + system prompt).
+- `num_ctx 16384`: Mở rộng cửa sổ ngữ cảnh từ 4.096 mặc định lên **16.384 tokens** (đủ chứa tối đa `max_frames=8` khung hình `768px` + transcript Whisper + caption + system prompt).
 - `num_gpu 99`: Yêu cầu Ollama đẩy tối đa số lớp mạng lên GPU rời.
-- `temperature 1.0`, `top_p 0.95`, `top_k 64`: Cấu hình nền khi chat tự do (như trong `test.ipynb`). Khi chạy Pipeline chính, `MediaAnalyzer` (`src/models/media_context.py`) chủ động truyền `temperature=0.15`, `top_p=0.9`, `think=False`, `format=MEDIA_RESPONSE_SCHEMA`, còn `GemmaAuditor` (`src/models/gemma_auditor.py`) truyền `temperature=0.1`, `top_p=0.9`, `think=False`, `format=BATCH_AUDIT_SCHEMA` / `VERDICT_SCHEMA` để ép đầu ra JSON chính xác.
+- `temperature 1.0`, `top_p 0.95`, `top_k 64`: Cấu hình nền khi chat tự do. Khi chạy Pipeline chính, `MediaAnalyzer` (`src/models/media_context.py`) chủ động truyền `temperature=0.1`, `top_p=0.9`, `think=False`, `format=MEDIA_RESPONSE_SCHEMA`, còn `GemmaAuditor` (`src/models/gemma_auditor.py`) truyền `temperature=0.1`, `top_p=0.9`, `think=False`, `format=BATCH_AUDIT_SCHEMA` / `VERDICT_SCHEMA` để ép đầu ra JSON chính xác.
 
 ---
 
@@ -297,9 +297,9 @@ pip install -r requirements.txt
 - `transformers>=4.41.0,<5.0.0` và `huggingface-hub>=0.34.0,<1.0.0` đã được ghim tương thích cho `PhoBERT`, `ViSoBERT` và `Twitter-RoBERTa`.
 - Dự án cố tình **không** sử dụng `datasets` / `pyarrow` trong `src/models/classical_ml.py` để tránh lỗi Windows Application Control chặn file DLL `pyarrow._fs`. Không cần cài thêm `pyarrow`.
 
-### 3.2. Đăng ký Jupyter Kernel `hand_env` cho VS Code (`main.ipynb` & `test.ipynb`)
+### 3.2. Đăng ký Jupyter Kernel `hand_env` cho VS Code (`main.ipynb`)
 
-Tệp `requirements.txt` chỉ chứa thư viện chạy pipeline (không kèm `ipykernel`). Để mở và chạy `main.ipynb` và `AI_Local/gemma4-e2b/test.ipynb` bằng kernel `hand_env` trong VS Code / Jupyter:
+Tệp `requirements.txt` chỉ chứa thư viện chạy pipeline (không kèm `ipykernel`). Để mở và chạy `main.ipynb` bằng kernel `hand_env` trong VS Code / Jupyter:
 
 ```powershell
 conda activate hand_env
@@ -336,7 +336,7 @@ Mặc định, `transformers`, `huggingface_hub` và `faster-whisper` lưu cache
 
 Ở lần chạy `main.ipynb` hoặc `python -m src.pipeline` đầu tiên (khi có mạng Internet), hệ thống tự động tải và cache cục bộ các thành phần sau (những lần sau tái sử dụng trực tiếp):
 1. **Faster-Whisper (`small`, CPU `int8`):** Bóc tách lời thoại đa ngôn ngữ từ video (`enable_audio=True`).
-2. **Bộ mô hình ML cổ điển (`models/classical_ml/vi/` & `en/`):** Tải dữ liệu công khai qua `huggingface_hub` (`h-i-e-u/vietnamese-SA-dataset`, `ura-hcmut/UIT-VSMEC`) và GitHub raw (`cardiffnlp/tweeteval`), huấn luyện `NB / LR / Linear SVM / Emotion LR`, lưu `polarity_models.joblib`, `emotion_ml_model.joblib` và `benchmark_metrics.json`.
+2. **Bộ mô hình ML cổ điển (`models/classical_ml/vi/` & `en/`):** Tải dữ liệu công khai qua `huggingface_hub` (`h-i-e-u/vietnamese-SA-dataset`, `ura-hcmut/UIT-VSMEC`, `dair-ai/emotion`) và GitHub raw (`cardiffnlp/tweeteval`), huấn luyện 5 họ Classical ML v3 (10+1 Polarity & 6+1 Emotion), lưu `polarity_models.joblib`, `emotion_ml_model.joblib` và `benchmark_metrics.json`.
 3. **Bộ mô hình Transformer (CPU, tải lười theo ngôn ngữ xuất hiện trong bình luận):**
    - Nhánh `vi`: `5CD-AI/Vietnamese-Sentiment-visobert`, `wonrax/phobert-base-vietnamese-sentiment`, `visolex/phobert-emotion`.
    - Nhánh `en`: `cardiffnlp/twitter-roberta-base-sentiment-latest`, `j-hartmann/emotion-english-distilroberta-base`.
@@ -360,11 +360,13 @@ docker exec -it gemma4-e2b ollama ps
 ```
 *Đạt yêu cầu:* Model trả lời nhanh bằng tiếng Việt; trong `ollama ps`, cột `PROCESSOR` hiển thị `100% GPU` (hoặc phần lớn `% GPU`), cột `CONTEXT` hiển thị `16384`.
 
-### Tầng 3 — Kiểm thử chat tương tác qua `AI_Local/gemma4-e2b/test.ipynb`
-Mở tệp `AI_Local/gemma4-e2b/test.ipynb` trong VS Code, chọn kernel **`hand_env`**, chạy cell duy nhất trong notebook (`chat_loop(think=False)`).
-- Tệp này dùng để kiểm thử kết nối `http://localhost:11434/api/chat` theo dạng hội thoại văn bản có nhớ lịch sử (`stream=True`).
-- Gõ một câu tiếng Việt bất kỳ để kiểm tra tốc độ stream chữ, gõ `clear` để xóa lịch sử hội thoại, gõ `exit` để thoát vòng lặp.
-- *(Có thể đổi `chat_loop(think=True)` để thử chế độ suy luận ngầm của Gemma 4).*
+### Tầng 3 — Kiểm thử API `/api/chat` của `gemma4-e2b-opt`
+Chạy nhanh trong PowerShell để kiểm tra `http://localhost:11434/api/chat` phản hồi đúng JSON với `think=false`:
+```powershell
+$body = '{"model":"gemma4-e2b-opt","stream":false,"think":false,"messages":[{"role":"user","content":"Trả lời 1 câu tiếng Việt: Xin chào!"}]}'
+(Invoke-RestMethod -Method Post -Uri http://localhost:11434/api/chat -ContentType "application/json" -Body $body).message.content
+```
+*Đạt yêu cầu:* Trả về câu chào tiếng Việt mạch lạc trong vài giây.
 
 ### Tầng 4 — Kiểm thử thư viện `hand_env` & Kiểm thử đa phương thức Video (`MediaAnalyzer`)
 1. Kiểm tra các gói cốt lõi trong `hand_env`:
@@ -379,16 +381,16 @@ Mở tệp `AI_Local/gemma4-e2b/test.ipynb` trong VS Code, chọn kernel **`hand
    ```
 
 ### Tầng 5 — Chạy Smoke Test End-to-End không cần mở trình duyệt TikTok
-Chạy thử pipeline bằng tệp bình luận mẫu có sẵn `data/samples/sample_comments.csv` (chấm thử 8 câu với Gemma 4 ở Giai đoạn 4, xuất kết quả ra `outputs/smoke_test/`):
+Chạy thử pipeline bằng một thư mục dữ liệu đã chuẩn bị sẵn `data/<post_id>` (bỏ qua Giai đoạn 1 bằng `--skip-media` và dùng chế độ `--engine classical`, xuất kết quả ra `outputs/smoke_test/`):
 
 ```powershell
 conda activate hand_env
 cd E:\A\Sentiment-Analysis
-python -m src.pipeline --comments data/samples/sample_comments.csv --audit-limit 8 --output outputs/smoke_test
+python -m src.pipeline --input-dir data/<post_id> --engine classical --skip-media --output outputs/smoke_test
 ```
 
 *Đạt yêu cầu:* Lệnh chạy xong không lỗi và xuất đủ 6 tệp trong `outputs/smoke_test/`:
-`final_results.csv`, `cleaned_final_results.csv`, `filtered_noise.csv`, `model_comparison.csv`, `report.json`, `dashboard.png`.
+`final_results.csv`, `detailed_model_outputs.csv`, `filtered_noise.csv`, `model_comparison.csv`, `report.json`, `dashboard.png`.
 
 ### Lệnh xả sạch VRAM thủ công (khi cần nhường GPU ngay lập tức)
 ```powershell
@@ -423,15 +425,20 @@ Sau khi chạy lệnh trên, kiểm tra lại `docker exec -it gemma4-e2b ollama
 | Cờ CLI | Mặc định | Ý nghĩa |
 | :--- | :--- | :--- |
 | `--url` | `None` | Link video hoặc Photo Mode TikTok cần tải & thu thập bình luận. |
-| `--media` | `None` | Đường dẫn video `.mp4` hoặc danh sách ảnh cục bộ (khi phân tích dữ liệu có sẵn). |
-| `--comments` | `None` | File bình luận cục bộ (`.csv`, `.json`, `.txt`). |
+| `--input-dir` | `None` | Thư mục cục bộ chứa sẵn file comment/media/`media_context.json` (vd: `data/<post_id>`). |
+| `--prepare-only` | `False` | Chỉ chạy bước chuẩn bị dữ liệu vào `data/<post_id>/` rồi dừng. |
+| `--skip-media` | `False` | Bỏ qua Giai đoạn 1 (không chạy Gemma 4 đọc video/ảnh). |
+| `--reanalyze-media` | `False` | Buộc chạy lại Gemma 4 + Whisper ngay cả khi đã có sẵn `media_context.json`. |
+| `--engine` | `hybrid` | Chế độ Giai đoạn 3: `1`/`classical` (ML truyền thống v3, 0% DL) hoặc `2`/`hybrid` (ML v3 + DL). |
+| `--retrain-ml` | `False` | Huấn luyện lại cụm mô hình Classical ML v3 (`vi` & `en`) trước khi chạy. |
 | `--ollama-url` | `http://localhost:11434` | Địa chỉ API Ollama (đổi nếu chạy Ollama trên máy khác trong LAN). |
 | `--ollama-model` | `gemma4-e2b-opt` | Tên model Ollama dùng ở Giai đoạn 1 và Giai đoạn 4. |
 | `--whisper-model` | `small` | Kích thước Faster-Whisper (`tiny`, `base`, `small`, `medium`). Dùng `tiny` hoặc `base` nếu RAM hạn chế. |
 | `--no-audio` | `False` | Bỏ qua tách âm thanh & Whisper ở Giai đoạn 1. |
 | `--device` | `cpu` | Thiết bị chạy Transformer ở Giai đoạn 3 (`cpu`, `cuda`, `auto`). |
-| `--audit-limit` | `None` | Giới hạn số bình luận gửi Gemma 4 thẩm định ở Giai đoạn 4 (`None` = chấm 100% bình luận hợp lệ). |
-| `--skip-audit` | `False` | Bỏ qua Giai đoạn 4 (Gemma 4 thẩm định đầu ra), chỉ chạy Gemma 4 ở Giai đoạn 1. |
+| `--ai-audit` / `--no-ai-audit` | `False` (tắt) | Bật hoặc tắt Giai đoạn 4 (dùng Gemma 4 E2B thẩm định & đối chiếu mô hình; `--skip-audit` là bí danh của `--no-ai-audit`). |
+| `--audit-scope` | `all` | Phạm vi Giai đoạn 4: `all` (toàn bộ bình luận hợp lệ) hoặc `uncertain` (chỉ các ca khó `needs_audit=True`). |
+| `--audit-limit` | `None` | Giới hạn số bình luận gửi Gemma 4 thẩm định ở Giai đoạn 4 (`None` = chấm 100% tập đã chọn). |
 | `--max-comments` | `200` | Số bình luận tối đa thu thập qua Playwright Edge. |
 | `--headless-crawl` / `--no-crawl-pause` | `False` / `False` | Ẩn trình duyệt hoặc bỏ qua bước dừng nhấn Enter (chú ý TikTok dễ hiện CAPTCHA nếu chạy headless). |
 | `--data-dir` / `--output` | `data` / `outputs` | Thư mục lưu dữ liệu thô thu thập và thư mục xuất kết quả. |
@@ -471,7 +478,7 @@ docker exec -it gemma4-e2b ollama create gemma4-e2b-opt -f /Modelfile
 | 4 | `404 Client Error: model 'gemma4-e2b-opt' not found` | Đã bật container nhưng chưa tạo model từ `/Modelfile` hoặc trỏ sai thư mục `ollama_models` trong `docker-compose.yml`. | Kiểm tra lại đường dẫn `volumes:` trong `docker-compose.yml`, sau đó chạy `docker exec -it gemma4-e2b ollama pull gemma4:e2b` và `docker exec -it gemma4-e2b ollama create gemma4-e2b-opt -f /Modelfile`. |
 | 5 | Chạy Gemma rất chậm, cột `PROCESSOR` trong `ollama ps` hiện tỷ lệ `% CPU` cao | Đang mở game/Chrome nhiều tab ngốn VRAM, hoặc `num_ctx 16384` vượt lượng VRAM trống của GPU 4 GB. | Đóng bớt phần mềm dùng GPU (Chrome/Edge, game, app đồ họa), kiểm tra VRAM trống bằng `nvidia-smi`. Nếu vẫn tràn sang CPU, giảm `PARAMETER num_ctx` trong `Modelfile` xuống `12288` hoặc `8192` rồi chạy lại `ollama create`. |
 | 6 | Lỗi `ReadTimeout` quá `180s` ở Giai đoạn 1 hoặc Giai đoạn 4 | Model chạy trên CPU/tràn VRAM hoặc lần nạp đầu tiên từ ổ HDD chậm vượt `timeout=180` giây. | Xác nhận `ollama ps` chạy `100% GPU`; hoặc chạy warm-up bằng `docker exec -it gemma4-e2b ollama run gemma4-e2b-opt "hi"` trước khi chạy pipeline; hoặc truyền `MediaAnalyzer(timeout=300)` / `GemmaAuditor(timeout=300, batch_size=4)`. |
-| 7 | Không thấy kernel `hand_env` khi mở `main.ipynb` / `test.ipynb` trong VS Code | Chưa cài `ipykernel` hoặc chưa đăng ký kernel trong `hand_env`. | Chạy `conda activate hand_env`, `pip install ipykernel`, `python -m ipykernel install --user --name hand_env --display-name "hand_env"`, sau đó reload lại cửa sổ VS Code (`Ctrl+Shift+P` → *Developer: Reload Window*). |
+| 7 | Không thấy kernel `hand_env` khi mở `main.ipynb` trong VS Code | Chưa cài `ipykernel` hoặc chưa đăng ký kernel trong `hand_env`. | Chạy `conda activate hand_env`, `pip install ipykernel`, `python -m ipykernel install --user --name hand_env --display-name "hand_env"`, sau đó reload lại cửa sổ VS Code (`Ctrl+Shift+P` → *Developer: Reload Window*). |
 | 8 | Playwright báo lỗi thiếu trình duyệt hoặc không mở được Microsoft Edge | Chưa chạy `playwright install msedge` hoặc Edge chưa được cài trên máy. | Chạy `playwright install msedge` trong `hand_env`; kiểm tra Microsoft Edge mở được bình thường trên Windows. |
 | 9 | TikTok chặn / hiện CAPTCHA hoặc thu được 0 bình luận khi crawl | Chạy ở chế độ `--headless-crawl` hoặc chưa đóng popup đăng nhập/vượt CAPTCHA lúc tạm dừng. | Giữ `crawl_headless=False`, khi trình duyệt Edge mở lên hãy tự tay đóng popup đăng nhập / giải CAPTCHA (nếu có) và cuộn thử thấy khung bình luận rồi mới quay lại terminal/VS Code nhấn Enter. |
 | 10 | Lỗi liên quan tới thiếu `ffmpeg` khi tải video TikTok | Máy Windows chưa cài FFmpeg toàn cục. | Không cần cài thủ công: `src/ingestion/tiktok_collector.py` tự kiểm tra `shutil.which("ffmpeg")` và chuyển sang tải MP4 ghép sẵn (`b[ext=mp4]/best[ext=mp4]/b`), đồng thời `MediaAnalyzer` dùng **PyAV** (`av`) để tách âm thanh trực tiếp. |

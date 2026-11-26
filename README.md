@@ -1,6 +1,6 @@
 # Hệ thống Phân tích Cảm xúc TikTok Song ngữ (Tiếng Việt & Tiếng Anh)
 
-Hệ thống **Sentiment Analysis** kết hợp AI **Gemma 4 E2B** giúp đọc ngữ cảnh video/ảnh ở **Đầu vào** (tùy chọn) và thẩm định kết quả thực tế **Đầu ra** (tùy chọn); toàn bộ lõi phân tích ở giữa dùng **NLP (`underthesea`) + Machine Learning cổ điển + Deep Learning chuyên biệt** cho cả **Tiếng Việt** và **Tiếng Anh** (tự động lọc bỏ các ngôn ngữ khác).
+Hệ thống **Sentiment Analysis** kết hợp AI **Gemma 4 E2B** giúp đọc ngữ cảnh video/ảnh ở **Đầu vào** (tùy chọn) và thẩm định kết quả thực tế **Đầu ra** (tùy chọn); toàn bộ lõi phân tích ở giữa dùng **NLP (`underthesea`) + 5 họ Classical Machine Learning v3 (LinearSVC/NBSVM/RBF-SVM, NB/CNB, LR/Ridge/SGD, RF/HistGB + Smart Meta-Ensemble) + Deep Learning chuyên biệt (PhoBERT, ViSoBERT, Twitter-RoBERTa)** cho cả **Tiếng Việt** và **Tiếng Anh**, hỗ trợ chạy linh hoạt qua `--engine hybrid` (mặc định) hoặc `--engine classical` (thuần Classical ML, không nạp PyTorch/Transformers).
 
 ## Cấu trúc thư mục
 
@@ -12,24 +12,24 @@ Sentiment-Analysis/
 ├── outputs/                         # Kết quả cuối cùng sau xử lý theo từng lượt chạy (6 tệp)
 │   └── <run_name>/
 │       ├── final_results.csv         # Bảng kết quả dễ đọc cho người xem (12 cột lõi hoặc 16 cột khi bật AI Audit; tiêu đề song ngữ 2 dòng Anh–Việt, sắp theo lượt thích giảm dần)
-│       ├── detailed_model_outputs.csv # Chi tiết kỹ thuật, ID gốc, ngữ cảnh video, xác suất & dự đoán từng mô hình (29 cột lõi hoặc 34 cột khi bật AI Audit; tiêu đề song ngữ 2 dòng Anh–Việt, khớp 1-1 theo stt)
+│       ├── detailed_model_outputs.csv # Chi tiết kỹ thuật, ID gốc, ngữ cảnh video, xác suất & dự đoán đầy đủ 5 họ Classical ML + Deep Learning (46 cột ở Hybrid / 42 cột ở Classical; +5 cột khi bật AI Audit)
 │       ├── filtered_noise.csv        # Tách riêng bình luận nhiễu kèm giải thích tiếng Việt (9 cột; tiêu đề song ngữ 2 dòng Anh–Việt)
-│       ├── model_comparison.csv      # Bảng so sánh ML cổ điển, Lexicon, Deep Learning & Hybrid (tiêu đề song ngữ 2 dòng Anh–Việt)
+│       ├── model_comparison.csv      # Bảng so sánh 5 họ Classical ML, Lexicon, Deep Learning & Ensemble (tiêu đề song ngữ 2 dòng Anh–Việt)
 │       ├── report.json               # Báo cáo tổng hợp JSON gọn (metadata, ngữ cảnh media, thống kê & so sánh mô hình)
 │       └── dashboard.png             # Biểu đồ tổng hợp 2x2
-├── models/classical_ml/             # Cache mô hình ML cổ điển tách riêng vi/ và en/
+├── models/classical_ml/             # Cache mô hình Classical ML (v3) tách riêng vi/ và en/
 ├── src/
 │   ├── __init__.py
 │   ├── ingestion/                   # Chuẩn bị dữ liệu: Tải video/ảnh Photo Mode (HTTP + Edge), crawl comment + reply, đọc dữ liệu
 │   │   └── tiktok_collector.py
 │   ├── preprocessing/               # Giai đoạn 2: Lọc nhiễu bảo vệ thực thể video, nhận diện VI/EN, underthesea & TF-IDF ngữ cảnh
 │   │   └── text_cleaner.py
-│   ├── models/                      # Các mô hình AI, ML & Deep Learning
+│   ├── models/                      # Các mô hình AI, Classical ML v3 & Deep Learning
 │   │   ├── media_context.py         # Chuẩn bị ngữ cảnh (Giai đoạn 1): Gemma 4 E2B + Whisper -> lưu/nạp data/<post_id>/media_context.json
-│   │   ├── classical_ml.py          # ML cổ điển (NB, LR, SVM, Emotion LR) + Bilingual Lexicon
-│   │   ├── sentiment_engine.py      # ViSoBERT/PhoBERT (VI) + Twitter-RoBERTa/DistilRoBERTa (EN) + Context Alignment
+│   │   ├── classical_ml.py          # Classical ML v3 (Word+Char TF-IDF + 15 Social Features; 3 biến thể SVM, NB/CNB, LR/Ridge/SGD, RF/HistGB + Smart Meta-Ensemble) + Bilingual Lexicon + CLI benchmark
+│   │   ├── sentiment_engine.py      # Hỗ trợ 2 chế độ: Hybrid (ML v3 + ViSoBERT/PhoBERT/RoBERTa) hoặc Classical thuần (--engine classical) + Context Alignment
 │   │   └── gemma_auditor.py         # Giai đoạn 4 (mặc định tắt): Gemma 4 E2B thẩm định ca mỉa mai sâu & so sánh mô hình
-│   ├── visualization.py             # Vẽ Dashboard 2x2
+│   ├── visualization.py             # Vẽ Dashboard 2x2 & Benchmark Classical ML v3
 │   └── pipeline.py                  # Điều phối End-to-End: data/<post_id>/ -> Giai đoạn 2 & 3 -> outputs/<run_name>/
 ├── main.ipynb                       # Notebook chạy trọn gói (Link TikTok hoặc Thư mục đã chuẩn bị sẵn; Giai đoạn 4 mặc định tắt)
 └── requirements.txt
@@ -47,7 +47,9 @@ Sentiment-Analysis/
    cd E:\A\Sentiment-Analysis\AI_Local\gemma4-e2b
    docker compose up -d
    ```
-2. Mở [main.ipynb](main.ipynb), chọn nguồn đầu vào (**`1. Link TikTok`** để chuẩn bị dữ liệu vào `data/<post_id>/`, hoặc **`2. Thư mục đã chuẩn bị sẵn`** `data/<post_id>/` — tự nạp lại `media_context.json` nếu đã có), giữ `RUN_AI_AUDIT = False` (mặc định tắt) hoặc bật `True` nếu muốn thẩm định sâu, rồi chạy lần lượt các cell.
+2. Mở [main.ipynb](main.ipynb), chọn nguồn đầu vào (**`1. Link TikTok`** để chuẩn bị dữ liệu vào `data/<post_id>/`, hoặc **`2. Thư mục đã chuẩn bị sẵn`** `data/<post_id>/` — tự nạp lại `media_context.json`), rồi chọn ngay trong hộp thoại tương tác:
+   - **Giai đoạn 3:** `1` (**ML truyền thống** — Classical ML v3 + Lexicon, 0% Deep Learning) hoặc `2` (**Hybrid hiện tại** — ML v3 + Deep Learning).
+   - **Giai đoạn 4:** `y/N` (chọn có chạy **Gemma 4 E2B** thẩm định mỉa mai sâu hay không, và phạm vi `1. Chỉ ca khó (uncertain)` / `2. Toàn bộ (all)` — notebook hỏi cho cả Nguồn 1 và Nguồn 2).
 3. Hoặc chạy bằng CLI:
    - **Từ Link TikTok (Giai đoạn 4 mặc định tắt; thêm `--ai-audit` nếu muốn bật):**
      ```powershell
@@ -57,11 +59,19 @@ Sentiment-Analysis/
      ```powershell
      python -m src.pipeline --url "https://www.tiktok.com/@username/video/1234567890" --prepare-only
      ```
-   - **Từ thư mục đã chuẩn bị sẵn (`data/<post_id>/`, tự dùng lại `media_context.json` cho Giai đoạn 2 & 3, không cần bật Ollama):**
+   - **Từ thư mục đã chuẩn bị sẵn ở Giai đoạn 3 chế độ 2 — Hybrid mặc định (`--engine 2` hoặc `--engine hybrid`):**
      ```powershell
-     python -m src.pipeline --input-dir "data/7711719899852295445"
+     python -m src.pipeline --input-dir "data/7711719899852295445" --engine 2
      ```
-   - **Chạy lại kèm thẩm định AI Giai đoạn 4 (cho các ca mỉa mai sâu):**
+   - **Chạy Giai đoạn 3 chế độ 1 — Thuần ML truyền thống (`--engine 1` hoặc `--engine classical` — 0% Deep Learning):**
      ```powershell
-     python -m src.pipeline --input-dir "data/7711719899852295445" --ai-audit
+     python -m src.pipeline --input-dir "data/7711719899852295445" --engine 1
+     ```
+   - **Huấn luyện lại cache Classical ML v3 (5 họ ML cổ điển + OOF Meta-Ensemble + 6 ML Emotion) cho VI/EN:**
+     ```powershell
+     python -m src.models.classical_ml --lang vi en --retrain
+     ```
+   - **Chạy kèm thẩm định AI Giai đoạn 4 (`--ai-audit`; thêm `--audit-scope uncertain` để chỉ chấm các ca khó):**
+     ```powershell
+     python -m src.pipeline --input-dir "data/7711719899852295445" --ai-audit --audit-scope uncertain
      ```

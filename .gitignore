@@ -4,6 +4,7 @@ __pycache__/
 .ipynb_checkpoints/
 .vscode/
 AI_Local/*/ollama_models/
-data/*/*.mp4
-data/*/*.mov
-data/*/*.mkv
+models/classical_ml/*/*.joblib
+data/
+outputs/
+*.docx
