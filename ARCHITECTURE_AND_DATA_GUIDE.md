@@ -11,7 +11,7 @@
 - [2. Luồng hoạt động từ đầu đến cuối (End-to-End Flow)](#2-luồng-hoạt-động-từ-đầu-đến-cuối-end-to-end-flow)
 - [3. Giải thích chi tiết từng thành phần mã nguồn (`src/`)](#3-giải-thích-chi-tiết-từng-thành-phần-mã-nguồn-src)
 - [4. Từ điển dữ liệu đầu vào &amp; mô hình lưu đệm (`data/` và `models/`)](#4-từ-điển-dữ-liệu-đầu-vào--mô-hình-lưu-đệm-data-và-models)
-- [5. Từ điển dữ liệu kết quả đầu ra (`outputs/<post_id>/`)](#5-từ-điển-dữ-liệu-kết-quả-đầu-ra-outputspost_id)
+- [5. Từ điển dữ liệu kết quả đầu ra (`outputs/<run_name>/`)](#5-từ-điển-dữ-liệu-kết-quả-đầu-ra-outputsrun_name)
 - [6. Bảng tra cứu tham số cấu hình &amp; vận hành (`main.ipynb` &amp; CLI)](#6-bảng-tra-cứu-tham-số-cấu-hình--vận-hành-mainipynb--cli)
 
 ---
@@ -102,57 +102,57 @@ Hai tệp cấu hình trong `AI_Local/gemma4-e2b/` quyết định việc mô h�
 
 ```mermaid
 flowchart TD
-    U["Người dùng chọn nguồn đầu vào (1. Link TikTok | 2. Thư mục đã chuẩn bị sẵn)<br/>(main.ipynb hoặc CLI python -m src.pipeline)"] --> S0
+    U["Người dùng chọn nguồn đầu vào (1. Link TikTok • 2. Thư mục đã chuẩn bị sẵn)<br/>(main.ipynb hoặc CLI python -m src.pipeline)"] --> S0
 
-    subgraph B0["Chuẩn bị dữ liệu (src/ingestion/tiktok_collector.py -> data/<post_id>/)"]
-        S0["collect_tiktok_post() hoặc resolve_local_input_dir()"] --> D1["Lưu/đọc video.mp4 hoặc images/ & metadata.json"]
+    subgraph B0 ["Chuẩn bị dữ liệu (src/ingestion/tiktok_collector.py → data/{post_id}/)"]
+        S0["collect_tiktok_post() hoặc resolve_local_input_dir()"] --> D1["Lưu/đọc video.mp4 hoặc images/ và metadata.json"]
         S0 --> S0B["crawl_tiktok_comments() (tự động mở reply) hoặc load_comments_dataframe()"]
         S0B --> D2["Lưu/đọc raw_comments.csv (12 cột gồm reply)"]
     end
 
     D1 --> G1A
-    subgraph S1["Giai đoạn 1: Trích xuất & lưu/nạp ngữ cảnh video (GPU 4GB + CPU -> data/<post_id>/media_context.json)"]
-        G1A["Nếu đã có media_context.json -> nạp thẳng; ngược lại trích 8 khung hình 768px (F1 00:02)"] --> G1C["Gemma 4 E2B (gemma4-e2b-opt, GPU)<br/>xuất MediaAnalysisResult (11 trường) & lưu media_context.json"]
-        G1B["PyAV tách tiếng 16kHz + Faster-Whisper (small, CPU)<br/>chép lời kèm mốc thời gian [MM:SS-MM:SS]"] --> G1C
-        G1C --> G1D["unload_ollama_model() + unload_whisper_model()<br/>Giải phóng 100% VRAM GPU & RAM"]
+    subgraph S1 ["Giai đoạn 1: Trích xuất và lưu/nạp ngữ cảnh video (GPU 4GB + CPU → data/{post_id}/media_context.json)"]
+        G1A["Nếu đã có media_context.json → nạp thẳng; ngược lại trích 8 khung hình 768px (F1 00:02)"] --> G1C["Gemma 4 E2B (gemma4-e2b-opt, GPU)<br/>xuất MediaAnalysisResult (11 trường) và lưu media_context.json"]
+        G1B["PyAV tách tiếng 16kHz + Faster-Whisper (small, CPU)<br/>chép lời kèm mốc thời gian (MM:SS-MM:SS)"] --> G1C
+        G1C --> G1D["unload_ollama_model() + unload_whisper_model()<br/>Giải phóng 100% VRAM GPU và RAM"]
     end
 
     D2 --> G2A
     G1D --> G2A
 
-    subgraph S2["Giai đoạn 2: Tiền xử lý NLP & Lọc nhiễu có ngữ cảnh video (100% CPU)"]
-        G2A["normalize_tiktok_emojis() + clean_comment_text()<br/>Chuẩn hóa Emoji [Cười...] & Teencode"] --> G2B["detect_language(): Phân loại lai VI / EN / OTHER"]
+    subgraph S2 ["Giai đoạn 2: Tiền xử lý NLP và Lọc nhiễu có ngữ cảnh video (100% CPU)"]
+        G2A["normalize_tiktok_emojis() + clean_comment_text()<br/>Chuẩn hóa Emoji và Teencode"] --> G2B["detect_language(): Phân loại VI, EN, OTHER"]
         G2B --> G2C["_detect_filter_reason() + underthesea POS/NER<br/>Lọc 7 loại nhiễu (bảo vệ thực thể video)"]
-        G2C -->|Không hợp lệ| NOISE["Nhánh nhiễu: filtered_noise.csv (9 cột)"]
-        G2C -->|Hợp lệ vi/en| G2D["underthesea word_tokenize + TF-IDF Cosine ngữ cảnh<br/>Gắn cờ is_on_topic, context_relevance, matched_video_terms"]
+        G2C -->|"Không hợp lệ"| NOISE["Nhánh nhiễu: filtered_noise.csv (9 cột)"]
+        G2C -->|"Hợp lệ vi, en"| G2D["underthesea word_tokenize + TF-IDF Cosine ngữ cảnh<br/>Gắn cờ is_on_topic, context_relevance, matched_video_terms"]
     end
 
     G2D --> R1
-    subgraph S3["Giai đoạn 3: Lõi Phân tích Cảm xúc Song ngữ + Context Alignment (100% CPU)"]
+    subgraph S3 ["Giai đoạn 3: Lõi Phân tích Cảm xúc Song ngữ + Context Alignment (100% CPU)"]
         R1{"Định tuyến ngôn ngữ<br/>vi hay en?"}
-        R1 -->|vi| VI_ML["ML cổ điển (NB, LR, SVM, Emo-LR) + Lexicon VI"]
-        R1 -->|vi| VI_DL["Deep Learning VI: PhoBERT + ViSoBERT + PhoBERT-Emotion"]
-        R1 -->|en| EN_ML["ML cổ điển EN (NB, LR, SVM, Emo-LR) + Lexicon EN"]
-        R1 -->|en| EN_DL["Deep Learning EN: Twitter-RoBERTa + DistilRoBERTa-Emotion"]
-        VI_ML --> HYB["Hybrid Ensemble + Context Alignment + compute_polarity_score()<br/>Tạo AnalyzedComment (cập nhật needs_audit cho ca mỉa mai sâu)"]
+        R1 -->|"vi"| VI_ML["ML cổ điển VI (NB, LR, SVM, Emo-LR) + Lexicon VI"]
+        R1 -->|"vi"| VI_DL["Deep Learning VI: PhoBERT + ViSoBERT + PhoBERT-Emotion"]
+        R1 -->|"en"| EN_ML["ML cổ điển EN (NB, LR, SVM, Emo-LR) + Lexicon EN"]
+        R1 -->|"en"| EN_DL["Deep Learning EN: Twitter-RoBERTa + DistilRoBERTa-Emotion"]
+        VI_ML --> HYB["Hybrid Ensemble + Context Alignment + compute_polarity_score()<br/>Tạo AnalyzedComment (tách riêng pred_phobert, pred_visobert, pred_roberta)"]
         VI_DL --> HYB
         EN_ML --> HYB
         EN_DL --> HYB
     end
 
     HYB --> G4A
-    G1C -. "Đọc từ media_context.json" .-> G2D
-    G1C -. "Đọc từ media_context.json" .-> HYB
-    G1C -. "Truyền JSON Ngữ cảnh 11 trường" .-> G4A
+    G1C -.->|"Đọc từ media_context.json"| G2D
+    G1C -.->|"Đọc từ media_context.json"| HYB
+    G1C -.->|"Truyền JSON Ngữ cảnh 11 trường"| G4A
 
-    subgraph S4["Giai đoạn 4: AI Đầu ra — Thẩm định ca mỉa mai sâu (Mặc định TẮT RUN_AI_AUDIT=False)"]
-        G4A["GemmaAuditor.audit_comments():<br/>Gemma 4 E2B chấm độc lập theo lô 8 câu + ngữ cảnh"] --> G4B["build_model_comparison():<br/>Agreement %, Macro-F1, Cohen's Kappa"]
-        G4B --> G4C["generate_overall_verdict():<br/>Nhận định độ chính xác, điểm mạnh/yếu"]
+    subgraph S4 ["Giai đoạn 4: AI Đầu ra — Thẩm định ca mỉa mai sâu (Mặc định TẮT RUN_AI_AUDIT=False)"]
+        G4A["GemmaAuditor.audit_comments()<br/>Gemma 4 E2B chấm độc lập theo lô 8 câu + ngữ cảnh"] --> G4B["build_model_comparison()<br/>Agreement %, Macro-F1, Cohen's Kappa"]
+        G4B --> G4C["generate_overall_verdict()<br/>Nhận định độ chính xác, điểm mạnh và điểm yếu"]
     end
 
     NOISE --> EXP
     G4C --> EXP["SentimentPipeline._export_outputs() + plot_sentiment_dashboard()"]
-    EXP --> OUT["outputs/<run_name>/ (6 tệp):<br/>final_results.csv | detailed_model_outputs.csv<br/>filtered_noise.csv | model_comparison.csv | report.json | dashboard.png"]
+    EXP --> OUT["outputs/{run_name}/ (6 tệp):<br/>final_results.csv • detailed_model_outputs.csv<br/>filtered_noise.csv • model_comparison.csv • report.json • dashboard.png"]
 ```
 
 ### 2.2. Chu kỳ quản lý tài nguyên (CPU ↔ GPU 4GB)
@@ -364,15 +364,31 @@ Tệp `final_results.csv` chỉ chứa các **bình luận sạch hợp lệ thu
 1. **Cách tính `polarity_vi` (`Sắc thái`) và `polarity_confidence` (`Độ tự tin sắc thái %`):**
    - **Bước 1 — Tổ hợp xác suất có trọng số (`Hybrid Ensemble`)** cho từng lớp $c \in \{\text{POS}, \text{NEG}, \text{NEU}\}$ tùy theo ngôn ngữ của bình luận:
      - **Nhánh Tiếng Việt (`language == "vi"`):**
-       $$P_{\text{raw}}(c) = 0.40 \cdot P_{\text{PhoBERT}}(c) + 0.20 \cdot P_{\text{ViSoBERT}}(c) + 0.25 \cdot P_{\text{SVM\_VI}}(c) + 0.15 \cdot P_{\text{Lexicon\_VI}}(c)$$
+
+       $$
+       P_{\text{raw}}(c) = 0.40 \cdot P_{\text{PhoBERT}}(c) + 0.20 \cdot P_{\text{ViSoBERT}}(c) + 0.25 \cdot P_{\text{SVM\_VI}}(c) + 0.15 \cdot P_{\text{Lexicon\_VI}}(c)
+       $$
+
        *(Trong đó `PhoBERT` và `SVM_VI` chạy trên `segmented_text`, `ViSoBERT` chạy trên `cleaned_text`, `Lexicon_VI` kết hợp cả `segmented_text` và `cleaned_text`.)*
      - **Nhánh Tiếng Anh (`language == "en"`):**
-       $$P_{\text{raw}}(c) = 0.60 \cdot P_{\text{Twitter-RoBERTa}}(c) + 0.25 \cdot P_{\text{SVM\_EN}}(c) + 0.15 \cdot P_{\text{Lexicon\_EN}}(c)$$
+
+       $$
+       P_{\text{raw}}(c) = 0.60 \cdot P_{\text{Twitter-RoBERTa}}(c) + 0.25 \cdot P_{\text{SVM\_EN}}(c) + 0.15 \cdot P_{\text{Lexicon\_EN}}(c)
+       $$
+
    - **Bước 2 — Cơ chế đồng bộ `Emotion–Polarity`:**
      - Nếu `emotion_label` thuộc $\{\text{Anger}, \text{Disgust}, \text{Fear}\}$ **với** `emotion_confidence >= 0.55` **và** $P_{\text{Lexicon}}(\text{NEG}) \ge 0.50$:
-       $$P_{\text{raw}}(\text{NEG}) \leftarrow P_{\text{raw}}(\text{NEG}) + 0.25, \qquad P_{\text{raw}}(\text{POS}) \leftarrow P_{\text{raw}}(\text{POS}) \times 0.65$$
+
+       $$
+       P_{\text{raw}}(\text{NEG}) \leftarrow P_{\text{raw}}(\text{NEG}) + 0.25, \qquad P_{\text{raw}}(\text{POS}) \leftarrow P_{\text{raw}}(\text{POS}) \times 0.65
+       $$
+
    - **Bước 3 — Chuẩn hóa tổng xác suất về $1.0$ và chọn nhãn cuối:**
-     $$P_{\text{hybrid}}(c) = \text{round}\left(\frac{P_{\text{raw}}(c)}{P_{\text{raw}}(\text{POS}) + P_{\text{raw}}(\text{NEG}) + P_{\text{raw}}(\text{NEU})},\; 4\right)$$
+
+     $$
+     P_{\text{hybrid}}(c) = \text{round}\left(\frac{P_{\text{raw}}(c)}{P_{\text{raw}}(\text{POS}) + P_{\text{raw}}(\text{NEG}) + P_{\text{raw}}(\text{NEU})},\; 4\right)
+     $$
+
      - `polarity_label = argmax_c P_hybrid(c)`, rồi ánh xạ qua `LABEL_VI_MAP` (`POS → "Tích cực"`, `NEG → "Tiêu cực"`, `NEU → "Trung tính"`) thành `polarity_vi`.
      - `polarity_confidence = round(P_hybrid(polarity_label), 4)`, hiển thị trong CSV dưới dạng `f"{polarity_confidence * 100:.1f}%"`.
 
@@ -387,7 +403,11 @@ Tệp `final_results.csv` chỉ chứa các **bình luận sạch hợp lệ thu
      - Nếu chứa `_SADNESS_CUES` (`"buồn quá"`, `"thất vọng"`, `"heartbroken"`, ...): cộng `+0.20` vào `Sadness`.
      - Nếu chứa `_JOY_CUES` (`"vui quá"`, `"tuyệt vời"`, `"peak"`, `"fire"`, `"smooth"`, ...): cộng `+0.15` vào `Enjoyment`.
    - **Bước 3 — Chuẩn hóa & xuất kết quả:**
-     $$P_{\text{emo}}(e) = \text{round}\left(\frac{P_{\text{boosted}}(e)}{\sum_{k \in \text{7 nhãn}} P_{\text{boosted}}(k)},\; 4\right)$$
+
+     $$
+     P_{\text{emo}}(e) = \text{round}\left(\frac{P_{\text{boosted}}(e)}{\sum_{k \in \text{7 nhãn}} P_{\text{boosted}}(k)},\; 4\right)
+     $$
+
      - `emotion_label = argmax_e P_emo(e)` → ánh xạ `EMOTION_VI_MAP` thành `emotion_vi`; `emotion_confidence = round(P_emo(emotion_label), 4)` hiển thị dạng `%`.
 
 3. **Cách tính 4 cột Gemma Audit (khi bật `RUN_AI_AUDIT = True`):**
@@ -395,11 +415,12 @@ Tệp `final_results.csv` chỉ chứa các **bình luận sạch hợp lệ thu
    - **Chấm theo lô:** `GemmaAuditor.audit_comments()` chia bình luận thành từng lô `batch_size = 8`, gọi `gemma4-e2b-opt` (`temperature=0.1`, ép `BATCH_AUDIT_SCHEMA`, tự chia đôi lô đệ quy nếu lỗi/thiếu `id`).
    - **Quy tắc chuẩn hóa mỉa mai (`_normalize_gemma_polarity`):** Nếu Gemma gắn `gemma_is_sarcasm = True` mà nhãn thô vẫn là `"POS"`, hệ thống tự động ép `gemma_polarity` về `"NEG"` trước khi dịch sang `gemma_polarity_vi`.
 
-4. **Cách xác định `language` (`detect_language()`, 4 tầng):**
-   - Tầng 1: Bỏ `@mention`, URL, `#hashtag`; nếu tỷ lệ chữ cái phi-Latin (Trung, Nhật, Hàn, Nga, Thái, Ả Rập...) `>= 0.35` → `"other"`.
-   - Tầng 2: Nếu có ký tự thuần Việt (`ă, đ, ơ, ư`, thanh hỏi/ngã/nặng, dấu kép) → `"vi"`.
-   - Tầng 3: Nếu có ký tự Latin đặc thù ngoại ngữ (`ñ, ¿, ¡, ç, ß, ä, ö, ü`) **hoặc** có `>= 2` stopword ngoại ngữ Latin (`que`, `c'est`, `não`, `tidak`, `ich`...) nhiều hơn tiếng Anh và không có từ Việt → `"other"`.
-   - Tầng 4: Nếu có dấu thanh/mũ Latin còn lại → `"vi"`; ngược lại đếm số từ khóa không dấu tiếng Việt (`_VI_UNACCENTED_WORDS`) vs từ khóa tiếng Anh (`_EN_SIGNAL_WORDS`); chuỗi thuần ASCII không khớp từ Việt mặc định → `"en"`.
+4. **Cách xác định `language` (`detect_language()`, 5 bước):**
+   - Bước 1: Bỏ `@mention`, URL, `#hashtag`; nếu tỷ lệ chữ cái phi-Latin (Trung, Nhật, Hàn, Nga, Thái, Ả Rập...) `>= 0.35` → `"other"`.
+   - Bước 2: Nếu có ký tự thuần Việt (`ă, đ, ơ, ư`, thanh hỏi/ngã/nặng, dấu kép) → `"vi"`.
+   - Bước 3: Nếu có ký tự Latin ngoại ngữ hoặc Pinyin (`ñ, ¿, ¡, ç, ß, ä, ö, ü, ā, ē, ī, ō, ū, ǎ, ě, ǐ, ǒ, ǔ...`) hoặc mẫu Bồ Đào Nha (`-ão/-ões/-ães`, `kkkk+`) → `"other"`.
+   - Bước 4: Đếm từ khóa ngoại ngữ Latin (`_OTHER_LATIN_STOPWORDS`); nếu áp đảo tiếng Anh và từ không dấu tiếng Việt (`_VI_UNACCENTED_WORDS`) → `"other"`.
+   - Bước 5: Khi còn dấu Latin dùng chung (`á, é, ó, ê, ô, à...`), chỉ nhận `"vi"` nếu `_has_vietnamese_diacritic_word()` xác nhận đúng hình thái âm tiết Tiếng Việt (`<= 7` ký tự, không chứa `f, j, w, z` hay tổ hợp phụ âm ngoại lai); phần còn lại so sánh `_VI_UNACCENTED_WORDS` vs `_EN_SIGNAL_WORDS` (chuỗi thuần ASCII mặc định `"en"`).
 
 ---
 
@@ -459,10 +480,17 @@ Tệp `detailed_model_outputs.csv` giữ lại toàn bộ thông số kỹ thu�
      4. Nếu `language == "vi"`: thay thế >40 từ teencode an toàn trong `TEENCODE_MAP` (`ko/k/hk/khum → không`, `dc/đc → được`, `mn → mọi người`, ...; giữ nguyên `"bt"`, `"v"`, `"t"` để tránh thay nhầm từ đa nghĩa).
      5. Cuối cùng ở `process_one()`, xóa `@mention` và gom khoảng trắng thành chuỗi `analysis_clean` (dùng để tạo `cleaned_text`, `segmented_text`, `is_duplicate`, và đối chiếu ngữ cảnh).
    - **Công thức `has_sarcasm_signal`:**
-     $$\text{has\_sarcasm\_signal} = (\text{has\_laugh} \land \text{has\_neg\_word}) \lor (\text{has\_quote} \land \text{has\_laugh})$$
+
+     $$
+     \text{has\_sarcasm\_signal} = (\text{has\_laugh} \land \text{has\_neg\_word}) \lor (\text{has\_quote} \land \text{has\_laugh})
+     $$
+
      Trong đó `has_laugh` khớp `[😂🤣😆🤡]|:\)\)+|=+\)+`; `has_neg_word` kiểm 32 từ khóa tiêu cực/cà khịa (`ghét`, `vô duyên`, `cảm lạnh`, `cringe`, `mid`...); `has_quote` khớp cụm từ dài $\ge 4$ ký tự đặt trong `"..."` hoặc `“...”`.
    - **Công thức `needs_audit` (4 điều kiện OR):**
-     $$\text{needs\_audit} = (\text{pred\_visobert} \ne \text{""} \land \text{pred\_dl\_primary} \ne \text{pred\_visobert}) \lor (\text{polarity\_confidence} < 0.65) \lor \text{has\_sarcasm\_signal} \lor \text{extra\_needs\_audit}$$
+
+     $$
+     \text{needs\_audit} = (\text{pred\_visobert} \ne \text{rỗng} \land \text{pred\_phobert} \ne \text{pred\_visobert}) \lor (\text{polarity\_confidence} < 0.65) \lor \text{has\_sarcasm\_signal} \lor \text{extra\_needs\_audit}
+     $$
 
 2. **Nhóm Ngữ cảnh Video (`matched_video_terms`, `context_relevance`, `is_on_topic`, `context_alignment`):**
    - **Bước 1 — Trích xuất hồ sơ ngữ cảnh (`_extract_media_context_profile()` từ `media_context.json`):**
@@ -474,13 +502,29 @@ Tệp `detailed_model_outputs.csv` giữ lại toàn bộ thông số kỹ thu�
    - **Bước 3 — Tính `context_relevance` và `is_on_topic` (`_score_context_relevance()`):**
      - Dùng `TfidfVectorizer(token_pattern=r"(?u)\b[\w']{2,}\b", ngram_range=(1, 2), sublinear_tf=True, min_df=1)` biến đổi cùng lúc `[reference_doc, media_text_doc, *valid_docs]`.
      - Tính độ tương đồng Cosine giữa từng bình luận $d_i$ với cả 2 văn bản tham chiếu và lấy giá trị lớn nhất:
-       $$\text{cos\_sim}_i = \max\Big(\cos(d_i, \text{reference\_doc}),\; \cos(d_i, \text{media\_text\_doc})\Big)$$
+
+       $$
+       \text{cos\_sim}_i = \max\Big(\cos(d_i, \text{reference\_doc}),\; \cos(d_i, \text{media\_text\_doc})\Big)
+       $$
+
      - Cộng điểm thưởng khớp thực thể/từ khóa video:
-       $$\text{term\_bonus}_i = \min\Big(0.60,\; 0.25 \times |\text{matched\_video\_terms}_i|\Big)$$
+
+       $$
+       \text{term\_bonus}_i = \min\Big(0.60,\; 0.25 \times |\text{matched\_video\_terms}_i|\Big)
+       $$
+
      - Tính điểm liên quan cuối cùng trong `[0.0, 1.0]`:
-       $$\text{context\_relevance}_i = \text{round}\Big(\text{clip}(1.8 \times \text{cos\_sim}_i + \text{term\_bonus}_i,\; 0.0,\; 1.0),\; 4\Big)$$
+
+       $$
+       \text{context\_relevance}_i = \text{round}\Big(\text{clip}(1.8 \times \text{cos\_sim}_i + \text{term\_bonus}_i,\; 0.0,\; 1.0),\; 4\Big)
+       $$
+
      - Gắn cờ chủ đề:
-       $$\text{is\_on\_topic}_i = (|\text{matched\_video\_terms}_i| > 0) \lor (\text{context\_relevance}_i \ge 0.12)$$
+
+       $$
+       \text{is\_on\_topic}_i = (|\text{matched\_video\_terms}_i| > 0) \lor (\text{context\_relevance}_i \ge 0.12)
+       $$
+
    - **Bước 4 — Phân 9 nhánh `context_alignment` & cờ `extra_needs_audit` (`_compute_context_alignment()`):**
      *(Nếu không có `media_context.json`, trả về `""`, `extra_needs_audit=False`; hệ thống dùng regex `_AGREEMENT_CUE_PATTERN` cho từ đồng tình như `"đúng rồi"`, `"chuẩn"`, `"facts"`, `"agree"` và `_DISAGREEMENT_CUE_PATTERN` cho từ phản bác như `"vô lý"`, `"lấp liếm"`, `"disagree"`, `"nonsense"`, `"fake"`; kiểm tra video có chủ đề tranh luận qua `_CONTROVERSY_MARKERS`.)*
 
@@ -500,10 +544,21 @@ Tệp `detailed_model_outputs.csv` giữ lại toàn bộ thông số kỹ thu�
 
 3. **Công thức `polarity_score` (`Điểm cực tính liên tục [-1.0, +1.0]` — `compute_polarity_score()`):**
    - **Bước 1 — Tính độ hích cảm xúc (`nudge`):**
-     $$\text{nudge} = \begin{cases} -0.08 \cdot \text{emo\_conf} & \text{nếu } \text{emotion\_label} \in \{\text{Anger}, \text{Disgust}\} \land \text{emo\_conf} \ge 0.5 \\ -0.04 \cdot \text{emo\_conf} & \text{nếu } \text{emotion\_label} \in \{\text{Sadness}, \text{Fear}\} \land \text{emo\_conf} \ge 0.5 \\ +0.06 \cdot \text{emo\_conf} & \text{nếu } \text{emotion\_label} = \text{Enjoyment} \land \text{emo\_conf} \ge 0.5 \\ 0.0 & \text{trường hợp còn lại} \end{cases}$$
+
+     $$
+     \text{nudge} = \begin{cases} -0.08 \cdot \text{emo\_conf} & \text{nếu } \text{emotion\_label} \in \{\text{Anger}, \text{Disgust}\} \land \text{emo\_conf} \ge 0.5 \\ -0.04 \cdot \text{emo\_conf} & \text{nếu } \text{emotion\_label} \in \{\text{Sadness}, \text{Fear}\} \land \text{emo\_conf} \ge 0.5 \\ +0.06 \cdot \text{emo\_conf} & \text{nếu } \text{emotion\_label} = \text{Enjoyment} \land \text{emo\_conf} \ge 0.5 \\ 0.0 & \text{trường hợp còn lại} \end{cases}
+     $$
+
    - **Bước 2 — Tính giá trị thô & khóa vùng nhất quán tuyệt đối với `polarity_label`:**
-     $$\text{raw} = \text{score\_POS} - \text{score\_NEG} + \text{nudge}$$
-     $$\text{polarity\_score} = \text{round}\!\left(\begin{cases} \text{clip}(\min(\text{raw},\; -0.21),\; -1.0,\; -0.21) & \text{nếu } \text{polarity\_label} = \text{NEG} \\ \text{clip}(\max(\text{raw},\; +0.21),\; +0.21,\; +1.0) & \text{nếu } \text{polarity\_label} = \text{POS} \\ \text{clip}(\text{raw} \cdot (1.0 - 0.5 \cdot \text{score\_NEU}),\; -0.19,\; +0.19) & \text{nếu } \text{polarity\_label} = \text{NEU} \end{cases},\; 4\right)$$
+
+     $$
+     \text{raw} = \text{score\_POS} - \text{score\_NEG} + \text{nudge}
+     $$
+
+     $$
+     \text{polarity\_score} = \text{round}\!\left(\begin{cases} \text{clip}(\min(\text{raw},\; -0.21),\; -1.0,\; -0.21) & \text{nếu } \text{polarity\_label} = \text{NEG} \\ \text{clip}(\max(\text{raw},\; +0.21),\; +0.21,\; +1.0) & \text{nếu } \text{polarity\_label} = \text{POS} \\ \text{clip}(\text{raw} \cdot (1.0 - 0.5 \cdot \text{score\_NEU}),\; -0.19,\; +0.19) & \text{nếu } \text{polarity\_label} = \text{NEU} \end{cases},\; 4\right)
+     $$
+
      *(Đảm bảo bình luận `NEG` luôn `< 0`, `POS` luôn `> 0`, và `NEU` luôn nằm gọn gần `0` trong `[-0.19, +0.19]`.)*
 
 4. **Cách tính của 7 mô hình đơn lẻ (`pred_nb` .. `emotion_ml_label`):**
@@ -514,13 +569,19 @@ Tệp `detailed_model_outputs.csv` giữ lại toàn bộ thông số kỹ thu�
      - Quét từng token trong từ điển `_VI_*_LEXICON` (hoặc `_EN_*_LEXICON` kèm chuẩn hóa kéo dài chữ cái như `peakkkk → peakk / peak`).
      - Nhân hệ số cường độ trong cửa sổ $\pm 2$ từ lân cận: từ tăng mạnh (`quá`, `rất`, `freaking`...) nhân `1.35`; từ giảm nhẹ (`hơi`, `slightly`...) nhân `0.70`.
      - Kiểm tra từ phủ định trong cửa sổ `2` từ đứng trước (bỏ qua đảo dấu từ âm nếu câu Việt có cụm leo thang `"chứ không"`, `"chứ ko"`, `"không chỉ"`, `"hơn cả"`):
-       + Với `vi`: từ dương bị phủ định $\rightarrow \text{neg\_sum} \mathrel{+}= 0.9 \cdot \text{val}$; từ âm bị phủ định $\rightarrow \text{pos\_sum} \mathrel{+}= 0.4 \cdot \text{val}$.
-       + Với `en`: từ dương bị phủ định (hoặc `"love"` khi có `"no more"`) $\rightarrow \text{neg\_sum} \mathrel{+}= 0.85 \cdot \text{val}$; từ âm bị phủ định $\rightarrow \text{pos\_sum} \mathrel{+}= 0.45 \cdot \text{val}$.
+       + Với `vi`: từ dương bị phủ định $\rightarrow \text{neg\_sum} += 0.9 \cdot \text{val}$; từ âm bị phủ định $\rightarrow \text{pos\_sum} += 0.4 \cdot \text{val}$.
+       + Với `en`: từ dương bị phủ định (hoặc `"love"` khi có `"no more"`) $\rightarrow \text{neg\_sum} += 0.85 \cdot \text{val}$; từ âm bị phủ định $\rightarrow \text{pos\_sum} += 0.45 \cdot \text{val}$.
      - Quy đổi thành phân bố xác suất `{POS, NEG, NEU}` rồi lấy `argmax`:
        + Nếu $\text{pos\_sum} + \text{neg\_sum} < 0.15$: trả mặc định `{"POS": 0.15, "NEG": 0.15, "NEU": 0.70}`.
        + Ngược lại:
-         $$r_{\text{POS}} = e^{\min(6.0,\; 1.15 \cdot \text{pos\_sum})},\quad r_{\text{NEG}} = e^{\min(6.0,\; 1.15 \cdot \text{neg\_sum})},\quad r_{\text{NEU}} = e^{\max(0.0,\; 1.2 - 0.35|\text{pos\_sum}-\text{neg\_sum}|)}$$
-         $$P_{\text{lex}}(c) = \text{round}\left(\frac{r_c}{r_{\text{POS}} + r_{\text{NEG}} + r_{\text{NEU}}},\; 4\right)$$
+
+         $$
+         r_{\text{POS}} = e^{\min(6.0,\; 1.15 \cdot \text{pos\_sum})},\quad r_{\text{NEG}} = e^{\min(6.0,\; 1.15 \cdot \text{neg\_sum})},\quad r_{\text{NEU}} = e^{\max(0.0,\; 1.2 - 0.35|\text{pos\_sum}-\text{neg\_sum}|)}
+         $$
+
+         $$
+         P_{\text{lex}}(c) = \text{round}\left(\frac{r_c}{r_{\text{POS}} + r_{\text{NEG}} + r_{\text{NEU}}},\; 4\right)
+         $$
    - **Các mô hình Deep Learning Polarity (`pred_phobert`, `pred_visobert`, `pred_roberta`):**
      - Chạy trên CPU (`batch_size=32`, `max_length=256`, `torch.inference_mode()`), tính `Softmax(logits)` rồi chọn `argmax`:
      - `pred_phobert`: `wonrax/phobert-base-vietnamese-sentiment` (input `segmented_text`), chỉ suy luận khi `language == "vi"`.
