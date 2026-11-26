@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from typing import Any, Sequence
 
 import numpy as np
@@ -253,9 +253,189 @@ class PreprocessedComment:
     filter_reason: str
     is_duplicate: bool
     has_sarcasm_signal: bool
+    matched_video_terms: list[str] = field(default_factory=list)
+    context_relevance: float = 0.0
+    is_on_topic: bool = False
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
+
+
+def _coerce_context_dict(media_context: Any) -> dict[str, Any] | None:
+    if media_context is None:
+        return None
+    if hasattr(media_context, "to_dict"):
+        data = media_context.to_dict()
+        return data if isinstance(data, dict) else None
+    if isinstance(media_context, dict):
+        return media_context
+    return None
+
+
+def _split_context_term_candidates(raw_items: Sequence[Any]) -> list[str]:
+    """Tách các thực thể/từ khóa từ trường danh sách (gồm cả cụm trong ngoặc đơn và dấu phẩy)."""
+    combined_stopwords = _VI_NEUTRAL_STOPWORDS | _EN_NEUTRAL_STOPWORDS | _MEANINGLESS_TOKENS
+    candidates: list[str] = []
+    seen_low: set[str] = set()
+
+    def _add(term: str) -> None:
+        cleaned = _WHITESPACE_PATTERN.sub(" ", term.strip(" .,!?;:\"'()[]{}")).strip()
+        if len(cleaned) < 2:
+            return
+        low = cleaned.lower()
+        if low in combined_stopwords or low in seen_low:
+            return
+        if not _ALPHA_PATTERN.search(cleaned):
+            return
+        seen_low.add(low)
+        candidates.append(cleaned)
+
+    for raw in raw_items:
+        text = str(raw or "").strip()
+        if not text:
+            continue
+        # Tách phần ngoài ngoặc và phần trong ngoặc đơn: "Các cường quốc (Mỹ, Châu Âu)"
+        for group in re.findall(r"\(([^)]+)\)", text):
+            for part in re.split(r"[,;/|]", group):
+                _add(part)
+        outer = re.sub(r"\([^)]*\)", " ", text)
+        for part in re.split(r"[,;/|]", outer):
+            _add(part)
+        _add(text)
+
+    return candidates
+
+
+def _extract_media_context_profile(media_context: Any) -> dict[str, Any] | None:
+    """Trích xuất tập thuật ngữ bảo vệ và văn bản tham chiếu ngữ cảnh từ media_context."""
+    data = _coerce_context_dict(media_context)
+    if not data:
+        return None
+
+    raw_entities = data.get("doi_tuong_chinh") or []
+    raw_keywords = data.get("tu_khoa") or []
+    if isinstance(raw_entities, str):
+        raw_entities = [s.strip() for s in raw_entities.split(",") if s.strip()]
+    if isinstance(raw_keywords, str):
+        raw_keywords = [s.strip() for s in raw_keywords.split(",") if s.strip()]
+
+    terms = _split_context_term_candidates([*raw_entities, *raw_keywords])
+    protected_terms = {t.lower() for t in terms}
+
+    text_parts: list[str] = []
+    for key in ("chu_de_chinh", "tom_tat_ngan", "quan_diem_noi_dung", "caption"):
+        val = str(data.get(key) or "").strip()
+        if val:
+            text_parts.append(val)
+    for key in ("doi_tuong_chinh", "tu_khoa", "chi_tiet_va_luan_diem", "chu_tren_man_hinh"):
+        items = data.get(key) or []
+        if isinstance(items, str):
+            items = [items]
+        for item in items:
+            s = str(item or "").strip()
+            if s:
+                text_parts.append(s)
+    transcript = str(data.get("transcript") or "").strip()
+    if transcript:
+        # Bỏ nhãn mốc thời gian [MM:SS-MM:SS] và giới hạn độ dài để không làm loãng TF-IDF
+        clean_tr = re.sub(r"\[\d{2}:\d{2}-\d{2}:\d{2}\]", " ", transcript)
+        text_parts.append(clean_tr[:1500])
+
+    raw_ref = " ".join(text_parts)
+    raw_ref = _URL_PATTERN.sub(" ", raw_ref)
+    raw_ref = raw_ref.replace("#", " ")
+    reference_doc = _build_context_bow_doc(raw_ref)
+
+    caption_part = str(data.get("caption") or "").strip()
+    clean_tr = re.sub(r"\[\d{2}:\d{2}-\d{2}:\d{2}\]", " ", transcript)[:1500] if transcript else ""
+    raw_media_text = _URL_PATTERN.sub(" ", f"{caption_part} {clean_tr}").replace("#", " ")
+    media_text_doc = _build_context_bow_doc(raw_media_text)
+
+    if not terms and not reference_doc and not media_text_doc:
+        return None
+
+    return {
+        "terms": terms,
+        "protected_terms": protected_terms,
+        "reference_doc": reference_doc,
+        "media_text_doc": media_text_doc,
+    }
+
+
+def _build_context_bow_doc(text: str) -> str:
+    """Chuẩn hóa chuỗi giữ nguyên khoảng trắng từ ghép để so khớp TF-IDF giữa comment và video."""
+    combined_stopwords = _VI_NEUTRAL_STOPWORDS | _EN_NEUTRAL_STOPWORDS
+    cleaned = clean_comment_text(text, normalize_teencode=False)
+    tokens = re.findall(r"[^\W_][\w']*", cleaned.lower(), flags=re.UNICODE)
+    kept = [
+        tok.strip("'")
+        for tok in tokens
+        if len(tok.strip("'")) >= 2
+        and tok.strip("'") not in combined_stopwords
+        and _ALPHA_PATTERN.search(tok)
+    ]
+    return " ".join(kept)
+
+
+def _matches_any_term(text: str, terms: Sequence[str] | set[str]) -> list[str]:
+    """Trả về danh sách các thuật ngữ/thực thể video xuất hiện nguyên vẹn trong câu."""
+    if not text or not terms:
+        return []
+    matched: list[str] = []
+    seen_low: set[str] = set()
+    for term in terms:
+        t = str(term).strip()
+        if not t:
+            continue
+        low = t.lower()
+        if low in seen_low:
+            continue
+        pattern = re.compile(rf"(?<!\w){re.escape(t)}(?!\w)", flags=re.IGNORECASE | re.UNICODE)
+        if pattern.search(text):
+            seen_low.add(low)
+            matched.append(t)
+    return matched
+
+
+def _score_context_relevance(
+    valid_docs: Sequence[str],
+    reference_doc: str,
+    matched_lists: Sequence[list[str]],
+    media_text_doc: str = "",
+) -> list[tuple[float, bool]]:
+    """Tính TF-IDF cosine similarity + khớp từ khóa để đo độ bám sát nội dung video."""
+    if not valid_docs:
+        return []
+
+    ref_docs = [d for d in (reference_doc.strip(), media_text_doc.strip()) if d]
+    sims = np.zeros(len(valid_docs), dtype=float)
+    if ref_docs:
+        try:
+            from sklearn.feature_extraction.text import TfidfVectorizer
+
+            vec = TfidfVectorizer(
+                token_pattern=r"(?u)\b[\w']{2,}\b",
+                ngram_range=(1, 2),
+                sublinear_tf=True,
+                min_df=1,
+            )
+            mat = vec.fit_transform([*ref_docs, *valid_docs])
+            n_refs = len(ref_docs)
+            ref_mat = mat[:n_refs]
+            doc_mat = mat[n_refs:]
+            sim_mat = np.asarray((doc_mat @ ref_mat.T).toarray())
+            sims = sim_mat.max(axis=1)
+        except ValueError:
+            sims = np.zeros(len(valid_docs), dtype=float)
+
+    results: list[tuple[float, bool]] = []
+    for idx, matched in enumerate(matched_lists):
+        cos_sim = float(sims[idx]) if idx < len(sims) else 0.0
+        term_bonus = min(0.60, 0.25 * len(matched))
+        relevance = round(min(1.0, max(0.0, cos_sim * 1.8 + term_bonus)), 4)
+        is_on_topic = bool(matched) or (relevance >= 0.12)
+        results.append((relevance, is_on_topic))
+    return results
 
 
 def normalize_tiktok_emojis(text: str) -> str:
@@ -397,8 +577,16 @@ def _strip_fancy_unicode(text: str) -> str:
     return unicodedata.normalize("NFKC", text)
 
 
-def _is_name_only_comment(cleaned: str, language: str) -> bool:
+def _is_name_only_comment(
+    cleaned: str,
+    language: str,
+    protected_terms: set[str] | None = None,
+) -> bool:
     """Phát hiện bình luận ngắn chỉ là tên bạn bè (không có @) dùng underthesea NER/POS."""
+    # Không lọc nhầm thực thể/đối tượng trọng tâm của video
+    if protected_terms and _matches_any_term(cleaned, protected_terms):
+        return False
+
     # Không bao giờ lọc nhầm bình luận viết IN HOA toàn bộ ("HOLY TRANSITION", "NO FUCKIN WAY")
     alpha_chars = [c for c in cleaned if c.isalpha()]
     if alpha_chars and all(c.isupper() for c in alpha_chars):
@@ -448,7 +636,12 @@ def _is_name_only_comment(cleaned: str, language: str) -> bool:
     return False
 
 
-def _detect_filter_reason(raw_text: str, cleaned_text: str, language: str) -> str:
+def _detect_filter_reason(
+    raw_text: str,
+    cleaned_text: str,
+    language: str,
+    protected_terms: set[str] | None = None,
+) -> str:
     """Kiểm tra bình luận nhiễu / vô nghĩa / ngôn ngữ không hỗ trợ và trả về mã lý do."""
     raw_stripped = (raw_text or "").strip()
     if not raw_stripped:
@@ -490,19 +683,22 @@ def _detect_filter_reason(raw_text: str, cleaned_text: str, language: str) -> st
     if language == "other":
         return "FILTERED_UNSUPPORTED_LANG"
 
-    # Kiểm tra các từ vô nghĩa / seeding đơn lẻ
+    matches_video_entity = bool(protected_terms and _matches_any_term(cleaned_text, protected_terms))
+
+    # Kiểm tra các từ vô nghĩa / seeding đơn lẻ (không lọc nếu nhắc đúng thực thể video)
     alpha_only = re.sub(r"[^\w\s]", " ", cleaned_text, flags=re.UNICODE)
     alpha_only = _WHITESPACE_PATTERN.sub(" ", alpha_only).strip().lower()
     if not alpha_only:
         return "FILTERED_URL_OR_SYMBOL"
-    if alpha_only in _MEANINGLESS_TOKENS:
-        return "FILTERED_MEANINGLESS"
-    words = alpha_only.split()
-    if len(words) <= 2 and all(w in _MEANINGLESS_TOKENS for w in words):
-        return "FILTERED_MEANINGLESS"
+    if not matches_video_entity:
+        if alpha_only in _MEANINGLESS_TOKENS:
+            return "FILTERED_MEANINGLESS"
+        words = alpha_only.split()
+        if len(words) <= 2 and all(w in _MEANINGLESS_TOKENS for w in words):
+            return "FILTERED_MEANINGLESS"
 
     # Kiểm tra bình luận chỉ gọi tên bạn bè không có @
-    if _is_name_only_comment(cleaned_text, language=language):
+    if _is_name_only_comment(cleaned_text, language=language, protected_terms=protected_terms):
         return "FILTERED_NAME_ONLY"
 
     return ""
@@ -549,7 +745,12 @@ class TextPreprocessor:
         self,
         text: str,
         seen_normalized: set[str] | None = None,
+        media_context: Any = None,
+        _profile: dict[str, Any] | None = None,
     ) -> PreprocessedComment:
+        profile = _profile if _profile is not None else _extract_media_context_profile(media_context)
+        protected_terms = profile["protected_terms"] if profile else None
+
         original = "" if text is None else str(text)
         lang = detect_language(original)
         cleaned = clean_comment_text(
@@ -560,7 +761,12 @@ class TextPreprocessor:
 
         filter_reason = ""
         if self.enable_noise_filter:
-            filter_reason = _detect_filter_reason(original, cleaned, language=lang)
+            filter_reason = _detect_filter_reason(
+                original,
+                cleaned,
+                language=lang,
+                protected_terms=protected_terms,
+            )
         elif not cleaned:
             filter_reason = "FILTERED_EMPTY"
 
@@ -583,6 +789,22 @@ class TextPreprocessor:
         ml_text = _build_ml_text(tokens, language=lang) if tokens else ""
         sarcasm_signal = _has_sarcasm_signal(original, cleaned) if is_valid else False
 
+        matched_terms: list[str] = []
+        relevance = 0.0
+        on_topic = False
+        if is_valid and profile is not None:
+            matched_terms = _matches_any_term(analysis_clean, profile["terms"])
+            if _profile is None:
+                doc = _build_context_bow_doc(analysis_clean)
+                scored = _score_context_relevance(
+                    [doc],
+                    profile["reference_doc"],
+                    [matched_terms],
+                    media_text_doc=profile.get("media_text_doc", ""),
+                )
+                if scored:
+                    relevance, on_topic = scored[0]
+
         return PreprocessedComment(
             original_text=original,
             cleaned_text=analysis_clean if is_valid else cleaned,
@@ -594,11 +816,44 @@ class TextPreprocessor:
             filter_reason=filter_reason,
             is_duplicate=is_duplicate,
             has_sarcasm_signal=sarcasm_signal,
+            matched_video_terms=matched_terms,
+            context_relevance=relevance,
+            is_on_topic=on_topic,
         )
 
-    def process_batch(self, texts: Sequence[str]) -> list[PreprocessedComment]:
+    def process_batch(
+        self,
+        texts: Sequence[str],
+        media_context: Any = None,
+    ) -> list[PreprocessedComment]:
         seen_normalized: set[str] = set()
-        return [self.process_one(t, seen_normalized=seen_normalized) for t in texts]
+        profile = _extract_media_context_profile(media_context)
+        results = [
+            self.process_one(
+                t,
+                seen_normalized=seen_normalized,
+                media_context=media_context,
+                _profile=profile,
+            )
+            for t in texts
+        ]
+        if profile is not None:
+            valid_indices = [i for i, item in enumerate(results) if item.is_valid]
+            if valid_indices:
+                valid_docs = [
+                    _build_context_bow_doc(results[i].cleaned_text) for i in valid_indices
+                ]
+                matched_lists = [results[i].matched_video_terms for i in valid_indices]
+                scored = _score_context_relevance(
+                    valid_docs,
+                    profile["reference_doc"],
+                    matched_lists,
+                    media_text_doc=profile.get("media_text_doc", ""),
+                )
+                for idx, (rel, on_topic) in zip(valid_indices, scored):
+                    results[idx].context_relevance = rel
+                    results[idx].is_on_topic = on_topic
+        return results
 
 
 def extract_keywords_tfidf(

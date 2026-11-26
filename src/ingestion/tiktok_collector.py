@@ -19,6 +19,7 @@ from PIL import Image, UnidentifiedImageError
 COMMENT_COLUMN_CANDIDATES = (
     "comment",
     "original_text",
+    "nội dung bình luận",
     "text",
     "content",
     "noi_dung",
@@ -1204,7 +1205,7 @@ def collect_tiktok_post(
             )
             crawled_csv: str | None = None
             if collect_comments:
-                print(f"[Bước 0] Đang thu thập bình luận vào {raw_csv_path}...")
+                print(f"[Chuẩn bị dữ liệu] Đang thu thập bình luận vào {raw_csv_path}...")
                 _, crawled_csv = crawl_tiktok_comments(
                     url=resolved_url,
                     output_csv=raw_csv_path,
@@ -1232,7 +1233,7 @@ def collect_tiktok_post(
         bundle = _build_photo_bundle(url, post_data_dir, http_photo)
         crawled_csv = None
         if collect_comments:
-            print(f"[Bước 0] Đang thu thập bình luận vào {raw_csv_path}...")
+            print(f"[Chuẩn bị dữ liệu] Đang thu thập bình luận vào {raw_csv_path}...")
             _, crawled_csv = crawl_tiktok_comments(
                 url=bundle.resolved_url,
                 output_csv=raw_csv_path,
@@ -1640,7 +1641,7 @@ def load_comments_dataframe(
     comments_source: str | Path | Sequence[str],
     text_column: str | None = None,
 ) -> pd.DataFrame:
-    """Đọc bình luận từ list Python hoặc file CSV / Excel (.xlsx, .xls) / JSON / TXT, giữ nguyên metadata."""
+    """Đọc bình luận từ list Python hoặc file CSV / JSON, giữ nguyên metadata."""
     if not isinstance(comments_source, (str, Path)):
         rows = [
             {"comment": str(item).strip()}
@@ -1656,17 +1657,8 @@ def load_comments_dataframe(
         raise FileNotFoundError(f"Không tìm thấy file comment: {path}")
 
     ext = path.suffix.lower()
-    if ext in {".csv", ".xlsx", ".xls"}:
-        if ext == ".csv":
-            df = pd.read_csv(path, encoding="utf-8-sig", dtype=_TABULAR_ID_DTYPES)
-        else:
-            try:
-                df = pd.read_excel(path, dtype=_TABULAR_ID_DTYPES)
-            except ImportError as exc:
-                raise ImportError(
-                    "Đọc file Excel (.xlsx/.xls) cần thư viện `openpyxl`. Hãy chạy: pip install openpyxl"
-                ) from exc
-
+    if ext == ".csv":
+        df = pd.read_csv(path, encoding="utf-8-sig", dtype=_TABULAR_ID_DTYPES)
         if df.empty:
             return _normalize_comments_df(pd.DataFrame(columns=["comment"]), "comment")
 
@@ -1710,14 +1702,7 @@ def load_comments_dataframe(
             return _normalize_comments_df(pd.DataFrame(columns=["comment"]), "comment")
         return _normalize_comments_df(pd.DataFrame(dict_rows), "comment")
 
-    if ext == ".txt":
-        with path.open("r", encoding="utf-8") as f:
-            rows = [{"comment": line.strip()} for line in f if line.strip()]
-        if not rows:
-            return _normalize_comments_df(pd.DataFrame(columns=["comment"]), "comment")
-        return _normalize_comments_df(pd.DataFrame(rows), "comment")
-
     raise ValueError(
         f"Định dạng file comment chưa hỗ trợ: {path.suffix} "
-        "(hỗ trợ .csv, .xlsx, .xls, .json, .txt)"
+        "(chỉ hỗ trợ .csv, .json)"
     )

@@ -31,11 +31,6 @@ BATCH_AUDIT_SCHEMA: dict[str, Any] = {
                         "type": "string",
                         "enum": list(EMOTION_LABELS),
                     },
-                    "gemma_score_5": {
-                        "type": "integer",
-                        "minimum": 1,
-                        "maximum": 5,
-                    },
                     "gemma_is_sarcasm": {"type": "boolean"},
                     "gemma_reason": {"type": "string"},
                 },
@@ -43,7 +38,6 @@ BATCH_AUDIT_SCHEMA: dict[str, Any] = {
                     "id",
                     "gemma_polarity",
                     "gemma_emotion",
-                    "gemma_score_5",
                     "gemma_is_sarcasm",
                     "gemma_reason",
                 ],
@@ -88,19 +82,18 @@ VERDICT_SCHEMA: dict[str, Any] = {
 _AUDIT_SYSTEM_PROMPT = (
     "Bạn là giám khảo độc lập chuyên thẩm định cảm xúc bình luận TikTok (hỗ trợ cả Tiếng Việt và Tiếng Anh).\n"
     "Hãy đọc kỹ BỐI CẢNH VIDEO và đánh giá cảm xúc thực sự của từng bình luận một cách cân bằng, khách quan:\n"
-    "1. PHÂN BIỆT RÕ 3 NHÃN POLARITY & THANG ĐIỂM 1–5:\n"
-    "   - POS (4 hoặc 5 điểm): Khen ngợi, hào hứng, yêu thích, ủng hộ, đồng cảm tích cực "
-    "(lưu ý: từ lóng tiếng Anh như 'peak', 'fire', 'smooth', 'holy shit this is peak', 'so freaking good' là POS 4–5 điểm).\n"
-    "   - NEU (ĐÚNG 3 điểm): Câu hỏi, bình luận mô tả trung lập, suy ngẫm chung chung, đùa vui nhẹ không khen không chê, "
+    "1. PHÂN BIỆT RÕ 3 NHÃN POLARITY:\n"
+    "   - POS: Khen ngợi, hào hứng, yêu thích, ủng hộ, đồng cảm tích cực "
+    "(lưu ý: từ lóng tiếng Anh như 'peak', 'fire', 'smooth', 'holy shit this is peak', 'so freaking good' là POS).\n"
+    "   - NEU: Câu hỏi, bình luận mô tả trung lập, suy ngẫm chung chung, đùa vui nhẹ không khen không chê, "
     "hoặc câu quá mơ hồ/ngắn không rõ thái độ. TUYỆT ĐỐI KHÔNG gán các câu trung lập/hỏi/mô tả này thành NEG.\n"
-    "   - NEG (1 hoặc 2 điểm): Chê bai, ghét, tức giận, buồn bã, sợ hãi, thất vọng, khinh thường, hoặc mỉa mai tiêu cực.\n"
+    "   - NEG: Chê bai, ghét, tức giận, buồn bã, sợ hãi, thất vọng, khinh thường, hoặc mỉa mai tiêu cực.\n"
     "2. PHÁT HIỆN NÓI MỈA / CHÂM BIẾM (`gemma_is_sarcasm`):\n"
     "   - Ví dụ: dùng emoji cười 🤣😂:)) nhưng nội dung thực chất đang cà khịa/chê bai.\n"
     "3. CẢM XÚC CHI TIẾT (`gemma_emotion`):\n"
     "   - Anger (tức giận), Sadness (buồn bã), Fear (lo lắng/sợ), Enjoyment (vui vẻ/hài lòng), "
     "Disgust (chán ghét/khó chịu), Surprise (ngạc nhiên), Other (trung tính/khác).\n"
-    "4. `gemma_polarity` PHẢI nhất quán với `gemma_score_5` (1–2 -> NEG, 3 -> NEU, 4–5 -> POS).\n"
-    "5. Giải thích `gemma_reason` ngắn gọn 1 câu bằng tiếng Việt và trả về ĐẦY ĐỦ tất cả `id`."
+    "4. Giải thích `gemma_reason` ngắn gọn 1 câu bằng tiếng Việt và trả về ĐẦY ĐỦ tất cả `id`."
 )
 
 
@@ -113,7 +106,6 @@ class GemmaAuditItem:
     gemma_polarity: str
     gemma_emotion: str
     gemma_emotion_vi: str
-    gemma_score_5: int
     gemma_is_sarcasm: bool
     gemma_agrees_polarity: bool | None
     gemma_agrees_emotion: bool | None
@@ -170,23 +162,14 @@ def _extract_json_dict(raw_text: str) -> dict[str, Any] | None:
     return None
 
 
-def _reconcile_polarity_and_score(pol: str, score5: int, is_sarcasm: bool) -> tuple[str, int]:
-    """Đảm bảo nhất quán tuyệt đối giữa gemma_score_5 và gemma_polarity."""
-    score5 = max(1, min(5, int(score5)))
+def _normalize_gemma_polarity(pol: str, is_sarcasm: bool) -> str:
+    """Chuẩn hóa nhãn cực tính từ Gemma về POS/NEG/NEU."""
     pol = pol.strip().upper()
     if pol not in {"POS", "NEG", "NEU"}:
         pol = "NEU"
-
-    if score5 == 3:
-        if is_sarcasm and pol == "NEG":
-            return "NEG", 2
-        return "NEU", 3
-    if score5 in {4, 5}:
-        if is_sarcasm and pol == "NEG":
-            return "NEG", 2
-        return "POS", score5
-    # score5 in {1, 2}
-    return "NEG", score5
+    if is_sarcasm and pol == "POS":
+        return "NEG"
+    return pol
 
 
 class GemmaAuditor:
@@ -267,17 +250,12 @@ class GemmaAuditor:
                 emo = str(row.get("gemma_emotion", "Other")).strip()
                 if emo not in EMOTION_LABELS:
                     emo = "Other"
-                try:
-                    raw_score5 = int(row.get("gemma_score_5", 3))
-                except (TypeError, ValueError):
-                    raw_score5 = 3
                 is_sarcasm = bool(row.get("gemma_is_sarcasm", False))
-                pol, score5 = _reconcile_polarity_and_score(raw_pol, raw_score5, is_sarcasm)
+                pol = _normalize_gemma_polarity(raw_pol, is_sarcasm)
 
                 parsed_map[cid] = {
                     "gemma_polarity": pol,
                     "gemma_emotion": emo,
-                    "gemma_score_5": score5,
                     "gemma_is_sarcasm": is_sarcasm,
                     "gemma_reason": str(row.get("gemma_reason", "")).strip(),
                 }
@@ -348,7 +326,6 @@ class GemmaAuditor:
                         gemma_polarity="",
                         gemma_emotion="",
                         gemma_emotion_vi="",
-                        gemma_score_5=0,
                         gemma_is_sarcasm=False,
                         gemma_agrees_polarity=None,
                         gemma_agrees_emotion=None,
@@ -365,7 +342,6 @@ class GemmaAuditor:
                         gemma_polarity=g_pol,
                         gemma_emotion=g_emo,
                         gemma_emotion_vi=EMOTION_VI_MAP.get(g_emo, g_emo),
-                        gemma_score_5=res["gemma_score_5"],
                         gemma_is_sarcasm=res["gemma_is_sarcasm"],
                         gemma_agrees_polarity=(g_pol == item.polarity_label),
                         gemma_agrees_emotion=(g_emo == item.emotion_label),
@@ -401,8 +377,8 @@ class GemmaAuditor:
             {
                 "comment": a.original_text,
                 "language": a.language,
-                "hybrid_pred": f"{a.polarity_label} ({a.emotion_vi}, {a.score_5}/5)",
-                "gemma_truth": f"{g.gemma_polarity} ({g.gemma_emotion_vi}, {g.gemma_score_5}/5)",
+                "hybrid_pred": f"{a.polarity_label} ({a.emotion_vi})",
+                "gemma_truth": f"{g.gemma_polarity} ({g.gemma_emotion_vi})",
                 "sarcasm": g.gemma_is_sarcasm,
                 "reason": g.gemma_reason,
             }
@@ -541,7 +517,6 @@ def build_model_comparison(
         agreement_pct: float | None = None
         macro_f1: float | None = None
         kappa: float | None = None
-        score5_mae: float | None = None
 
         if has_audit and audited_indices and audits:
             aud_eval = [i for i in audited_indices if i in set(eval_indices)]
@@ -570,10 +545,6 @@ def build_model_comparison(
                 except Exception:
                     kappa = None
 
-                if attr == "polarity_label":
-                    errs = [abs(analyzed[i].score_5 - audits[i].gemma_score_5) for i in aud_eval]
-                    score5_mae = round(float(np.mean(errs)), 4)
-
         polarity_rows.append(
             {
                 "model": display_name,
@@ -588,7 +559,6 @@ def build_model_comparison(
                 "agreement_vs_gemma_pct": agreement_pct,
                 "macro_f1_vs_gemma": macro_f1,
                 "cohen_kappa_vs_gemma": kappa,
-                "score_5_mae_vs_gemma": score5_mae,
                 "inference_time_sec": t_sec,
             }
         )
@@ -612,7 +582,6 @@ def build_model_comparison(
                 "agreement_vs_gemma_pct": 100.0,
                 "macro_f1_vs_gemma": 1.0,
                 "cohen_kappa_vs_gemma": 1.0,
-                "score_5_mae_vs_gemma": 0.0,
                 "inference_time_sec": timings.get("gemma_audit_sec"),
             }
         )
