@@ -102,6 +102,7 @@ _DETAILED_CORE_COLUMNS: tuple[str, ...] = (
     "username",
     "nickname",
     "likes",
+    "language",
     "original_text",
     "cleaned_text",
     "segmented_text",
@@ -122,8 +123,10 @@ _DETAILED_CORE_COLUMNS: tuple[str, ...] = (
     "pred_lr",
     "pred_svm",
     "pred_lexicon",
+    "dl_primary_model",
+    "pred_phobert",
     "pred_visobert",
-    "pred_dl_primary",
+    "pred_roberta",
     "emotion_ml_label",
 )
 
@@ -142,6 +145,7 @@ DETAILED_COLUMN_HEADERS: dict[str, str] = {
     "username": "username\n(tài khoản)",
     "nickname": "nickname\n(tên hiển thị)",
     "likes": "likes\n(lượt thích)",
+    "language": "language\n(ngôn ngữ)",
     "original_text": "original_text\n(nội dung gốc)",
     "cleaned_text": "cleaned_text\n(nội dung đã làm sạch)",
     "segmented_text": "segmented_text\n(văn bản đã tách từ)",
@@ -162,8 +166,10 @@ DETAILED_COLUMN_HEADERS: dict[str, str] = {
     "pred_lr": "pred_lr\n(dự đoán logistic regression)",
     "pred_svm": "pred_svm\n(dự đoán linear svm)",
     "pred_lexicon": "pred_lexicon\n(dự đoán từ điển luật)",
-    "pred_visobert": "pred_visobert\n(dự đoán visobert)",
-    "pred_dl_primary": "pred_dl_primary\n(dự đoán học sâu chính)",
+    "dl_primary_model": "dl_primary_model\n(mô hình học sâu sử dụng)",
+    "pred_phobert": "pred_phobert\n(dự đoán phobert - vi)",
+    "pred_visobert": "pred_visobert\n(dự đoán visobert - vi)",
+    "pred_roberta": "pred_roberta\n(dự đoán twitter-roberta - en)",
     "emotion_ml_label": "emotion_ml_label\n(cảm xúc ml cổ điển)",
     "gemma_audited": "gemma_audited\n(đã thẩm định gemma)",
     "gemma_polarity": "gemma_polarity\n(nhãn sắc thái gemma)",
@@ -310,13 +316,63 @@ def build_detailed_model_outputs_df(clean_rows: Sequence[dict[str, Any]]) -> pd.
     """Tạo bảng `detailed_model_outputs.csv` (tiêu đề song ngữ 2 dòng Anh–Việt, đồng bộ STT & likes giảm dần với final_results.csv)."""
     norm_rows = _sort_rows_by_likes_desc([_strip_row_keys(r) for r in clean_rows])
     has_gemma = _has_gemma_audit_rows(norm_rows)
-    cols = list(_DETAILED_CORE_COLUMNS) + (list(_DETAILED_GEMMA_COLUMNS) if has_gemma else [])
+
+    def _is_vi(r: dict[str, Any]) -> bool:
+        return str(r.get("language", "")).strip().lower() in {"vi", "tiếng việt"}
+
+    def _is_en(r: dict[str, Any]) -> bool:
+        return str(r.get("language", "")).strip().lower() in {"en", "tiếng anh"}
+
+    has_vi = any(
+        _is_vi(r) or bool(str(r.get("pred_phobert", "")).strip()) or bool(str(r.get("pred_visobert", "")).strip())
+        for r in norm_rows
+    )
+    has_en = any(
+        _is_en(r) or bool(str(r.get("pred_roberta", "")).strip())
+        for r in norm_rows
+    )
+
+    cols: list[str] = []
+    for col in _DETAILED_CORE_COLUMNS:
+        if col in {"pred_phobert", "pred_visobert"}:
+            if has_vi or (not has_vi and not has_en):
+                cols.append(col)
+        elif col == "pred_roberta":
+            if has_en or (not has_vi and not has_en):
+                cols.append(col)
+        else:
+            cols.append(col)
+
+    if has_gemma:
+        cols.extend(_DETAILED_GEMMA_COLUMNS)
 
     out_rows: list[dict[str, Any]] = []
     for stt, r in enumerate(norm_rows, start=1):
         row_copy = dict(r)
         row_copy["stt"] = stt
         row_copy["likes"] = _safe_int(row_copy.get("likes"), 0)
+
+        lang_raw = str(row_copy.get("language", "")).strip().lower()
+        is_vi_row = lang_raw in {"vi", "tiếng việt"}
+        is_en_row = lang_raw in {"en", "tiếng anh"}
+        row_copy["language"] = _LANG_VI_MAP.get(lang_raw, row_copy.get("language", ""))
+
+        dl_primary_fallback = str(row_copy.get("pred_dl_primary", "")).strip()
+        if not str(row_copy.get("dl_primary_model", "")).strip():
+            row_copy["dl_primary_model"] = "PhoBERT" if is_vi_row else ("Twitter-RoBERTa" if is_en_row else "")
+
+        if is_vi_row:
+            row_copy["pred_phobert"] = str(row_copy.get("pred_phobert", "")).strip() or dl_primary_fallback or "—"
+            row_copy["pred_visobert"] = str(row_copy.get("pred_visobert", "")).strip() or "—"
+            row_copy["pred_roberta"] = "—"
+        elif is_en_row:
+            row_copy["pred_phobert"] = "—"
+            row_copy["pred_visobert"] = "—"
+            row_copy["pred_roberta"] = str(row_copy.get("pred_roberta", "")).strip() or dl_primary_fallback or "—"
+        else:
+            for k in ("pred_phobert", "pred_visobert", "pred_roberta"):
+                row_copy[k] = str(row_copy.get(k, "")).strip() or "—"
+
         out_rows.append({c: row_copy.get(c, "") for c in cols})
 
     df = pd.DataFrame(out_rows, columns=cols) if out_rows else pd.DataFrame(columns=cols)
@@ -496,7 +552,10 @@ class SentimentPipeline:
                     "pred_lr": item.pred_lr,
                     "pred_svm": item.pred_svm,
                     "pred_lexicon": item.pred_lexicon,
+                    "dl_primary_model": item.dl_primary_model,
+                    "pred_phobert": item.pred_phobert,
                     "pred_visobert": item.pred_visobert,
+                    "pred_roberta": item.pred_roberta,
                     "pred_dl_primary": item.pred_dl_primary,
                     "emotion_ml_label": item.emotion_ml_label,
                     "gemma_audited": g.gemma_audited if g else False,

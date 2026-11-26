@@ -403,11 +403,11 @@ Tệp `final_results.csv` chỉ chứa các **bình luận sạch hợp lệ thu
 
 ---
 
-### 5.2. `detailed_model_outputs.csv` — Toàn bộ thông số kỹ thuật, ngữ cảnh video, xác suất & dự đoán từng mô hình (29 cột lõi + 5 cột AI Audit)
+### 5.2. `detailed_model_outputs.csv` — Toàn bộ thông số kỹ thuật, ngữ cảnh video, xác suất & dự đoán từng mô hình
 
-Tệp `detailed_model_outputs.csv` giữ lại toàn bộ **29 cột lõi** (hoặc **34 cột** khi bật AI Audit) để phục vụ kiểm thử, đối chiếu mô hình và nghiên cứu chuyên sâu, đồng bộ thứ tự dòng 1–1 với `final_results.csv` theo cột `stt`.
+Tệp `detailed_model_outputs.csv` giữ lại toàn bộ thông số kỹ thuật (tối đa **32 cột lõi** hoặc **37 cột** khi bật AI Audit; tự động ẩn cột mô hình `pred_phobert`/`pred_visobert` nếu bài chỉ có Tiếng Anh, hoặc ẩn `pred_roberta` nếu bài chỉ có Tiếng Việt) để phục vụ kiểm thử, đối chiếu mô hình và nghiên cứu chuyên sâu, đồng bộ thứ tự dòng 1–1 với `final_results.csv` theo cột `stt`.
 
-#### Bảng chi tiết đủ 34 cột (theo đúng thứ tự cột trong file)
+#### Bảng chi tiết các cột (theo đúng thứ tự cột trong file)
 
 | STT | Tên cột song ngữ (`dòng 1 / dòng 2`) | Kiểu | Giai đoạn | Định nghĩa & Công thức / Nguồn tạo |
 | :-: | :--- | :--- | :--- | :--- |
@@ -417,34 +417,37 @@ Tệp `detailed_model_outputs.csv` giữ lại toàn bộ **29 cột lõi** (ho�
 | 4 | `username` / `(tài khoản)` | `str` | Thu thập | Tên tài khoản `@handle` của người bình luận. |
 | 5 | `nickname` / `(tên hiển thị)` | `str` | Thu thập | Tên hiển thị đầy đủ trên TikTok (có thể chứa emoji/ký tự đặc biệt). |
 | 6 | `likes` / `(lượt thích)` | `int` | Thu thập | Số lượt thích nguyên của bình luận. |
-| 7 | `original_text` / `(nội dung gốc)` | `str` | Thu thập | Nguyên văn bình luận thu thập từ TikTok. |
-| 8 | `cleaned_text` / `(nội dung đã làm sạch)` | `str` | GĐ 2 | Chuỗi sau chuẩn hóa emoji TikTok, xóa URL, rút gọn ký tự lặp, thay `TEENCODE_MAP` (nếu `vi`), và xóa `@mention` (`analysis_clean`). |
-| 9 | `segmented_text` / `(văn bản đã tách từ)` | `str` | GĐ 2 | Chuỗi token nối bằng khoảng trắng: `underthesea.word_tokenize(..., format="text")` cho `vi` (từ ghép nối bằng `_`), regex `[A-Za-z0-9']+\|[^\w\s]` cho `en`. |
-| 10 | `is_duplicate` / `(bình luận trùng lặp)` | `bool` | GĐ 2 | `True` nếu `analysis_clean.lower()` (gom khoảng trắng) đã xuất hiện ở bình luận hợp lệ trước đó. |
-| 11 | `has_sarcasm_signal` / `(dấu hiệu mỉa mai)` | `bool` | GĐ 2 | `True` nếu `(có emoji/cụm cười ∧ có từ tiêu cực)` **hoặc** `(có cụm đặt trong ngoặc kép ≥ 4 ký tự ∧ có emoji cười)`. |
-| 12 | `needs_audit` / `(cần thẩm định kỹ)` | `bool` | GĐ 3 | Cờ đánh dấu ca khó/nghi ngờ mỉa mai cần ưu tiên Giai đoạn 4 kiểm tra. |
-| 13 | `is_on_topic` / `(bám sát chủ đề video)` | `bool` | GĐ 2 | `True` nếu `len(matched_video_terms) > 0` **hoặc** `context_relevance >= 0.12`. |
-| 14 | `context_relevance` / `(độ liên quan video 0-1)` | `float` | GĐ 2 | Điểm độ liên quan ngữ cảnh video trong `[0.0, 1.0]` từ TF-IDF Cosine Similarity + thưởng từ khóa khớp. |
-| 15 | `matched_video_terms` / `(từ khóa video khớp)` | `str` | GĐ 2 | Danh sách các thực thể/từ khóa của video xuất hiện trong bình luận, ghép bằng `", "`. |
-| 16 | `context_alignment` / `(liên hệ với nội dung video)` | `str` | GĐ 3 | Nhãn mô tả mối liên hệ thái độ của bình luận với nội dung video (1 trong 9 nhánh quy tắc). |
-| 17 | `polarity_label` / `(nhãn sắc thái chuẩn)` | `str` | GĐ 3 | Nhãn cực tính chuẩn tiếng Anh (`POS` / `NEU` / `NEG`) = `argmax(score_POS, score_NEG, score_NEU)`. |
-| 18 | `polarity_score` / `(điểm cực tính -1 đến +1)` | `float` | GĐ 3 | Điểm cực tính liên tục trong `[-1.0, +1.0]` từ `compute_polarity_score()`. |
-| 19 | `score_POS` / `(xác suất tích cực)` | `float` | GĐ 3 | Xác suất lớp Tích cực $P_{\text{hybrid}}(\text{POS})$ (làm tròn 4 chữ số thập phân). |
-| 20 | `score_NEG` / `(xác suất tiêu cực)` | `float` | GĐ 3 | Xác suất lớp Tiêu cực $P_{\text{hybrid}}(\text{NEG})$ (làm tròn 4 chữ số thập phân). |
-| 21 | `score_NEU` / `(xác suất trung tính)` | `float` | GĐ 3 | Xác suất lớp Trung tính $P_{\text{hybrid}}(\text{NEU})$ (làm tròn 4 chữ số thập phân). |
-| 22 | `emotion_label` / `(nhãn cảm xúc chuẩn)` | `str` | GĐ 3 | Nhãn tiếng Anh 1 trong 7 cảm xúc (`Anger`, `Sadness`, `Fear`, `Enjoyment`, `Disgust`, `Surprise`, `Other`). |
-| 23 | `pred_nb` / `(dự đoán naive bayes)` | `str` | GĐ 3A | Nhãn `POS`/`NEU`/`NEG` riêng của **TF-IDF + Multinomial Naive Bayes** (`alpha=0.5`). |
-| 24 | `pred_lr` / `(dự đoán logistic regression)` | `str` | GĐ 3A | Nhãn riêng của **TF-IDF + Logistic Regression** (`C=2.0, class_weight="balanced"`). |
-| 25 | `pred_svm` / `(dự đoán linear svm)` | `str` | GĐ 3A | Nhãn riêng của **TF-IDF + Calibrated LinearSVC** (`C=1.0, cv=3`). |
-| 26 | `pred_lexicon` / `(dự đoán từ điển luật)` | `str` | GĐ 3A | Nhãn riêng của **BilingualLexiconScorer** (từ điển song ngữ + luật phủ định/cường độ). |
-| 27 | `pred_visobert` / `(dự đoán visobert)` | `str` | GĐ 3B | Nhãn riêng của **ViSoBERT** (`5CD-AI/Vietnamese-Sentiment-visobert`) — chỉ chạy cho `vi`, rỗng nếu `en`. |
-| 28 | `pred_dl_primary` / `(dự đoán học sâu chính)` | `str` | GĐ 3B | Nhãn riêng của DL chính: **PhoBERT** (`wonrax/...`) với `vi` hoặc **Twitter-RoBERTa** (`cardiffnlp/...`) với `en`. |
-| 29 | `emotion_ml_label` / `(cảm xúc ml cổ điển)` | `str` | GĐ 3A | Nhãn 7 cảm xúc riêng của **TF-IDF + Logistic Regression (Emotion)** để đối chiếu với Emotion DL. |
-| *30* | `gemma_audited` / `(đã thẩm định gemma)` | `bool` | GĐ 4 | `True` nếu bình luận này đã được Gemma 4 E2B chấm thành công *(ẩn nếu tắt Audit)*. |
-| *31* | `gemma_polarity` / `(nhãn sắc thái gemma)` | `str` | GĐ 4 | Nhãn chuẩn `POS`/`NEU`/`NEG` của Gemma 4 E2B *(ẩn nếu tắt Audit)*. |
-| *32* | `gemma_emotion` / `(nhãn cảm xúc gemma)` | `str` | GĐ 4 | Nhãn chuẩn 1 trong 7 cảm xúc tiếng Anh của Gemma 4 E2B *(ẩn nếu tắt Audit)*. |
-| *33* | `gemma_agrees_polarity` / `(khớp sắc thái với gemma)` | `bool` | GĐ 4 | Kết quả phép so sánh `gemma_polarity == polarity_label` *(ẩn nếu tắt Audit)*. |
-| *34* | `gemma_agrees_emotion` / `(khớp cảm xúc với gemma)` | `bool` | GĐ 4 | Kết quả phép so sánh `gemma_emotion == emotion_label` *(ẩn nếu tắt Audit)*. |
+| 7 | `language` / `(ngôn ngữ)` | `str` | GĐ 2 | Ngôn ngữ bình luận (`Tiếng Việt` / `Tiếng Anh`), giúp đối chiếu trực tiếp mô hình đã dùng. |
+| 8 | `original_text` / `(nội dung gốc)` | `str` | Thu thập | Nguyên văn bình luận thu thập từ TikTok. |
+| 9 | `cleaned_text` / `(nội dung đã làm sạch)` | `str` | GĐ 2 | Chuỗi sau chuẩn hóa emoji TikTok, xóa URL, rút gọn ký tự lặp, thay `TEENCODE_MAP` (nếu `vi`), và xóa `@mention` (`analysis_clean`). |
+| 10 | `segmented_text` / `(văn bản đã tách từ)` | `str` | GĐ 2 | Chuỗi token nối bằng khoảng trắng: `underthesea.word_tokenize(..., format="text")` cho `vi` (từ ghép nối bằng `_`), regex `[A-Za-z0-9']+\|[^\w\s]` cho `en`. |
+| 11 | `is_duplicate` / `(bình luận trùng lặp)` | `bool` | GĐ 2 | `True` nếu `analysis_clean.lower()` (gom khoảng trắng) đã xuất hiện ở bình luận hợp lệ trước đó. |
+| 12 | `has_sarcasm_signal` / `(dấu hiệu mỉa mai)` | `bool` | GĐ 2 | `True` nếu `(có emoji/cụm cười ∧ có từ tiêu cực)` **hoặc** `(có cụm đặt trong ngoặc kép ≥ 4 ký tự ∧ có emoji cười)`. |
+| 13 | `needs_audit` / `(cần thẩm định kỹ)` | `bool` | GĐ 3 | Cờ đánh dấu ca khó/nghi ngờ mỉa mai cần ưu tiên Giai đoạn 4 kiểm tra. |
+| 14 | `is_on_topic` / `(bám sát chủ đề video)` | `bool` | GĐ 2 | `True` nếu `len(matched_video_terms) > 0` **hoặc** `context_relevance >= 0.12`. |
+| 15 | `context_relevance` / `(độ liên quan video 0-1)` | `float` | GĐ 2 | Điểm độ liên quan ngữ cảnh video trong `[0.0, 1.0]` từ TF-IDF Cosine Similarity + thưởng từ khóa khớp. |
+| 16 | `matched_video_terms` / `(từ khóa video khớp)` | `str` | GĐ 2 | Danh sách các thực thể/từ khóa của video xuất hiện trong bình luận, ghép bằng `", "`. |
+| 17 | `context_alignment` / `(liên hệ với nội dung video)` | `str` | GĐ 3 | Nhãn mô tả mối liên hệ thái độ của bình luận với nội dung video (1 trong 9 nhánh quy tắc). |
+| 18 | `polarity_label` / `(nhãn sắc thái chuẩn)` | `str` | GĐ 3 | Nhãn cực tính chuẩn tiếng Anh (`POS` / `NEU` / `NEG`) = `argmax(score_POS, score_NEG, score_NEU)`. |
+| 19 | `polarity_score` / `(điểm cực tính -1 đến +1)` | `float` | GĐ 3 | Điểm cực tính liên tục trong `[-1.0, +1.0]` từ `compute_polarity_score()`. |
+| 20 | `score_POS` / `(xác suất tích cực)` | `float` | GĐ 3 | Xác suất lớp Tích cực $P_{\text{hybrid}}(\text{POS})$ (làm tròn 4 chữ số thập phân). |
+| 21 | `score_NEG` / `(xác suất tiêu cực)` | `float` | GĐ 3 | Xác suất lớp Tiêu cực $P_{\text{hybrid}}(\text{NEG})$ (làm tròn 4 chữ số thập phân). |
+| 22 | `score_NEU` / `(xác suất trung tính)` | `float` | GĐ 3 | Xác suất lớp Trung tính $P_{\text{hybrid}}(\text{NEU})$ (làm tròn 4 chữ số thập phân). |
+| 23 | `emotion_label` / `(nhãn cảm xúc chuẩn)` | `str` | GĐ 3 | Nhãn tiếng Anh 1 trong 7 cảm xúc (`Anger`, `Sadness`, `Fear`, `Enjoyment`, `Disgust`, `Surprise`, `Other`). |
+| 24 | `pred_nb` / `(dự đoán naive bayes)` | `str` | GĐ 3A | Nhãn `POS`/`NEU`/`NEG` riêng của **TF-IDF + Multinomial Naive Bayes** (`alpha=0.5`). |
+| 25 | `pred_lr` / `(dự đoán logistic regression)` | `str` | GĐ 3A | Nhãn riêng của **TF-IDF + Logistic Regression** (`C=2.0, class_weight="balanced"`). |
+| 26 | `pred_svm` / `(dự đoán linear svm)` | `str` | GĐ 3A | Nhãn riêng của **TF-IDF + Calibrated LinearSVC** (`C=1.0, cv=3`). |
+| 27 | `pred_lexicon` / `(dự đoán từ điển luật)` | `str` | GĐ 3A | Nhãn riêng của **BilingualLexiconScorer** (từ điển song ngữ + luật phủ định/cường độ). |
+| 28 | `dl_primary_model` / `(mô hình học sâu sử dụng)` | `str` | GĐ 3B | Tên mô hình Deep Learning chủ lực đã chạy cho dòng đó (`PhoBERT` hoặc `Twitter-RoBERTa`). |
+| 29 | `pred_phobert` / `(dự đoán phobert - vi)` | `str` | GĐ 3B | Nhãn riêng của **PhoBERT** (`wonrax/...`) cho `vi` (`—` với dòng `en`; tự ẩn nếu bài không có `vi`). |
+| 30 | `pred_visobert` / `(dự đoán visobert - vi)` | `str` | GĐ 3B | Nhãn riêng của **ViSoBERT** (`5CD-AI/...`) cho `vi` (`—` với dòng `en`; tự ẩn nếu bài không có `vi`). |
+| 31 | `pred_roberta` / `(dự đoán twitter-roberta - en)` | `str` | GĐ 3B | Nhãn riêng của **Twitter-RoBERTa** (`cardiffnlp/...`) cho `en` (`—` với dòng `vi`; tự ẩn nếu bài không có `en`). |
+| 32 | `emotion_ml_label` / `(cảm xúc ml cổ điển)` | `str` | GĐ 3A | Nhãn 7 cảm xúc riêng của **TF-IDF + Logistic Regression (Emotion)** để đối chiếu với Emotion DL. |
+| *33* | `gemma_audited` / `(đã thẩm định gemma)` | `bool` | GĐ 4 | `True` nếu bình luận này đã được Gemma 4 E2B chấm thành công *(ẩn nếu tắt Audit)*. |
+| *34* | `gemma_polarity` / `(nhãn sắc thái gemma)` | `str` | GĐ 4 | Nhãn chuẩn `POS`/`NEU`/`NEG` của Gemma 4 E2B *(ẩn nếu tắt Audit)*. |
+| *35* | `gemma_emotion` / `(nhãn cảm xúc gemma)` | `str` | GĐ 4 | Nhãn chuẩn 1 trong 7 cảm xúc tiếng Anh của Gemma 4 E2B *(ẩn nếu tắt Audit)*. |
+| *36* | `gemma_agrees_polarity` / `(khớp sắc thái với gemma)` | `bool` | GĐ 4 | Kết quả phép so sánh `gemma_polarity == polarity_label` *(ẩn nếu tắt Audit)*. |
+| *37* | `gemma_agrees_emotion` / `(khớp cảm xúc với gemma)` | `bool` | GĐ 4 | Kết quả phép so sánh `gemma_emotion == emotion_label` *(ẩn nếu tắt Audit)*. |
 
 #### Chi tiết công thức tính từng nhóm cột trong `detailed_model_outputs.csv`
 
@@ -518,10 +521,11 @@ Tệp `detailed_model_outputs.csv` giữ lại toàn bộ **29 cột lõi** (ho�
        + Ngược lại:
          $$r_{\text{POS}} = e^{\min(6.0,\; 1.15 \cdot \text{pos\_sum})},\quad r_{\text{NEG}} = e^{\min(6.0,\; 1.15 \cdot \text{neg\_sum})},\quad r_{\text{NEU}} = e^{\max(0.0,\; 1.2 - 0.35|\text{pos\_sum}-\text{neg\_sum}|)}$$
          $$P_{\text{lex}}(c) = \text{round}\left(\frac{r_c}{r_{\text{POS}} + r_{\text{NEG}} + r_{\text{NEU}}},\; 4\right)$$
-   - **2 mô hình Deep Learning Polarity (`pred_visobert`, `pred_dl_primary`):**
+   - **Các mô hình Deep Learning Polarity (`pred_phobert`, `pred_visobert`, `pred_roberta`):**
      - Chạy trên CPU (`batch_size=32`, `max_length=256`, `torch.inference_mode()`), tính `Softmax(logits)` rồi chọn `argmax`:
-     - `pred_visobert`: `5CD-AI/Vietnamese-Sentiment-visobert` (input `cleaned_text`), chỉ suy luận khi `language == "vi"` (để trống `""` với bình luận `en`).
-     - `pred_dl_primary`: `wonrax/phobert-base-vietnamese-sentiment` (input `segmented_text`) cho `vi`, hoặc `cardiffnlp/twitter-roberta-base-sentiment-latest` (input `cleaned_text`) cho `en`.
+     - `pred_phobert`: `wonrax/phobert-base-vietnamese-sentiment` (input `segmented_text`), chỉ suy luận khi `language == "vi"`.
+     - `pred_visobert`: `5CD-AI/Vietnamese-Sentiment-visobert` (input `cleaned_text`), chỉ suy luận khi `language == "vi"`.
+     - `pred_roberta`: `cardiffnlp/twitter-roberta-base-sentiment-latest` (input `cleaned_text`), chỉ suy luận khi `language == "en"`.
 
 ---
 

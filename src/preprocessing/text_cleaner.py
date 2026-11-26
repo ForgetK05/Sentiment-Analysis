@@ -102,7 +102,18 @@ _VI_DIACRITIC_PATTERN = re.compile(
     r"[ăâđêôơưàáảãạằắẳẵặầấẩẫậèéẻẽẹềếểễệìíỉĩịòóỏõọồốổỗộờớởỡợùúủũụừứửữựỳýỷỹỵ]",
     flags=re.IGNORECASE,
 )
-_OTHER_LATIN_UNIQUE_CHARS = re.compile(r"[ñ¿¡çßäöü]", flags=re.IGNORECASE)
+_OTHER_LATIN_UNIQUE_CHARS = re.compile(
+    r"[ñ¿¡çßäöüåøæłżźśńćšžčřğşāēīōūǖǎěǐǒǔǚǜ]",
+    flags=re.IGNORECASE,
+)
+_OTHER_LATIN_PATTERNS: tuple[re.Pattern[str], ...] = (
+    re.compile(r"\b[a-zà-ỹ]*ã(?:o|os|es)\b", flags=re.IGNORECASE),
+    re.compile(r"\bk{4,}\b", flags=re.IGNORECASE),
+)
+_NON_VI_WORD_STRUCTURE_RE = re.compile(
+    r"[fjwz]|(?:pr|pl|br|bl|cr|cl|dr|fr|fl|gr|gl|ll|rr|ss|lh)",
+    flags=re.IGNORECASE,
+)
 
 # Chữ cái phi-Latin (Trung, Nhật, Hàn, Nga/Cyrillic, Ả Rập, Thái, Ấn, Hy Lạp, Hebrew...)
 _NON_LATIN_SCRIPT_PATTERN = re.compile(
@@ -186,13 +197,20 @@ _EN_SIGNAL_WORDS = _EN_NEUTRAL_STOPWORDS | {
 }
 
 _VI_UNACCENTED_WORDS = {
-    "khong", "khum", "hong", "duoc", "dc", "khong", "qua", "lam",
+    "khong", "khum", "hong", "duoc", "dc", "lam",
     "vui", "buon", "ghet", "thuong", "yeu", "thich", "nguoi", "minh",
-    "tui", "may", "tao", "anh", "chi", "em", "ong", "ba", "troi",
-    "choy", "nha", "nhe", "nhaa", "lun", "thui", "zay", "vay", "sao",
-    "nao", "dau", "roi", "oi", "ne", "kia", "cai", "nay", "kia", "lam",
-    "xem", "coi", "hay", "te", "do", "xau", "dep", "gioi", "dinh",
+    "tui", "may", "anh", "chi", "ong", "troi",
+    "choy", "nha", "nhe", "nhaa", "lun", "thui", "zay", "vay",
+    "dau", "roi", "nay", "kia", "cai",
+    "xem", "coi", "hay", "xau", "dep", "gioi", "dinh",
     "ghec", "chan", "oai", "kieu", "nhin", "nghe", "noi", "biet", "bt",
+    "nhung", "nhug", "truyen", "cam", "hung", "khac", "chuyen", "thay",
+    "cung", "nhieu", "doi", "phut", "giay", "ngay", "thang", "nam",
+}
+
+# Các từ ngắn tiếng Việt không dấu dễ trùng với từ vựng tiếng Bồ Đào Nha / Tây Ban Nha
+_VI_AMBIGUOUS_UNACCENTED_WORDS = {
+    "te", "do", "em", "sao", "nao", "tao", "oi", "ba", "qua", "la", "ma", "co", "di", "ra", "vo",
 }
 
 # Từ phổ biến của các ngôn ngữ Latin khác (Tây Ban Nha, Pháp, Bồ Đào Nha, Indo, Đức, Ý, Thổ)
@@ -204,6 +222,15 @@ _OTHER_LATIN_STOPWORDS = {
     "buen", "buena", "bueno", "este", "esta", "está", "são", "mas", "dos", "nos",
     "tudo", "mais", "odio", "raiva", "nada", "destruir", "publicación", "emocionada",
     "abandonem", "amargura", "perdoem", "outros",
+    "um", "com", "ele", "ela", "eles", "elas", "nao", "sao", "tao", "sim", "bem",
+    "essa", "esse", "mano", "tem", "pra", "vai", "foi", "tinha", "gente", "boa",
+    "legais", "quando", "cuando", "algo", "tambien", "también", "había", "habia",
+    "personas", "mayores", "porque", "qué", "eso", "son", "malas", "só", "dá", "é",
+    "das", "nas", "pelo", "pela", "del", "al", "lo", "sin", "sobre", "hace", "solo",
+    "ves", "hermoso", "llena", "sentimiento", "contigo", "serem", "acabou", "sair",
+    "banheiro", "papel", "sorriso", "grande", "abri", "lava", "muie", "mil",
+    "perguntando", "musica", "coisa", "falta", "unica", "reconhecimento",
+    "tranquilo", "equivocas", "creés", "déjame",
     # French
     "c'est", "très", "je", "suis", "merci", "avec", "pour", "pas", "une", "les", "mais",
     # Indonesian / Malay
@@ -446,6 +473,24 @@ def normalize_tiktok_emojis(text: str) -> str:
     )
 
 
+def _has_vietnamese_diacritic_word(words: Sequence[str]) -> bool:
+    """Kiểm tra có từ mang dấu thanh/mũ khớp cấu trúc âm tiết Tiếng Việt thay vì dấu ngoại ngữ (TBN/BĐN/Pinyin)."""
+    for raw_w in words:
+        w = raw_w.strip(".,!?;:\"'()[]{}").lower()
+        if not w or not _VI_DIACRITIC_PATTERN.search(w):
+            continue
+        if _OTHER_LATIN_UNIQUE_CHARS.search(w):
+            continue
+        if any(pat.search(w) for pat in _OTHER_LATIN_PATTERNS):
+            continue
+        if w in _OTHER_LATIN_STOPWORDS:
+            continue
+        if len(w) > 7 or _NON_VI_WORD_STRUCTURE_RE.search(w):
+            continue
+        return True
+    return False
+
+
 def detect_language(text: str) -> str:
     """Nhận diện ngôn ngữ bình luận: 'vi' (Tiếng Việt), 'en' (Tiếng Anh), hoặc 'other'."""
     sample = _MENTION_PATTERN.sub(" ", text or "")
@@ -467,6 +512,12 @@ def detect_language(text: str) -> str:
     if _VI_UNIQUE_DIACRITIC_PATTERN.search(sample):
         return "vi"
 
+    # 3. Ký tự/mẫu riêng của ngôn ngữ Latin khác & Pinyin (ñ, ¿, ¡, ç, āēīōūǎěǐǒǔ, -ão, kkkk...) -> 'other'
+    if _OTHER_LATIN_UNIQUE_CHARS.search(sample) or any(
+        pat.search(sample) for pat in _OTHER_LATIN_PATTERNS
+    ):
+        return "other"
+
     words = [
         w.strip(".,!?;:\"'()[]{}").lower()
         for w in sample.split()
@@ -476,31 +527,38 @@ def detect_language(text: str) -> str:
         return "vi"
 
     vi_hits = sum(1 for w in words if w in _VI_UNACCENTED_WORDS)
+    vi_ambig_hits = sum(1 for w in words if w in _VI_AMBIGUOUS_UNACCENTED_WORDS)
     en_hits = sum(1 for w in words if w in _EN_SIGNAL_WORDS)
     other_latin_hits = sum(1 for w in words if w in _OTHER_LATIN_STOPWORDS)
 
-    # 3. Nếu có ký tự riêng ngôn ngữ Latin khác (ñ, ¿, ¡, ç...) hoặc >= 2 từ ngoại ngữ Latin -> 'other'
-    if _OTHER_LATIN_UNIQUE_CHARS.search(sample) or (
-        other_latin_hits >= 2 and other_latin_hits > en_hits and vi_hits == 0
-    ):
+    # 4. Nếu từ điển ngoại ngữ Latin áp đảo tiếng Anh & tiếng Việt -> 'other'
+    if other_latin_hits >= 2 and other_latin_hits > en_hits and other_latin_hits >= vi_hits:
         return "other"
 
-    # 4. Dấu Latin chung (á, é, ó, ê, ô, à...) khi không khớp ngoại ngữ Latin -> Tiếng Việt
+    # 5. Dấu Latin dùng chung (á, é, ó, ê, ô, à...): chỉ nhận 'vi' nếu cấu trúc từ khớp âm tiết Tiếng Việt
     if _VI_DIACRITIC_PATTERN.search(sample):
-        return "vi"
+        if other_latin_hits >= 1 and vi_hits == 0 and not _has_vietnamese_diacritic_word(words):
+            return "other"
+        if _has_vietnamese_diacritic_word(words):
+            return "vi"
+        return "other"
 
     if vi_hits >= 2 and vi_hits >= en_hits:
         return "vi"
     if en_hits >= 1 and en_hits >= vi_hits:
         return "en"
-    if vi_hits == 1 and en_hits == 0:
+    if vi_hits == 1 and en_hits == 0 and other_latin_hits == 0:
+        return "vi"
+    if other_latin_hits >= 1 and en_hits == 0 and vi_hits == 0:
+        return "other"
+    if vi_ambig_hits >= 2 and en_hits == 0 and other_latin_hits == 0:
         return "vi"
 
     # Chuỗi chỉ dùng ASCII chuẩn mà không khớp từ khóa Việt -> ưu tiên tiếng Anh
     if all(ord(ch) < 128 for ch in "".join(alpha_chars)):
         return "en"
 
-    return "vi"
+    return "other"
 
 
 def clean_comment_text(

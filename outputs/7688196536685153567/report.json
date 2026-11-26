@@ -45,11 +45,11 @@
   },
   "noise_filter_summary": {
     "total_raw_comments": 434,
-    "valid_comments": 396,
-    "filtered_noise_count": 38,
+    "valid_comments": 373,
+    "filtered_noise_count": 61,
     "duplicate_valid_count": 4,
     "filter_reasons": {
-      "FILTERED_UNSUPPORTED_LANG": 30,
+      "FILTERED_UNSUPPORTED_LANG": 53,
       "FILTERED_URL_OR_SYMBOL": 7,
       "FILTERED_MEANINGLESS": 1
     }
@@ -58,103 +58,103 @@
     "overall": [
       {
         "keyword": "song",
-        "tfidf_score": 0.0362
+        "tfidf_score": 0.0383
       },
       {
         "keyword": "people",
-        "tfidf_score": 0.0353
+        "tfidf_score": 0.0372
       },
       {
         "keyword": "love",
-        "tfidf_score": 0.0303
+        "tfidf_score": 0.0319
       },
       {
         "keyword": "escalator",
-        "tfidf_score": 0.0223
+        "tfidf_score": 0.0232
       },
       {
         "keyword": "smile",
-        "tfidf_score": 0.0217
+        "tfidf_score": 0.023
       },
       {
         "keyword": "vs",
-        "tfidf_score": 0.0189
+        "tfidf_score": 0.0201
       },
       {
         "keyword": "key",
-        "tfidf_score": 0.0186
-      },
-      {
-        "keyword": "locket",
-        "tfidf_score": 0.018
+        "tfidf_score": 0.0198
       },
       {
         "keyword": "key vs",
-        "tfidf_score": 0.0179
+        "tfidf_score": 0.019
       },
       {
         "keyword": "cry",
-        "tfidf_score": 0.0178
+        "tfidf_score": 0.0189
+      },
+      {
+        "keyword": "humans",
+        "tfidf_score": 0.0182
       }
     ],
     "positive": [
       {
         "keyword": "love",
-        "tfidf_score": 0.0686
+        "tfidf_score": 0.0698
       },
       {
         "keyword": "smile",
-        "tfidf_score": 0.0507
+        "tfidf_score": 0.053
       },
       {
         "keyword": "people",
-        "tfidf_score": 0.0456
+        "tfidf_score": 0.0472
       },
       {
         "keyword": "humans",
-        "tfidf_score": 0.0326
+        "tfidf_score": 0.0339
       },
       {
         "keyword": "beautiful",
-        "tfidf_score": 0.0294
+        "tfidf_score": 0.0307
       },
       {
         "keyword": "video",
-        "tfidf_score": 0.0289
+        "tfidf_score": 0.0301
       },
       {
         "keyword": "nice",
-        "tfidf_score": 0.0231
+        "tfidf_score": 0.0233
       },
       {
         "keyword": "happy",
-        "tfidf_score": 0.0221
+        "tfidf_score": 0.0231
       },
       {
-        "keyword": "like",
-        "tfidf_score": 0.0199
+        "keyword": "re",
+        "tfidf_score": 0.0229
       },
       {
-        "keyword": "world",
-        "tfidf_score": 0.0198
+        "keyword": "cute",
+        "tfidf_score": 0.0207
       }
     ],
     "negative": [
       {
         "keyword": "cry",
-        "tfidf_score": 0.0874
+        "tfidf_score": 0.0883
       },
       {
         "keyword": "escalator",
-        "tfidf_score": 0.0501
+        "tfidf_score": 0.0516
       },
       {
         "keyword": "crying",
-        "tfidf_score": 0.0417
+        "tfidf_score": 0.0452
       },
       {
         "keyword": "long",
-        "tfidf_score": 0.0394
+        "tfidf_score": 0.0406
       },
       {
         "keyword": "tear",
@@ -162,62 +162,62 @@
       },
       {
         "keyword": "long escalator",
-        "tfidf_score": 0.0252
+        "tfidf_score": 0.0261
       },
       {
         "keyword": "damn",
-        "tfidf_score": 0.0216
+        "tfidf_score": 0.0223
       },
       {
         "keyword": "high",
-        "tfidf_score": 0.0197
+        "tfidf_score": 0.0199
       },
       {
         "keyword": "ve",
-        "tfidf_score": 0.0174
+        "tfidf_score": 0.0176
       },
       {
-        "keyword": "alone",
-        "tfidf_score": 0.0161
+        "keyword": "people",
+        "tfidf_score": 0.0169
       }
     ]
   },
   "sentiment_summary": {
-    "total_valid_comments": 396,
+    "total_valid_comments": 373,
     "language_counts": {
-      "vi": 17,
-      "en": 379
+      "vi": 3,
+      "en": 370
     },
     "polarity_counts": {
-      "POS": 152,
-      "NEG": 62,
-      "NEU": 182
+      "POS": 145,
+      "NEG": 60,
+      "NEU": 168
     },
     "polarity_percentages": {
-      "POS": 38.38,
-      "NEG": 15.66,
-      "NEU": 45.96
+      "POS": 38.87,
+      "NEG": 16.09,
+      "NEU": 45.04
     },
     "emotion_counts": {
-      "Anger": 20,
-      "Sadness": 35,
-      "Fear": 9,
-      "Enjoyment": 102,
+      "Anger": 19,
+      "Sadness": 33,
+      "Fear": 8,
+      "Enjoyment": 90,
       "Disgust": 9,
-      "Surprise": 39,
-      "Other": 182
+      "Surprise": 38,
+      "Other": 176
     },
     "emotion_percentages": {
-      "Anger": 5.05,
-      "Sadness": 8.84,
-      "Fear": 2.27,
-      "Enjoyment": 25.76,
-      "Disgust": 2.27,
-      "Surprise": 9.85,
-      "Other": 45.96
+      "Anger": 5.09,
+      "Sadness": 8.85,
+      "Fear": 2.14,
+      "Enjoyment": 24.13,
+      "Disgust": 2.41,
+      "Surprise": 10.19,
+      "Other": 47.18
     },
-    "avg_polarity_score": 0.2114,
-    "avg_confidence": 0.6767,
+    "avg_polarity_score": 0.2137,
+    "avg_confidence": 0.6797,
     "overall_tendency": "Trung tính",
     "sarcasm_flagged_count": 0,
     "classical_ml_benchmark": {
@@ -272,15 +272,15 @@
       }
     },
     "model_timings_sec": {
-      "classical_ml_setup_sec": 0.887,
-      "classical_ml_polarity_sec": 0.035,
-      "classical_ml_emotion_sec": 0.026,
-      "lexicon_rules_sec": 0.009,
-      "visobert_sec": 2.04,
-      "phobert_sentiment_sec": 1.709,
-      "phobert_emotion_sec": 1.681,
-      "en_roberta_sentiment_sec": 13.431,
-      "en_roberta_emotion_sec": 6.881
+      "classical_ml_setup_sec": 0.9,
+      "classical_ml_polarity_sec": 0.034,
+      "classical_ml_emotion_sec": 0.025,
+      "lexicon_rules_sec": 0.008,
+      "visobert_sec": 0.561,
+      "phobert_sentiment_sec": 0.286,
+      "phobert_emotion_sec": 0.239,
+      "en_roberta_sentiment_sec": 10.394,
+      "en_roberta_emotion_sec": 5.126
     },
     "top_examples": {
       "POS": [
@@ -364,9 +364,9 @@
     },
     "on_topic_summary": {
       "on_topic_count": 12,
-      "on_topic_pct": 3.03,
-      "off_topic_count": 384,
-      "avg_context_relevance": 0.0091,
+      "on_topic_pct": 3.22,
+      "off_topic_count": 361,
+      "avg_context_relevance": 0.0094,
       "on_topic_polarity_counts": {
         "POS": 7,
         "NEG": 2,
@@ -378,7 +378,7 @@
         "NEU": 25.0
       },
       "alignment_counts": {
-        "Ít liên quan / Bình luận ngoài lề": 384,
+        "Ít liên quan / Bình luận ngoài lề": 361,
         "Thảo luận trung lập về chủ đề video": 2,
         "Ủng hộ / Tích cực với nội dung video": 7,
         "Thảo luận trung lập về chủ đề video (cần kiểm tra ẩn ý)": 1,
@@ -391,103 +391,118 @@
       {
         "model": "TF-IDF + Naive Bayes",
         "family": "Classical ML",
-        "total_comments": 396,
+        "total_comments": 373,
         "pos_count": 156,
-        "neu_count": 139,
+        "neu_count": 116,
         "neg_count": 101,
-        "pos_pct": 39.39,
-        "neu_pct": 35.1,
-        "neg_pct": 25.51,
+        "pos_pct": 41.82,
+        "neu_pct": 31.1,
+        "neg_pct": 27.08,
         "agreement_vs_gemma_pct": null,
         "macro_f1_vs_gemma": null,
         "cohen_kappa_vs_gemma": null,
-        "inference_time_sec": 0.035
+        "inference_time_sec": 0.034
       },
       {
         "model": "TF-IDF + Logistic Regression",
         "family": "Classical ML",
-        "total_comments": 396,
-        "pos_count": 138,
-        "neu_count": 158,
-        "neg_count": 100,
-        "pos_pct": 34.85,
-        "neu_pct": 39.9,
-        "neg_pct": 25.25,
+        "total_comments": 373,
+        "pos_count": 135,
+        "neu_count": 141,
+        "neg_count": 97,
+        "pos_pct": 36.19,
+        "neu_pct": 37.8,
+        "neg_pct": 26.01,
         "agreement_vs_gemma_pct": null,
         "macro_f1_vs_gemma": null,
         "cohen_kappa_vs_gemma": null,
-        "inference_time_sec": 0.035
+        "inference_time_sec": 0.034
       },
       {
         "model": "TF-IDF + Linear SVM",
         "family": "Classical ML",
-        "total_comments": 396,
-        "pos_count": 158,
-        "neu_count": 197,
-        "neg_count": 41,
-        "pos_pct": 39.9,
-        "neu_pct": 49.75,
-        "neg_pct": 10.35,
+        "total_comments": 373,
+        "pos_count": 149,
+        "neu_count": 186,
+        "neg_count": 38,
+        "pos_pct": 39.95,
+        "neu_pct": 49.87,
+        "neg_pct": 10.19,
         "agreement_vs_gemma_pct": null,
         "macro_f1_vs_gemma": null,
         "cohen_kappa_vs_gemma": null,
-        "inference_time_sec": 0.035
+        "inference_time_sec": 0.034
       },
       {
         "model": "Bilingual Lexicon + Rules",
         "family": "Rule-based NLP",
-        "total_comments": 396,
+        "total_comments": 373,
         "pos_count": 79,
-        "neu_count": 296,
+        "neu_count": 273,
         "neg_count": 21,
-        "pos_pct": 19.95,
-        "neu_pct": 74.75,
-        "neg_pct": 5.3,
+        "pos_pct": 21.18,
+        "neu_pct": 73.19,
+        "neg_pct": 5.63,
         "agreement_vs_gemma_pct": null,
         "macro_f1_vs_gemma": null,
         "cohen_kappa_vs_gemma": null,
-        "inference_time_sec": 0.009
+        "inference_time_sec": 0.008
+      },
+      {
+        "model": "PhoBERT (VI)",
+        "family": "Deep Learning",
+        "total_comments": 3,
+        "pos_count": 0,
+        "neu_count": 2,
+        "neg_count": 1,
+        "pos_pct": 0.0,
+        "neu_pct": 66.67,
+        "neg_pct": 33.33,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 0.286
       },
       {
         "model": "ViSoBERT (5CD-AI, VI)",
         "family": "Deep Learning",
-        "total_comments": 17,
-        "pos_count": 13,
-        "neu_count": 1,
-        "neg_count": 3,
-        "pos_pct": 76.47,
-        "neu_pct": 5.88,
-        "neg_pct": 17.65,
+        "total_comments": 3,
+        "pos_count": 2,
+        "neu_count": 0,
+        "neg_count": 1,
+        "pos_pct": 66.67,
+        "neu_pct": 0.0,
+        "neg_pct": 33.33,
         "agreement_vs_gemma_pct": null,
         "macro_f1_vs_gemma": null,
         "cohen_kappa_vs_gemma": null,
-        "inference_time_sec": 2.04
+        "inference_time_sec": 0.561
       },
       {
-        "model": "PhoBERT (VI) / Twitter-RoBERTa (EN)",
+        "model": "Twitter-RoBERTa (EN)",
         "family": "Deep Learning",
-        "total_comments": 396,
-        "pos_count": 159,
-        "neu_count": 166,
-        "neg_count": 71,
-        "pos_pct": 40.15,
-        "neu_pct": 41.92,
-        "neg_pct": 17.93,
+        "total_comments": 370,
+        "pos_count": 152,
+        "neu_count": 150,
+        "neg_count": 68,
+        "pos_pct": 41.08,
+        "neu_pct": 40.54,
+        "neg_pct": 18.38,
         "agreement_vs_gemma_pct": null,
         "macro_f1_vs_gemma": null,
         "cohen_kappa_vs_gemma": null,
-        "inference_time_sec": 15.14
+        "inference_time_sec": 10.394
       },
       {
         "model": "Hybrid Ensemble (Hệ thống chính)",
         "family": "Hybrid ML + DL",
-        "total_comments": 396,
-        "pos_count": 152,
-        "neu_count": 182,
-        "neg_count": 62,
-        "pos_pct": 38.38,
-        "neu_pct": 45.96,
-        "neg_pct": 15.66,
+        "total_comments": 373,
+        "pos_count": 145,
+        "neu_count": 168,
+        "neg_count": 60,
+        "pos_pct": 38.87,
+        "neu_pct": 45.04,
+        "neg_pct": 16.09,
         "agreement_vs_gemma_pct": null,
         "macro_f1_vs_gemma": null,
         "cohen_kappa_vs_gemma": null,
@@ -500,14 +515,14 @@
         "family": "Classical ML",
         "agreement_vs_gemma_pct": null,
         "macro_f1_vs_gemma": null,
-        "inference_time_sec": 0.026
+        "inference_time_sec": 0.025
       },
       {
         "model": "PhoBERT Emotion (VI) / DistilRoBERTa (EN)",
         "family": "Deep Learning",
         "agreement_vs_gemma_pct": null,
         "macro_f1_vs_gemma": null,
-        "inference_time_sec": 8.562
+        "inference_time_sec": 5.365
       }
     ]
   },

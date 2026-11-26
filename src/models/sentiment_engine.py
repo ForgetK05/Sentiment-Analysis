@@ -179,6 +179,9 @@ class AnalyzedComment:
     context_relevance: float = 0.0
     matched_video_terms: list[str] = field(default_factory=list)
     context_alignment: str = ""
+    pred_phobert: str = ""
+    pred_roberta: str = ""
+    dl_primary_model: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -670,6 +673,9 @@ class CommentAnalyzer:
                     context_relevance=round(context_relevance, 4),
                     matched_video_terms=matched_video_terms,
                     context_alignment=context_alignment,
+                    pred_phobert=dl_lbl if lang == "vi" else "",
+                    pred_roberta=dl_lbl if lang == "en" else "",
+                    dl_primary_model="PhoBERT" if lang == "vi" else "Twitter-RoBERTa",
                 )
             )
 

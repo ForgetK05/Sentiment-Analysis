@@ -491,25 +491,48 @@ def build_model_comparison(
         ("TF-IDF + Linear SVM", "Classical ML", "pred_svm", timings.get("classical_ml_polarity_sec")),
         ("Bilingual Lexicon + Rules", "Rule-based NLP", "pred_lexicon", timings.get("lexicon_rules_sec")),
     ]
-    if has_vi:
-        polarity_specs.append(("ViSoBERT (5CD-AI, VI)", "Deep Learning", "pred_visobert", timings.get("visobert_sec")))
-    polarity_specs.extend(
-        [
-            (dl_pol_name, "Deep Learning", "pred_dl_primary", dl_pol_time),
-            ("Hybrid Ensemble (Hệ thống chính)", "Hybrid ML + DL", "polarity_label", None),
-        ]
-    )
+    if has_vi and has_en:
+        polarity_specs.extend(
+            [
+                ("PhoBERT (VI)", "Deep Learning", "pred_phobert", timings.get("phobert_sentiment_sec")),
+                ("ViSoBERT (5CD-AI, VI)", "Deep Learning", "pred_visobert", timings.get("visobert_sec")),
+                ("Twitter-RoBERTa (EN)", "Deep Learning", "pred_roberta", timings.get("en_roberta_sentiment_sec")),
+            ]
+        )
+    elif has_en:
+        polarity_specs.append((dl_pol_name, "Deep Learning", "pred_dl_primary", dl_pol_time))
+    else:
+        polarity_specs.extend(
+            [
+                ("ViSoBERT (5CD-AI, VI)", "Deep Learning", "pred_visobert", timings.get("visobert_sec")),
+                (dl_pol_name, "Deep Learning", "pred_dl_primary", dl_pol_time),
+            ]
+        )
+    polarity_specs.append(("Hybrid Ensemble (Hệ thống chính)", "Hybrid ML + DL", "polarity_label", None))
 
     polarity_rows: list[dict[str, Any]] = []
     for display_name, family, attr, t_sec in polarity_specs:
-        # Với ViSoBERT khi mixed VI+EN, chỉ đánh giá trên tập comment VI
+        # Với các mô hình theo từng ngôn ngữ, chỉ đánh giá trên đúng tập bình luận của ngôn ngữ đó
         if attr == "pred_visobert":
-            eval_indices = [i for i, a in enumerate(analyzed) if a.pred_visobert]
+            preds_all = [a.pred_visobert for a in analyzed]
+            eval_indices = [i for i, p in enumerate(preds_all) if p]
+        elif attr == "pred_phobert":
+            preds_all = [
+                getattr(a, "pred_phobert", "") or (a.pred_dl_primary if a.language == "vi" else "")
+                for a in analyzed
+            ]
+            eval_indices = [i for i, p in enumerate(preds_all) if p]
+        elif attr == "pred_roberta":
+            preds_all = [
+                getattr(a, "pred_roberta", "") or (a.pred_dl_primary if a.language == "en" else "")
+                for a in analyzed
+            ]
+            eval_indices = [i for i, p in enumerate(preds_all) if p]
         else:
             eval_indices = list(range(total))
+            preds_all = [getattr(a, attr) for a in analyzed]
 
         sub_total = len(eval_indices) or 1
-        preds_all = [getattr(a, attr) for a in analyzed]
         pos_cnt = sum(1 for i in eval_indices if preds_all[i] == "POS")
         neu_cnt = sum(1 for i in eval_indices if preds_all[i] == "NEU")
         neg_cnt = sum(1 for i in eval_indices if preds_all[i] == "NEG")
