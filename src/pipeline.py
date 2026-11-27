@@ -33,7 +33,12 @@ from src.preprocessing.text_cleaner import (
     TextPreprocessor,
     extract_keywords_tfidf,
 )
-from src.visualization import plot_sentiment_dashboard
+from src.report_html import generate_html_report
+from src.visualization import (
+    plot_models_dashboard,
+    plot_overview_dashboard,
+    plot_sentiment_dashboard,
+)
 
 
 MEDIA_CONTEXT_FILENAME = "media_context.json"
@@ -415,6 +420,35 @@ def build_detailed_model_outputs_df(clean_rows: Sequence[dict[str, Any]]) -> pd.
 
         out_rows.append({c: row_copy.get(c, "") for c in cols})
 
+    optional_pred_cols = {
+        "pred_nb",
+        "pred_cnb",
+        "pred_lr",
+        "pred_ridge",
+        "pred_sgd",
+        "pred_svm",
+        "pred_nbsvm",
+        "pred_rbf_svm",
+        "pred_rf",
+        "pred_tree",
+        "pred_ml_ensemble",
+        "pred_lexicon",
+        "emotion_ml_label",
+        "pred_emo_cnb",
+        "pred_emo_lr",
+        "pred_emo_ridge",
+        "pred_emo_svm",
+        "pred_emo_nbsvm",
+        "pred_emo_sgd",
+    }
+    if out_rows:
+        cols = [
+            c
+            for c in cols
+            if c not in optional_pred_cols
+            or any(str(row.get(c, "") or "").strip() not in {"", "—"} for row in out_rows)
+        ]
+
     df = pd.DataFrame(out_rows, columns=cols) if out_rows else pd.DataFrame(columns=cols)
     return df.rename(columns=DETAILED_COLUMN_HEADERS)
 
@@ -786,6 +820,7 @@ class SentimentPipeline:
         audit_limit: int | None = None,
         audit_scope: str = "all",
         engine_mode: str | int | None = None,
+        full_models: bool | None = None,
         max_comments: int = 200,
         include_replies: bool = True,
         max_replies_per_comment: int | None = None,
@@ -801,8 +836,14 @@ class SentimentPipeline:
             raise ValueError(
                 "Cần cung cấp `tiktok_url` hoặc `input_dir` (thư mục data/<post_id>/)."
             )
+        t_pipeline_start = time.perf_counter()
         if engine_mode is not None and str(engine_mode).strip() != "":
             self.comment_analyzer.engine_mode = normalize_engine_mode(engine_mode)
+        if full_models is not None:
+            self.comment_analyzer.full_models = bool(full_models)
+        effective_full_models = bool(getattr(self.comment_analyzer, "full_models", False))
+
+        pipeline_stages: list[dict[str, Any]] = []
 
         data_root = Path(data_dir)
         effective_media: str | Path | Sequence[str | Path] | None = None
@@ -831,6 +872,7 @@ class SentimentPipeline:
         tiktok_bundle: TikTokMediaBundle | None = None
 
         # CHUẨN BỊ DỮ LIỆU: Toàn bộ dữ liệu thu thập thô & ngữ cảnh media được lưu vào data/<post_id>/
+        t_stage0 = time.perf_counter()
         if tiktok_url:
             print(f"[Chuẩn bị dữ liệu] Đang tải video/ảnh & metadata vào {data_root / run_name}...")
             tiktok_bundle, crawled_csv = collect_tiktok_post(
@@ -860,6 +902,26 @@ class SentimentPipeline:
             if effective_comments is None and crawled_csv is not None:
                 effective_comments = crawled_csv
 
+        stage0_dur = round(time.perf_counter() - t_stage0, 3)
+        pipeline_stages.append(
+            {
+                "id": "GĐ 0",
+                "title": "Chuẩn bị dữ liệu đầu vào",
+                "status": "completed" if tiktok_url else "cached",
+                "duration_sec": stage0_dur,
+                "summary": (
+                    f"Tải & thu thập từ TikTok ({run_name})"
+                    if tiktok_url
+                    else f"Đọc từ thư mục cục bộ ({run_name})"
+                ),
+                "metrics": {
+                    "nguồn": "TikTok URL" if tiktok_url else "Thư mục sẵn",
+                    "media": "Có" if effective_media is not None else "Không",
+                    "comments": "Có" if effective_comments is not None else "Không",
+                },
+            }
+        )
+
         resolved_data_dir: Path | None = None
         if input_dir is not None:
             resolved_data_dir = Path(input_dir)
@@ -873,8 +935,11 @@ class SentimentPipeline:
         )
 
         # GIAI ĐOẠN 1 (CHUẨN BỊ NGỮ CẢNH MEDIA -> LƯU / NẠP TỪ data/<post_id>/media_context.json)
+        t_stage1 = time.perf_counter()
         media_result: MediaAnalysisResult | None = None
         ran_stage1_inference = False
+        stage1_status = "skipped"
+        stage1_summary = "Không có media đầu vào"
         if run_media_analysis:
             if media_context_path is not None and media_context_path.is_file() and not force_reanalyze_media:
                 print(
@@ -882,6 +947,8 @@ class SentimentPipeline:
                     "(bỏ qua chạy lại Gemma 4)."
                 )
                 media_result = MediaAnalysisResult.load_json(media_context_path)
+                stage1_status = "cached"
+                stage1_summary = "Nạp ngữ cảnh có sẵn từ media_context.json"
             elif effective_media is not None:
                 print("[Giai đoạn 1] Gemma 4 E2B đang phân tích ngữ cảnh video/ảnh...")
                 media_result = self.media_analyzer.analyze(
@@ -890,6 +957,8 @@ class SentimentPipeline:
                     enable_audio=enable_audio,
                 )
                 ran_stage1_inference = True
+                stage1_status = "completed"
+                stage1_summary = "Gemma 4 E2B + Whisper trích xuất ngữ cảnh mới"
                 if media_context_path is not None:
                     saved_ctx = media_result.save_json(media_context_path)
                     print(f"[Chuẩn bị dữ liệu] Đã lưu ngữ cảnh video/ảnh vào {saved_ctx}")
@@ -897,12 +966,32 @@ class SentimentPipeline:
                 print("[Giai đoạn 1] Không có media đầu vào -> chạy thẳng trên bình luận.")
         elif effective_media is not None:
             print("[Giai đoạn 1] Bỏ qua phân tích media (run_media_analysis=False).")
+            stage1_summary = "Bỏ qua theo cấu hình (run_media_analysis=False)"
         else:
             print("[Giai đoạn 1] Không có media đầu vào -> chạy thẳng trên bình luận.")
 
         if unload_ollama_after_stage1 and ran_stage1_inference:
             self.media_analyzer.unload_ollama_model()
             self.media_analyzer.unload_whisper_model()
+
+        stage1_dur = round(time.perf_counter() - t_stage1, 3)
+        stage1_metrics: dict[str, Any] = {}
+        if media_result is not None:
+            stage1_metrics = {
+                "loại": media_result.media_type,
+                "khung hình": media_result.num_frames_used,
+                "lời thoại": "Có" if bool(media_result.transcript.strip()) else "Không",
+            }
+        pipeline_stages.append(
+            {
+                "id": "GĐ 1",
+                "title": "Ngữ cảnh Media (Gemma 4 + Whisper)",
+                "status": stage1_status,
+                "duration_sec": stage1_dur,
+                "summary": stage1_summary,
+                "metrics": stage1_metrics,
+            }
+        )
 
         if prepare_only:
             print(
@@ -936,11 +1025,29 @@ class SentimentPipeline:
             raw_texts = df_comments["comment"].tolist()
 
             print(f"[Giai đoạn 2] Lọc nhiễu, nhận diện ngôn ngữ (VI/EN) & đối chiếu ngữ cảnh ({len(raw_texts)} bình luận)...")
+            t_stage2 = time.perf_counter()
             preprocessed = self.text_preprocessor.process_batch(
                 raw_texts,
                 media_context=media_result,
             )
             noise_summary = self._build_noise_summary(preprocessed)
+            stage2_dur = round(time.perf_counter() - t_stage2, 3)
+            on_topic_cnt = sum(1 for p in preprocessed if p.is_valid and p.is_on_topic)
+            pipeline_stages.append(
+                {
+                    "id": "GĐ 2",
+                    "title": "Tiền xử lý NLP & Lọc nhiễu",
+                    "status": "completed",
+                    "duration_sec": stage2_dur,
+                    "summary": f"Giữ {noise_summary['valid_comments']}/{noise_summary['total_raw_comments']} bình luận hợp lệ",
+                    "metrics": {
+                        "thô": noise_summary["total_raw_comments"],
+                        "hợp lệ": noise_summary["valid_comments"],
+                        "nhiễu": noise_summary["filtered_noise_count"],
+                        "bám video": on_topic_cnt,
+                    },
+                }
+            )
             print(
                 f"  -> Hợp lệ: {noise_summary['valid_comments']} | "
                 f"Đã lọc nhiễu: {noise_summary['filtered_noise_count']}"
@@ -952,6 +1059,7 @@ class SentimentPipeline:
                 else "Hybrid (5 họ Classical ML v3 + Lexicon + Deep Learning VI/EN)"
             )
             print(f"[Giai đoạn 3] Đang chạy {mode_label} & Context Alignment...")
+            t_stage3 = time.perf_counter()
             analyzed, timings = self.comment_analyzer.analyze_comments(
                 preprocessed=preprocessed,
                 metadata_rows=metadata_rows,
@@ -965,8 +1073,47 @@ class SentimentPipeline:
             valid_pre = [p for p in preprocessed if p.is_valid]
             valid_pols = [a.polarity_label for a in analyzed]
             keywords_tfidf = extract_keywords_tfidf(valid_pre, valid_pols, top_k=10)
+            stage3_dur = round(time.perf_counter() - t_stage3, 3)
+            pol_c = (summary or {}).get("polarity_counts") or {}
+            pipeline_stages.append(
+                {
+                    "id": "GĐ 3",
+                    "title": "Phân tích Cảm xúc Song ngữ",
+                    "status": "completed",
+                    "duration_sec": stage3_dur,
+                    "summary": (
+                        f"Xu hướng: {(summary or {}).get('overall_tendency', '—')} "
+                        f"(POS {pol_c.get('POS', 0)} / NEU {pol_c.get('NEU', 0)} / NEG {pol_c.get('NEG', 0)})"
+                    ),
+                    "metrics": {
+                        "chế độ": getattr(self.comment_analyzer, "engine_mode", "hybrid"),
+                        "mô hình": "Đầy đủ" if effective_full_models else "5 đại diện + Ensemble",
+                        "tổng câu": len(analyzed),
+                    },
+                }
+            )
         else:
             noise_summary = self._build_noise_summary([])
+            pipeline_stages.append(
+                {
+                    "id": "GĐ 2",
+                    "title": "Tiền xử lý NLP & Lọc nhiễu",
+                    "status": "skipped",
+                    "duration_sec": 0.0,
+                    "summary": "Không có file bình luận",
+                    "metrics": {},
+                }
+            )
+            pipeline_stages.append(
+                {
+                    "id": "GĐ 3",
+                    "title": "Phân tích Cảm xúc Song ngữ",
+                    "status": "skipped",
+                    "duration_sec": 0.0,
+                    "summary": "Không có bình luận để phân tích",
+                    "metrics": {},
+                }
+            )
 
         # GIAI ĐOẠN 4 (AI ĐẦU RA — TÙY CHỌN)
         audits: list[GemmaAuditItem] = []
@@ -983,12 +1130,15 @@ class SentimentPipeline:
             "total_comments": len(analyzed),
             "message": "",
         }
+        t_stage4 = time.perf_counter()
+        stage4_status = "skipped"
         if analyzed and run_ai_audit:
             ok, reason = self.ai_auditor.check_ollama_ready()
             ai_audit_status["ollama_ready"] = ok
             if not ok:
                 print(f"[Cảnh báo Giai đoạn 4] {reason}")
                 ai_audit_status["message"] = reason
+                stage4_status = "failed"
             else:
                 print(
                     f"[Giai đoạn 4] Gemma 4 E2B đang thẩm định thực tế bình luận theo ngữ cảnh "
@@ -1008,6 +1158,7 @@ class SentimentPipeline:
                 ai_audit_status["message"] = (
                     f"Đã thẩm định {audited_cnt}/{len(analyzed)} bình luận (phạm vi: {scope_norm})."
                 )
+                stage4_status = "completed"
         elif analyzed and not run_ai_audit:
             ai_audit_status["message"] = (
                 "Đã tắt Giai đoạn 4 theo lựa chọn người dùng (run_ai_audit=False)."
@@ -1020,6 +1171,7 @@ class SentimentPipeline:
             analyzed=analyzed,
             audits=audits,
             timings=timings,
+            full_models=effective_full_models,
         )
 
         if analyzed and run_ai_audit and any(g.gemma_audited for g in audits):
@@ -1030,8 +1182,26 @@ class SentimentPipeline:
                 media_result=media_result,
             )
 
+        stage4_dur = round(time.perf_counter() - t_stage4, 3)
+        pipeline_stages.append(
+            {
+                "id": "GĐ 4",
+                "title": "AI Thẩm định (Gemma 4 E2B)",
+                "status": stage4_status,
+                "duration_sec": stage4_dur if stage4_status != "skipped" else 0.0,
+                "summary": ai_audit_status["message"],
+                "metrics": {
+                    "phạm vi": scope_norm,
+                    "đã chấm": ai_audit_status["audited_count"],
+                },
+            }
+        )
+
+        total_duration_sec = round(time.perf_counter() - t_pipeline_start, 3)
         report: dict[str, Any] = {
             "run_name": run_name,
+            "total_duration_sec": total_duration_sec,
+            "pipeline_stages": pipeline_stages,
             "tiktok_metadata": tiktok_bundle.to_dict() if tiktok_bundle else None,
             "media_analysis": media_result.to_dict() if media_result else None,
             "noise_filter_summary": noise_summary,
@@ -1052,10 +1222,25 @@ class SentimentPipeline:
                 audits=audits,
             )
             if summary is not None and summary.get("total_valid_comments", 0) > 0:
-                dash_path = out_path / "dashboard.png"
-                fig = plot_sentiment_dashboard(report, save_path=dash_path)
-                plt.close(fig)
-                exported["dashboard_png"] = str(dash_path)
+                ov_path = out_path / "dashboard_overview.png"
+                fig_ov = plot_overview_dashboard(report, save_path=ov_path)
+                plt.close(fig_ov)
+                exported["dashboard_overview_png"] = str(ov_path)
+
+                mod_path = out_path / "dashboard_models.png"
+                fig_mod = plot_models_dashboard(report, save_path=mod_path)
+                plt.close(fig_mod)
+                exported["dashboard_models_png"] = str(mod_path)
+
+            html_path = out_path / "report.html"
+            generate_html_report(
+                report=report,
+                preprocessed=preprocessed,
+                analyzed=analyzed,
+                audits=audits,
+                save_path=html_path,
+            )
+            exported["report_html"] = str(html_path)
             report["exported_files"] = exported
 
         return report
@@ -1127,6 +1312,11 @@ def _build_arg_parser() -> argparse.ArgumentParser:
         help="Chế độ Giai đoạn 3: 1/classical (ML truyền thống) hoặc 2/hybrid (như hiện tại: ML v3 + Deep Learning).",
     )
     parser.add_argument(
+        "--full-models",
+        action="store_true",
+        help="Chạy và xuất đầy đủ tất cả 10+1 mô hình Classical ML (mặc định chỉ chạy 5 đại diện + Ensemble để gọn và nhanh).",
+    )
+    parser.add_argument(
         "--retrain-ml",
         action="store_true",
         help="Huấn luyện lại cụm mô hình Classical ML v3 (VI & EN) trước khi chạy.",
@@ -1163,6 +1353,7 @@ def main() -> None:
         en_sentiment_model=args.en_sentiment_model,
         en_emotion_model=args.en_emotion_model,
         engine_mode=engine_mode,
+        full_models=args.full_models,
         device=args.device,
     )
     if args.retrain_ml:
@@ -1189,6 +1380,7 @@ def main() -> None:
         audit_limit=args.audit_limit,
         audit_scope=args.audit_scope,
         engine_mode=engine_mode,
+        full_models=args.full_models,
         max_comments=args.max_comments,
         include_replies=not args.no_replies,
         max_replies_per_comment=args.max_replies_per_comment,
@@ -1204,6 +1396,21 @@ def main() -> None:
         print(f"- Thư mục dữ liệu : {report.get('data_dir')}")
         print(f"- Media context   : {report.get('media_context_path')}")
         return
+
+    if report.get("pipeline_stages"):
+        print(f"\n=== TIẾN TRÌNH 4 GIAI ĐOẠN (Tổng: {report.get('total_duration_sec', 0)}s) ===")
+        df_stages = pd.DataFrame(
+            [
+                {
+                    "Giai đoạn": f"{st['id']} — {st['title']}",
+                    "Trạng thái": st["status"],
+                    "Thời gian (s)": st["duration_sec"],
+                    "Tóm tắt": st["summary"],
+                }
+                for st in report["pipeline_stages"]
+            ]
+        )
+        print(df_stages.to_string(index=False))
 
     print("\n=== KẾT QUẢ PHÂN TÍCH ===")
     if report["media_analysis"]:
@@ -1244,7 +1451,7 @@ def main() -> None:
             )
 
         if args.save_chart:
-            fig = plot_sentiment_dashboard(report, save_path=args.save_chart)
+            fig = plot_overview_dashboard(report, save_path=args.save_chart)
             plt.close(fig)
 
     comp = report.get("model_comparison") or {}

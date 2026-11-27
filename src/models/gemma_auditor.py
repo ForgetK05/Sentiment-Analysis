@@ -10,7 +10,14 @@ import requests
 from sklearn.metrics import cohen_kappa_score, f1_score
 from tqdm import tqdm
 
-from src.models.classical_ml import EMOTION_LABELS, EMOTION_VI_MAP
+from src.models.classical_ml import (
+    CORE_EMOTION_MODEL_KEYS,
+    CORE_POLARITY_MODEL_KEYS,
+    EMOTION_LABELS,
+    EMOTION_MODEL_META,
+    EMOTION_VI_MAP,
+    POLARITY_MODEL_META,
+)
 from src.models.media_context import MediaAnalysisResult
 from src.models.sentiment_engine import AnalyzedComment
 
@@ -502,7 +509,8 @@ class GemmaAuditor:
 def build_model_comparison(
     analyzed: Sequence[AnalyzedComment],
     audits: Sequence[GemmaAuditItem] | None = None,
-    timings: dict[str, float] | None = None,
+    timings: dict[str, Any] | None = None,
+    full_models: bool = False,
 ) -> dict[str, Any]:
     """Tạo bảng so sánh toàn diện 5 họ Classical ML, Lexicon, Deep Learning (nếu bật Hybrid) và Ensemble."""
     total = len(analyzed)
@@ -517,10 +525,15 @@ def build_model_comparison(
         for a in analyzed
     )
     has_ml = any(
-        bool(getattr(a, "pred_nb", ""))
+        bool(getattr(a, "pred_cnb", ""))
+        or bool(getattr(a, "pred_lr", ""))
+        or bool(getattr(a, "pred_svm", ""))
+        or bool(getattr(a, "pred_nb", ""))
         or bool(getattr(a, "pred_ml_ensemble", ""))
         for a in analyzed
     )
+    has_emo_ml = any(bool(getattr(a, "emotion_ml_label", "")) for a in analyzed)
+
     has_vi = any(a.language == "vi" for a in analyzed)
     has_en = any(a.language == "en" for a in analyzed)
     if has_vi and has_en:
@@ -554,46 +567,74 @@ def build_model_comparison(
 
     ml_pol_time = timings.get("classical_ml_polarity_sec")
     ml_emo_time = timings.get("classical_ml_emotion_sec")
+    ml_pol_timings = timings.get("ml_model_timings_sec") or {}
+    ml_emo_timings = timings.get("ml_emo_model_timings_sec") or {}
+
+    def _ml_t(timing_map: dict[str, Any], key: str, fallback: Any) -> Any:
+        val = timing_map.get(key)
+        if val is not None:
+            return round(float(val), 4)
+        return fallback
+
+    pol_attr_by_key = {
+        "tfidf_nb": "pred_nb",
+        "tfidf_cnb": "pred_cnb",
+        "tfidf_lr": "pred_lr",
+        "tfidf_ridge": "pred_ridge",
+        "tfidf_sgd": "pred_sgd",
+        "tfidf_svm": "pred_svm",
+        "tfidf_nbsvm": "pred_nbsvm",
+        "tfidf_rbf_svm": "pred_rbf_svm",
+        "tfidf_rf": "pred_rf",
+        "tfidf_tree": "pred_tree",
+        "ml_ensemble": "pred_ml_ensemble",
+    }
+    full_pol_keys = tuple(pol_attr_by_key.keys())
+    selected_pol_keys = full_pol_keys if full_models else CORE_POLARITY_MODEL_KEYS
 
     polarity_rows: list[dict[str, Any]] = []
     if has_ml or has_dl:
-        polarity_specs: list[tuple[str, str, str, Any]] = [
-            ("TF-IDF + Multinomial NB", "Classical ML (Generative)", "pred_nb", ml_pol_time),
-            ("TF-IDF + Complement NB", "Classical ML (Generative)", "pred_cnb", ml_pol_time),
-            ("TF-IDF + Logistic Regression", "Classical ML (Linear)", "pred_lr", ml_pol_time),
-            ("TF-IDF + Ridge Classifier", "Classical ML (Linear)", "pred_ridge", ml_pol_time),
-            ("TF-IDF + SGD Classifier", "Classical ML (Linear)", "pred_sgd", ml_pol_time),
-            ("TF-IDF + Linear SVM", "Classical ML (Margin / SVM)", "pred_svm", ml_pol_time),
-            ("TF-IDF + NBSVM (NB-Weighted SVM)", "Classical ML (Margin / SVM)", "pred_nbsvm", ml_pol_time),
-            ("SVD + RBF Kernel SVM", "Classical ML (Margin / SVM)", "pred_rbf_svm", ml_pol_time),
-            ("SVD+Social + Random Forest", "Classical ML (Tree Bagging)", "pred_rf", ml_pol_time),
-            ("SVD+Social + HistGradientBoosting", "Classical ML (Tree Boosting)", "pred_tree", ml_pol_time),
-            ("Classical ML Meta-Ensemble", "Classical ML Ensemble", "pred_ml_ensemble", ml_pol_time),
-            ("Bilingual Lexicon + Rules", "Rule-based NLP", "pred_lexicon", timings.get("lexicon_rules_sec")),
-        ]
+        # Tuple: (model_key, tier, display_name, family, attr, t_sec)
+        polarity_specs: list[tuple[str, str, str, str, str, Any]] = []
+        for m_key in selected_pol_keys:
+            meta = POLARITY_MODEL_META.get(m_key, {})
+            tier = "ensemble" if m_key == "ml_ensemble" else "base"
+            polarity_specs.append(
+                (
+                    m_key,
+                    tier,
+                    meta.get("display_name", m_key),
+                    meta.get("family", "Classical ML"),
+                    pol_attr_by_key[m_key],
+                    _ml_t(ml_pol_timings, m_key, ml_pol_time),
+                )
+            )
+        polarity_specs.append(
+            ("lexicon", "base", "Bilingual Lexicon + Rules", "Rule-based NLP", "pred_lexicon", timings.get("lexicon_rules_sec"))
+        )
         if has_dl:
             if has_vi and has_en:
                 polarity_specs.extend(
                     [
-                        ("PhoBERT (VI)", "Deep Learning", "pred_phobert", timings.get("phobert_sentiment_sec")),
-                        ("ViSoBERT (5CD-AI, VI)", "Deep Learning", "pred_visobert", timings.get("visobert_sec")),
-                        ("Twitter-RoBERTa (EN)", "Deep Learning", "pred_roberta", timings.get("en_roberta_sentiment_sec")),
+                        ("phobert", "base", "PhoBERT (VI)", "Deep Learning", "pred_phobert", timings.get("phobert_sentiment_sec")),
+                        ("visobert", "base", "ViSoBERT (5CD-AI, VI)", "Deep Learning", "pred_visobert", timings.get("visobert_sec")),
+                        ("roberta", "base", "Twitter-RoBERTa (EN)", "Deep Learning", "pred_roberta", timings.get("en_roberta_sentiment_sec")),
                     ]
                 )
             elif has_en:
-                polarity_specs.append((dl_pol_name, "Deep Learning", "pred_dl_primary", dl_pol_time))
+                polarity_specs.append(("roberta", "base", dl_pol_name, "Deep Learning", "pred_dl_primary", dl_pol_time))
             else:
                 polarity_specs.extend(
                     [
-                        ("ViSoBERT (5CD-AI, VI)", "Deep Learning", "pred_visobert", timings.get("visobert_sec")),
-                        (dl_pol_name, "Deep Learning", "pred_dl_primary", dl_pol_time),
+                        ("visobert", "base", "ViSoBERT (5CD-AI, VI)", "Deep Learning", "pred_visobert", timings.get("visobert_sec")),
+                        ("phobert", "base", dl_pol_name, "Deep Learning", "pred_dl_primary", dl_pol_time),
                     ]
                 )
-            polarity_specs.append(("Hybrid Ensemble (Hệ thống chính)", "Hybrid ML + DL", "polarity_label", None))
+            polarity_specs.append(("system_main", "system", "Hybrid Ensemble (Hệ thống chính)", "Hybrid ML + DL", "polarity_label", None))
         else:
-            polarity_specs.append(("ML Ensemble + Lexicon (Hệ thống chính)", "Classical ML Ensemble", "polarity_label", None))
+            polarity_specs.append(("system_main", "system", "ML Ensemble + Lexicon (Hệ thống chính)", "Classical ML Ensemble", "polarity_label", None))
 
-        for display_name, family, attr, t_sec in polarity_specs:
+        for model_key, tier, display_name, family, attr, t_sec in polarity_specs:
             # Với các mô hình theo từng ngôn ngữ, chỉ đánh giá trên đúng tập bình luận của ngôn ngữ đó
             if attr == "pred_visobert":
                 preds_all = [a.pred_visobert for a in analyzed]
@@ -611,8 +652,13 @@ def build_model_comparison(
                 ]
                 eval_indices = [i for i, p in enumerate(preds_all) if p]
             else:
-                eval_indices = list(range(total))
                 preds_all = [getattr(a, attr) for a in analyzed]
+                eval_indices = [i for i, p in enumerate(preds_all) if p] if not full_models else list(range(total))
+                if not eval_indices and full_models:
+                    eval_indices = list(range(total))
+
+            if not eval_indices:
+                continue
 
             sub_total = len(eval_indices) or 1
             pos_cnt = sum(1 for i in eval_indices if preds_all[i] == "POS")
@@ -652,6 +698,8 @@ def build_model_comparison(
 
             polarity_rows.append(
                 {
+                    "model_key": model_key,
+                    "tier": tier,
                     "model": display_name,
                     "family": family,
                     "total_comments": len(eval_indices),
@@ -675,6 +723,8 @@ def build_model_comparison(
         n_aud = len(audited_indices)
         polarity_rows.append(
             {
+                "model_key": "gemma4",
+                "tier": "reference",
                 "model": "Gemma 4 E2B (Thẩm định ngữ cảnh)",
                 "family": "Multimodal LLM Reference",
                 "total_comments": n_aud,
@@ -691,25 +741,54 @@ def build_model_comparison(
             }
         )
 
+    emo_attr_by_key = {
+        "emo_cnb": "pred_emo_cnb",
+        "emo_lr": "pred_emo_lr",
+        "emo_ridge": "pred_emo_ridge",
+        "emo_svm": "pred_emo_svm",
+        "emo_nbsvm": "pred_emo_nbsvm",
+        "emo_sgd": "pred_emo_sgd",
+        "emo_ensemble": "emotion_ml_label",
+    }
+    full_emo_keys = tuple(emo_attr_by_key.keys())
+    selected_emo_keys = full_emo_keys if full_models else CORE_EMOTION_MODEL_KEYS
+
     emotion_rows: list[dict[str, Any]] = []
     if has_ml or has_dl:
-        emotion_specs = [
-            ("Complement NB (Emotion)", "Classical ML (Generative)", "pred_emo_cnb", ml_emo_time),
-            ("Logistic Regression (Emotion)", "Classical ML (Linear)", "pred_emo_lr", ml_emo_time),
-            ("Ridge Classifier (Emotion)", "Classical ML (Linear)", "pred_emo_ridge", ml_emo_time),
-            ("Linear SVM (Emotion)", "Classical ML (Margin / SVM)", "pred_emo_svm", ml_emo_time),
-            ("NBSVM (Emotion)", "Classical ML (Margin / SVM)", "pred_emo_nbsvm", ml_emo_time),
-            ("SGD Classifier (Emotion)", "Classical ML (Linear)", "pred_emo_sgd", ml_emo_time),
-            ("ML Emotion Meta-Ensemble", "Classical ML Ensemble", "emotion_ml_label", ml_emo_time),
-        ]
+        emotion_specs: list[tuple[str, str, str, str, str, Any]] = []
+        if has_emo_ml:
+            for e_key in selected_emo_keys:
+                meta = EMOTION_MODEL_META.get(e_key, {})
+                tier = "ensemble" if e_key == "emo_ensemble" else "base"
+                emotion_specs.append(
+                    (
+                        e_key,
+                        tier,
+                        meta.get("display_name", e_key),
+                        meta.get("family", "Classical ML"),
+                        emo_attr_by_key[e_key],
+                        _ml_t(ml_emo_timings, e_key, ml_emo_time),
+                    )
+                )
         if has_dl:
-            emotion_specs.append((dl_emo_name, "Deep Learning", "emotion_label", dl_emo_time))
+            emotion_specs.append(
+                ("dl_emotion", "system", dl_emo_name, "Deep Learning", "emotion_label", dl_emo_time)
+            )
         else:
             emotion_specs.append(
-                ("ML Emotion Ensemble + Cues (Hệ thống chính)", "Classical ML Ensemble", "emotion_label", ml_emo_time)
+                (
+                    "emo_system_main",
+                    "system",
+                    "ML Emotion Ensemble + Cues (Hệ thống chính)",
+                    "Classical ML Ensemble",
+                    "emotion_label",
+                    ml_emo_time,
+                )
             )
-        for display_name, family, attr, t_sec in emotion_specs:
+        for model_key, tier, display_name, family, attr, t_sec in emotion_specs:
             preds = [getattr(a, attr) for a in analyzed]
+            if not any(preds):
+                continue
             agreement_pct = None
             macro_f1 = None
             if has_audit and audited_indices:
@@ -730,6 +809,8 @@ def build_model_comparison(
                 )
             emotion_rows.append(
                 {
+                    "model_key": model_key,
+                    "tier": tier,
                     "model": display_name,
                     "family": family,
                     "agreement_vs_gemma_pct": agreement_pct,
@@ -740,6 +821,8 @@ def build_model_comparison(
     elif has_audit and audited_indices:
         emotion_rows.append(
             {
+                "model_key": "gemma4_emo",
+                "tier": "reference",
                 "model": "Gemma 4 E2B (Emotion)",
                 "family": "Multimodal LLM Reference",
                 "agreement_vs_gemma_pct": 100.0,

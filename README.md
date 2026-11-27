@@ -9,14 +9,16 @@ Sentiment-Analysis/
 ├── AI_Local/gemma4-e2b/             # Docker Compose + Modelfile Ollama (gemma4-e2b-opt)
 ├── data/                            # Gói dữ liệu chuẩn bị đầu vào theo từng bài đăng
 │   └── <post_id>/                   # Tự tạo theo từng link TikTok: video.mp4 (hoặc images/slide_XX.jpg), metadata.json, raw_comments.csv, media_context.json
-├── outputs/                         # Kết quả cuối cùng sau xử lý theo từng lượt chạy (6 tệp)
+├── outputs/                         # Kết quả cuối cùng sau xử lý theo từng lượt chạy
 │   └── <run_name>/
-│       ├── final_results.csv         # Bảng kết quả dễ đọc cho người xem (12 cột lõi hoặc 16 cột khi bật AI Audit; tiêu đề song ngữ 2 dòng Anh–Việt, sắp theo lượt thích giảm dần)
-│       ├── detailed_model_outputs.csv # Chi tiết kỹ thuật, ID gốc, ngữ cảnh video, xác suất & dự đoán đầy đủ 5 họ Classical ML + Deep Learning (46 cột ở Hybrid / 42 cột ở Classical; +5 cột khi bật AI Audit)
-│       ├── filtered_noise.csv        # Tách riêng bình luận nhiễu kèm giải thích tiếng Việt (9 cột; tiêu đề song ngữ 2 dòng Anh–Việt)
-│       ├── model_comparison.csv      # Bảng so sánh 5 họ Classical ML, Lexicon, Deep Learning & Ensemble (tiêu đề song ngữ 2 dòng Anh–Việt)
-│       ├── report.json               # Báo cáo tổng hợp JSON gọn (metadata, ngữ cảnh media, thống kê & so sánh mô hình)
-│       └── dashboard.png             # Biểu đồ tổng hợp 2x2
+│       ├── report.html              # Báo cáo tương tác tự chứa (Luồng 4 giai đoạn, 5 họ ML, Ma trận đồng thuận, Comment X-Ray)
+│       ├── final_results.csv        # Bảng kết quả dễ đọc cho người xem (12 cột lõi hoặc 16 cột khi bật AI Audit; tiêu đề song ngữ 2 dòng Anh–Việt, sắp theo lượt thích giảm dần)
+│       ├── detailed_model_outputs.csv # Chi tiết kỹ thuật, ID gốc, ngữ cảnh video, xác suất & dự đoán từng mô hình đang chạy
+│       ├── filtered_noise.csv       # Tách riêng bình luận nhiễu kèm giải thích tiếng Việt (9 cột; tiêu đề song ngữ 2 dòng Anh–Việt)
+│       ├── model_comparison.csv     # Bảng so sánh 5 họ Classical ML, Lexicon, Deep Learning & Ensemble kèm timing riêng từng mô hình
+│       ├── report.json              # Báo cáo tổng hợp JSON gọn (metadata, pipeline_stages, ngữ cảnh media, thống kê & so sánh mô hình)
+│       ├── dashboard_overview.png   # Biểu đồ 2x2 tổng quan khán giả (Polarity, 7 cảm xúc, bám sát video, từ khóa TF-IDF)
+│       └── dashboard_models.png     # Biểu đồ 2x2 phân tích & giải thích 5 họ mô hình (Dự đoán, Benchmark F1, Tốc độ, Top Features)
 ├── models/classical_ml/             # Cache mô hình Classical ML (v3) tách riêng vi/ và en/
 ├── src/
 │   ├── __init__.py
@@ -63,7 +65,7 @@ Sentiment-Analysis/
      ```powershell
      python -m src.pipeline --input-dir "data/7711719899852295445" --engine 2
      ```
-   - **Chạy Giai đoạn 3 chế độ 1 — Thuần ML truyền thống (`--engine 1` hoặc `--engine classical` — 0% Deep Learning):**
+   - **Chạy Giai đoạn 3 chế độ 1 — Thuần ML truyền thống (`--engine 1` hoặc `--engine classical` — 0% Deep Learning; thêm `--full-models` nếu muốn chạy đủ 10+1 mô hình thay vì 5 đại diện + Ensemble):**
      ```powershell
      python -m src.pipeline --input-dir "data/7711719899852295445" --engine 1
      ```

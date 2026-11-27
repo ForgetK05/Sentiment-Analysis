@@ -4,6 +4,7 @@ import argparse
 import json
 import math
 import re
+import time
 from collections import Counter
 from pathlib import Path
 from typing import Any, Sequence
@@ -56,6 +57,172 @@ EMOTION_MODEL_KEYS = (
     "emo_sgd",
     "emo_ensemble",
 )
+
+CORE_POLARITY_MODEL_KEYS = (
+    "tfidf_cnb",
+    "tfidf_lr",
+    "tfidf_svm",
+    "tfidf_rf",
+    "tfidf_tree",
+    "ml_ensemble",
+)
+
+CORE_EMOTION_MODEL_KEYS = (
+    "emo_cnb",
+    "emo_lr",
+    "emo_svm",
+    "emo_ensemble",
+)
+
+POLARITY_MODEL_META: dict[str, dict[str, str]] = {
+    "tfidf_nb": {
+        "display_name": "TF-IDF + Multinomial NB",
+        "short_name": "Multinomial NB",
+        "family": "Classical ML (Generative)",
+        "family_vi": "Xác suất sinh (Naive Bayes)",
+        "family_color": "#0ea5e9",
+        "desc_vi": "Đếm xác suất từ xuất hiện theo từng lớp dựa trên định lý Bayes.",
+    },
+    "tfidf_cnb": {
+        "display_name": "TF-IDF + Complement NB",
+        "short_name": "Complement NB",
+        "family": "Classical ML (Generative)",
+        "family_vi": "Xác suất sinh (Naive Bayes)",
+        "family_color": "#0ea5e9",
+        "desc_vi": "Ước lượng xác suất phần bù giúp xử lý tốt tập bình luận mất cân bằng lớp.",
+    },
+    "tfidf_lr": {
+        "display_name": "TF-IDF + Logistic Regression",
+        "short_name": "Logistic Regression",
+        "family": "Classical ML (Linear)",
+        "family_vi": "Tuyến tính (Linear)",
+        "family_color": "#6366f1",
+        "desc_vi": "Học trọng số tuyến tính cho từng từ/n-gram và xuất xác suất qua Softmax.",
+    },
+    "tfidf_ridge": {
+        "display_name": "TF-IDF + Ridge Classifier",
+        "short_name": "Ridge Classifier",
+        "family": "Classical ML (Linear)",
+        "family_vi": "Tuyến tính (Linear)",
+        "family_color": "#6366f1",
+        "desc_vi": "Phân loại tuyến tính với chuẩn hóa L2 giúp tránh quá khớp trên từ điển lớn.",
+    },
+    "tfidf_sgd": {
+        "display_name": "TF-IDF + SGD Classifier",
+        "short_name": "SGD Classifier",
+        "family": "Classical ML (Linear)",
+        "family_vi": "Tuyến tính (Linear)",
+        "family_color": "#6366f1",
+        "desc_vi": "Tối ưu tuyến tính bằng hạ gradient ngẫu nhiên (log_loss / modified_huber).",
+    },
+    "tfidf_svm": {
+        "display_name": "TF-IDF + Linear SVM",
+        "short_name": "Linear SVM",
+        "family": "Classical ML (Margin / SVM)",
+        "family_vi": "Biên cực đại (SVM)",
+        "family_color": "#8b5cf6",
+        "desc_vi": "Tìm siêu phẳng có biên phân cách lớn nhất trong không gian TF-IDF nhiều chiều.",
+    },
+    "tfidf_nbsvm": {
+        "display_name": "TF-IDF + NBSVM (NB-Weighted SVM)",
+        "short_name": "NBSVM",
+        "family": "Classical ML (Margin / SVM)",
+        "family_vi": "Biên cực đại (SVM)",
+        "family_color": "#8b5cf6",
+        "desc_vi": "Nhân đặc trưng với log-count ratio Naive Bayes trước khi đưa vào LinearSVC.",
+    },
+    "tfidf_rbf_svm": {
+        "display_name": "SVD + RBF Kernel SVM",
+        "short_name": "RBF Kernel SVM",
+        "family": "Classical ML (Margin / SVM)",
+        "family_vi": "Biên cực đại (SVM)",
+        "family_color": "#8b5cf6",
+        "desc_vi": "SVM hạt nhân phi tuyến RBF trên không gian nén TruncatedSVD(96) + Social.",
+    },
+    "tfidf_rf": {
+        "display_name": "SVD+Social + Random Forest",
+        "short_name": "Random Forest",
+        "family": "Classical ML (Tree Bagging)",
+        "family_vi": "Cây quyết định (Bagging)",
+        "family_color": "#14b8a6",
+        "desc_vi": "Bỏ phiếu từ 150 cây quyết định độc lập trên đặc trưng SVD + 15 tín hiệu MXH.",
+    },
+    "tfidf_tree": {
+        "display_name": "SVD+Social + HistGradientBoosting",
+        "short_name": "HistGradientBoosting",
+        "family": "Classical ML (Tree Boosting)",
+        "family_vi": "Cây quyết định (Boosting)",
+        "family_color": "#f59e0b",
+        "desc_vi": "Chuỗi cây tăng cường tuần tự sửa lỗi của cây trước trên đặc trưng SVD + MXH.",
+    },
+    "ml_ensemble": {
+        "display_name": "Classical ML Meta-Ensemble",
+        "short_name": "ML Meta-Ensemble",
+        "family": "Classical ML Ensemble",
+        "family_vi": "Tổ hợp ML (Meta-Ensemble)",
+        "family_color": "#2563eb",
+        "desc_vi": "Meta-learner kết hợp xác suất OOF từ nhóm mô hình ML cổ điển mạnh nhất.",
+    },
+}
+
+EMOTION_MODEL_META: dict[str, dict[str, str]] = {
+    "emo_cnb": {
+        "display_name": "Complement NB (Emotion)",
+        "short_name": "Complement NB",
+        "family": "Classical ML (Generative)",
+        "family_vi": "Xác suất sinh (Naive Bayes)",
+        "family_color": "#0ea5e9",
+        "desc_vi": "Nhận diện 7 cung bậc cảm xúc bằng phân phối phần bù trên đặc trưng TF-IDF.",
+    },
+    "emo_lr": {
+        "display_name": "Logistic Regression (Emotion)",
+        "short_name": "Logistic Regression",
+        "family": "Classical ML (Linear)",
+        "family_vi": "Tuyến tính (Linear)",
+        "family_color": "#6366f1",
+        "desc_vi": "Phân loại đa lớp 7 cảm xúc bằng trọng số tuyến tính và Softmax.",
+    },
+    "emo_ridge": {
+        "display_name": "Ridge Classifier (Emotion)",
+        "short_name": "Ridge Classifier",
+        "family": "Classical ML (Linear)",
+        "family_vi": "Tuyến tính (Linear)",
+        "family_color": "#6366f1",
+        "desc_vi": "Phân loại tuyến tính chuẩn hóa L2 cho 7 cung bậc cảm xúc.",
+    },
+    "emo_svm": {
+        "display_name": "Linear SVM (Emotion)",
+        "short_name": "Linear SVM",
+        "family": "Classical ML (Margin / SVM)",
+        "family_vi": "Biên cực đại (SVM)",
+        "family_color": "#8b5cf6",
+        "desc_vi": "Phân tách 7 cung bậc cảm xúc bằng siêu phẳng biên cực đại đã hiệu chỉnh xác suất.",
+    },
+    "emo_nbsvm": {
+        "display_name": "NBSVM (Emotion)",
+        "short_name": "NBSVM",
+        "family": "Classical ML (Margin / SVM)",
+        "family_vi": "Biên cực đại (SVM)",
+        "family_color": "#8b5cf6",
+        "desc_vi": "Kết hợp trọng số Naive Bayes và LinearSVC cho bài toán 7 cảm xúc.",
+    },
+    "emo_sgd": {
+        "display_name": "SGD Classifier (Emotion)",
+        "short_name": "SGD Classifier",
+        "family": "Classical ML (Linear)",
+        "family_vi": "Tuyến tính (Linear)",
+        "family_color": "#6366f1",
+        "desc_vi": "Huấn luyện tuyến tính theo SGD cho 7 cung bậc cảm xúc.",
+    },
+    "emo_ensemble": {
+        "display_name": "ML Emotion Meta-Ensemble",
+        "short_name": "ML Emotion Ensemble",
+        "family": "Classical ML Ensemble",
+        "family_vi": "Tổ hợp ML (Meta-Ensemble)",
+        "family_color": "#2563eb",
+        "desc_vi": "Tổng hợp dự đoán xác suất từ các mô hình ML Emotion mạnh nhất.",
+    },
+}
 
 DEFAULT_CACHE_DIR = Path("models") / "classical_ml"
 
@@ -1495,6 +1662,8 @@ class _LanguageMLBundle:
         self.emotion_vectorizer: FeatureUnion | None = None
         self.emotion_models: dict[str, Any] = {}
         self.benchmark_metrics: dict[str, Any] = {}
+        self.last_polarity_timings: dict[str, float] = {}
+        self.last_emotion_timings: dict[str, float] = {}
 
     def _cache_paths(self) -> tuple[Path, Path, Path]:
         return (
@@ -2014,16 +2183,35 @@ class _LanguageMLBundle:
         ):
             self.load_or_train(force_retrain=False)
 
-    def predict_polarity_all(self, texts: Sequence[str]) -> dict[str, list[dict[str, Any]]]:
+    def predict_polarity_all(
+        self,
+        texts: Sequence[str],
+        full_models: bool = False,
+    ) -> dict[str, list[dict[str, Any]]]:
         self.ensure_loaded()
         assert self.polarity_vectorizer is not None
+        self.last_polarity_timings = {}
         if not texts:
-            return {name: [] for name in POLARITY_MODEL_KEYS if name in self.polarity_models}
+            return {}
+
+        t_vec0 = time.perf_counter()
         X = self.polarity_vectorizer.transform([str(t) for t in texts])
+        vec_sec = time.perf_counter() - t_vec0
         outputs: dict[str, list[dict[str, Any]]] = {}
 
-        base_names = [k for k in POLARITY_MODEL_KEYS if k != "ml_ensemble" and k in self.polarity_models]
+        all_base_names = [
+            k for k in POLARITY_MODEL_KEYS if k != "ml_ensemble" and k in self.polarity_models
+        ]
+        ens = self.polarity_models.get("ml_ensemble")
+        if full_models:
+            base_names = all_base_names
+        else:
+            ens_deps = set(getattr(ens, "base_model_names", ()) or ()) if ens is not None else set()
+            needed = (set(CORE_POLARITY_MODEL_KEYS) - {"ml_ensemble"}) | ens_deps
+            base_names = [k for k in all_base_names if k in needed]
+
         for name in base_names:
+            t_m0 = time.perf_counter()
             clf = self.polarity_models[name]
             probs_mat = clf.predict_proba(X)
             classes = [str(c) for c in clf.classes_]
@@ -2038,10 +2226,13 @@ class _LanguageMLBundle:
                     {"label": best_lbl, "confidence": score_map[best_lbl], "scores": score_map}
                 )
             outputs[name] = preds
+            self.last_polarity_timings[name] = round(time.perf_counter() - t_m0, 4)
 
-        if "ml_ensemble" in self.polarity_models:
-            ens = self.polarity_models["ml_ensemble"]
-            if hasattr(ens, "predict_proba_from_base_probs"):
+        if ens is not None:
+            t_ens0 = time.perf_counter()
+            if hasattr(ens, "predict_proba_from_base_probs") and all(
+                m in outputs for m in getattr(ens, "base_model_names", ())
+            ):
                 probs_mat = ens.predict_proba_from_base_probs(outputs)
             else:
                 probs_mat = ens.predict_proba(X)
@@ -2057,19 +2248,40 @@ class _LanguageMLBundle:
                     {"label": best_lbl, "confidence": score_map[best_lbl], "scores": score_map}
                 )
             outputs["ml_ensemble"] = ens_preds
+            self.last_polarity_timings["ml_ensemble"] = round(time.perf_counter() - t_ens0, 4)
 
+        self.last_polarity_timings["_vectorizer"] = round(vec_sec, 4)
         return outputs
 
-    def predict_emotion_all(self, texts: Sequence[str]) -> dict[str, list[dict[str, Any]]]:
+    def predict_emotion_all(
+        self,
+        texts: Sequence[str],
+        full_models: bool = False,
+    ) -> dict[str, list[dict[str, Any]]]:
         self.ensure_loaded()
         assert self.emotion_vectorizer is not None
+        self.last_emotion_timings = {}
         if not texts:
-            return {name: [] for name in EMOTION_MODEL_KEYS if name in self.emotion_models}
+            return {}
+
+        t_vec0 = time.perf_counter()
         X = self.emotion_vectorizer.transform([str(t) for t in texts])
+        vec_sec = time.perf_counter() - t_vec0
         outputs: dict[str, list[dict[str, Any]]] = {}
 
-        base_names = [k for k in EMOTION_MODEL_KEYS if k != "emo_ensemble" and k in self.emotion_models]
+        all_base_names = [
+            k for k in EMOTION_MODEL_KEYS if k != "emo_ensemble" and k in self.emotion_models
+        ]
+        ens = self.emotion_models.get("emo_ensemble")
+        if full_models:
+            base_names = all_base_names
+        else:
+            ens_deps = set(getattr(ens, "base_model_names", ()) or ()) if ens is not None else set()
+            needed = (set(CORE_EMOTION_MODEL_KEYS) - {"emo_ensemble"}) | ens_deps
+            base_names = [k for k in all_base_names if k in needed]
+
         for name in base_names:
+            t_m0 = time.perf_counter()
             clf = self.emotion_models[name]
             probs_mat = clf.predict_proba(X)
             classes = [str(c) for c in clf.classes_]
@@ -2089,10 +2301,13 @@ class _LanguageMLBundle:
                     }
                 )
             outputs[name] = preds
+            self.last_emotion_timings[name] = round(time.perf_counter() - t_m0, 4)
 
-        if "emo_ensemble" in self.emotion_models:
-            ens = self.emotion_models["emo_ensemble"]
-            if hasattr(ens, "predict_proba_from_base_probs"):
+        if ens is not None:
+            t_ens0 = time.perf_counter()
+            if hasattr(ens, "predict_proba_from_base_probs") and all(
+                m in outputs for m in getattr(ens, "base_model_names", ())
+            ):
                 probs_mat = ens.predict_proba_from_base_probs(outputs)
             else:
                 probs_mat = ens.predict_proba(X)
@@ -2113,7 +2328,9 @@ class _LanguageMLBundle:
                     }
                 )
             outputs["emo_ensemble"] = ens_preds
+            self.last_emotion_timings["emo_ensemble"] = round(time.perf_counter() - t_ens0, 4)
 
+        self.last_emotion_timings["_vectorizer"] = round(vec_sec, 4)
         return outputs
 
 
@@ -2127,6 +2344,8 @@ class ClassicalMLSuite:
             "en": _LanguageMLBundle("en", self.cache_dir / "en"),
         }
         self.benchmark_metrics: dict[str, Any] = {}
+        self.last_polarity_timings: dict[str, float] = {}
+        self.last_emotion_timings: dict[str, float] = {}
 
     def load_or_train(
         self,
@@ -2148,77 +2367,110 @@ class ClassicalMLSuite:
         self,
         segmented_texts: Sequence[str],
         languages: Sequence[str] | None = None,
+        full_models: bool = False,
     ) -> dict[str, list[dict[str, Any]]]:
         """Định tuyến từng comment qua cụm mô hình ML cổ điển đúng ngôn ngữ ('vi' hoặc 'en')."""
+        self.last_polarity_timings = {}
         n = len(segmented_texts)
         if n == 0:
-            return {k: [] for k in POLARITY_MODEL_KEYS}
+            return {}
 
         langs = list(languages) if languages is not None else ["vi"] * n
         vi_idx = [i for i, l in enumerate(langs) if l != "en"]
         en_idx = [i for i, l in enumerate(langs) if l == "en"]
 
-        merged: dict[str, list[dict[str, Any] | None]] = {
-            k: [None] * n for k in POLARITY_MODEL_KEYS
-        }
+        merged: dict[str, list[dict[str, Any] | None]] = {}
+
+        def _merge_branch(
+            indices: list[int],
+            branch_res: dict[str, list[dict[str, Any]]],
+            branch_timings: dict[str, float],
+        ) -> None:
+            for m_name, items in branch_res.items():
+                if m_name not in merged:
+                    merged[m_name] = [None] * n
+                for orig_i, pred in zip(indices, items):
+                    merged[m_name][orig_i] = pred
+            for m_name, t_val in branch_timings.items():
+                self.last_polarity_timings[m_name] = round(
+                    self.last_polarity_timings.get(m_name, 0.0) + float(t_val), 4
+                )
 
         if vi_idx:
             self.ensure_loaded("vi")
-            vi_res = self.bundles["vi"].predict_polarity_all([segmented_texts[i] for i in vi_idx])
-            for m_name, items in vi_res.items():
-                if m_name in merged:
-                    for orig_i, pred in zip(vi_idx, items):
-                        merged[m_name][orig_i] = pred
+            vi_res = self.bundles["vi"].predict_polarity_all(
+                [segmented_texts[i] for i in vi_idx],
+                full_models=full_models,
+            )
+            _merge_branch(vi_idx, vi_res, self.bundles["vi"].last_polarity_timings)
 
         if en_idx:
             self.ensure_loaded("en")
-            en_res = self.bundles["en"].predict_polarity_all([segmented_texts[i] for i in en_idx])
-            for m_name, items in en_res.items():
-                if m_name in merged:
-                    for orig_i, pred in zip(en_idx, items):
-                        merged[m_name][orig_i] = pred
+            en_res = self.bundles["en"].predict_polarity_all(
+                [segmented_texts[i] for i in en_idx],
+                full_models=full_models,
+            )
+            _merge_branch(en_idx, en_res, self.bundles["en"].last_polarity_timings)
 
-        return {
-            k: [item for item in v if item is not None]
-            for k, v in merged.items()
-        }
+        # Chỉ giữ các mô hình thực sự chạy đủ trên tất cả mẫu hợp lệ (hoặc lấp rỗng nếu lệch giữa VI/EN)
+        out: dict[str, list[dict[str, Any]]] = {}
+        for k, v in merged.items():
+            if all(item is not None for item in v):
+                out[k] = [item for item in v if item is not None]
+        return out
 
     def predict_emotion_all(
         self,
         segmented_texts: Sequence[str],
         languages: Sequence[str] | None = None,
+        full_models: bool = False,
     ) -> dict[str, list[dict[str, Any]]]:
+        self.last_emotion_timings = {}
         n = len(segmented_texts)
         if n == 0:
-            return {k: [] for k in EMOTION_MODEL_KEYS}
+            return {}
         langs = list(languages) if languages is not None else ["vi"] * n
         vi_idx = [i for i, l in enumerate(langs) if l != "en"]
         en_idx = [i for i, l in enumerate(langs) if l == "en"]
 
-        merged: dict[str, list[dict[str, Any] | None]] = {
-            k: [None] * n for k in EMOTION_MODEL_KEYS
-        }
+        merged: dict[str, list[dict[str, Any] | None]] = {}
+
+        def _merge_branch(
+            indices: list[int],
+            branch_res: dict[str, list[dict[str, Any]]],
+            branch_timings: dict[str, float],
+        ) -> None:
+            for m_name, items in branch_res.items():
+                if m_name not in merged:
+                    merged[m_name] = [None] * n
+                for orig_i, pred in zip(indices, items):
+                    merged[m_name][orig_i] = pred
+            for m_name, t_val in branch_timings.items():
+                self.last_emotion_timings[m_name] = round(
+                    self.last_emotion_timings.get(m_name, 0.0) + float(t_val), 4
+                )
 
         if vi_idx:
             self.ensure_loaded("vi")
-            vi_res = self.bundles["vi"].predict_emotion_all([segmented_texts[i] for i in vi_idx])
-            for m_name, items in vi_res.items():
-                if m_name in merged:
-                    for orig_i, pred in zip(vi_idx, items):
-                        merged[m_name][orig_i] = pred
+            vi_res = self.bundles["vi"].predict_emotion_all(
+                [segmented_texts[i] for i in vi_idx],
+                full_models=full_models,
+            )
+            _merge_branch(vi_idx, vi_res, self.bundles["vi"].last_emotion_timings)
 
         if en_idx:
             self.ensure_loaded("en")
-            en_res = self.bundles["en"].predict_emotion_all([segmented_texts[i] for i in en_idx])
-            for m_name, items in en_res.items():
-                if m_name in merged:
-                    for orig_i, pred in zip(en_idx, items):
-                        merged[m_name][orig_i] = pred
+            en_res = self.bundles["en"].predict_emotion_all(
+                [segmented_texts[i] for i in en_idx],
+                full_models=full_models,
+            )
+            _merge_branch(en_idx, en_res, self.bundles["en"].last_emotion_timings)
 
-        return {
-            k: [item for item in v if item is not None]
-            for k, v in merged.items()
-        }
+        out: dict[str, list[dict[str, Any]]] = {}
+        for k, v in merged.items():
+            if all(item is not None for item in v):
+                out[k] = [item for item in v if item is not None]
+        return out
 
 
 def _print_benchmark_report(lang: str, metrics: dict[str, Any]) -> None:

@@ -1550,10 +1550,6 @@
       }
     }
   },
-  "emotion_lr": {
-    "accuracy": 0.791,
-    "macro_f1": 0.8241
-  },
   "top_features": {
     "polarity": {
       "NEG": [
