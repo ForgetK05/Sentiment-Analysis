@@ -1,7 +1,7 @@
 # Tài liệu Giải thích Chi tiết Cấu trúc, Cách hoạt động & Từ điển Dữ liệu Dự án
 
 > **Đối tượng dự án:** Hệ thống Phân tích Cảm xúc Bình luận TikTok Song ngữ (`vi` / `en`) Đa phương thức (`e:\A\Sentiment-Analysis`).
-> **Nguyên tắc kiến trúc cốt lõi:** Chỉ dùng mô hình AI tạo sinh (**Gemma 4 E2B**) tại **Đầu vào** (đọc ngữ cảnh video/ảnh) và **Đầu ra** (tùy chọn thẩm định thực tế & tổng kết); toàn bộ phần lõi ở giữa chạy trên CPU với **NLP (`underthesea`) + 5 họ Classical ML v3 (`LinearSVC`/`NBSVM`/`RBF-SVM`, `NB`/`CNB`, `LR`/`Ridge`/`SGD`, `RF`/`HistGB` + Smart Meta-Ensemble) + Luật từ điển + Deep Learning (`PhoBERT`, `ViSoBERT`, `Twitter-RoBERTa`)**, hỗ trợ chuyển nhanh qua `--engine hybrid | classical`.
+> **Nguyên tắc kiến trúc cốt lõi:** Chỉ dùng mô hình AI tạo sinh (**Gemma 4 E2B**) tại **Đầu vào** (đọc ngữ cảnh video/ảnh) và **Đầu ra** (tùy chọn thẩm định thực tế & tổng kết); toàn bộ phần lõi ở giữa chạy trên CPU với **NLP (`underthesea`) + 5 họ Classical ML v3** (mặc định chạy **5 đại diện cho 5 họ + Smart Meta-Ensemble** để gọn và nhanh, hoặc `--full-models` cho đủ 10+1: `LinearSVC`/`NBSVM`/`RBF-SVM`, `NB`/`CNB`, `LR`/`Ridge`/`SGD`, `RF`/`HistGB`) + **Luật từ điển + Deep Learning (`PhoBERT`, `ViSoBERT`, `Twitter-RoBERTa`)**, hỗ trợ chuyển nhanh qua `--engine hybrid | classical`.
 
 ---
 
@@ -44,17 +44,19 @@ e:\A\Sentiment-Analysis\
 │       ├── emotion_ml_model.joblib
 │       └── benchmark_metrics.json
 │
-├── outputs/                              # KHO KẾT QUẢ CUỐI CÙNG SAU XỬ LÝ (6 tệp gọn)
+├── outputs/                              # KHO KẾT QUẢ CUỐI CÙNG SAU XỬ LÝ (8 tệp)
 │   └── <run_name>/                       # Khớp mã bài đăng hoặc tên thư mục nguồn
+│       ├── report.html                   # Báo cáo tương tác 1 tệp tự chứa (offline): Tổng quan, Live Pipeline Funnel, 5 họ ML + Ma trận đồng thuận, Comment X-Ray
 │       ├── final_results.csv             # Bảng kết quả dễ đọc (12 cột lõi hoặc 16 cột khi bật AI Audit; tiêu đề song ngữ 2 dòng Anh–Việt, sắp theo lượt thích giảm dần)
-│       ├── detailed_model_outputs.csv    # Thuộc tính kỹ thuật, ID gốc, ngữ cảnh video, xác suất & dự đoán đầy đủ 5 họ ML + DL (46 cột ở Hybrid / 42 cột ở Classical; +5 cột khi bật AI Audit)
+│       ├── detailed_model_outputs.csv    # Thuộc tính kỹ thuật, ID gốc, ngữ cảnh video, xác suất & dự đoán các mô hình đang chạy (tự ẩn cột rỗng ở chế độ mặc định; 42–46 cột khi bật --full-models, +5 cột khi bật AI Audit)
 │       ├── filtered_noise.csv            # 9 cột tách riêng bình luận nhiễu kèm lý do tiếng Việt (tiêu đề song ngữ 2 dòng Anh–Việt)
-│       ├── model_comparison.csv          # Bảng so sánh toàn diện các mô hình/nhánh (11 cột lõi hoặc 14 cột khi bật AI Audit; tiêu đề song ngữ 2 dòng Anh–Việt)
-│       ├── report.json                   # Báo cáo tổng hợp JSON gọn (không nhân bản mảng comments/noise)
-│       └── dashboard.png                 # Biểu đồ 2x2 trực quan hóa kết quả
+│       ├── model_comparison.csv          # Bảng so sánh các mô hình/nhánh kèm timing riêng từng mô hình (11 cột lõi hoặc 14 cột khi bật AI Audit)
+│       ├── report.json                   # Báo cáo tổng hợp JSON gọn (pipeline_stages, ensemble_formula, benchmark rút gọn, không chứa confusion_matrix)
+│       ├── dashboard_overview.png        # Biểu đồ 2x2 tổng quan khán giả (Polarity, 7 cảm xúc, Bám sát video, Từ khóa TF-IDF)
+│       └── dashboard_models.png          # Biểu đồ 2x2 phân tích & giải thích 5 họ mô hình (Dự đoán theo họ, Benchmark Test Macro-F1, Tốc độ, Top Features)
 │
 ├── src/                                  # MÃ NGUỒN CHÍNH (Package Python)
-│   ├── __init__.py                       # Xuất biểu tượng (Lazy Export) cho toàn gói src
+│   ├── __init__.py                       # Xuất biểu tượng (Lazy Export) cho toàn gói src (36 biểu tượng)
 │   ├── ingestion/
 │   │   ├── __init__.py
 │   │   └── tiktok_collector.py           # Chuẩn bị dữ liệu: Tải video/ảnh & crawl bình luận TikTok
@@ -64,11 +66,12 @@ e:\A\Sentiment-Analysis\
 │   ├── models/
 │   │   ├── __init__.py
 │   │   ├── media_context.py              # Giai đoạn 1: OpenCV + PyAV/Whisper + Gemma 4 E2B -> lưu/nạp media_context.json
-│   │   ├── classical_ml.py               # Giai đoạn 3A: FeatureUnion (Word+Char TF-IDF + 15 Social Features), 5 họ ML (3 biến thể SVM) + Smart Meta-Ensemble & CLI benchmark
+│   │   ├── classical_ml.py               # Giai đoạn 3A: FeatureUnion (Word+Char TF-IDF + 15 Social Features), 5 họ ML (5 đại diện mặc định hoặc full 10+1) + Smart Meta-Ensemble & timing từng model
 │   │   ├── sentiment_engine.py           # Giai đoạn 3B: Dual-mode Hybrid (ML v3 + PhoBERT/ViSoBERT/RoBERTa) hoặc Classical thuần (--engine classical) + Context Alignment
-│   │   └── gemma_auditor.py              # Giai đoạn 4 (mặc định tắt): Gemma 4 E2B thẩm định ca mỉa mai sâu & so sánh mô hình
-│   ├── visualization.py                  # Vẽ bảng điều khiển dashboard.png (2x2)
-│   └── pipeline.py                       # Điều phối End-to-End & Giao diện dòng lệnh CLI
+│   │   └── gemma_auditor.py              # Giai đoạn 4 (mặc định tắt): Gemma 4 E2B thẩm định ca mỉa mai sâu & so sánh mô hình (model_key, tier, timing riêng)
+│   ├── visualization.py                  # Vẽ dashboard_overview.png, dashboard_models.png (và plot_sentiment_dashboard tương thích ngược)
+│   ├── report_html.py                    # Sinh báo cáo HTML tương tác tự chứa report.html (Pipeline Funnel, 5 họ ML, Agreement Heatmap, Comment X-Ray)
+│   └── pipeline.py                       # Điều phối End-to-End, ghi pipeline_stages & giao diện dòng lệnh CLI
 │
 ├── main.ipynb                            # Notebook 6 ô chạy 1-click từ link TikTok
 ├── requirements.txt                      # Danh sách thư viện Python yêu cầu
@@ -83,7 +86,7 @@ Hai tệp cấu hình trong `AI_Local/gemma4-e2b/` quyết định việc mô h�
 | Tệp                   | Tham số / Biến                | Giá trị                              | Ý nghĩa kỹ thuật & tác dụng thực tế                                                                                                                                                                    |
 | :--------------------- | :------------------------------ | :------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `docker-compose.yml` | `ports`                       | `"11434:11434"`                      | Mở cổng API REST chuẩn của Ollama để mã Python (`requests`) gọi tại `http://localhost:11434`.                                                                                                     |
-| `docker-compose.yml` | `volumes`                     | `E:/.../ollama_models:/root/.ollama` | Lưu trọng số mô hình trực tiếp lên ổ `E:`, giữ nguyên mô hình khi khởi động lại container.                                                                                                  |
+| `docker-compose.yml` | `volumes`                     | `./ollama_models:/root/.ollama`<br>`./Modelfile:/Modelfile` | Dùng đường dẫn tương đối di động gắn thư mục trọng số `ollama_models/` và `Modelfile` trực tiếp vào container, giữ nguyên mô hình khi khởi động lại. |
 | `docker-compose.yml` | `OLLAMA_FLASH_ATTENTION`      | `1`                                  | Bật thuật toán **Flash Attention**, giảm lượng VRAM tiêu thụ của phép tính Attention khi nạp chuỗi nhiều khung hình ảnh.                                                                 |
 | `docker-compose.yml` | `OLLAMA_KV_CACHE_TYPE`        | `q8_0`                               | Lượng tử hóa bộ nhớ đệm ngữ cảnh (KV Cache) xuống 8-bit, giúp giảm khoảng 40% VRAM mà gần như không giảm độ chính xác.                                                                  |
 | `docker-compose.yml` | `OLLAMA_MAX_LOADED_MODELS`    | `1`                                  | Chỉ cho phép nạp tối đa 1 mô hình vào VRAM tại một thời điểm, ngăn lỗi tràn bộ nhớ GPU.                                                                                                      |
@@ -129,11 +132,11 @@ flowchart TD
     G2D --> R1
     subgraph S3 ["Giai đoạn 3: Lõi Phân tích Cảm xúc Song ngữ (Dual Mode: hybrid hoặc classical trên CPU)"]
         R1{"Định tuyến ngôn ngữ<br/>vi hay en?"}
-        R1 -->|"vi"| VI_ML["Classical ML v3 VI (5 họ ML, 3 biến thể SVM + Smart Ensemble) + Lexicon VI"]
+        R1 -->|"vi"| VI_ML["Classical ML v3 VI (mặc định 5 đại diện + Smart Ensemble; --full-models đủ 10+1) + Lexicon VI"]
         R1 -->|"vi, nếu engine=hybrid"| VI_DL["Deep Learning VI: PhoBERT + ViSoBERT + PhoBERT-Emotion"]
-        R1 -->|"en"| EN_ML["Classical ML v3 EN (5 họ ML, 3 biến thể SVM + Smart Ensemble) + Lexicon EN"]
+        R1 -->|"en"| EN_ML["Classical ML v3 EN (mặc định 5 đại diện + Smart Ensemble; --full-models đủ 10+1) + Lexicon EN"]
         R1 -->|"en, nếu engine=hybrid"| EN_DL["Deep Learning EN: Twitter-RoBERTa + DistilRoBERTa-Emotion"]
-        VI_ML --> HYB["Hybrid Ensemble (hoặc ML 85% + Lexicon 15% khi engine=classical) + Context Alignment<br/>Tạo AnalyzedComment đầy đủ cột ML v3 và DL"]
+        VI_ML --> HYB["Hybrid Ensemble (hoặc ML 85% + Lexicon 15% khi engine=classical) + Context Alignment<br/>Tạo AnalyzedComment & đo timing riêng từng mô hình"]
         VI_DL --> HYB
         EN_ML --> HYB
         EN_DL --> HYB
@@ -145,13 +148,13 @@ flowchart TD
     G1C -.->|"Truyền JSON Ngữ cảnh 11 trường"| G4A
 
     subgraph S4 ["Giai đoạn 4: AI Đầu ra — Thẩm định ca mỉa mai sâu (Mặc định TẮT RUN_AI_AUDIT=False)"]
-        G4A["GemmaAuditor.audit_comments()<br/>Gemma 4 E2B chấm độc lập theo lô 8 câu + ngữ cảnh"] --> G4B["build_model_comparison()<br/>Agreement %, Macro-F1, Cohen's Kappa"]
+        G4A["GemmaAuditor.audit_comments()<br/>Gemma 4 E2B chấm độc lập theo lô 8 câu + ngữ cảnh"] --> G4B["build_model_comparison()<br/>Agreement %, Macro-F1, Cohen's Kappa + model_key & tier"]
         G4B --> G4C["generate_overall_verdict()<br/>Nhận định độ chính xác, điểm mạnh và điểm yếu"]
     end
 
     NOISE --> EXP
-    G4C --> EXP["SentimentPipeline._export_outputs() + plot_sentiment_dashboard()"]
-    EXP --> OUT["outputs/{run_name}/ (6 tệp):<br/>final_results.csv • detailed_model_outputs.csv<br/>filtered_noise.csv • model_comparison.csv • report.json • dashboard.png"]
+    G4C --> EXP["SentimentPipeline._export_outputs()<br/>+ plot_overview_dashboard() + plot_models_dashboard() + generate_html_report()"]
+    EXP --> OUT["outputs/{run_name}/ (8 tệp):<br/>report.html • final_results.csv • detailed_model_outputs.csv<br/>filtered_noise.csv • model_comparison.csv • report.json<br/>dashboard_overview.png • dashboard_models.png"]
 ```
 
 ### 2.2. Chu kỳ quản lý tài nguyên (CPU ↔ GPU 4GB)
@@ -191,7 +194,7 @@ Lấy đúng 1 bình luận thật từ lần chạy video `7709458511838612744`
 
 ### 3.1. `src/__init__.py` — Cơ chế xuất biểu tượng lười (Lazy Export)
 
-- Khai báo danh sách công khai `__all__` (33 lớp, hàm và hằng số) cùng từ điển ánh xạ `_EXPORT_MAP`.
+- Khai báo danh sách công khai `__all__` (**36 lớp, hàm và hằng số**, gồm thêm `generate_html_report`, `plot_overview_dashboard`, `plot_models_dashboard`) cùng từ điển ánh xạ `_EXPORT_MAP`.
 - Dùng hàm `__getattr__(name)`: khi người dùng gọi `from src import SentimentPipeline`, Python mới tự động nạp đúng mô-đun con (`src.pipeline`), tránh tình trạng vừa `import src` đã phải kéo theo `torch`, `transformers`, `cv2` gây chậm khởi động.
 
 ### 3.2. `src/ingestion/tiktok_collector.py` — Chuẩn bị dữ liệu: Thu thập & Đọc dữ liệu
@@ -241,38 +244,42 @@ Lấy đúng 1 bình luận thật từ lần chạy video `7709458511838612744`
 | Thành phần | Loại | Vai trò & logic hoạt động |
 | :--- | :--- | :--- |
 | `BilingualLexiconScorer` | Lớp luật & từ điển | Chấm điểm cảm xúc dựa trên từ điển dương/âm riêng cho `vi` và `en`, xử lý tăng/giảm cường độ (`±2` từ: ×`1.35` / ×`0.70`), phủ định (`2` từ trước, hỗ trợ `"chứ không"` / `"no more"`), quy đổi qua hàm mũ `exp(...)` về `{POS, NEG, NEU}`. |
+| `CORE_POLARITY_MODEL_KEYS` / `CORE_EMOTION_MODEL_KEYS` & `*_META` | Hằng số cấu hình | Định nghĩa **5 đại diện cho 5 họ Polarity** (`tfidf_cnb`, `tfidf_lr`, `tfidf_svm`, `tfidf_rf`, `tfidf_tree` + `ml_ensemble`), **3 đại diện Emotion** (`emo_cnb`, `emo_lr`, `emo_svm` + `emo_ensemble`), và metadata `POLARITY_MODEL_META` / `EMOTION_MODEL_META` (`display_name`, `short_name`, `family`, `family_vi`, `family_color`, `desc_vi`). |
 | `_SocialLexiconFeatureTransformer` & `_SVDSocialFeatureExtractor` | Bộ trích xuất đặc trưng | Tạo **3 nhánh song song**: **Word TF-IDF (`1–3 n-gram`, `max_features=35000`)**, **Char-WB TF-IDF (`3–5 n-gram`, `max_features=30000`)**, và **15 Social/Lexicon Features** (độ dài, viết hoa, `!`, `?`, emoji cười/buồn/giận, từ khóa cảm xúc, độ lệch từ điển). Nhánh Tree & RBF-SVM dùng `TruncatedSVD(96)` nối trực tiếp với **15 Social Features nguyên bản** để không bị nén mờ. |
 | `_load_vi_corpora() / _load_en_corpora()` | Hàm tải dữ liệu | Tải CSV/Parquet trực tiếp không cần `datasets`/`pyarrow`: Polarity VI (`uit_vsfc` + `vietnamese-SA-dataset`), Polarity EN (`cardiffnlp/tweeteval`), Emotion VI (`UIT-VSMEC`), Emotion EN (`dair-ai/emotion` ánh xạ về 7 lớp VSMEC). |
-| `_LanguageMLBundle` (`ML_BUNDLE_SCHEMA_VERSION = 3`) | Lớp per-language | Huấn luyện & chọn lọc hyperparameter cho **10 mô hình Polarity thuộc 5 họ** (`MultinomialNB`, `ComplementNB(norm=False)`, `LogisticRegression`, `RidgeClassifier` + softmax calibration, `SGDClassifier(log_loss)`, `LinearSVC`, `NBSVM`, `Subsampled Calibrated RBF-SVM`, `RandomForest`, `HistGradientBoosting`), **Smart OOF Meta-Ensemble** (`oof_stacking_lr` hoặc `top4_weighted_soft_vote` / `top4_uniform_soft_vote` chọn tự động theo OOF Macro-F1), và **6 mô hình ML Emotion** (`ComplementNB`, `LogisticRegression`, `Ridge`, `LinearSVC`, `NBSVM`, `SGD`) + **Emotion Soft-Vote Ensemble**. Cache vào `.joblib` + `benchmark_metrics.json`. |
-| `ClassicalMLSuite` | Lớp tổng hợp | Cung cấp `ensure_loaded(lang)`, `predict_polarity_all(texts, languages)`, `predict_emotion_all(texts, languages)` tự định tuyến từng câu về `_LanguageMLBundle("vi")` hoặc `_LanguageMLBundle("en")`; hỗ trợ chạy CLI độc lập `python -m src.models.classical_ml --lang vi en --retrain`. |
+| `_LanguageMLBundle` (`ML_BUNDLE_SCHEMA_VERSION = 3`) | Lớp per-language | Huấn luyện & chọn lọc hyperparameter cho **10 mô hình Polarity thuộc 5 họ** (`MultinomialNB`, `ComplementNB(norm=False)`, `LogisticRegression`, `RidgeClassifier` + softmax calibration, `SGDClassifier(log_loss)`, `LinearSVC`, `NBSVM`, `Subsampled Calibrated RBF-SVM`, `RandomForest`, `HistGradientBoosting`), **Smart OOF Meta-Ensemble** (`oof_stacking_lr` hoặc `top4_weighted_soft_vote` / `top4_uniform_soft_vote`), và **6 mô hình ML Emotion** + **Emotion Soft-Vote Ensemble**. Khi suy luận (`full_models=False`), tự động chỉ chạy nhóm đại diện `CORE_*` + các nhánh phụ thuộc của `ml_ensemble` (bỏ `tfidf_rbf_svm` chậm/yếu và `tfidf_nb` dư thừa) và đo `last_polarity_timings` / `last_emotion_timings` riêng từng mô hình. |
+| `ClassicalMLSuite` | Lớp tổng hợp | Cung cấp `ensure_loaded(lang)`, `predict_polarity_all(texts, languages, full_models=False)`, `predict_emotion_all(texts, languages, full_models=False)` tự định tuyến từng câu về `_LanguageMLBundle("vi")` hoặc `_LanguageMLBundle("en")` và tổng hợp `last_polarity_timings` / `last_emotion_timings`; hỗ trợ chạy CLI độc lập `python -m src.models.classical_ml --lang vi en --retrain`. |
 
 ### 3.6. `src/models/sentiment_engine.py` — Giai đoạn 3B: Dual-Mode (`hybrid` / `classical`), Học sâu & Context Alignment
 
 | Thành phần | Chi tiết xử lý |
 | :--- | :--- |
-| `AnalyzedComment` (`dataclass`) | Lưu toàn bộ metadata, tiền xử lý, kết quả chính (`polarity_*`, `emotion_*`), ngữ cảnh video (`is_on_topic`, `context_relevance`, `matched_video_terms`, `context_alignment`), nhãn dự đoán riêng của **10 mô hình Polarity ML v3 + ML Ensemble + Lexicon**, các mô hình Deep Learning (`pred_phobert`, `pred_visobert`, `pred_roberta`), và **6 mô hình Emotion ML** (`pred_emo_cnb` .. `pred_emo_sgd`) + `emotion_ml_label`. |
-| `CommentAnalyzer(engine_mode="hybrid" \| "classical")` | - **Chế độ `hybrid` (mặc định):** Giữ nguyên các mô hình Transformer (`PhoBERT`, `ViSoBERT`, `Twitter-RoBERTa`, `PhoBERT-Emotion`, `DistilRoBERTa-Emotion`) kết hợp với `ML Meta-Ensemble v3` và `Lexicon`.<br>- **Chế độ `classical`:** Bỏ qua hoàn toàn giai đoạn tải & suy luận `torch`/`transformers` (0% Deep Learning), dùng trực tiếp **`0.85 * ML_Ensemble + 0.15 * Lexicon`** cho Polarity và **`ML_Emotion_Ensemble`** cho Emotion. |
-| Trọng số `Ensemble` theo chế độ | - **Hybrid (`vi`):** `0.40 * PhoBERT + 0.20 * ViSoBERT + 0.25 * ML_Ensemble_VI + 0.15 * Lexicon_VI`<br>- **Hybrid (`en`):** `0.60 * Twitter-RoBERTa + 0.25 * ML_Ensemble_EN + 0.15 * Lexicon_EN`<br>- **Classical (`vi` & `en`):** `0.85 * ML_Ensemble + 0.15 * Lexicon` |
+| `AnalyzedComment` (`dataclass`) | Lưu toàn bộ metadata, tiền xử lý, kết quả chính (`polarity_*`, `emotion_*`), ngữ cảnh video (`is_on_topic`, `context_relevance`, `matched_video_terms`, `context_alignment`), nhãn dự đoán riêng của các mô hình Classical ML v3 + Lexicon, Deep Learning (`pred_phobert`, `pred_visobert`, `pred_roberta`), và Emotion ML. |
+| `CommentAnalyzer(engine_mode="hybrid" \| "classical", full_models=False)` | - **Chế độ `hybrid` (mặc định):** Kết hợp Transformer (`PhoBERT`, `ViSoBERT`, `Twitter-RoBERTa`, `PhoBERT-Emotion`, `DistilRoBERTa-Emotion`) với `ML Meta-Ensemble v3` và `Lexicon`. Khi `full_models=False`, bỏ qua không chạy thừa nhánh `ML Emotion` (vì kết quả cảm xúc dùng DL).<br>- **Chế độ `classical`:** Bỏ qua hoàn toàn `torch`/`transformers` (0% Deep Learning), dùng trực tiếp **`0.85 * ML_Ensemble + 0.15 * Lexicon`** cho Polarity và **`ML_Emotion_Ensemble`** cho Emotion; bổ sung `_has_strong_emotion_cue()` để chuyển bình luận `en` có `polarity_label == "NEU"` và `emotion_confidence < 0.72` (không có cue cảm xúc mạnh) về `"Other"` nhằm giảm gán nhầm sang `Anger`. |
+| Trọng số `Ensemble` (`_ensemble_formula_info()`) | - **Hybrid (`vi`):** `0.40 * PhoBERT + 0.20 * ViSoBERT + 0.25 * ML_Ensemble_VI + 0.15 * Lexicon_VI`<br>- **Hybrid (`en`):** `0.60 * Twitter-RoBERTa + 0.25 * ML_Ensemble_EN + 0.15 * Lexicon_EN`<br>- **Classical (`vi` & `en`):** `0.85 * ML_Ensemble + 0.15 * Lexicon` |
 | `compute_polarity_score(...)` | Quy đổi xác suất cuối thành điểm liên tục `[-1.0, +1.0]` nhất quán với `polarity_label` (`NEG` trong `[-1.0, -0.21]`, `POS` trong `[+0.21, +1.0]`, `NEU` trong `[-0.19, +0.19]`), có cộng `nudge` cảm xúc. |
-| Đồng bộ `Emotion–Polarity` & `needs_audit` | Nếu `emotion_label ∈ {Anger, Disgust, Fear}` (`conf >= 0.55`) VÀ `Lexicon(NEG) >= 0.50` → cộng `+0.25` vào `NEG`, nhân `0.65` vào `POS` rồi chuẩn hóa. Đánh dấu `needs_audit = True` nếu mô hình chính bất đồng (`ViSoBERT != PhoBERT` ở Hybrid, hoặc tỷ lệ bất đồng giữa `ML_Ensemble` và `Lexicon`/các họ ML lớn), `polarity_confidence < 0.65`, hoặc `has_sarcasm_signal == True`. |
-| `CommentAnalyzer.summarize(...)` | Tổng hợp thống kê toàn bài (`engine_mode`, `language_counts`, `polarity_*`, `emotion_*`, `avg_polarity_score`, `avg_confidence`, `overall_tendency`, `on_topic_summary`, `top_examples`). Nếu `deduplicate_stats=True`, bình luận `is_duplicate=True` bị loại khỏi phép tính tỷ lệ. |
+| Đồng bộ `Emotion–Polarity` & `needs_audit` | Nếu `emotion_label ∈ {Anger, Disgust, Fear}` (`conf >= 0.55`) VÀ `Lexicon(NEG) >= 0.50` → cộng `+0.25` vào `NEG`, nhân `0.65` vào `POS` rồi chuẩn hóa. Đánh dấu `needs_audit = True` nếu mô hình chính bất đồng (`ViSoBERT != PhoBERT` ở Hybrid, hoặc bất đồng giữa `ML_Ensemble` và `LR`/`SVM`/`NBSVM`), `polarity_confidence < 0.65`, hoặc `has_sarcasm_signal == True`. |
+| `CommentAnalyzer.summarize(...)` | Tổng hợp thống kê toàn bài (`engine_mode`, `full_models`, `ensemble_formula`, `language_counts`, `polarity_*`, `emotion_*`, `avg_polarity_score`, `avg_confidence`, `overall_tendency`, `on_topic_summary`, `top_examples`, `model_timings_sec`). Dùng `_compact_benchmark_metrics()` để rút gọn `classical_ml_benchmark` (loại bỏ `confusion_matrix` và `per_class`, chỉ giữ điểm tổng hợp, `top_features["polarity"]` top 8 và đường dẫn `benchmark_file`). |
 
 ### 3.7. `src/models/gemma_auditor.py` — Giai đoạn 4: AI Đầu ra (Thẩm định & Đối chiếu)
 
 - **`GemmaAuditItem` (`dataclass`, 9 trường):** Chứa kết quả thẩm định độc lập của Gemma cho từng bình luận (`comment_index`, `gemma_audited`, `gemma_polarity`, `gemma_emotion`, `gemma_emotion_vi`, `gemma_is_sarcasm`, `gemma_agrees_polarity`, `gemma_agrees_emotion`, `gemma_reason`).
 - **`_format_video_context(media_result)`:** Đóng gói ngữ cảnh video từ Giai đoạn 1 thành văn bản ngắn gọn đưa vào đầu mỗi batch gửi Gemma chấm bình luận.
-- **`GemmaAuditor.audit_comments(...)`:** Chia 100% bình luận hợp lệ (hoặc giới hạn `audit_limit` nếu đặt) thành từng lô `chunk_size = 8`, gọi `/api/chat` (`temperature=0.1`, ép `BATCH_AUDIT_SCHEMA`), chuẩn hóa mỉa mai qua `_normalize_gemma_polarity()`.
-- **`build_model_comparison(analyzed, audits, timings)`:** Tính phân bố POS/NEU/NEG (%) cho toàn bộ **10 mô hình Classical ML v3 + `Classical ML Meta-Ensemble` + `Bilingual Lexicon`** (+ các mô hình DL & `Hybrid Ensemble` khi chạy `--engine hybrid`, hoặc `ML Ensemble + Lexicon` khi chạy `--engine classical`), hàng chuẩn `Gemma 4 E2B` (nếu bật Audit), và **6+1 mô hình Emotion ML** (+ Emotion DL ở chế độ Hybrid, hoặc `ML Emotion Ensemble + Cues` ở chế độ Classical). Tổng cộng **21 dòng** ở `--engine classical`, **23–24 dòng** ở `--engine hybrid` (chưa bật Audit). Nếu có Gemma Audit, tính thêm `Agreement (%)`, `Macro-F1` và `Cohen's Kappa`.
+- **`GemmaAuditor.audit_comments(...)`:** Chia bình luận hợp lệ (toàn bộ `all` hoặc chỉ `uncertain`, có thể giới hạn `audit_limit`) thành từng lô `chunk_size = 8`, gọi `/api/chat` (`temperature=0.1`, ép `BATCH_AUDIT_SCHEMA`), chuẩn hóa mỉa mai qua `_normalize_gemma_polarity()`.
+- **`build_model_comparison(analyzed, audits, timings, full_models=False)`:** Gắn `model_key` và `tier` (`base` | `ensemble` | `system` | `reference`), lấy **`inference_time_sec` đo riêng từng mô hình** từ `timings["ml_model_timings_sec"]` / `ml_emo_model_timings_sec`. Khi `full_models=False` (mặc định): xuất **5 đại diện của 5 họ ML + `Classical ML Meta-Ensemble` + `Bilingual Lexicon + Rules` + (DL nếu Hybrid) + `Hệ thống chính`**, và nhánh Emotion gồm 3 đại diện + `ML Emotion Meta-Ensemble` + Hệ thống chính (ở `classical`, tổng **13 dòng** chưa bật Audit) hoặc chỉ DL Emotion (ở `hybrid`). Khi `full_models=True`: xuất đủ **10+1 Polarity** và **6+1 Emotion** (tổng **21 dòng** ở `classical`, **22–24 dòng** ở `hybrid` khi chưa bật Audit). Nếu có Gemma Audit, tính thêm `Agreement (%)`, `Macro-F1` và `Cohen's Kappa`.
 - **`GemmaAuditor.generate_overall_verdict(...)`:** Gửi bảng tổng hợp đối chiếu để Gemma 4 E2B sinh JSON theo `VERDICT_SCHEMA` gồm `accuracy_verdict`, `best_model`, `strengths`, `weaknesses`, và `summary_vi`.
 
-### 3.8. `src/visualization.py` & `src/pipeline.py`
+### 3.8. `src/visualization.py`, `src/report_html.py` & `src/pipeline.py`
 
-- **`plot_sentiment_dashboard(report, save_path)`:** Vẽ lưới 2×2 biểu đồ kích thước `(15, 10)` inch:
-  + Ô `[0, 0]`: Nếu có Gemma Audit → cột đôi **System vs Gemma 4 E2B**; nếu không → cột đơn **POS / NEU / NEG**.
-  + Ô `[0, 1]`: Thanh ngang sắp xếp giảm dần **7 cung bậc cảm xúc**.
-  + Ô `[1, 0]`: Biểu đồ cột đôi **Bám sát nội dung video (`On-topic` vs `Off-topic`)** (hoặc fallback phân bố ngôn ngữ `VI / EN`).
-  + Ô `[1, 1]`: Nếu có Gemma Audit → thanh ngang đôi **Agreement (%) & Macro-F1 (%) vs Gemma 4**; nếu không → thanh chồng 100% phân bố `POS / NEU / NEG` của tất cả mô hình trong `model_comparison` (tự co cỡ chữ cho 10–16 mô hình).
-- **`SentimentPipeline` (`src/pipeline.py`):** Điều phối khép kín theo `--engine hybrid | classical` (và `--retrain-ml`) từ chuẩn bị dữ liệu (`data/<post_id>/`) → Giai đoạn 1 (hoặc nạp `media_context.json`) → Giai đoạn 2 → Giai đoạn 3 → Giai đoạn 4 (tùy chọn) → xuất 5 tệp (`final_results.csv`, `detailed_model_outputs.csv`, `filtered_noise.csv`, `model_comparison.csv`, `report.json`) + `dashboard.png`.
+- **`src/visualization.py`:** Tách thành 2 biểu đồ 2×2 chuyên biệt (kèm giữ `plot_sentiment_dashboard()` để tương thích ngược, đã sửa lỗi cắt số ở viền phải và legend che cột):
+  + **`plot_overview_dashboard(report, save_path)` (`dashboard_overview.png`):** Sắc thái Polarity (Hệ thống vs Gemma nếu có), 7 cung bậc cảm xúc (kèm SL & `%`), Bám sát nội dung video (`On-topic` vs `Off-topic`), và Top từ khóa TF-IDF (`POS` xanh ↔ `NEG` đỏ).
+  + **`plot_models_dashboard(report, save_path)` (`dashboard_models.png`):** Phân bố dự đoán (hoặc Agreement/F1 vs Gemma) nhóm theo `[Họ mô hình]` tách tầng Cơ sở / Ensemble bằng đường kẻ ngang, Benchmark Macro-F1 trên tập Test chuẩn (`vi`/`en`), Tốc độ suy luận riêng từng mô hình (`ms`/`s`), và Giải thích mô hình (Top Features `POS` ↔ `NEG`).
+- **`src/report_html.py` (`generate_html_report()`):** Sinh báo cáo HTML tương tác 1 tệp tự chứa (**100% offline**, CSS + Vanilla JS inline) gồm 4 khu vực:
+  1. **Tổng quan & Ngữ cảnh Video** (KPI cards, chủ đề, thực thể, tóm tắt & kết luận Gemma).
+  2. **Cách Hệ thống Chạy (Live Pipeline Funnel)** hiển thị trạng thái & thời gian của `pipeline_stages` (`GĐ 0` → `GĐ 4`), chi tiết lọc nhiễu và công thức `ensemble_formula`.
+  3. **Biểu diễn 5 Họ Mô hình & Giải thích** gồm thẻ giải thích từng họ, bảng so sánh theo tầng, **Ma trận đồng thuận (`_compute_agreement_matrix`)**, Top Features & Top từ khóa.
+  4. **Comment X-Ray Explorer** nhúng dữ liệu JSON bình luận (phân trang 25 dòng, tìm kiếm & lọc nhanh `Ca khó`, `Mỉa mai`, `Mô hình bất đồng`, `Bám sát video`), bấm mở từng bình luận để xem quá trình tiền xử lý và phiếu bầu từng mô hình.
+- **`SentimentPipeline` (`src/pipeline.py`):** Điều phối khép kín theo `--engine hybrid | classical` và `--full-models` (cùng `--retrain-ml`), ghi lại `pipeline_stages` + `total_duration_sec`, in bảng `TIẾN TRÌNH 4 GIAI ĐOẠN`, xuất **8 tệp** ra `outputs/<run_name>/` (`report.html`, `final_results.csv`, `detailed_model_outputs.csv`, `filtered_noise.csv`, `model_comparison.csv`, `report.json`, `dashboard_overview.png`, `dashboard_models.png`).
 
 ---
 
@@ -328,9 +335,12 @@ Mỗi thư mục ngôn ngữ (`vi/` và `en/`) chứa 3 tệp chuẩn **schema v
 Để người đọc vừa dễ theo dõi kết quả chính vừa tra cứu được toàn bộ thông số kỹ thuật/mô hình, toàn bộ **4 tệp CSV** đầu ra đều dùng **tiêu đề song ngữ 2 dòng** theo chuẩn `english_key\n(mô tả tiếng việt)` (tương thích 100% với hàm `load_comments_dataframe()` nhờ cơ chế tách dòng đầu tiên), đồng bộ thứ tự dòng 1–1 qua `stt` và sắp xếp ổn định theo `likes` giảm dần:
 
 - **`final_results.csv`**: Bảng kết quả dễ đọc cho người xem/báo cáo (**12 cột lõi** hoặc **16 cột** khi bật AI Audit) — đưa **Nội dung bình luận** và **Kết quả cảm xúc** lên ngay bên trái.
-- **`detailed_model_outputs.csv`**: Toàn bộ **ID gốc, thuộc tính tiền xử lý, ngữ cảnh video, xác suất và dự đoán từng mô hình** (tối đa **46 cột lõi** ở chế độ `hybrid`, **42 cột lõi** ở chế độ `classical`; +5 cột nếu bật AI Audit).
+- **`detailed_model_outputs.csv`**: Toàn bộ **ID gốc, thuộc tính tiền xử lý, ngữ cảnh video, xác suất và dự đoán từng mô hình** (tối đa **46 cột lõi** ở chế độ `hybrid`, **42 cột lõi** ở chế độ `classical` khi bật `--full-models`; ở chế độ mặc định `full_models=False`, tự động ẩn các cột `pred_*` / `pred_emo_*` rỗng để bảng gọn chỉ còn các mô hình thực chạy; +5 cột nếu bật AI Audit).
 - **`filtered_noise.csv`**: Tách riêng bình luận nhiễu/ngôn ngữ không hỗ trợ (**9 cột**), sắp theo `likes` giảm dần.
-- **`model_comparison.csv`**: Bảng so sánh toàn diện các mô hình/nhánh (**11 cột lõi** hoặc **14 cột** khi bật AI Audit; **21 dòng** ở `--engine classical`, **23–24 dòng** ở `--engine hybrid` khi chưa bật Audit).
+- **`model_comparison.csv`**: Bảng so sánh toàn diện các mô hình/nhánh (**11 cột lõi** hoặc **14 cột** khi bật AI Audit). Ở chế độ mặc định (`full_models=False`): **13 dòng** ở `--engine classical` (8 Polarity + 5 Emotion), **9–12 dòng** ở `--engine hybrid`; khi bật `--full-models`: **21 dòng** ở `--engine classical`, **22–24 dòng** ở `--engine hybrid` khi chưa bật Audit.
+- **`report.json`**: Tệp tổng hợp gọn nhẹ (**11 khóa gốc**, có `pipeline_stages`, `ensemble_formula` và `classical_ml_benchmark` rút gọn).
+- **`dashboard_overview.png` & `dashboard_models.png`**: 2 bảng biểu đồ 2×2 tách biệt cho phần **Tổng quan Khán giả** và **Phân tích & Giải thích 5 Họ Mô hình**.
+- **`report.html`**: Báo cáo tương tác 1 tệp tự chứa (offline) hiển thị trực quan luồng 4 giai đoạn, thẻ 5 họ mô hình, ma trận đồng thuận và trình khám phá **Comment X-Ray**.
 
 ---
 
@@ -430,7 +440,7 @@ Tệp `final_results.csv` chỉ chứa các **bình luận sạch hợp lệ thu
 
 ### 5.2. `detailed_model_outputs.csv` — Toàn bộ thông số kỹ thuật, ngữ cảnh video, xác suất & dự đoán từng mô hình
 
-Tệp `detailed_model_outputs.csv` giữ lại toàn bộ thông số kỹ thuật (tối đa **46 cột lõi** ở chế độ `hybrid` hoặc **42 cột lõi** ở chế độ `classical`, +5 cột khi bật AI Audit; tự động ẩn cột `pred_phobert`/`pred_visobert` nếu chỉ có `en`, ẩn `pred_roberta` nếu chỉ có `vi`, hoặc ẩn cả 4 cột DL nếu chạy `--engine classical`), đồng bộ thứ tự dòng 1–1 với `final_results.csv` theo cột `stt`.
+Tệp `detailed_model_outputs.csv` giữ lại toàn bộ thông số kỹ thuật (tối đa **46 cột lõi** ở chế độ `hybrid` hoặc **42 cột lõi** ở chế độ `classical` khi bật `--full-models`, +5 cột khi bật AI Audit; ở chế độ mặc định `full_models=False`, `build_detailed_model_outputs_df()` tự động ẩn các cột `pred_*` / `pred_emo_*` không chạy hoặc rỗng toàn bảng như `pred_nb`, `pred_rbf_svm`, cũng như ẩn `pred_phobert`/`pred_visobert` nếu chỉ có `en`, ẩn `pred_roberta` nếu chỉ có `vi`, và ẩn toàn bộ cột `pred_emo_*` / `emotion_ml_label` khi chạy `hybrid` mặc định), đồng bộ thứ tự dòng 1–1 với `final_results.csv` theo cột `stt`.
 
 #### Bảng chi tiết các cột (theo đúng thứ tự cột trong file)
 
@@ -638,13 +648,16 @@ Tệp này tách riêng toàn bộ bình luận không đưa vào phân tích c�
 
 ### 5.4. `model_comparison.csv` — Bảng so sánh các mô hình (11 cột lõi + 3 cột AI Audit)
 
-Tệp này tổng hợp kết quả đối chiếu giữa **10 mô hình Classical ML v3 + Meta-Ensemble**, **Lexicon**, **Deep Learning**, **Hybrid / Classical Final Ensemble** và **Gemma 4 E2B** (tổng cộng **21 dòng** ở `--engine classical`, **23–24 dòng** ở `--engine hybrid` khi chưa bật Audit; sinh bởi `build_model_comparison()` trong `src/models/gemma_auditor.py`). Các ô không áp dụng (như cột đếm POS/NEU/NEG ở các dòng `Emotion` hoặc thời gian ở bước tổng hợp `Ensemble`) hiển thị ký hiệu **`"—"`**.
+Tệp này tổng hợp kết quả đối chiếu giữa các họ **Classical ML v3**, **Lexicon**, **Deep Learning** (nếu bật `hybrid`), **Final Ensemble** và **Gemma 4 E2B** (nếu bật Audit), sinh bởi `build_model_comparison()` trong `src/models/gemma_auditor.py`:
+- **Chế độ mặc định (`full_models=False`):** Hiển thị **5 đại diện cho 5 họ ML** (`Complement NB`, `Logistic Regression`, `Linear SVM`, `Random Forest`, `HistGradientBoosting`) + `Classical ML Meta-Ensemble` + `Bilingual Lexicon + Rules` + (DL nếu `hybrid`) + `Hệ thống chính`, và nhánh Emotion gồm 3 đại diện + `ML Emotion Meta-Ensemble` + Hệ thống chính (ở `classical`: tổng **13 dòng**) hoặc chỉ DL Emotion (ở `hybrid`).
+- **Chế độ đầy đủ (`--full-models` / `full_models=True`):** Hiển thị toàn bộ **10+1 Polarity** và **6+1 Emotion** (tổng **21 dòng** ở `--engine classical`, **22–24 dòng** ở `--engine hybrid` khi chưa bật Audit).
+- Các ô không áp dụng (như cột đếm POS/NEU/NEG ở các dòng `Emotion` hoặc thời gian ở bước tổng hợp `Hybrid/ML Ensemble + Lexicon`) hiển thị ký hiệu **`"—"`**.
 
 | STT | Tên cột song ngữ (`dòng 1 / dòng 2`) | Kiểu | Nguồn & Công thức tính chi tiết |
 | :-: | :--- | :--- | :--- |
 | 1 | `task` / `(nhiệm vụ)` | `str` | `"Polarity (3 lớp)"` hoặc `"Emotion (7 cung bậc)"`. |
 | 2 | `model` / `(mô hình)` | `str` | Tên mô hình hoặc tổ hợp (ví dụ `TF-IDF + Linear SVM`, `Hybrid Ensemble (Hệ thống chính)`). |
-| 3 | `family` / `(nhóm phương pháp)` | `str` | `Classical ML`, `Rule-based NLP`, `Deep Learning`, `Hybrid ML + DL`, hoặc `Multimodal LLM Reference`. |
+| 3 | `family` / `(nhóm phương pháp)` | `str` | Phân rõ 5 họ ML (`Classical ML (Generative)`, `Classical ML (Linear)`, `Classical ML (Margin / SVM)`, `Classical ML (Tree Bagging)`, `Classical ML (Tree Boosting)`), `Classical ML Ensemble`, `Rule-based NLP`, `Deep Learning`, `Hybrid ML + DL`, hoặc `Multimodal LLM Reference`. |
 | 4 | `total_comments` / `(số bình luận)` | `int` / `—` | Tổng số bình luận mô hình này đánh giá. *(Riêng `ViSoBERT` chỉ tính trên tập `language == "vi"`; dòng `Emotion` hiển thị `"—"`).* |
 | 5 | `pos_count` / `(tích cực SL)` | `int` / `—` | Số bình luận mô hình dự đoán nhãn `"POS"`. |
 | 6 | `neu_count` / `(trung tính SL)` | `int` / `—` | Số bình luận mô hình dự đoán nhãn `"NEU"`. |
@@ -655,36 +668,55 @@ Tệp này tổng hợp kết quả đối chiếu giữa **10 mô hình Classic
 | *11* | `agreement_vs_gemma_pct` / `(khớp gemma %)` | `str` | *(Ẩn nếu tắt Audit)* Tỷ lệ trùng nhãn với Gemma 4 trên tập giao đã thẩm định: `round(số_câu_trùng * 100 / N_audit, 2)%`. |
 | *12* | `macro_f1_vs_gemma` / `(macro-f1 so với gemma)` | `float` | *(Ẩn nếu tắt Audit)* `f1_score(y_gemma, y_model, average="macro", zero_division=0)` (3 nhãn cho Polarity; 7 nhãn cho Emotion). |
 | *13* | `cohen_kappa_vs_gemma` / `(cohen kappa so với gemma)` | `float` / `—` | *(Ẩn nếu tắt Audit)* `cohen_kappa_score(y_gemma, y_model, labels=["POS", "NEG", "NEU"])` (đặt `0.0` nếu `NaN`; dòng `Emotion` là `"—"`). |
-| 11 *(14)* | `inference_time_sec` / `(thời gian chạy giây)` | `float` / `—` | Thời gian suy luận đo bằng `time.perf_counter()` làm tròn 3 chữ số (riêng bước tổ hợp `Hybrid Ensemble` cộng tức thời nên hiển thị `"—"`). |
+| 11 *(14)* | `inference_time_sec` / `(thời gian chạy giây)` | `float` / `—` | Thời gian suy luận đo **riêng từng mô hình** bằng `time.perf_counter()` (làm tròn 3–4 chữ số thập phân từ `ml_model_timings_sec` / `ml_emo_model_timings_sec` và thời gian từng Transformer; riêng bước tổng hợp `Hệ thống chính` cộng trọng số tức thời hiển thị `"—"`). |
 
 ---
 
-### 5.5. `report.json` — Giải thích cấu trúc 8 nhánh JSON tổng hợp gọn
+### 5.5. `report.json` — Giải thích cấu trúc 11 khóa gốc tổng hợp gọn
 
 | STT | Khóa gốc (`report.json`) | Kiểu | Nội dung & Công thức các chỉ số tổng hợp |
 | :-: | :--- | :--- | :--- |
 | 1 | `run_name` | `str` | Mã định danh lượt chạy (`<post_id>` hoặc tên thư mục nguồn). |
-| 2 | `tiktok_metadata` | `dict` \| `null` | Toàn bộ 13 trường của `metadata.json` (`null` nếu chạy từ thư mục `input_dir` không crawl mới). |
-| 3 | `media_analysis` | `dict` \| `null` | Toàn bộ 17 trường ngữ cảnh từ `media_context.json` (`transcript`, 11 trường phân tích nội dung, metadata khung hình...). |
-| 4 | `noise_filter_summary` | `dict` | Gồm 5 khóa: `total_raw_comments`, `valid_comments`, `filtered_noise_count`, `duplicate_valid_count`, và `filter_reasons`. |
-| 5 | `keywords_tfidf` | `dict` | Dùng `TfidfVectorizer(ngram_range=(1,2), max_features=300)` trên danh từ/động từ/tính từ (qua `underthesea.pos_tag` cho `vi`) hoặc từ sạch không stopword (cho `en`), tính **giá trị trung bình theo cột** của ma trận TF-IDF (`mat.mean(axis=0)`), lấy **Top 10** cho 3 tập: `overall`, `positive` (`POS`), `negative` (`NEG`). |
-| 6 | `sentiment_summary` | `dict` | Thống kê từ `CommentAnalyzer.summarize()` (nếu `deduplicate_stats=True` thì loại các bản ghi `is_duplicate=True`):<br>• `avg_polarity_score`: trung bình cộng `polarity_score` toàn tập.<br>• `avg_confidence`: trung bình cộng `polarity_confidence` toàn tập.<br>• `overall_tendency`: `"Tranh cãi (Trái chiều)"` nếu `POS% >= 35%` **và** `NEG% >= 35%`; ngược lại lấy nhãn chiếm số lượng cao nhất.<br>• `on_topic_summary`: thống kê nhóm `is_on_topic == True` (`on_topic_count`, `on_topic_pct`, `off_topic_count`, `avg_context_relevance`, phân bố `POS/NEU/NEG` nội bộ nhóm bám sát video, và `alignment_counts`).<br>• `top_examples`: Top 3 bình luận tiêu biểu mỗi lớp `POS`/`NEG`/`NEU` sắp theo `(likes, polarity_confidence)` giảm dần.<br>• `classical_ml_benchmark` & `model_timings_sec`: kết quả kiểm chứng trên tập test công khai và thời gian chạy từng mô hình. |
-| 7 | `model_comparison` | `dict` | Dữ liệu JSON nguồn của `model_comparison.csv` (`polarity_models` và `emotion_models`). |
-| 8 | `ai_audit_verdict` | `dict` \| `null` | Tổng kết từ Gemma 4 E2B ở cuối Giai đoạn 4 (`accuracy_verdict`, `best_model`, `strengths`, `weaknesses`, `summary_vi`, `audited_count`, `sarcasm_detected_count`, `sarcasm_rate_pct`). |
-| 9 | `ai_audit_status` | `dict` | Trạng thái thực thi Giai đoạn 4 (`requested`, `scope`, `ollama_ready`, `audited_count`, `total_comments`, `message`) giúp phân biệt rõ tắt thủ công vs lỗi kết nối Ollama. |
+| 2 | `total_duration_sec` | `float` | Tổng thời gian thực thi toàn bộ pipeline (tính bằng giây, làm tròn 3 chữ số thập phân). |
+| 3 | `pipeline_stages` | `list[dict]` | Danh sách **5 bước thực thi** (`GĐ 0` → `GĐ 4`), mỗi mục gồm `id`, `title`, `status` (`completed` \| `cached` \| `skipped` \| `failed`), `duration_sec`, `summary` và `metrics` tóm tắt — dùng cho bảng tiến trình CLI/Notebook và Live Pipeline Funnel trong `report.html`. |
+| 4 | `tiktok_metadata` | `dict` \| `null` | Toàn bộ 13 trường của `metadata.json` (`null` nếu chạy từ thư mục `input_dir` không crawl mới). |
+| 5 | `media_analysis` | `dict` \| `null` | Toàn bộ 17 trường ngữ cảnh từ `media_context.json` (`transcript`, 11 trường phân tích nội dung, metadata khung hình...). |
+| 6 | `noise_filter_summary` | `dict` | Gồm 5 khóa: `total_raw_comments`, `valid_comments`, `filtered_noise_count`, `duplicate_valid_count`, và `filter_reasons`. |
+| 7 | `keywords_tfidf` | `dict` | Dùng `TfidfVectorizer(ngram_range=(1,2), max_features=300)` trên danh từ/động từ/tính từ (qua `underthesea.pos_tag` cho `vi`) hoặc từ sạch không stopword (cho `en`), tính **giá trị trung bình theo cột** của ma trận TF-IDF (`mat.mean(axis=0)`), lấy **Top 10** cho 3 tập: `overall`, `positive` (`POS`), `negative` (`NEG`). |
+| 8 | `sentiment_summary` | `dict` | Thống kê từ `CommentAnalyzer.summarize()` (nếu `deduplicate_stats=True` thì loại các bản ghi `is_duplicate=True`):<br>• `engine_mode` & `full_models`: chế độ chạy hiện tại.<br>• `ensemble_formula`: công thức trọng số tổ hợp đã áp dụng theo từng ngôn ngữ.<br>• `avg_polarity_score` & `avg_confidence`: trung bình cộng toàn tập.<br>• `overall_tendency`: `"Tranh cãi (Trái chiều)"` nếu `POS% >= 35%` **và** `NEG% >= 35%`; ngược lại lấy nhãn chiếm số lượng cao nhất.<br>• `on_topic_summary`: thống kê nhóm `is_on_topic == True` (`on_topic_count`, `on_topic_pct`, `off_topic_count`, `avg_context_relevance`, phân bố `POS/NEU/NEG`, và `alignment_counts`).<br>• `top_examples`: Top 3 bình luận tiêu biểu mỗi lớp `POS`/`NEG`/`NEU` sắp theo `(likes, polarity_confidence)` giảm dần.<br>• `classical_ml_benchmark`: bản **rút gọn** từ `_compact_benchmark_metrics()` (chỉ giữ kích thước tập, `accuracy` / `macro_f1` / `weighted_f1`, top 8 `top_features["polarity"]` và đường dẫn `benchmark_file` — bỏ `confusion_matrix` và `per_class` để giữ `report.json` gọn nhẹ).<br>• `model_timings_sec`: thời gian chạy theo từng pha và từng mô hình (`ml_model_timings_sec`). |
+| 9 | `model_comparison` | `dict` | Dữ liệu JSON nguồn của `model_comparison.csv` (`polarity_models` và `emotion_models`, có thêm `model_key` và `tier`). |
+| 10 | `ai_audit_verdict` | `dict` \| `null` | Tổng kết từ Gemma 4 E2B ở cuối Giai đoạn 4 (`accuracy_verdict`, `best_model`, `strengths`, `weaknesses`, `summary_vi`, `audited_count`, `sarcasm_detected_count`, `sarcasm_rate_pct`). |
+| 11 | `ai_audit_status` | `dict` | Trạng thái thực thi Giai đoạn 4 (`requested`, `scope`, `ollama_ready`, `audited_count`, `total_comments`, `message`) giúp phân biệt rõ tắt thủ công vs lỗi kết nối Ollama. |
 
 *(Chi tiết từng bình luận và bình luận nhiễu được lưu tách biệt trong `final_results.csv`, `detailed_model_outputs.csv` và `filtered_noise.csv` để giữ `report.json` gọn nhẹ.)*
 
 ---
 
-### 5.6. `dashboard.png` — Hướng dẫn đọc 4 biểu đồ (lưới 2×2)
+### 5.6. `dashboard_overview.png` & `dashboard_models.png` — Hướng dẫn đọc 2 bảng biểu đồ (lưới 2×2)
 
-Biểu đồ do `plot_sentiment_dashboard()` trong `src/visualization.py` sinh ra có phần tiêu đề trên cùng hiển thị **Chủ đề chính** (do Gemma 4 E2B rút ra ở Giai đoạn 1), kèm số lượng **Bình luận hợp lệ (`VI` / `EN`)** và **Đã lọc nhiễu**:
+Hệ thống tách phần trực quan tĩnh thành **2 tệp PNG** để tránh nhồi nhét và dễ thuyết trình *(hàm `plot_sentiment_dashboard()` vẫn được giữ lại để tương thích ngược)*:
 
-- **Góc trên – trái (`Sắc thái Polarity`):** Khi có thẩm định Gemma (`RUN_AI_AUDIT=True`), vẽ biểu đồ cột đôi so sánh trực tiếp số lượng `POS / NEU / NEG` giữa **Hybrid System** và **Gemma 4 E2B**. Khi tắt audit (`RUN_AI_AUDIT=False`), vẽ cột đơn phân bố 3 nhãn kèm xu hướng chung.
-- **Góc trên – phải (`Phân bố 7 cung bậc cảm xúc`):** Biểu đồ thanh ngang xếp từ cảm xúc xuất hiện nhiều nhất xuống ít nhất (`Vui vẻ / Hài lòng`, `Chán ghét / Khó chịu`, `Buồn bã`, `Ngạc nhiên`, `Tức giận`, `Lo lắng / Sợ hãi`, `Trung tính / Khác`).
-- **Góc dưới – trái (`Bám sát nội dung video`):** Biểu đồ cột đôi so sánh `POS / NEU / NEG` giữa nhóm bình luận **Bám sát video (`On-topic`)** và **Ngoài lề (`Off-topic`)** kèm tỷ lệ `%` bám sát nội dung video (nếu tắt ngữ cảnh video sẽ tự chuyển sang biểu đồ phân bố ngôn ngữ `VI / EN`).
-- **Góc dưới – phải (`So sánh các mô hình`):** Khi có Gemma Audit, vẽ thanh ngang so sánh **Agreement (%)** và **Macro-F1 (%)** của từng mô hình (`NB`, `LR`, `SVM`, `Lexicon`, `ViSoBERT`, `PhoBERT/Twitter-RoBERTa`, `Hybrid Ensemble`) so với Gemma 4 E2B. Khi chưa chạy Audit, tự động chuyển sang biểu đồ thanh chồng 100% tỷ lệ `POS % / NEU % / NEG %` để đối chiếu độ thiên lệch giữa các mô hình.
+1. **`dashboard_overview.png` (`plot_overview_dashboard()` — Tổng quan Khán giả):**
+   - **Góc trên – trái (`Sắc thái Polarity`):** Cột đơn `POS / NEU / NEG` kèm số lượng & `%` (hoặc cột đôi so sánh trực tiếp **Hệ thống vs Gemma 4 E2B** khi bật AI Audit).
+   - **Góc trên – phải (`Phân bố 7 cung bậc cảm xúc`):** Thanh ngang xếp giảm dần từ cảm xúc nhiều nhất đến ít nhất kèm số lượng & `%`.
+   - **Góc dưới – trái (`Bám sát nội dung video`):** Cột đôi so sánh `POS / NEU / NEG` giữa nhóm **Bám sát video (`On-topic`)** và **Ngoài lề (`Off-topic`)** (tự chuyển sang phân bố ngôn ngữ `VI / EN` nếu không có ngữ cảnh video).
+   - **Góc dưới – phải (`Từ khóa nổi bật theo sắc thái`):** Thanh đối xứng TF-IDF tách nhóm **Tích cực** (`+` màu xanh, bên phải) và **Tiêu cực** (`-` màu đỏ, bên trái), hoặc top `overall` nếu thiếu một nhóm.
+
+2. **`dashboard_models.png` (`plot_models_dashboard()` — Phân tích & Giải thích Mô hình):**
+   - **Góc trên – trái (`Phân bố dự đoán / Hiệu năng theo Họ mô hình`):** Gắn nhãn họ (`[Generative]`, `[Linear]`, `[SVM]`, `[Tree-Bag]`, `[Tree-Boost]`, `[Ensemble]`, `[Rule]`, `[DL]`) và kẻ đường gạch ngang phân tách tầng Cơ sở với tầng Tổ hợp (`Ensemble` / `Hệ thống chính`).
+   - **Góc trên – phải (`Benchmark Tập Test Chuẩn`):** Thanh ngang `Macro-F1 (%)` của các mô hình Classical ML trên ngôn ngữ chính của video (`vi` hoặc `en`), làm nổi bật `ML Meta-Ensemble` bằng viền đậm.
+   - **Góc dưới – trái (`Tốc độ suy luận từng mô hình`):** Thời gian chạy thực tế trên video hiện tại (`ms` hoặc `s`) lấy từ `inference_time_sec` riêng từng model.
+   - **Góc dưới – phải (`Giải thích mô hình: Top Features`):** Biểu đồ thanh đối xứng từ trọng số `LogisticRegression`, cho thấy những từ/ký tự/tín hiệu nào kéo dự đoán về `POS` (xanh) hoặc `NEG` (đỏ).
+
+---
+
+### 5.7. `report.html` — Báo cáo tương tác 1 tệp tự chứa (Offline)
+
+Tệp `report.html` do `generate_html_report()` (`src/report_html.py`) sinh ra chạy hoàn toàn cục bộ trên trình duyệt (không cần server, không gọi CDN), gồm **4 khu vực chính**:
+1. **Tổng quan & Ngữ cảnh Video:** 4 thẻ KPI (tỷ lệ hợp lệ `VI`/`EN`, xu hướng sắc thái, cảm xúc chủ đạo, cấu hình chạy & tổng thời gian) cùng thông tin tóm tắt video/kết luận Gemma 4.
+2. **Cách Hệ thống Chạy (Live Pipeline Funnel):** Sơ đồ nối ngang 5 bước `GĐ 0` → `GĐ 4` kèm huy hiệu trạng thái (`ĐÃ CHẠY` / `DÙNG CACHE` / `BỎ QUA`), thời gian từng bước, chi tiết lý do lọc nhiễu và khung công thức `ensemble_formula`.
+3. **Biểu diễn 5 Họ Mô hình & Giải thích:** Thẻ mô tả từng họ kèm thanh tỷ lệ `POS/NEU/NEG`, bảng so sánh chi tiết theo tầng, **Ma trận đồng thuận (%)** giữa các mô hình trên video hiện tại, Top Features và Top từ khóa TF-IDF.
+4. **Comment X-Ray Explorer:** Bảng tìm kiếm & lọc nhanh (`Tất cả`, `Tích cực`, `Trung tính`, `Tiêu cực`, `Ca khó`, `Nghi mỉa mai`, `Mô hình bất đồng`, `Bám sát video`), phân trang 25 dòng/trang; bấm vào từng dòng để mở ngăn **X-Ray** xem trọn vẹn `text gốc → làm sạch → tách từ`, độ liên quan video, xác suất cuối và **phiếu bầu của từng mô hình theo họ**.
 
 ---
 
@@ -706,7 +738,9 @@ Biểu đồ do `plot_sentiment_dashboard()` trong `src/visualization.py` sinh r
 | `max_replies_per_comment` | `--max-replies-per-comment` | `None` | Giới hạn số reply tối đa cho mỗi bình luận chính (`None` = lấy hết cho tới khi chạm `max_comments`). |
 | `deduplicate_stats` | `--deduplicate-stats` | `False` | Đặt `True` nếu muốn loại bỏ các bình luận copy-paste lặp lại (`is_duplicate=True`) khỏi bảng tỷ lệ `%` tổng hợp. |
 | `engine_mode` | `--engine` (`1`/`classical` hoặc `2`/`hybrid`) | `"hybrid"` *(notebook hỏi `1/2`)* | Chọn `1` / `classical` (ML truyền thống v3, 0% Deep Learning) hoặc `2` / `hybrid` (như hiện tại: ML v3 + Deep Learning VI/EN). |
+| `full_models` | `--full-models` | `False` | `False`: chỉ chạy 5 đại diện cho 5 họ ML + Ensemble (và bỏ qua ML Emotion ở `hybrid`). `True`: chạy và xuất đủ 10+1 Polarity và 6+1 Emotion. |
 | *(CLI only)*                       | `--retrain-ml`                     | `False`     | Huấn luyện lại cụm mô hình Classical ML v3 (VI & EN) trước khi chạy pipeline.                                                                                                    |
 | `unload_ollama_after_stage1`       | *(mặc định bật)*               | `True`      | Tự động xả VRAM Gemma (`keep_alive=0`) và RAM Whisper (`unload_whisper_model()`) ngay sau Giai đoạn 1.                                                                        |
 | `data_dir`                         | `--data-dir`                       | `"data"`    | Thư mục gốc lưu toàn bộ dữ liệu thu thập thô (`data/<post_id>/`).                                                                                                        |
 | `output_dir`                       | `--output`                         | `"outputs"` | Thư mục gốc xuất toàn bộ kết quả xử lý cuối cùng (`outputs/<run_name>/`).                                                                                               |
+| *(CLI only)*                       | `--save-chart`                     | `None`      | Đường dẫn lưu riêng thêm một bản sao của `dashboard_overview.png` (tùy chọn).                                                                                             |

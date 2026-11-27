@@ -28,7 +28,7 @@ Tài liệu này hướng dẫn từng bước từ máy trắng để thiết l
 | :--- | :--- | :--- | :--- | :--- |
 | **Giai đoạn 1** (AI Đầu vào) | `gemma4-e2b-opt` (build từ `gemma4:e2b`) | Đọc tối đa 8 khung hình (`768px`, JPEG `90%`, tự động 2-pass cho slideshow dài) + caption + transcript, xuất JSON ngữ cảnh 11 trường (`temperature=0.1`) | **GPU (4 GB VRAM)** | `AI_Local/gemma4-e2b/ollama_models/` (~4.27 GB) |
 | **Giai đoạn 1** (ASR) | `Faster-Whisper` (`small`, `int8`) + `PyAV` | Tách luồng âm thanh 16 kHz mono trong RAM (không cần FFmpeg) & chép lời tự nhận diện `vi` / `en` (`vad_filter=True`, `beam_size=5`) | **CPU + RAM** | Cache HuggingFace (`%USERPROFILE%\.cache\huggingface` hoặc `HF_HOME`) |
-| **Giai đoạn 3A** (ML cổ điển) | `5 họ Classical ML v3` (10+1 Polarity & 6+1 Emotion, Word+Char TF-IDF + 15 Social Features) | Huấn luyện & suy luận song ngữ từ `h-i-e-u/vietnamese-SA-dataset`, `ura-hcmut/UIT-VSMEC`, `cardiffnlp/tweeteval` và `dair-ai/emotion` | **CPU + RAM** | `models/classical_ml/vi/` & `models/classical_ml/en/` (`.joblib`) |
+| **Giai đoạn 3A** (ML cổ điển) | `5 họ Classical ML v3` (mặc định 5 đại diện + Smart Meta-Ensemble; `--full-models` chạy đủ 10+1 Polarity & 6+1 Emotion; Word+Char TF-IDF + 15 Social Features) | Huấn luyện & suy luận song ngữ từ `h-i-e-u/vietnamese-SA-dataset`, `ura-hcmut/UIT-VSMEC`, `cardiffnlp/tweeteval` và `dair-ai/emotion` | **CPU + RAM** | `models/classical_ml/vi/` (~179 MB) & `models/classical_ml/en/` (~223 MB) (`.joblib`) |
 | **Giai đoạn 3B** (DL Tiếng Việt) | `5CD-AI/Vietnamese-Sentiment-visobert`, `wonrax/phobert-base-vietnamese-sentiment`, `visolex/phobert-emotion` | Tải lười (chỉ nạp khi có comment `vi`), suy luận cực tính 3 lớp & cảm xúc 7 cung bậc (`batch_size=32`, `max_length=256`) | **CPU + RAM** | Cache HuggingFace |
 | **Giai đoạn 3B** (DL Tiếng Anh) | `cardiffnlp/twitter-roberta-base-sentiment-latest`, `j-hartmann/emotion-english-distilroberta-base` | Tải lười (chỉ nạp khi có comment `en`), suy luận cực tính 3 lớp & cảm xúc 7 cung bậc | **CPU + RAM** | Cache HuggingFace |
 | **Giai đoạn 4** (AI Đầu ra) | `gemma4-e2b-opt` | Thẩm định độc lập theo lô `batch_size=8` (`temperature=0.1`), phát hiện mỉa mai (`sarcasm`) & viết đánh giá tổng kết | **GPU (4 GB VRAM)** | `AI_Local/gemma4-e2b/ollama_models/` |
@@ -60,7 +60,8 @@ flowchart LR
 - Image Docker `ollama/ollama:latest` + tầng WSL2 Docker: **~4–6 GB**.
 - Trọng số `gemma4:e2b` trong `AI_Local/gemma4-e2b/ollama_models/`: **~4.27 GB** (gồm 3 blob chính ~3.34 GB + ~941 MB + ~93 MB; tạo `gemma4-e2b-opt` dùng chung blob nên hầu như không tăng dung lượng).
 - Bộ thư viện `hand_env` (`torch`, `transformers`, `opencv-python`, `playwright`, `faster-whisper`...): **~3–4 GB**.
-- Cache `Faster-Whisper small`, 5 mô hình HuggingFace và `models/classical_ml/`: **~3–4 GB**.
+- Cache `Faster-Whisper small`, 5 mô hình HuggingFace và `models/classical_ml/` (`vi/` ~179 MB + `en/` ~223 MB ≈ ~400 MB): **~3.5–4.5 GB**.
+- Báo cáo tương tác `report.html` do `src/report_html.py` sinh ra hoạt động **100% offline** (không cần tải thư viện ngoài từ CDN).
 
 ---
 
@@ -142,10 +143,10 @@ services:
     ports:
       - "11434:11434"
     volumes:
-      # Lưu toàn bộ trọng số model (~4.27GB) trực tiếp tại ổ E: để tránh tràn ổ hệ thống C:
-      - E:/A/Sentiment-Analysis/AI_Local/gemma4-e2b/ollama_models:/root/.ollama
+      # Lưu toàn bộ trọng số model (~4.27GB) trực tiếp tại thư mục dự án (đường dẫn tương đối di động)
+      - ./ollama_models:/root/.ollama
       # Gắn file cấu hình tối ưu vào container
-      - E:/A/Sentiment-Analysis/AI_Local/gemma4-e2b/Modelfile:/Modelfile
+      - ./Modelfile:/Modelfile
     environment:
       # Tối ưu bộ nhớ cho card 4GB VRAM (giảm ~40% dung lượng KV Cache khi nạp ảnh/video)
       - OLLAMA_FLASH_ATTENTION=1
@@ -165,12 +166,7 @@ services:
               capabilities: [gpu]
 ```
 
-> **Khi chuyển dự án sang thư mục hoặc ổ đĩa khác:** Bạn có thể sửa lại đường dẫn tuyệt đối theo máy mới (dùng dấu `/` như `D:/Projects/Sentiment-Analysis/...`), **hoặc** dùng đường dẫn tương đối ngay trong `docker-compose.yml`:
-> ```yaml
->     volumes:
->       - ./ollama_models:/root/.ollama
->       - ./Modelfile:/Modelfile
-> ```
+> **Khi chuyển dự án sang thư mục hoặc ổ đĩa khác:** Cấu hình mặc định trong `docker-compose.yml` đã dùng đường dẫn tương đối (`./ollama_models` và `./Modelfile`) nên chỉ cần giữ nguyên cấu trúc thư mục `AI_Local/gemma4-e2b/` và chạy `docker compose up -d` tại đó. (Nếu muốn lưu trọng số ở ổ đĩa riêng, bạn vẫn có thể thay bằng đường dẫn tuyệt đối dạng `D:/Projects/.../ollama_models:/root/.ollama`).
 
 **Ý nghĩa 5 biến môi trường tối ưu 4 GB VRAM:**
 
@@ -336,7 +332,11 @@ Mặc định, `transformers`, `huggingface_hub` và `faster-whisper` lưu cache
 
 Ở lần chạy `main.ipynb` hoặc `python -m src.pipeline` đầu tiên (khi có mạng Internet), hệ thống tự động tải và cache cục bộ các thành phần sau (những lần sau tái sử dụng trực tiếp):
 1. **Faster-Whisper (`small`, CPU `int8`):** Bóc tách lời thoại đa ngôn ngữ từ video (`enable_audio=True`).
-2. **Bộ mô hình ML cổ điển (`models/classical_ml/vi/` & `en/`):** Tải dữ liệu công khai qua `huggingface_hub` (`h-i-e-u/vietnamese-SA-dataset`, `ura-hcmut/UIT-VSMEC`, `dair-ai/emotion`) và GitHub raw (`cardiffnlp/tweeteval`), huấn luyện 5 họ Classical ML v3 (10+1 Polarity & 6+1 Emotion), lưu `polarity_models.joblib`, `emotion_ml_model.joblib` và `benchmark_metrics.json`.
+2. **Bộ mô hình ML cổ điển (`models/classical_ml/vi/` & `en/`):** Tải dữ liệu công khai qua `huggingface_hub` (`h-i-e-u/vietnamese-SA-dataset`, `ura-hcmut/UIT-VSMEC`, `dair-ai/emotion`) và GitHub raw (`cardiffnlp/tweeteval`), huấn luyện 5 họ Classical ML v3 (10+1 Polarity & 6+1 Emotion), lưu `polarity_models.joblib`, `emotion_ml_model.joblib` và `benchmark_metrics.json`. Khi chạy phân tích video bình thường, hệ thống mặc định chỉ suy luận **5 đại diện cho 5 họ + Smart Meta-Ensemble** (`--full-models` để chạy đủ 10+1). Bạn có thể huấn luyện hoặc đồng bộ lại cache độc lập bất kỳ lúc nào bằng:
+   ```powershell
+   python -m src.models.classical_ml --lang vi en --retrain
+   # Hoặc thêm --no-tune để huấn luyện nhanh bằng siêu tham số mặc định
+   ```
 3. **Bộ mô hình Transformer (CPU, tải lười theo ngôn ngữ xuất hiện trong bình luận):**
    - Nhánh `vi`: `5CD-AI/Vietnamese-Sentiment-visobert`, `wonrax/phobert-base-vietnamese-sentiment`, `visolex/phobert-emotion`.
    - Nhánh `en`: `cardiffnlp/twitter-roberta-base-sentiment-latest`, `j-hartmann/emotion-english-distilroberta-base`.
@@ -389,8 +389,8 @@ cd E:\A\Sentiment-Analysis
 python -m src.pipeline --input-dir data/<post_id> --engine classical --skip-media --output outputs/smoke_test
 ```
 
-*Đạt yêu cầu:* Lệnh chạy xong không lỗi và xuất đủ 6 tệp trong `outputs/smoke_test/`:
-`final_results.csv`, `detailed_model_outputs.csv`, `filtered_noise.csv`, `model_comparison.csv`, `report.json`, `dashboard.png`.
+*Đạt yêu cầu:* Lệnh chạy xong không lỗi, CLI in bảng `TIẾN TRÌNH 4 GIAI ĐOẠN` và xuất đủ **8 tệp** trong `outputs/smoke_test/`:
+`report.html` (mở trực tiếp bằng trình duyệt để xem luồng pipeline, 5 họ mô hình và Comment X-Ray), `final_results.csv`, `detailed_model_outputs.csv`, `filtered_noise.csv`, `model_comparison.csv`, `report.json`, `dashboard_overview.png`, `dashboard_models.png`.
 
 ### Lệnh xả sạch VRAM thủ công (khi cần nhường GPU ngay lập tức)
 ```powershell
@@ -412,7 +412,7 @@ Sau khi chạy lệnh trên, kiểm tra lại `docker exec -it gemma4-e2b ollama
 
 ### 5.2. Chạy bằng `main.ipynb` & Bảng tham số CLI (`python -m src.pipeline`)
 
-- **Chạy giao diện Notebook:** Mở `main.ipynb`, chọn kernel `hand_env`, chạy Cell 1 để nhập `TIKTOK_URL`, sau đó chạy lần lượt các cell còn lại.
+- **Chạy giao diện Notebook:** Mở `main.ipynb`, chọn kernel `hand_env`, chạy Cell 1 để chọn tương tác (hoặc gán cứng): nguồn đầu vào (`1. Link TikTok` / `2. Thư mục đã chuẩn bị sẵn`), chế độ Giai đoạn 3 (`ENGINE_MODE`: `1. classical` / `2. hybrid`), phạm vi mô hình (`FULL_MODELS = False` mặc định 5 đại diện + Ensemble, hoặc `True` đủ 10+1), và tùy chọn thẩm định Giai đoạn 4 (`RUN_AI_AUDIT`, `AUDIT_SCOPE`); sau đó chạy lần lượt các cell còn lại để xem bảng tiến trình, link mở `report.html` và 2 biểu đồ `dashboard_overview.png`, `dashboard_models.png`.
 - **Chạy bằng dòng lệnh CLI:**
   ```powershell
   conda activate hand_env
@@ -430,6 +430,7 @@ Sau khi chạy lệnh trên, kiểm tra lại `docker exec -it gemma4-e2b ollama
 | `--skip-media` | `False` | Bỏ qua Giai đoạn 1 (không chạy Gemma 4 đọc video/ảnh). |
 | `--reanalyze-media` | `False` | Buộc chạy lại Gemma 4 + Whisper ngay cả khi đã có sẵn `media_context.json`. |
 | `--engine` | `hybrid` | Chế độ Giai đoạn 3: `1`/`classical` (ML truyền thống v3, 0% DL) hoặc `2`/`hybrid` (ML v3 + DL). |
+| `--full-models` | `False` | Chạy và xuất đủ cả 10+1 mô hình Classical ML (mặc định tắt: chỉ chạy 5 đại diện cho 5 họ ML + Ensemble và bỏ qua ML Emotion ở chế độ `hybrid`). |
 | `--retrain-ml` | `False` | Huấn luyện lại cụm mô hình Classical ML v3 (`vi` & `en`) trước khi chạy. |
 | `--ollama-url` | `http://localhost:11434` | Địa chỉ API Ollama (đổi nếu chạy Ollama trên máy khác trong LAN). |
 | `--ollama-model` | `gemma4-e2b-opt` | Tên model Ollama dùng ở Giai đoạn 1 và Giai đoạn 4. |
@@ -439,9 +440,12 @@ Sau khi chạy lệnh trên, kiểm tra lại `docker exec -it gemma4-e2b ollama
 | `--ai-audit` / `--no-ai-audit` | `False` (tắt) | Bật hoặc tắt Giai đoạn 4 (dùng Gemma 4 E2B thẩm định & đối chiếu mô hình; `--skip-audit` là bí danh của `--no-ai-audit`). |
 | `--audit-scope` | `all` | Phạm vi Giai đoạn 4: `all` (toàn bộ bình luận hợp lệ) hoặc `uncertain` (chỉ các ca khó `needs_audit=True`). |
 | `--audit-limit` | `None` | Giới hạn số bình luận gửi Gemma 4 thẩm định ở Giai đoạn 4 (`None` = chấm 100% tập đã chọn). |
-| `--max-comments` | `200` | Số bình luận tối đa thu thập qua Playwright Edge. |
+| `--max-comments` | `200` | Số bình luận tối đa thu thập qua Playwright Edge (gồm cả reply nếu bật). |
+| `--no-replies` / `--max-replies-per-comment` | `False` / `None` | Tắt thu thập bình luận trả lời (reply), hoặc giới hạn số reply tối đa dưới mỗi bình luận chính. |
+| `--deduplicate-stats` | `False` | Loại bình luận copy-paste trùng lặp (`is_duplicate=True`) khỏi bảng thống kê tỷ lệ `%`. |
 | `--headless-crawl` / `--no-crawl-pause` | `False` / `False` | Ẩn trình duyệt hoặc bỏ qua bước dừng nhấn Enter (chú ý TikTok dễ hiện CAPTCHA nếu chạy headless). |
 | `--data-dir` / `--output` | `data` / `outputs` | Thư mục lưu dữ liệu thô thu thập và thư mục xuất kết quả. |
+| `--save-chart` | `None` | Đường dẫn lưu riêng thêm một bản sao của `dashboard_overview.png` (tùy chọn). |
 
 ---
 
@@ -468,7 +472,7 @@ docker compose up -d
 docker exec -it gemma4-e2b ollama create gemma4-e2b-opt -f /Modelfile
 ```
 
-### 6.2. Bảng xử lý 12 lỗi thường gặp
+### 6.2. Bảng xử lý 13 lỗi thường gặp
 
 | STT | Hiện tượng / Thông báo lỗi | Nguyên nhân | Cách khắc phục |
 | :--- | :--- | :--- | :--- |
@@ -484,3 +488,4 @@ docker exec -it gemma4-e2b ollama create gemma4-e2b-opt -f /Modelfile
 | 10 | Lỗi liên quan tới thiếu `ffmpeg` khi tải video TikTok | Máy Windows chưa cài FFmpeg toàn cục. | Không cần cài thủ công: `src/ingestion/tiktok_collector.py` tự kiểm tra `shutil.which("ffmpeg")` và chuyển sang tải MP4 ghép sẵn (`b[ext=mp4]/best[ext=mp4]/b`), đồng thời `MediaAnalyzer` dùng **PyAV** (`av`) để tách âm thanh trực tiếp. |
 | 11 | Chính sách bảo mật Windows chặn DLL `pyarrow._fs` | Windows Application Control chặn file nhị phân của `pyarrow`. | Dự án đã loại bỏ hoàn toàn phụ thuộc `datasets` / `pyarrow` khỏi `src/models/classical_ml.py` và tải trực tiếp CSV/TXT qua `huggingface_hub` và `requests`. Không cài lại `pyarrow`. |
 | 12 | Ổ đĩa `C:` bị đầy sau khi chạy Pipeline lần đầu | Thư mục cache mặc định của HuggingFace (`%USERPROFILE%\.cache\huggingface`) và Docker/WSL2 nằm ở ổ `C:`. | Thiết lập biến môi trường `HF_HOME=E:\A\Sentiment-Analysis\.hf_cache` (Mục 3.4) và cấu hình `Docker Desktop → Settings → Resources → Disk image location` chuyển sang ổ đĩa còn nhiều dung lượng trống. |
+| 13 | Đang chạy offline nhưng hệ thống tự tải lại dataset `huggingface.co` (lỗi mạng `NameResolutionError`) | Tệp `.joblib` trong `models/classical_ml/{vi,en}/` đang ở phiên bản cũ hoặc thiếu `schema_version = 3` (hoặc thiếu file `benchmark_metrics.json`), khiến `load_or_train()` tự chuyển sang retrain lại từ đầu. | Khi có mạng Internet, chạy `python -m src.models.classical_ml --lang vi en --retrain` (hoặc `--lang en --retrain` nếu chỉ lệch nhánh `en`) để đồng bộ trọn bộ `.joblib` + `benchmark_metrics.json` lên đúng `schema_version = 3`. |
