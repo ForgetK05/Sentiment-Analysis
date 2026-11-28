@@ -144,12 +144,10 @@ class AnalyzedComment:
     likes: int
     reply_count: int
     created_at: str
-    post_url: str
     language: str  # "vi" | "en"
     original_text: str
     cleaned_text: str
     segmented_text: str
-    ml_text: str
     is_duplicate: bool
     has_sarcasm_signal: bool
     needs_audit: bool
@@ -163,22 +161,37 @@ class AnalyzedComment:
     emotion_label: str
     emotion_vi: str
     emotion_confidence: float
-    emotion_probs: dict[str, float]
     # Dự đoán từng mô hình riêng lẻ để so sánh đối chiếu
     pred_nb: str
     pred_lr: str
     pred_svm: str
     pred_lexicon: str
-    pred_visobert: str     # Chỉ chạy cho comment 'vi' (rỗng nếu 'en')
-    pred_dl_primary: str   # PhoBERT (cho 'vi') / Twitter-RoBERTa (cho 'en')
+    pred_visobert: str     # Chỉ chạy cho comment 'vi' ở chế độ hybrid (rỗng nếu 'en' hoặc classical)
+    pred_dl_primary: str   # PhoBERT ('vi') / Twitter-RoBERTa ('en') ở chế độ hybrid
     emotion_ml_label: str
-    model_probs: dict[str, dict[str, float]] = field(default_factory=dict)
     is_reply: bool = False
     parent_comment_id: str = ""
     is_on_topic: bool = False
     context_relevance: float = 0.0
     matched_video_terms: list[str] = field(default_factory=list)
     context_alignment: str = ""
+    pred_phobert: str = ""
+    pred_roberta: str = ""
+    dl_primary_model: str = ""
+    pred_cnb: str = ""
+    pred_ridge: str = ""
+    pred_sgd: str = ""
+    pred_nbsvm: str = ""
+    pred_rbf_svm: str = ""
+    pred_rf: str = ""
+    pred_tree: str = ""
+    pred_ml_ensemble: str = ""
+    pred_emo_cnb: str = ""
+    pred_emo_lr: str = ""
+    pred_emo_ridge: str = ""
+    pred_emo_svm: str = ""
+    pred_emo_nbsvm: str = ""
+    pred_emo_sgd: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -351,10 +364,17 @@ class CommentAnalyzer:
         en_sentiment_model: str = DEFAULT_EN_SENTIMENT_MODEL,
         en_emotion_model: str = DEFAULT_EN_EMOTION_MODEL,
         classical_cache_dir: str | Path = DEFAULT_CACHE_DIR,
+        engine_mode: str = "hybrid",
+        full_models: bool = False,
         device: str = "cpu",
         batch_size: int = 32,
         max_length: int = 256,
     ) -> None:
+        raw_mode = str(engine_mode or "hybrid").strip().lower()
+        self.engine_mode = (
+            "classical" if raw_mode in {"classical", "ml", "classical_ml"} else "hybrid"
+        )
+        self.full_models = bool(full_models)
         self.device = device
         self.batch_size = max(1, int(batch_size))
         self.max_length = max(16, int(max_length))
@@ -404,6 +424,75 @@ class CommentAnalyzer:
         self.last_model_timings: dict[str, float] = {}
 
     @staticmethod
+    def _has_strong_emotion_cue(cleaned_text: str) -> bool:
+        low = str(cleaned_text or "").lower()
+        return any(
+            cue in low
+            for group in (_ANGER_CUES, _DISGUST_CUES, _FEAR_CUES, _SADNESS_CUES, _JOY_CUES)
+            for cue in group
+        )
+
+    @staticmethod
+    def _compact_benchmark_metrics(
+        raw_bench: dict[str, Any],
+        cache_dir: Path,
+    ) -> dict[str, Any]:
+        """Rút gọn benchmark trong report.json (bỏ per_class & confusion_matrix nặng)."""
+        compact: dict[str, Any] = {}
+        for lang, b in (raw_bench or {}).items():
+            if not isinstance(b, dict) or not b:
+                continue
+            pol_compact = {
+                m_name: {
+                    "accuracy": m.get("accuracy"),
+                    "macro_f1": m.get("macro_f1"),
+                    "weighted_f1": m.get("weighted_f1"),
+                }
+                for m_name, m in (b.get("polarity_models") or {}).items()
+                if isinstance(m, dict)
+            }
+            emo_compact = {
+                m_name: {
+                    "accuracy": m.get("accuracy"),
+                    "macro_f1": m.get("macro_f1"),
+                    "weighted_f1": m.get("weighted_f1"),
+                }
+                for m_name, m in (b.get("emotion_models") or {}).items()
+                if isinstance(m, dict)
+            }
+            raw_top_pol = (b.get("top_features") or {}).get("polarity") or {}
+            top_pol_compact = {
+                cls_name: list(items)[:8]
+                for cls_name, items in raw_top_pol.items()
+                if isinstance(items, list)
+            }
+            compact[lang] = {
+                "schema_version": b.get("schema_version"),
+                "feature_pipeline": b.get("feature_pipeline") or [],
+                "polarity_train_size": b.get("polarity_train_size"),
+                "polarity_test_size": b.get("polarity_test_size"),
+                "polarity_ensemble_method": b.get("polarity_ensemble_method"),
+                "emotion_train_size": b.get("emotion_train_size"),
+                "emotion_test_size": b.get("emotion_test_size"),
+                "emotion_ensemble_method": b.get("emotion_ensemble_method"),
+                "benchmark_file": str((cache_dir / lang / "benchmark_metrics.json").as_posix()),
+                "polarity_models": pol_compact,
+                "emotion_models": emo_compact,
+                "top_features": {"polarity": top_pol_compact},
+            }
+        return compact
+
+    def _ensemble_formula_info(self) -> dict[str, str]:
+        if self.engine_mode == "classical":
+            return {
+                "all": "0.85 × ML Meta-Ensemble + 0.15 × Bilingual Lexicon",
+            }
+        return {
+            "vi": "0.40 × PhoBERT + 0.20 × ViSoBERT + 0.25 × ML Meta-Ensemble (VI) + 0.15 × Lexicon (VI)",
+            "en": "0.60 × Twitter-RoBERTa + 0.25 × ML Meta-Ensemble (EN) + 0.15 × Lexicon (EN)",
+        }
+
+    @staticmethod
     def _apply_emotion_cues(
         emo_probs: dict[str, float],
         cleaned_text: str,
@@ -432,7 +521,7 @@ class CommentAnalyzer:
         metadata_rows: Sequence[dict[str, Any]] | None = None,
         media_result: Any = None,
         show_progress: bool = True,
-    ) -> tuple[list[AnalyzedComment], dict[str, float]]:
+    ) -> tuple[list[AnalyzedComment], dict[str, Any]]:
         """Phân tích toàn bộ comment hợp lệ (tự định tuyến VI/EN qua mô hình đúng ngôn ngữ)."""
         media_dict = _coerce_media_dict(media_result)
         valid_indices = [idx for idx, item in enumerate(preprocessed) if item.is_valid]
@@ -449,9 +538,10 @@ class CommentAnalyzer:
         vi_positions = [i for i, l in enumerate(languages) if l == "vi"]
         en_positions = [i for i, l in enumerate(languages) if l == "en"]
 
-        timings: dict[str, float] = {}
+        timings: dict[str, Any] = {}
+        run_dl = self.engine_mode != "classical"
 
-        # 1. Nạp và chạy ML cổ điển song ngữ (NB, LR, SVM + Emotion LR)
+        # 1. Nạp và chạy Classical ML song ngữ
         t0 = time.perf_counter()
         if vi_positions:
             self.classical_suite.ensure_loaded("vi")
@@ -461,15 +551,20 @@ class CommentAnalyzer:
 
         t1 = time.perf_counter()
         classical_pol = self.classical_suite.predict_polarity_all(
-            segmented_texts, languages=languages
+            segmented_texts, languages=languages, full_models=self.full_models
         )
         timings["classical_ml_polarity_sec"] = round(time.perf_counter() - t1, 3)
+        timings["ml_model_timings_sec"] = dict(self.classical_suite.last_polarity_timings)
 
-        t2 = time.perf_counter()
-        classical_emo = self.classical_suite.predict_emotion(
-            segmented_texts, languages=languages
-        )
-        timings["classical_ml_emotion_sec"] = round(time.perf_counter() - t2, 3)
+        # Chỉ chạy ML Emotion khi dùng chế độ classical hoặc bật full_models
+        classical_emo_all: dict[str, list[dict[str, Any]]] = {}
+        if (not run_dl) or self.full_models:
+            t2 = time.perf_counter()
+            classical_emo_all = self.classical_suite.predict_emotion_all(
+                segmented_texts, languages=languages, full_models=self.full_models
+            )
+            timings["classical_ml_emotion_sec"] = round(time.perf_counter() - t2, 3)
+            timings["ml_emo_model_timings_sec"] = dict(self.classical_suite.last_emotion_timings)
 
         # 2. Chạy Bilingual Lexicon + Rules
         t3 = time.perf_counter()
@@ -478,12 +573,12 @@ class CommentAnalyzer:
         )
         timings["lexicon_rules_sec"] = round(time.perf_counter() - t3, 3)
 
-        # 3. Chạy Deep Learning chuyên biệt theo ngôn ngữ (lazy-load)
+        # 3. Chạy Deep Learning chuyên biệt theo ngôn ngữ (chỉ khi engine_mode == "hybrid")
         viso_probs_all: list[dict[str, float] | None] = [None] * n_valid
         dl_primary_probs_all: list[dict[str, float] | None] = [None] * n_valid
         dl_emo_probs_all: list[dict[str, float] | None] = [None] * n_valid
 
-        if vi_positions:
+        if run_dl and vi_positions:
             vi_clean = [cleaned_texts[i] for i in vi_positions]
             vi_seg = [segmented_texts[i] for i in vi_positions]
 
@@ -510,7 +605,7 @@ class CommentAnalyzer:
                 dl_primary_probs_all[pos] = pp
                 dl_emo_probs_all[pos] = ep
 
-        if en_positions:
+        if run_dl and en_positions:
             en_clean = [cleaned_texts[i] for i in en_positions]
 
             t_er = time.perf_counter()
@@ -529,45 +624,85 @@ class CommentAnalyzer:
                 dl_primary_probs_all[pos] = rp
                 dl_emo_probs_all[pos] = ep
 
-        # 4. Tổ hợp Hybrid Ensemble + Thang điểm kép nhất quán
+        def _pick_pred(
+            mapping: dict[str, list[dict[str, Any]]],
+            key: str,
+            idx: int,
+        ) -> dict[str, Any]:
+            rows = mapping.get(key)
+            if rows and idx < len(rows):
+                return rows[idx]
+            return {"label": "", "confidence": 0.0, "scores": {}}
+
+        # 4. Tổ hợp Ensemble + Thang điểm kép nhất quán
         analyzed: list[AnalyzedComment] = []
         for pos_idx, orig_idx in enumerate(valid_indices):
             item = preprocessed[orig_idx]
             lang = languages[pos_idx]
             meta = metadata_rows[orig_idx] if metadata_rows and orig_idx < len(metadata_rows) else {}
 
-            nb_res = classical_pol["tfidf_nb"][pos_idx]
-            lr_res = classical_pol["tfidf_lr"][pos_idx]
-            svm_res = classical_pol["tfidf_svm"][pos_idx]
+            nb_res = _pick_pred(classical_pol, "tfidf_nb", pos_idx)
+            cnb_res = _pick_pred(classical_pol, "tfidf_cnb", pos_idx)
+            lr_res = _pick_pred(classical_pol, "tfidf_lr", pos_idx)
+            ridge_res = _pick_pred(classical_pol, "tfidf_ridge", pos_idx)
+            sgd_res = _pick_pred(classical_pol, "tfidf_sgd", pos_idx)
+            svm_res = _pick_pred(classical_pol, "tfidf_svm", pos_idx)
+            nbsvm_res = _pick_pred(classical_pol, "tfidf_nbsvm", pos_idx)
+            rbf_svm_res = _pick_pred(classical_pol, "tfidf_rbf_svm", pos_idx)
+            rf_res = _pick_pred(classical_pol, "tfidf_rf", pos_idx)
+            tree_res = _pick_pred(classical_pol, "tfidf_tree", pos_idx)
+            ml_ens_res = _pick_pred(classical_pol, "ml_ensemble", pos_idx)
             lex_res = lex_results[pos_idx]
 
-            dl_probs = dl_primary_probs_all[pos_idx] or {"POS": 0.33, "NEG": 0.33, "NEU": 0.34}
-            dl_lbl = max(dl_probs, key=dl_probs.get)  # type: ignore[arg-type]
+            emo_cnb_res = _pick_pred(classical_emo_all, "emo_cnb", pos_idx)
+            emo_lr_res = _pick_pred(classical_emo_all, "emo_lr", pos_idx)
+            emo_ridge_res = _pick_pred(classical_emo_all, "emo_ridge", pos_idx)
+            emo_svm_res = _pick_pred(classical_emo_all, "emo_svm", pos_idx)
+            emo_nbsvm_res = _pick_pred(classical_emo_all, "emo_nbsvm", pos_idx)
+            emo_sgd_res = _pick_pred(classical_emo_all, "emo_sgd", pos_idx)
+            emo_ens_res = _pick_pred(classical_emo_all, "emo_ensemble", pos_idx)
+            emo_ml_label = emo_ens_res["label"]
 
-            viso_probs = viso_probs_all[pos_idx]
-            viso_lbl = max(viso_probs, key=viso_probs.get) if viso_probs else ""  # type: ignore[arg-type]
+            if run_dl:
+                dl_probs = dl_primary_probs_all[pos_idx] or {"POS": 0.33, "NEG": 0.33, "NEU": 0.34}
+                dl_lbl = max(dl_probs, key=dl_probs.get)  # type: ignore[arg-type]
+                viso_probs = viso_probs_all[pos_idx]
+                viso_lbl = max(viso_probs, key=viso_probs.get) if viso_probs else ""  # type: ignore[arg-type]
+                raw_emo_probs = dl_emo_probs_all[pos_idx] or emo_ens_res["scores"] or {"Other": 1.0}
+            else:
+                dl_probs = None
+                dl_lbl = ""
+                viso_probs = None
+                viso_lbl = ""
+                raw_emo_probs = emo_ens_res["scores"] or {"Other": 1.0}
 
-            raw_emo_probs = dl_emo_probs_all[pos_idx] or {lbl: (1.0 if lbl == "Other" else 0.0) for lbl in EMOTION_LABELS}
             emo_probs = self._apply_emotion_cues(raw_emo_probs, item.cleaned_text)
             emo_label = max(emo_probs, key=emo_probs.get)  # type: ignore[arg-type]
             emo_conf = round(float(emo_probs[emo_label]), 4)
-            emo_ml_label = classical_emo[pos_idx]["label"]
 
             hybrid_probs: dict[str, float] = {}
-            if lang == "vi" and viso_probs is not None:
-                for lbl in ("POS", "NEG", "NEU"):
-                    hybrid_probs[lbl] = (
-                        0.40 * float(dl_probs.get(lbl, 0.0))
-                        + 0.20 * float(viso_probs.get(lbl, 0.0))
-                        + 0.25 * float(svm_res["scores"].get(lbl, 0.0))
-                        + 0.15 * float(lex_res["scores"].get(lbl, 0.0))
-                    )
+            if run_dl and dl_probs is not None:
+                if lang == "vi" and viso_probs is not None:
+                    for lbl in ("POS", "NEG", "NEU"):
+                        hybrid_probs[lbl] = (
+                            0.40 * float(dl_probs.get(lbl, 0.0))
+                            + 0.20 * float(viso_probs.get(lbl, 0.0))
+                            + 0.25 * float(ml_ens_res["scores"].get(lbl, 0.0))
+                            + 0.15 * float(lex_res["scores"].get(lbl, 0.0))
+                        )
+                else:
+                    # Nhánh Tiếng Anh: 0.60 Twitter-RoBERTa + 0.25 ML Ensemble(EN) + 0.15 Lexicon(EN)
+                    for lbl in ("POS", "NEG", "NEU"):
+                        hybrid_probs[lbl] = (
+                            0.60 * float(dl_probs.get(lbl, 0.0))
+                            + 0.25 * float(ml_ens_res["scores"].get(lbl, 0.0))
+                            + 0.15 * float(lex_res["scores"].get(lbl, 0.0))
+                        )
             else:
-                # Nhánh Tiếng Anh: 0.60 Twitter-RoBERTa + 0.25 SVM(EN) + 0.15 Lexicon(EN)
+                # Chế độ thuần Classical ML (--engine classical): 0.85 ML Ensemble + 0.15 Lexicon
                 for lbl in ("POS", "NEG", "NEU"):
                     hybrid_probs[lbl] = (
-                        0.60 * float(dl_probs.get(lbl, 0.0))
-                        + 0.25 * float(svm_res["scores"].get(lbl, 0.0))
+                        0.85 * float(ml_ens_res["scores"].get(lbl, 0.0))
                         + 0.15 * float(lex_res["scores"].get(lbl, 0.0))
                     )
 
@@ -585,6 +720,18 @@ class CommentAnalyzer:
 
             pol_label = max(hybrid_probs, key=hybrid_probs.get)  # type: ignore[arg-type]
             pol_conf = round(float(hybrid_probs[pol_label]), 4)
+
+            # Giảm gán nhầm nhãn cảm xúc mạnh (Anger/Sadness...) trên bình luận EN trung tính khi chạy Classical ML
+            if (
+                not run_dl
+                and lang == "en"
+                and pol_label == "NEU"
+                and emo_label != "Other"
+                and emo_conf < 0.72
+                and not self._has_strong_emotion_cue(item.cleaned_text)
+            ):
+                emo_label = "Other"
+                emo_conf = round(max(0.50, 1.0 - emo_conf), 4)
 
             polarity_score = compute_polarity_score(
                 hybrid_probs,
@@ -605,22 +752,23 @@ class CommentAnalyzer:
                 media_dict=media_dict,
             )
 
-            needs_audit = (
-                (bool(viso_lbl) and dl_lbl != viso_lbl)
-                or (pol_conf < 0.65)
-                or item.has_sarcasm_signal
-                or extra_needs_audit
-            )
-
-            model_probs_entry: dict[str, dict[str, float]] = {
-                "nb": nb_res["scores"],
-                "lr": lr_res["scores"],
-                "svm": svm_res["scores"],
-                "lexicon": lex_res["scores"],
-                "dl_primary": dl_probs,
-            }
-            if viso_probs is not None:
-                model_probs_entry["visobert"] = viso_probs
+            if run_dl:
+                needs_audit = (
+                    (bool(viso_lbl) and dl_lbl != viso_lbl)
+                    or (bool(nbsvm_res["label"]) and svm_res["label"] != nbsvm_res["label"])
+                    or (pol_conf < 0.65)
+                    or item.has_sarcasm_signal
+                    or extra_needs_audit
+                )
+            else:
+                needs_audit = (
+                    (bool(nbsvm_res["label"]) and svm_res["label"] != nbsvm_res["label"])
+                    or (bool(lr_res["label"]) and bool(svm_res["label"]) and lr_res["label"] != svm_res["label"])
+                    or (bool(ml_ens_res["label"]) and pol_label != ml_ens_res["label"])
+                    or (pol_conf < 0.65)
+                    or item.has_sarcasm_signal
+                    or extra_needs_audit
+                )
 
             raw_is_reply = meta.get("is_reply", False)
             if raw_is_reply is None or (isinstance(raw_is_reply, float) and np.isnan(raw_is_reply)):
@@ -638,12 +786,10 @@ class CommentAnalyzer:
                     likes=int(meta.get("likes", 0) or 0),
                     reply_count=int(meta.get("reply_count", 0) or 0),
                     created_at=str(meta.get("created_at", "")),
-                    post_url=str(meta.get("post_url", "")),
                     language=lang,
                     original_text=item.original_text,
                     cleaned_text=item.cleaned_text,
                     segmented_text=item.segmented_text,
-                    ml_text=item.ml_text,
                     is_duplicate=item.is_duplicate,
                     has_sarcasm_signal=item.has_sarcasm_signal,
                     needs_audit=needs_audit,
@@ -655,7 +801,6 @@ class CommentAnalyzer:
                     emotion_label=emo_label,
                     emotion_vi=EMOTION_VI_MAP.get(emo_label, emo_label),
                     emotion_confidence=emo_conf,
-                    emotion_probs=emo_probs,
                     pred_nb=nb_res["label"],
                     pred_lr=lr_res["label"],
                     pred_svm=svm_res["label"],
@@ -663,13 +808,29 @@ class CommentAnalyzer:
                     pred_visobert=viso_lbl,
                     pred_dl_primary=dl_lbl,
                     emotion_ml_label=emo_ml_label,
-                    model_probs=model_probs_entry,
                     is_reply=is_reply_val,
                     parent_comment_id=str(meta.get("parent_comment_id", "") or "").strip(),
                     is_on_topic=is_on_topic,
                     context_relevance=round(context_relevance, 4),
                     matched_video_terms=matched_video_terms,
                     context_alignment=context_alignment,
+                    pred_phobert=(dl_lbl if lang == "vi" else "") if run_dl else "",
+                    pred_roberta=(dl_lbl if lang == "en" else "") if run_dl else "",
+                    dl_primary_model=("PhoBERT" if lang == "vi" else "Twitter-RoBERTa") if run_dl else "",
+                    pred_cnb=cnb_res["label"],
+                    pred_ridge=ridge_res["label"],
+                    pred_sgd=sgd_res["label"],
+                    pred_nbsvm=nbsvm_res["label"],
+                    pred_rbf_svm=rbf_svm_res["label"],
+                    pred_rf=rf_res["label"],
+                    pred_tree=tree_res["label"],
+                    pred_ml_ensemble=ml_ens_res["label"],
+                    pred_emo_cnb=emo_cnb_res["label"],
+                    pred_emo_lr=emo_lr_res["label"],
+                    pred_emo_ridge=emo_ridge_res["label"],
+                    pred_emo_svm=emo_svm_res["label"],
+                    pred_emo_nbsvm=emo_nbsvm_res["label"],
+                    pred_emo_sgd=emo_sgd_res["label"],
                 )
             )
 
@@ -695,6 +856,9 @@ class CommentAnalyzer:
         if total == 0:
             return {
                 "total_valid_comments": 0,
+                "engine_mode": self.engine_mode,
+                "full_models": self.full_models,
+                "ensemble_formula": self._ensemble_formula_info(),
                 "language_counts": lang_counts,
                 "polarity_counts": pol_counts,
                 "polarity_percentages": {"POS": 0.0, "NEG": 0.0, "NEU": 0.0},
@@ -704,7 +868,9 @@ class CommentAnalyzer:
                 "avg_confidence": 0.0,
                 "overall_tendency": "Không có dữ liệu",
                 "sarcasm_flagged_count": 0,
-                "classical_ml_benchmark": self.classical_suite.benchmark_metrics,
+                "classical_ml_benchmark": self._compact_benchmark_metrics(
+                    self.classical_suite.benchmark_metrics, self.classical_suite.cache_dir
+                ),
                 "model_timings_sec": self.last_model_timings,
                 "top_examples": {"POS": [], "NEG": [], "NEU": []},
                 "on_topic_summary": None,
@@ -786,6 +952,9 @@ class CommentAnalyzer:
 
         return {
             "total_valid_comments": total,
+            "engine_mode": self.engine_mode,
+            "full_models": self.full_models,
+            "ensemble_formula": self._ensemble_formula_info(),
             "language_counts": lang_counts,
             "polarity_counts": pol_counts,
             "polarity_percentages": pol_pcts,
@@ -795,7 +964,9 @@ class CommentAnalyzer:
             "avg_confidence": round(conf_sum / total, 4),
             "overall_tendency": tendency,
             "sarcasm_flagged_count": sarcasm_count,
-            "classical_ml_benchmark": self.classical_suite.benchmark_metrics,
+            "classical_ml_benchmark": self._compact_benchmark_metrics(
+                self.classical_suite.benchmark_metrics, self.classical_suite.cache_dir
+            ),
             "model_timings_sec": self.last_model_timings,
             "top_examples": top_examples,
             "on_topic_summary": on_topic_summary,

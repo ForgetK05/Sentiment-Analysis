@@ -10,7 +10,14 @@ import requests
 from sklearn.metrics import cohen_kappa_score, f1_score
 from tqdm import tqdm
 
-from src.models.classical_ml import EMOTION_LABELS, EMOTION_VI_MAP
+from src.models.classical_ml import (
+    CORE_EMOTION_MODEL_KEYS,
+    CORE_POLARITY_MODEL_KEYS,
+    EMOTION_LABELS,
+    EMOTION_MODEL_META,
+    EMOTION_VI_MAP,
+    POLARITY_MODEL_META,
+)
 from src.models.media_context import MediaAnalysisResult
 from src.models.sentiment_engine import AnalyzedComment
 
@@ -189,6 +196,40 @@ class GemmaAuditor:
         self.temperature = float(temperature)
         self.timeout = timeout
 
+    def check_ollama_ready(self, timeout: float = 4.0) -> tuple[bool, str]:
+        """Kiểm tra nhanh kết nối tới Ollama và sự tồn tại của model Giai đoạn 4."""
+        try:
+            resp = requests.get(f"{self.ollama_url}/api/tags", timeout=timeout)
+            resp.raise_for_status()
+            payload = resp.json()
+        except Exception as exc:
+            return (
+                False,
+                f"Không kết nối được Ollama tại {self.ollama_url} ({exc}). "
+                "Hãy khởi động Ollama trước khi bật Giai đoạn 4.",
+            )
+
+        models_raw = payload.get("models") if isinstance(payload, dict) else []
+        available = [
+            str(m.get("name", "")).strip()
+            for m in (models_raw or [])
+            if isinstance(m, dict) and str(m.get("name", "")).strip()
+        ]
+        target = self.model_name.strip()
+        if ":" in target:
+            matched = target in available
+        else:
+            matched = target in available or any(m.split(":", 1)[0] == target for m in available)
+
+        if not matched:
+            avail_text = ", ".join(available) if available else "(trống)"
+            return (
+                False,
+                f"Ollama đang chạy tại {self.ollama_url} nhưng chưa có model '{self.model_name}'. "
+                f"Các model hiện có: {avail_text}.",
+            )
+        return (True, "OK")
+
     def _call_ollama_json(
         self,
         messages: list[dict[str, str]],
@@ -283,22 +324,42 @@ class GemmaAuditor:
         analyzed: Sequence[AnalyzedComment],
         media_result: MediaAnalysisResult | dict[str, Any] | None = None,
         audit_limit: int | None = None,
+        audit_scope: str = "all",
         show_progress: bool = True,
     ) -> list[GemmaAuditItem]:
-        """Dùng Gemma 4 E2B đánh giá thực tế toàn bộ (hoặc `audit_limit`) bình luận hợp lệ."""
+        """Dùng Gemma 4 E2B đánh giá thực tế bình luận hợp lệ (all hoặc chỉ needs_audit)."""
         total = len(analyzed)
         if total == 0:
             return []
 
-        if audit_limit is not None and audit_limit < total:
-            indices = list(range(total))
-            indices.sort(
-                key=lambda i: (analyzed[i].needs_audit, analyzed[i].likes),
+        ok, reason = self.check_ollama_ready()
+        if not ok:
+            print(f"[Cảnh báo Giai đoạn 4] {reason}")
+            return []
+
+        scope_norm = str(audit_scope or "all").strip().lower()
+        if scope_norm not in {"all", "uncertain"}:
+            scope_norm = "all"
+
+        if scope_norm == "uncertain":
+            candidate_indices = [
+                i for i in range(total) if bool(getattr(analyzed[i], "needs_audit", False))
+            ]
+            if not candidate_indices:
+                print("[Giai đoạn 4] Không có bình luận nào có cờ needs_audit=True để thẩm định.")
+                return []
+        else:
+            candidate_indices = list(range(total))
+
+        if audit_limit is not None and audit_limit < len(candidate_indices):
+            ordered = sorted(
+                candidate_indices,
+                key=lambda i: (bool(getattr(analyzed[i], "needs_audit", False)), getattr(analyzed[i], "likes", 0)),
                 reverse=True,
             )
-            target_indices = sorted(indices[:audit_limit])
+            target_indices = sorted(ordered[:audit_limit])
         else:
-            target_indices = list(range(total))
+            target_indices = candidate_indices
 
         context_block = _format_video_context(media_result)
         raw_results: dict[int, dict[str, Any]] = {}
@@ -335,6 +396,8 @@ class GemmaAuditor:
             else:
                 g_pol = res["gemma_polarity"]
                 g_emo = res["gemma_emotion"]
+                base_pol = str(getattr(item, "polarity_label", "") or "").strip()
+                base_emo = str(getattr(item, "emotion_label", "") or "").strip()
                 audits.append(
                     GemmaAuditItem(
                         comment_index=idx,
@@ -343,8 +406,8 @@ class GemmaAuditor:
                         gemma_emotion=g_emo,
                         gemma_emotion_vi=EMOTION_VI_MAP.get(g_emo, g_emo),
                         gemma_is_sarcasm=res["gemma_is_sarcasm"],
-                        gemma_agrees_polarity=(g_pol == item.polarity_label),
-                        gemma_agrees_emotion=(g_emo == item.emotion_label),
+                        gemma_agrees_polarity=(g_pol == base_pol) if base_pol else None,
+                        gemma_agrees_emotion=(g_emo == base_emo) if base_emo else None,
                         gemma_reason=res["gemma_reason"],
                     )
                 )
@@ -446,13 +509,30 @@ class GemmaAuditor:
 def build_model_comparison(
     analyzed: Sequence[AnalyzedComment],
     audits: Sequence[GemmaAuditItem] | None = None,
-    timings: dict[str, float] | None = None,
+    timings: dict[str, Any] | None = None,
+    full_models: bool = False,
 ) -> dict[str, Any]:
-    """Tạo bảng so sánh toàn diện các mô hình ML cổ điển, Lexicon, Deep Learning và Hybrid."""
+    """Tạo bảng so sánh toàn diện 5 họ Classical ML, Lexicon, Deep Learning (nếu bật Hybrid) và Ensemble."""
     total = len(analyzed)
     timings = timings or {}
     if total == 0:
         return {"polarity_models": [], "emotion_models": []}
+
+    has_dl = any(
+        bool(getattr(a, "dl_primary_model", ""))
+        or bool(getattr(a, "pred_dl_primary", ""))
+        or bool(getattr(a, "pred_visobert", ""))
+        for a in analyzed
+    )
+    has_ml = any(
+        bool(getattr(a, "pred_cnb", ""))
+        or bool(getattr(a, "pred_lr", ""))
+        or bool(getattr(a, "pred_svm", ""))
+        or bool(getattr(a, "pred_nb", ""))
+        or bool(getattr(a, "pred_ml_ensemble", ""))
+        for a in analyzed
+    )
+    has_emo_ml = any(bool(getattr(a, "emotion_ml_label", "")) for a in analyzed)
 
     has_vi = any(a.language == "vi" for a in analyzed)
     has_en = any(a.language == "en" for a in analyzed)
@@ -485,83 +565,156 @@ def build_model_comparison(
     gemma_pol_truth = [audits[i].gemma_polarity for i in audited_indices] if has_audit and audits else []
     gemma_emo_truth = [audits[i].gemma_emotion for i in audited_indices] if has_audit and audits else []
 
-    polarity_specs: list[tuple[str, str, str, Any]] = [
-        ("TF-IDF + Naive Bayes", "Classical ML", "pred_nb", timings.get("classical_ml_polarity_sec")),
-        ("TF-IDF + Logistic Regression", "Classical ML", "pred_lr", timings.get("classical_ml_polarity_sec")),
-        ("TF-IDF + Linear SVM", "Classical ML", "pred_svm", timings.get("classical_ml_polarity_sec")),
-        ("Bilingual Lexicon + Rules", "Rule-based NLP", "pred_lexicon", timings.get("lexicon_rules_sec")),
-    ]
-    if has_vi:
-        polarity_specs.append(("ViSoBERT (5CD-AI, VI)", "Deep Learning", "pred_visobert", timings.get("visobert_sec")))
-    polarity_specs.extend(
-        [
-            (dl_pol_name, "Deep Learning", "pred_dl_primary", dl_pol_time),
-            ("Hybrid Ensemble (Hệ thống chính)", "Hybrid ML + DL", "polarity_label", None),
-        ]
-    )
+    ml_pol_time = timings.get("classical_ml_polarity_sec")
+    ml_emo_time = timings.get("classical_ml_emotion_sec")
+    ml_pol_timings = timings.get("ml_model_timings_sec") or {}
+    ml_emo_timings = timings.get("ml_emo_model_timings_sec") or {}
+
+    def _ml_t(timing_map: dict[str, Any], key: str, fallback: Any) -> Any:
+        val = timing_map.get(key)
+        if val is not None:
+            return round(float(val), 4)
+        return fallback
+
+    pol_attr_by_key = {
+        "tfidf_nb": "pred_nb",
+        "tfidf_cnb": "pred_cnb",
+        "tfidf_lr": "pred_lr",
+        "tfidf_ridge": "pred_ridge",
+        "tfidf_sgd": "pred_sgd",
+        "tfidf_svm": "pred_svm",
+        "tfidf_nbsvm": "pred_nbsvm",
+        "tfidf_rbf_svm": "pred_rbf_svm",
+        "tfidf_rf": "pred_rf",
+        "tfidf_tree": "pred_tree",
+        "ml_ensemble": "pred_ml_ensemble",
+    }
+    full_pol_keys = tuple(pol_attr_by_key.keys())
+    selected_pol_keys = full_pol_keys if full_models else CORE_POLARITY_MODEL_KEYS
 
     polarity_rows: list[dict[str, Any]] = []
-    for display_name, family, attr, t_sec in polarity_specs:
-        # Với ViSoBERT khi mixed VI+EN, chỉ đánh giá trên tập comment VI
-        if attr == "pred_visobert":
-            eval_indices = [i for i, a in enumerate(analyzed) if a.pred_visobert]
-        else:
-            eval_indices = list(range(total))
-
-        sub_total = len(eval_indices) or 1
-        preds_all = [getattr(a, attr) for a in analyzed]
-        pos_cnt = sum(1 for i in eval_indices if preds_all[i] == "POS")
-        neu_cnt = sum(1 for i in eval_indices if preds_all[i] == "NEU")
-        neg_cnt = sum(1 for i in eval_indices if preds_all[i] == "NEG")
-
-        agreement_pct: float | None = None
-        macro_f1: float | None = None
-        kappa: float | None = None
-
-        if has_audit and audited_indices and audits:
-            aud_eval = [i for i in audited_indices if i in set(eval_indices)]
-            if aud_eval:
-                y_true_sub = [audits[i].gemma_polarity for i in aud_eval]
-                y_pred_sub = [preds_all[i] for i in aud_eval]
-                matches = sum(1 for yt, yp in zip(y_true_sub, y_pred_sub) if yt == yp)
-                agreement_pct = round(matches * 100.0 / len(aud_eval), 2)
-                macro_f1 = round(
-                    float(
-                        f1_score(
-                            y_true_sub,
-                            y_pred_sub,
-                            labels=["POS", "NEG", "NEU"],
-                            average="macro",
-                            zero_division=0,
-                        )
-                    ),
-                    4,
+    if has_ml or has_dl:
+        # Tuple: (model_key, tier, display_name, family, attr, t_sec)
+        polarity_specs: list[tuple[str, str, str, str, str, Any]] = []
+        for m_key in selected_pol_keys:
+            meta = POLARITY_MODEL_META.get(m_key, {})
+            tier = "ensemble" if m_key == "ml_ensemble" else "base"
+            polarity_specs.append(
+                (
+                    m_key,
+                    tier,
+                    meta.get("display_name", m_key),
+                    meta.get("family", "Classical ML"),
+                    pol_attr_by_key[m_key],
+                    _ml_t(ml_pol_timings, m_key, ml_pol_time),
                 )
-                try:
-                    kappa_val = cohen_kappa_score(
-                        y_true_sub, y_pred_sub, labels=["POS", "NEG", "NEU"]
-                    )
-                    kappa = 0.0 if np.isnan(kappa_val) else round(float(kappa_val), 4)
-                except Exception:
-                    kappa = None
-
-        polarity_rows.append(
-            {
-                "model": display_name,
-                "family": family,
-                "total_comments": len(eval_indices),
-                "pos_count": pos_cnt,
-                "neu_count": neu_cnt,
-                "neg_count": neg_cnt,
-                "pos_pct": round(pos_cnt * 100.0 / sub_total, 2),
-                "neu_pct": round(neu_cnt * 100.0 / sub_total, 2),
-                "neg_pct": round(neg_cnt * 100.0 / sub_total, 2),
-                "agreement_vs_gemma_pct": agreement_pct,
-                "macro_f1_vs_gemma": macro_f1,
-                "cohen_kappa_vs_gemma": kappa,
-                "inference_time_sec": t_sec,
-            }
+            )
+        polarity_specs.append(
+            ("lexicon", "base", "Bilingual Lexicon + Rules", "Rule-based NLP", "pred_lexicon", timings.get("lexicon_rules_sec"))
         )
+        if has_dl:
+            if has_vi and has_en:
+                polarity_specs.extend(
+                    [
+                        ("phobert", "base", "PhoBERT (VI)", "Deep Learning", "pred_phobert", timings.get("phobert_sentiment_sec")),
+                        ("visobert", "base", "ViSoBERT (5CD-AI, VI)", "Deep Learning", "pred_visobert", timings.get("visobert_sec")),
+                        ("roberta", "base", "Twitter-RoBERTa (EN)", "Deep Learning", "pred_roberta", timings.get("en_roberta_sentiment_sec")),
+                    ]
+                )
+            elif has_en:
+                polarity_specs.append(("roberta", "base", dl_pol_name, "Deep Learning", "pred_dl_primary", dl_pol_time))
+            else:
+                polarity_specs.extend(
+                    [
+                        ("visobert", "base", "ViSoBERT (5CD-AI, VI)", "Deep Learning", "pred_visobert", timings.get("visobert_sec")),
+                        ("phobert", "base", dl_pol_name, "Deep Learning", "pred_dl_primary", dl_pol_time),
+                    ]
+                )
+            polarity_specs.append(("system_main", "system", "Hybrid Ensemble (Hệ thống chính)", "Hybrid ML + DL", "polarity_label", None))
+        else:
+            polarity_specs.append(("system_main", "system", "ML Ensemble + Lexicon (Hệ thống chính)", "Classical ML Ensemble", "polarity_label", None))
+
+        for model_key, tier, display_name, family, attr, t_sec in polarity_specs:
+            # Với các mô hình theo từng ngôn ngữ, chỉ đánh giá trên đúng tập bình luận của ngôn ngữ đó
+            if attr == "pred_visobert":
+                preds_all = [a.pred_visobert for a in analyzed]
+                eval_indices = [i for i, p in enumerate(preds_all) if p]
+            elif attr == "pred_phobert":
+                preds_all = [
+                    getattr(a, "pred_phobert", "") or (a.pred_dl_primary if a.language == "vi" else "")
+                    for a in analyzed
+                ]
+                eval_indices = [i for i, p in enumerate(preds_all) if p]
+            elif attr == "pred_roberta":
+                preds_all = [
+                    getattr(a, "pred_roberta", "") or (a.pred_dl_primary if a.language == "en" else "")
+                    for a in analyzed
+                ]
+                eval_indices = [i for i, p in enumerate(preds_all) if p]
+            else:
+                preds_all = [getattr(a, attr) for a in analyzed]
+                eval_indices = [i for i, p in enumerate(preds_all) if p] if not full_models else list(range(total))
+                if not eval_indices and full_models:
+                    eval_indices = list(range(total))
+
+            if not eval_indices:
+                continue
+
+            sub_total = len(eval_indices) or 1
+            pos_cnt = sum(1 for i in eval_indices if preds_all[i] == "POS")
+            neu_cnt = sum(1 for i in eval_indices if preds_all[i] == "NEU")
+            neg_cnt = sum(1 for i in eval_indices if preds_all[i] == "NEG")
+
+            agreement_pct: float | None = None
+            macro_f1: float | None = None
+            kappa: float | None = None
+
+            if has_audit and audited_indices and audits:
+                aud_eval = [i for i in audited_indices if i in set(eval_indices)]
+                if aud_eval:
+                    y_true_sub = [audits[i].gemma_polarity for i in aud_eval]
+                    y_pred_sub = [preds_all[i] for i in aud_eval]
+                    matches = sum(1 for yt, yp in zip(y_true_sub, y_pred_sub) if yt == yp)
+                    agreement_pct = round(matches * 100.0 / len(aud_eval), 2)
+                    macro_f1 = round(
+                        float(
+                            f1_score(
+                                y_true_sub,
+                                y_pred_sub,
+                                labels=["POS", "NEG", "NEU"],
+                                average="macro",
+                                zero_division=0,
+                            )
+                        ),
+                        4,
+                    )
+                    try:
+                        kappa_val = cohen_kappa_score(
+                            y_true_sub, y_pred_sub, labels=["POS", "NEG", "NEU"]
+                        )
+                        kappa = 0.0 if np.isnan(kappa_val) else round(float(kappa_val), 4)
+                    except Exception:
+                        kappa = None
+
+            polarity_rows.append(
+                {
+                    "model_key": model_key,
+                    "tier": tier,
+                    "model": display_name,
+                    "family": family,
+                    "total_comments": len(eval_indices),
+                    "pos_count": pos_cnt,
+                    "neu_count": neu_cnt,
+                    "neg_count": neg_cnt,
+                    "pos_pct": round(pos_cnt * 100.0 / sub_total, 2),
+                    "neu_pct": round(neu_cnt * 100.0 / sub_total, 2),
+                    "neg_pct": round(neg_cnt * 100.0 / sub_total, 2),
+                    "agreement_vs_gemma_pct": agreement_pct,
+                    "macro_f1_vs_gemma": macro_f1,
+                    "cohen_kappa_vs_gemma": kappa,
+                    "inference_time_sec": t_sec,
+                }
+            )
 
     if has_audit and audited_indices:
         g_pos = sum(1 for p in gemma_pol_truth if p == "POS")
@@ -570,6 +723,8 @@ def build_model_comparison(
         n_aud = len(audited_indices)
         polarity_rows.append(
             {
+                "model_key": "gemma4",
+                "tier": "reference",
                 "model": "Gemma 4 E2B (Thẩm định ngữ cảnh)",
                 "family": "Multimodal LLM Reference",
                 "total_comments": n_aud,
@@ -586,38 +741,93 @@ def build_model_comparison(
             }
         )
 
-    emotion_specs = [
-        ("TF-IDF + Logistic Regression (Emotion)", "Classical ML", "emotion_ml_label", timings.get("classical_ml_emotion_sec")),
-        (dl_emo_name, "Deep Learning", "emotion_label", dl_emo_time),
-    ]
+    emo_attr_by_key = {
+        "emo_cnb": "pred_emo_cnb",
+        "emo_lr": "pred_emo_lr",
+        "emo_ridge": "pred_emo_ridge",
+        "emo_svm": "pred_emo_svm",
+        "emo_nbsvm": "pred_emo_nbsvm",
+        "emo_sgd": "pred_emo_sgd",
+        "emo_ensemble": "emotion_ml_label",
+    }
+    full_emo_keys = tuple(emo_attr_by_key.keys())
+    selected_emo_keys = full_emo_keys if full_models else CORE_EMOTION_MODEL_KEYS
+
     emotion_rows: list[dict[str, Any]] = []
-    for display_name, family, attr, t_sec in emotion_specs:
-        preds = [getattr(a, attr) for a in analyzed]
-        agreement_pct = None
-        macro_f1 = None
-        if has_audit and audited_indices:
-            sub_preds = [preds[i] for i in audited_indices]
-            matches = sum(1 for yt, yp in zip(gemma_emo_truth, sub_preds) if yt == yp)
-            agreement_pct = round(matches * 100.0 / len(audited_indices), 2)
-            macro_f1 = round(
-                float(
-                    f1_score(
-                        gemma_emo_truth,
-                        sub_preds,
-                        labels=list(EMOTION_LABELS),
-                        average="macro",
-                        zero_division=0,
+    if has_ml or has_dl:
+        emotion_specs: list[tuple[str, str, str, str, str, Any]] = []
+        if has_emo_ml:
+            for e_key in selected_emo_keys:
+                meta = EMOTION_MODEL_META.get(e_key, {})
+                tier = "ensemble" if e_key == "emo_ensemble" else "base"
+                emotion_specs.append(
+                    (
+                        e_key,
+                        tier,
+                        meta.get("display_name", e_key),
+                        meta.get("family", "Classical ML"),
+                        emo_attr_by_key[e_key],
+                        _ml_t(ml_emo_timings, e_key, ml_emo_time),
                     )
-                ),
-                4,
+                )
+        if has_dl:
+            emotion_specs.append(
+                ("dl_emotion", "system", dl_emo_name, "Deep Learning", "emotion_label", dl_emo_time)
             )
+        else:
+            emotion_specs.append(
+                (
+                    "emo_system_main",
+                    "system",
+                    "ML Emotion Ensemble + Cues (Hệ thống chính)",
+                    "Classical ML Ensemble",
+                    "emotion_label",
+                    ml_emo_time,
+                )
+            )
+        for model_key, tier, display_name, family, attr, t_sec in emotion_specs:
+            preds = [getattr(a, attr) for a in analyzed]
+            if not any(preds):
+                continue
+            agreement_pct = None
+            macro_f1 = None
+            if has_audit and audited_indices:
+                sub_preds = [preds[i] for i in audited_indices]
+                matches = sum(1 for yt, yp in zip(gemma_emo_truth, sub_preds) if yt == yp)
+                agreement_pct = round(matches * 100.0 / len(audited_indices), 2)
+                macro_f1 = round(
+                    float(
+                        f1_score(
+                            gemma_emo_truth,
+                            sub_preds,
+                            labels=list(EMOTION_LABELS),
+                            average="macro",
+                            zero_division=0,
+                        )
+                    ),
+                    4,
+                )
+            emotion_rows.append(
+                {
+                    "model_key": model_key,
+                    "tier": tier,
+                    "model": display_name,
+                    "family": family,
+                    "agreement_vs_gemma_pct": agreement_pct,
+                    "macro_f1_vs_gemma": macro_f1,
+                    "inference_time_sec": t_sec,
+                }
+            )
+    elif has_audit and audited_indices:
         emotion_rows.append(
             {
-                "model": display_name,
-                "family": family,
-                "agreement_vs_gemma_pct": agreement_pct,
-                "macro_f1_vs_gemma": macro_f1,
-                "inference_time_sec": t_sec,
+                "model_key": "gemma4_emo",
+                "tier": "reference",
+                "model": "Gemma 4 E2B (Emotion)",
+                "family": "Multimodal LLM Reference",
+                "agreement_vs_gemma_pct": 100.0,
+                "macro_f1_vs_gemma": 1.0,
+                "inference_time_sec": timings.get("gemma_audit_sec"),
             }
         )
 

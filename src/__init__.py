@@ -43,7 +43,12 @@ if TYPE_CHECKING:
         detect_language,
         extract_keywords_tfidf,
     )
-    from src.visualization import plot_sentiment_dashboard
+    from src.report_html import generate_html_report
+    from src.visualization import (
+        plot_models_dashboard,
+        plot_overview_dashboard,
+        plot_sentiment_dashboard,
+    )
 
 __all__ = [
     "AnalyzedComment",
@@ -76,7 +81,10 @@ __all__ = [
     "extract_keywords_tfidf",
     "extract_post_id",
     "format_final_results_df",
+    "generate_html_report",
     "load_comments_dataframe",
+    "plot_models_dashboard",
+    "plot_overview_dashboard",
     "plot_sentiment_dashboard",
     "resolve_local_input_dir",
 ]
@@ -112,7 +120,10 @@ _EXPORT_MAP = {
     "extract_keywords_tfidf": ("src.preprocessing.text_cleaner", "extract_keywords_tfidf"),
     "extract_post_id": ("src.ingestion.tiktok_collector", "extract_post_id"),
     "format_final_results_df": ("src.pipeline", "format_final_results_df"),
+    "generate_html_report": ("src.report_html", "generate_html_report"),
     "load_comments_dataframe": ("src.ingestion.tiktok_collector", "load_comments_dataframe"),
+    "plot_models_dashboard": ("src.visualization", "plot_models_dashboard"),
+    "plot_overview_dashboard": ("src.visualization", "plot_overview_dashboard"),
     "plot_sentiment_dashboard": ("src.visualization", "plot_sentiment_dashboard"),
     "resolve_local_input_dir": ("src.pipeline", "resolve_local_input_dir"),
 }

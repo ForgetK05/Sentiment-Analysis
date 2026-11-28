@@ -62,20 +62,6 @@ _COMMENT_CSV_COLUMNS: tuple[str, ...] = (
     "post_url",
 )
 
-_VIEW_REPLIES_TEXT_RE = re.compile(
-    r"^(?:"
-    r"xem\s+(?:thêm\s+)?(?:\d+\s+)?(?:câu\s+trả\s+lời|phản\s+hồi)(?:\s+khác)?"
-    r"|xem\s+thêm(?:\s*\(\d+\))?"
-    r"|view\s+(?:\d+\s+)?(?:more\s+)?repl(?:y|ies)"
-    r"|view\s+more(?:\s*\(\d+\))?"
-    r")$",
-    re.IGNORECASE,
-)
-_HIDE_OR_ACTION_TEXT_RE = re.compile(
-    r"^(?:ẩn|hide|thu\s*gọn|collapse|trả\s*lời|reply)(?:\b|\s|$)",
-    re.IGNORECASE,
-)
-
 
 def _clean_id(val: Any) -> str:
     """Chuẩn hóa ID TikTok dạng chuỗi (trả về '' nếu là None, '0', 'nan')."""
@@ -1142,54 +1128,16 @@ def download_tiktok_media(
     max_images: int | None = None,
 ) -> TikTokMediaBundle:
     """Tự động tải video (.mp4) hoặc bộ ảnh Photo Mode cùng metadata vào data/<post_id>/."""
-    resolved_url = _resolve_short_url(url)
-    post_id = extract_post_id(resolved_url)
-    post_data_dir = Path(data_dir) / post_id
-    post_data_dir.mkdir(parents=True, exist_ok=True)
-
-    is_photo_url = "/photo/" in resolved_url
-    ydl_error: Exception | None = None
-
-    if not is_photo_url:
-        try:
-            return _download_video_with_ytdlp(
-                url=url,
-                resolved_url=resolved_url,
-                post_id=post_id,
-                post_data_dir=post_data_dir,
-            )
-        except Exception as exc:
-            ydl_error = exc
-
-    # Tầng 1: Tải trực tiếp bằng HTTP + JSON nhúng (nhanh, không mở trình duyệt)
-    http_photo = _try_fetch_photo_post_http(
-        resolved_url,
-        images_dir=post_data_dir / "images",
+    bundle, _ = collect_tiktok_post(
+        url=url,
+        data_dir=data_dir,
+        collect_comments=False,
+        browser_channel=browser_channel,
+        headless=headless,
+        interactive_pause=interactive_pause,
         max_images=max_images,
     )
-    if http_photo is not None:
-        return _build_photo_bundle(url, post_data_dir, http_photo)
-
-    # Tầng 2: Dự phòng bằng Microsoft Edge Playwright (khi Tầng 1 bị chặn hoặc thiếu JSON)
-    try:
-        pw_photo = _download_photo_post_playwright(
-            resolved_url,
-            images_dir=post_data_dir / "images",
-            browser_channel=browser_channel,
-            headless=headless,
-            interactive_pause=interactive_pause,
-            max_images=max_images,
-            collect_comments=False,
-        )
-        return _build_photo_bundle(url, post_data_dir, pw_photo)
-    except Exception as pw_exc:
-        _cleanup_empty_dir(post_data_dir)
-        if not is_photo_url and ydl_error is not None:
-            raise RuntimeError(
-                f"Không thể tự động tải media từ link TikTok `{url}` (yt-dlp: {ydl_error}; Photo Mode: {pw_exc}). "
-                "Hãy kiểm tra kết nối mạng, cập nhật `yt-dlp -U`, hoặc truyền file qua `--media`."
-            ) from pw_exc
-        raise
+    return bundle
 
 
 def collect_tiktok_post(
@@ -1291,7 +1239,7 @@ def collect_tiktok_post(
         if not is_photo_url and ydl_error is not None:
             raise RuntimeError(
                 f"Không thể tự động tải media từ link TikTok `{url}` (yt-dlp: {ydl_error}; Photo Mode: {pw_exc}). "
-                "Hãy kiểm tra kết nối mạng, cập nhật `yt-dlp -U`, hoặc truyền file qua `--media`."
+                "Hãy kiểm tra kết nối mạng, cập nhật `yt-dlp -U`, hoặc dùng thư mục cục bộ qua `--input-dir`."
             ) from pw_exc
         raise
 
