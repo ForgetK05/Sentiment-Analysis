@@ -1,0 +1,138 @@
+﻿"stt
+(số thứ tự)","original_text
+(nội dung bình luận)","polarity_vi
+(sắc thái)","polarity_confidence
+(độ tự tin sắc thái %)","emotion_vi
+(cảm xúc)","emotion_confidence
+(độ tự tin cảm xúc %)","likes
+(lượt thích)","comment_type
+(loại bình luận)","username
+(tài khoản)","language
+(ngôn ngữ)","created_at
+(thời gian đăng)","reply_count
+(số phản hồi)"
+1,toàn là thiên binh thần tướng đi xin việc 😂😂😂,Tiêu cực,43.1%,Chán ghét / Khó chịu,94.0%,3435,Bình luận chính,soicodoc1218,Tiếng Việt,2026-11-25 19:42:10,11
+2,khúc cuối dạ hong thêm phát nữa có bị đánh hong😂,Trung tính,56.8%,Tức giận,85.7%,873,Bình luận chính,trn.thnh7338,Tiếng Việt,2026-11-25 20:13:52,3
+3,Bạn đầu bao có việc 😅😅😅,Tích cực,62.4%,Vui vẻ / Hài lòng,99.1%,441,Bình luận chính,myasherlife,Tiếng Việt,2026-11-25 21:09:16,0
+4,ko nhận là mất tiền 😂,Tiêu cực,48.3%,Buồn bã,95.1%,177,Bình luận chính,cauhaimientay64,Tiếng Việt,2026-11-25 20:25:44,0
+5,Mai ik xin việc r mua đồ kk,Trung tính,48.1%,Vui vẻ / Hài lòng,95.0%,58,Bình luận chính,mongemboqualoicuanh,Tiếng Việt,2026-11-25 20:21:19,0
+6,Hehe giờ tụi nhỏ toàn v k đó,Trung tính,47.7%,Vui vẻ / Hài lòng,70.5%,55,Bình luận chính,thienkieudecor,Tiếng Việt,2026-11-25 20:57:16,0
+7,"Truyền bá những cái hay không truyền, thiếu gì chủ đề để làm.",Tiêu cực,40.8%,Chán ghét / Khó chịu,95.9%,34,Bình luận chính,minh.anhz,Tiếng Việt,2026-11-26 21:48:05,18
+8,đây hok phải xin việc đây là tìm việc xin là dùng cho những người xin này xin nọ còn đây là tìm việc ok,Tiêu cực,51.3%,Chán ghét / Khó chịu,75.5%,25,Trả lời,thmanhnguyn82,Tiếng Việt,2026-11-25 20:08:50,0
+9,"Em làm đc không,Em không🤣",Trung tính,54.4%,Vui vẻ / Hài lòng,97.9%,24,Bình luận chính,linnguuen,Tiếng Việt,2026-11-26 09:10:52,0
+10,mình coi tin tức đi nha,Tích cực,54.7%,Trung tính / Khác,92.4%,13,Trả lời,yasuogod27,Tiếng Việt,2026-11-27 15:29:54,0
+11,Quán còn tuyển nhân viên ko chị,Trung tính,48.5%,Trung tính / Khác,98.0%,9,Bình luận chính,giu.k8,Tiếng Việt,2026-11-25 20:25:55,0
+12,Top 1 là thông báo đi làm chứ không phải đi xin việc,Tiêu cực,47.7%,Trung tính / Khác,89.8%,6,Bình luận chính,quanthanhbui0311,Tiếng Việt,2026-11-26 20:05:40,0
+13,bé áo đen xinh thế,Tích cực,56.2%,Chán ghét / Khó chịu,72.4%,5,Bình luận chính,nguynquangthinbch,Tiếng Việt,2026-11-25 19:38:40,0
+14,cao tay😂,Trung tính,73.2%,Trung tính / Khác,85.0%,4,Bình luận chính,ngoctuyen8662,Tiếng Anh,2026-11-26 17:16:12,0
+15,ông số 3 chất nhất 😂😂😂 cái gì cũng ko 😂,Tích cực,63.8%,Vui vẻ / Hài lòng,99.5%,3,Bình luận chính,anhthoc00,Tiếng Việt,2026-11-27 15:56:45,0
+16,áo đen đẹp,Tích cực,83.2%,Vui vẻ / Hài lòng,96.5%,3,Bình luận chính,jeryjery1795,Tiếng Việt,2026-11-25 21:59:51,0
+17,Hông dám đánh 😂,Tiêu cực,60.0%,Lo lắng / Sợ hãi,95.1%,3,Trả lời,quinie_pham,Tiếng Việt,2026-11-25 21:23:00,0
+18,Giống kim ngọc,Tích cực,68.9%,Trung tính / Khác,71.7%,3,Bình luận chính,minthuw_222,Tiếng Việt,2026-11-25 20:00:38,0
+19,Ông thứ 1 Ok á :)))),Tích cực,83.5%,Vui vẻ / Hài lòng,99.6%,2,Bình luận chính,my_xay.sua.ban,Tiếng Việt,2026-11-26 19:44:05,2
+20,Làm 24/24 mà xoay ca 🙄,Trung tính,36.0%,Trung tính / Khác,52.0%,2,Bình luận chính,a.terrifying.dream,Tiếng Việt,2026-11-26 13:38:48,1
+21,"Nếu ai cũng chọn lướt qua trước những điều chưa đúng, thì lấy đâu ra sự thay đổi? Im lặng là lựa chọn, nhưng góp ý cũng là quyền. Đừng nhầm lẫn giữa việc không thích và việc không được phép lên tiếng.",Trung tính,43.5%,Trung tính / Khác,79.8%,2,Trả lời,minh.anhz,Tiếng Việt,2026-11-27 15:48:37,0
+22,Đánh vô vinmec nằm,Tiêu cực,56.3%,Chán ghét / Khó chịu,85.9%,2,Trả lời,macsanhyen,Tiếng Việt,2026-11-26 14:46:43,0
+23,Quán còn tuyển người k ạh,Tiêu cực,61.1%,Chán ghét / Khó chịu,97.0%,1,Bình luận chính,suzu1133,Tiếng Việt,2026-11-25 19:45:35,0
+24,Được mỗi ông số 1,Trung tính,51.1%,Vui vẻ / Hài lòng,52.5%,1,Bình luận chính,himido.doan,Tiếng Việt,2026-11-28 16:10:17,0
+25,Quán làm nhanh vậy hả,Tích cực,54.2%,Ngạc nhiên,99.0%,1,Bình luận chính,dinh_peakpx1,Tiếng Việt,2026-11-28 18:29:01,0
+26,"sao khúc cuối ko hỏi "" vậy em làm có cần lương ko "" 🙂",Trung tính,79.7%,Trung tính / Khác,81.4%,1,Bình luận chính,biteo1001,Tiếng Việt,2026-11-26 15:01:32,0
+27,muốn coi thì coi không coi thì lướt,Tiêu cực,59.5%,Chán ghét / Khó chịu,90.1%,1,Trả lời,nafurai_simp,Tiếng Việt,2026-11-28 02:09:46,0
+28,Đợt trước chở ghệ ghé quán này ăn xong về chia tay luôn,Tiêu cực,69.0%,Buồn bã,99.0%,1,Bình luận chính,minhquanauto604,Tiếng Việt,2026-11-25 20:31:36,0
+29,thèn đầu nó đúng mà ta😂,Tích cực,45.1%,Vui vẻ / Hài lòng,93.1%,1,Bình luận chính,huei9x,Tiếng Việt,2026-11-25 23:18:34,0
+30,đc của ló,Trung tính,51.5%,Vui vẻ / Hài lòng,98.3%,1,Bình luận chính,tim.hn06,Tiếng Việt,2026-11-26 20:41:56,0
+31,ông đầu đc nhận chắc,Trung tính,50.0%,Trung tính / Khác,98.4%,1,Bình luận chính,user.14.3.12,Tiếng Việt,2026-11-26 18:35:56,0
+32,báo CA bất nó chứ ở đó mà chừ lương tháng sau😂,Tiêu cực,63.9%,Tức giận,78.7%,1,Bình luận chính,khoailang65,Tiếng Việt,2026-11-26 08:59:18,0
+33,Em cũng muốn ứng tuyển,Trung tính,44.2%,Buồn bã,75.6%,1,Bình luận chính,thulan200752,Tiếng Việt,2026-11-25 22:22:04,0
+34,dạ không,Trung tính,62.4%,Trung tính / Khác,51.9%,1,Bình luận chính,tieu_yeu_nu_788159,Tiếng Việt,2026-11-25 19:52:57,0
+35,hồi tyi tuyển có bạn kia 19t .cô ơi con đi làm con ko có xe cô book app đưa đón con nha ko thì sâng cô chở con đi đến quán lùc con đi học cô chở con đi lun nhé con chưa có bằng cô đưa đón con nhé . cô ơi trưa con ko ăn cơm tiệm con bị dị ứng bột ngọt ăn ở nhà mình nấu thôi . cô ơi làm này tính tháng chứ tính h rẻ quá tháng đc 15t ko cô . giá đò con làm mới đủ chi phí cô à chứ con học đại học mà lương ba cọc ba đồng 5 6 t tháng sao đủ trình con làm . tui ngơ ngác lun 😂😂,Trung tính,52.8%,Chán ghét / Khó chịu,82.5%,1,Bình luận chính,mipham933,Tiếng Việt,2026-11-26 13:04:31,0
+36,Cho em cái bạn thư ký nhá😁😁😁,Tích cực,66.6%,Vui vẻ / Hài lòng,99.2%,1,Bình luận chính,changkho9x,Tiếng Việt,2026-11-26 12:20:03,0
+37,Đuổi nó về là ăn lẩu free rồi kaka,Tiêu cực,72.8%,Chán ghét / Khó chịu,66.3%,1,Bình luận chính,tuanhoang87,Tiếng Việt,2026-11-26 09:56:56,0
+38,Làm trễ về trễ mà lương 30k thì bèo bọt thật,Tiêu cực,65.3%,Chán ghét / Khó chịu,98.7%,1,Bình luận chính,ton.ton018,Tiếng Việt,2026-11-26 13:58:07,0
+39,Giọng này ở hố nai chắc luôn 🤣,Trung tính,52.4%,Chán ghét / Khó chịu,85.9%,1,Bình luận chính,hi.ho.hoa18,Tiếng Việt,2026-11-25 20:51:31,0
+40,@🪼H o h y e e 🦕🐚🪸,Trung tính,77.3%,Trung tính / Khác,56.3%,1,Bình luận chính,bes_win,Tiếng Anh,2026-11-26 20:47:45,0
+41,@Khi nào có pồ đổi tên @Quỳnhbear🧸ྀིྀི @Nos12,Trung tính,52.0%,Trung tính / Khác,96.6%,1,Bình luận chính,linhhhh1701,Tiếng Việt,2026-11-26 02:00:13,0
+42,có mẹo cả,Trung tính,43.3%,Trung tính / Khác,69.5%,0,Bình luận chính,nzpp0,Tiếng Việt,2026-11-26 03:54:42,0
+43,có mẹo cả đấy,Tích cực,64.8%,Vui vẻ / Hài lòng,58.0%,0,Bình luận chính,quocbao2710.00,Tiếng Việt,2026-11-26 14:37:08,0
+44,"Giờ có nhận ko? Ko nhận là đc 3 phần lẩu free, còn nhận thì đó là lý do 😂😂😂",Tiêu cực,56.0%,Vui vẻ / Hài lòng,99.6%,0,Trả lời,gausoi2802,Tiếng Việt,2026-11-27 11:17:29,0
+45,Trường hợp 3 vs trường hợp 2 mà bạb,Tiêu cực,71.0%,Trung tính / Khác,83.2%,0,Trả lời,tieudiet0001,Tiếng Việt,2026-11-26 14:01:54,0
+46,Chất đấy,Tích cực,80.2%,Vui vẻ / Hài lòng,89.0%,0,Bình luận chính,user3667370682349,Tiếng Việt,2026-11-26 00:12:46,0
+47,Nhân viên đứng sau nhìn giống chủ hơn 🤣,Trung tính,49.4%,Vui vẻ / Hài lòng,98.2%,0,Bình luận chính,thiennhien080244,Tiếng Việt,2026-11-27 09:58:17,0
+48,hah,Tích cực,50.6%,Trung tính / Khác,46.3%,0,Bình luận chính,laucoduyengialai,Tiếng Anh,2026-11-28 10:16:48,0
+49,K đỡ được câu trả lời luôn🤣,Tiêu cực,77.0%,Buồn bã,51.3%,0,Bình luận chính,monnn2109,Tiếng Việt,2026-11-26 09:43:56,0
+50,Bé nhân viên,Tiêu cực,50.0%,Chán ghét / Khó chịu,96.7%,0,Bình luận chính,tupham023,Tiếng Việt,2026-11-26 19:55:26,0
+51,Quả nhân tiền kia tuyển vị trí thu ngân chuẩn bài,Trung tính,44.5%,Trung tính / Khác,96.1%,0,Bình luận chính,http_keria,Tiếng Việt,2026-11-27 11:26:37,0
+52,Ông đầu đc nhận r,Trung tính,46.9%,Vui vẻ / Hài lòng,95.0%,0,Bình luận chính,thtrj3,Tiếng Việt,2026-11-26 18:30:49,0
+53,tuyển đứa đầu ok nhất,Tích cực,67.7%,Vui vẻ / Hài lòng,83.1%,0,Bình luận chính,tamminh7499,Tiếng Việt,2026-11-26 20:01:06,0
+54,Được luôn hả cho em xin 1 chân,Trung tính,51.1%,Vui vẻ / Hài lòng,90.8%,0,Bình luận chính,anvatnhapepooh.food,Tiếng Việt,2026-11-27 14:24:23,0
+55,Chỗ tôi 35k 1h Á có khi lên tới 40,Tiêu cực,58.9%,Vui vẻ / Hài lòng,98.9%,0,Bình luận chính,thanh.thy9687,Tiếng Việt,2026-11-26 23:08:24,0
+56,Chị Sếp Bò 60 ơi VyVy có full 24 k ạ,Trung tính,61.2%,Trung tính / Khác,81.8%,0,Bình luận chính,anh.chng.bn.ph3,Tiếng Việt,2026-11-25 21:36:46,0
+57,vậy là chỉ tuyển đc mỗi 1th đầu tiên 🤣🤣,Tích cực,43.9%,Buồn bã,98.1%,0,Bình luận chính,duychuong.0712,Tiếng Việt,2026-11-27 09:31:07,0
+58,"Anh đâu, chị mà",Trung tính,55.4%,Trung tính / Khác,95.2%,0,Bình luận chính,truongbalong,Tiếng Việt,2026-11-25 23:41:16,0
+59,good,Tích cực,71.2%,Trung tính / Khác,63.2%,0,Bình luận chính,aigiaitri1,Tiếng Anh,2026-11-25 21:11:10,0
+60,à em đẹp chi sẽ tuyển,Tích cực,84.2%,Trung tính / Khác,94.4%,0,Bình luận chính,tiki04547,Tiếng Việt,2026-11-26 10:29:10,0
+61,Ái chà,Trung tính,46.6%,Lo lắng / Sợ hãi,62.6%,0,Bình luận chính,phng.tn.sang.phr,Tiếng Việt,2026-11-25 20:06:10,0
+62,e kó làm đc,Trung tính,51.7%,Vui vẻ / Hài lòng,98.7%,0,Bình luận chính,oneforall329,Tiếng Việt,2026-11-26 23:42:22,0
+63,đuợc cái em nó thật thà=)),Tích cực,68.8%,Vui vẻ / Hài lòng,99.7%,0,Bình luận chính,mazewle,Tiếng Việt,2026-11-26 21:16:00,0
+64,Bà nhân viên đó xinh thật mỗi lần đi ăn toàn nhìn bả,Tích cực,44.6%,Lo lắng / Sợ hãi,92.8%,0,Bình luận chính,wait.996,Tiếng Việt,2026-11-26 19:12:51,0
+65,Quay thêm hồi nữa chắc đuổi luôn thằng bé🤣,Tiêu cực,42.0%,Tức giận,97.2%,0,Bình luận chính,error.loading.06,Tiếng Việt,2026-11-26 20:18:00,0
+66,Đi làm trể trừ lương mà đi về trể ko thêm lương[Cười lớn][Cười lớn],Tiêu cực,56.1%,Chán ghét / Khó chịu,97.8%,0,Bình luận chính,ryan.phuoc,Tiếng Việt,2026-11-25 23:14:10,0
+67,Ý là kiểu 3 ko hiểu gì lun má🤣,Tiêu cực,52.6%,Chán ghét / Khó chịu,98.0%,0,Bình luận chính,codocvuong66,Tiếng Việt,2026-11-26 18:25:22,0
+68,Con ông trời đi xin việc 😂,Trung tính,44.0%,Vui vẻ / Hài lòng,68.3%,0,Bình luận chính,ngien63,Tiếng Việt,2026-11-26 04:38:03,0
+69,Thứ kí xin ha,Tiêu cực,38.4%,Vui vẻ / Hài lòng,98.6%,0,Bình luận chính,su.15.08,Tiếng Việt,2026-11-25 23:06:13,0
+70,Người của núi cấm qua xin việc hay s ạ,Tiêu cực,36.2%,Lo lắng / Sợ hãi,87.1%,0,Bình luận chính,bobabomi260303,Tiếng Việt,2026-11-27 11:58:59,0
+71,làm 24h là chết chủ quán,Tiêu cực,77.6%,Chán ghét / Khó chịu,49.7%,0,Bình luận chính,daryldixon412,Tiếng Việt,2026-11-26 14:23:15,0
+72,Bà ko bik số CA ak😂,Tiêu cực,44.4%,Chán ghét / Khó chịu,47.9%,0,Bình luận chính,nguyenhenry2410,Tiếng Việt,2026-11-25 22:08:50,0
+73,Đoạn đầu ổng thông minh á v là đc nhân r [Cười chảy nước mắt],Tích cực,83.7%,Vui vẻ / Hài lòng,99.4%,0,Bình luận chính,siueonxnk,Tiếng Việt,2026-11-26 13:30:57,0
+74,Tui loại 3,Trung tính,71.8%,Chán ghét / Khó chịu,88.5%,0,Bình luận chính,qa10290,Tiếng Việt,2026-11-26 07:54:37,0
+75,T xin cty may ngta hỏi sao nghĩ cty cũ t nói tại k thích nay ngta trả hồ sơ luôn 😂,Tiêu cực,67.6%,Buồn bã,98.1%,0,Bình luận chính,nguyenvanhuynh090,Tiếng Việt,2026-11-25 23:46:03,0
+76,Được,Tích cực,53.5%,Trung tính / Khác,80.3%,0,Bình luận chính,kimqucvng,Tiếng Việt,2026-11-25 20:49:18,0
+77,Chắc chắn nhận luôn 😂 ko đuổi đc,Tích cực,60.0%,Lo lắng / Sợ hãi,89.4%,0,Bình luận chính,lalala13120,Tiếng Việt,2026-11-25 21:34:53,0
+78,"Khúc cuối hay nha.”bố thằng điên,điên à😂😂",Tiêu cực,42.9%,Chán ghét / Khó chịu,65.3%,0,Bình luận chính,lanhuong200,Tiếng Việt,2026-11-26 18:49:09,0
+79,H,Trung tính,56.8%,Trung tính / Khác,77.8%,0,Bình luận chính,meomomo.3105,Tiếng Anh,2026-11-26 07:20:46,0
+80,mắ. tờ apply. mobile phone nó điền iphone 12 promax ned tr. đó h tưởng trên facebook k đâu coa ngờ t cầm được tờ apply đó đâu 🥲,Tích cực,55.9%,Lo lắng / Sợ hãi,51.7%,0,Bình luận chính,lilele83,Tiếng Việt,2026-11-25 20:55:13,0
+81,Ở trển phái xuống k à🤣,Trung tính,51.7%,Trung tính / Khác,78.8%,0,Bình luận chính,yieen.leen_,Tiếng Việt,2026-11-26 02:17:41,0
+82,... 😞 tôi nghĩ là được ...,Tích cực,39.2%,Trung tính / Khác,92.6%,0,Bình luận chính,user4849255627777,Tiếng Việt,2026-11-25 21:54:07,0
+83,Em cần Ứng tuyển Chị Ơi 🥰,Tích cực,79.9%,Vui vẻ / Hài lòng,97.8%,0,Bình luận chính,van.long.phi001,Tiếng Việt,2026-11-25 21:04:05,0
+84,"cho em ứng tuyển chị ơi!
+em cái gì cũng làm dc ... mỗi tội em ko bao giờ đi làm😌",Trung tính,49.1%,Buồn bã,83.2%,0,Bình luận chính,screenwriter.martinipham,Tiếng Việt,2026-11-26 04:29:41,0
+85,24h là fải làm từ sáng tới sáng chứ sáng tới tối j nữa 🙄,Tiêu cực,70.7%,Vui vẻ / Hài lòng,90.2%,0,Bình luận chính,lu.phc043,Tiếng Việt,2026-11-26 22:45:01,0
+86,hay,Tích cực,87.9%,Vui vẻ / Hài lòng,99.2%,0,Bình luận chính,thaonguyen_19987,Tiếng Việt,2026-11-26 01:55:09,0
+87,Loại 1 nhận chắc 🤣.,Trung tính,47.9%,Chán ghét / Khó chịu,88.0%,0,Bình luận chính,1990ntt,Tiếng Việt,2026-11-25 19:53:45,0
+88,còn tuyển người ko e.a muốn tuyển lm chủ🤣🤣🤣,Trung tính,48.0%,Vui vẻ / Hài lòng,98.7%,0,Bình luận chính,caixackhonghon9x,Tiếng Việt,2026-11-27 20:51:57,0
+89,hihi..,Trung tính,61.8%,Trung tính / Khác,64.2%,0,Bình luận chính,ngoc_huong_1984,Tiếng Anh,2026-11-25 21:12:06,0
+90,"e hok bt lmj nhma e biết kí
+đặc biệt là bảo đâu kí đó bonus thêm đầu óc kém lúc nhớ lúc quên :)))",Tiêu cực,84.6%,Chán ghét / Khó chịu,91.7%,0,Bình luận chính,phcnosad,Tiếng Việt,2026-11-27 03:41:06,0
+91,quá hợp lý,Tích cực,84.0%,Trung tính / Khác,89.7%,0,Bình luận chính,nhimon79,Tiếng Việt,2026-11-26 21:30:16,0
+92,thằng đầu quá bá khí 😂,Tiêu cực,48.6%,Vui vẻ / Hài lòng,55.9%,0,Bình luận chính,madeinhatrang,Tiếng Việt,2026-11-26 10:11:14,0
+93,còn 30k x 24h nữa chớ,Tích cực,51.1%,Vui vẻ / Hài lòng,80.7%,0,Bình luận chính,thuyapplee,Tiếng Việt,2026-11-25 22:46:47,0
+94,chị đơ cái mặt chị ra [Ngây thơ],Trung tính,40.3%,Buồn bã,70.2%,0,Bình luận chính,hoagtoan,Tiếng Việt,2026-11-25 20:46:25,0
+95,ai kêu tui z 😂😂,Trung tính,55.3%,Vui vẻ / Hài lòng,98.6%,0,Bình luận chính,lythongne,Tiếng Việt,2026-11-25 20:24:06,0
+96,Cay hỏng chịu được[Cười to tán thành],Tiêu cực,45.6%,Chán ghét / Khó chịu,63.2%,0,Bình luận chính,biinguyen250498,Tiếng Việt,2026-11-25 18:57:20,0
+97,thư ký,Trung tính,52.8%,Trung tính / Khác,76.1%,0,Bình luận chính,tansau996,Tiếng Việt,2026-11-25 22:27:32,0
+98,"Gen Z giờ vậy á 🤣,má tui mợt",Trung tính,43.5%,Lo lắng / Sợ hãi,61.5%,0,Bình luận chính,ngocmee98,Tiếng Việt,2026-11-27 08:29:08,0
+99,fl cheo,Trung tính,63.8%,Trung tính / Khác,52.5%,0,Bình luận chính,oanh797968,Tiếng Anh,2026-11-28 19:24:28,0
+100,Nghe giọng phát biết gái đnai,Tiêu cực,46.1%,Chán ghét / Khó chịu,97.2%,0,Bình luận chính,c.ci.ln580,Tiếng Việt,2026-11-28 08:44:57,0
+101,"không thấy hay, sao không truyền bá điều tích cực hơn?",Tiêu cực,75.9%,Chán ghét / Khó chịu,58.2%,0,Bình luận chính,nakroth3324,Tiếng Việt,2026-11-27 20:23:40,0
+102,Giọng giống Hố Nai - Biên Hoà nhỉ?,Trung tính,63.4%,Ngạc nhiên,70.2%,0,Bình luận chính,tientien.301,Tiếng Việt,2026-11-27 15:57:25,0
+103,Toàn ô cố nội đi xin việc k á,Tiêu cực,65.3%,Chán ghét / Khó chịu,98.9%,0,Bình luận chính,nhung.n04,Tiếng Việt,2026-11-27 11:03:36,0
+104,chéo xu hướng,Tiêu cực,55.2%,Chán ghét / Khó chịu,95.4%,0,Bình luận chính,chin_nine9999,Tiếng Việt,2026-11-26 22:45:10,0
+105,Oke z. Tháng sau e làm ở âu. Chị tới chị lấy😏,Tích cực,63.1%,Vui vẻ / Hài lòng,99.5%,0,Bình luận chính,shanksyonku,Tiếng Việt,2026-11-26 19:36:40,0
+106,K lẽ đánh nó,Tiêu cực,75.8%,Trung tính / Khác,86.0%,0,Bình luận chính,.cng.hi7,Tiếng Việt,2026-11-26 18:17:40,0
+107,mẹowi,Tích cực,59.5%,Chán ghét / Khó chịu,69.1%,0,Bình luận chính,usenamethithi,Tiếng Việt,2026-11-26 17:05:36,0
+108,"kiểu kiểu 8 tiếng e làm nhân viên, còn lại e làm với chị",Tiêu cực,58.6%,Trung tính / Khác,85.5%,0,Bình luận chính,zinki58,Tiếng Việt,2026-11-26 12:47:02,0
+109,Ý là pk làm conten e ă. Nhưng có nhân viên đi xin việc mà t tưởng là bà váy trắng mới là nhân viên luôn ă.,Trung tính,50.4%,Chán ghét / Khó chịu,95.6%,0,Bình luận chính,miss.hang2612,Tiếng Việt,2026-11-26 12:07:24,0
+110,Chị chủ gốc Hố Lai ah 😁,Tích cực,68.3%,Vui vẻ / Hài lòng,98.8%,0,Bình luận chính,user7fsj7valpf,Tiếng Việt,2026-11-26 09:25:33,0
+111,"😂😂 genz đi là là cái gì đó cũng cũng,một số năng lực có hạn nhưng tư tưởng trên mây",Tiêu cực,47.4%,Chán ghét / Khó chịu,93.4%,0,Bình luận chính,songbangniemtin1210,Tiếng Việt,2026-11-26 06:30:13,0
+112,Bố thằng điên🤣🤣,Tiêu cực,76.7%,Tức giận,59.4%,0,Bình luận chính,nng.tr.cn.th,Tiếng Việt,2026-11-26 00:07:35,0
+113,Bớ thằng điên😂😂😂,Tiêu cực,65.6%,Chán ghét / Khó chịu,88.1%,0,Bình luận chính,tn.g.khng.quan.tr,Tiếng Việt,2026-11-25 23:24:15,0
+114,Tuyển em nè bao nhiêu khách e cx tiếp kk,Tích cực,83.4%,Vui vẻ / Hài lòng,99.4%,0,Bình luận chính,usname7709,Tiếng Việt,2026-11-25 20:19:53,0
+115,con gái bắt ng ta gọi bằng anh???,Tiêu cực,48.0%,Trung tính / Khác,44.5%,0,Bình luận chính,.c.n27,Tiếng Việt,2026-11-25 19:52:48,0
+116,Cái lùm mía nó gài shop,Tiêu cực,78.0%,Chán ghét / Khó chịu,98.8%,0,Bình luận chính,tienminhho,Tiếng Việt,2026-11-25 19:47:05,0
+117,Loại 1 cay mà k làm gi dc [Cười to tán thành][Cười to tán thành],Tiêu cực,61.6%,Chán ghét / Khó chịu,98.7%,0,Bình luận chính,taixe84,Tiếng Việt,2026-11-25 19:18:41,0
+118,@lynnie @không tìm thấy tài khoản,Trung tính,53.2%,Trung tính / Khác,83.0%,0,Bình luận chính,nxuyenhi,Tiếng Việt,2026-11-26 14:02:10,1
+119,Dạ không ạ,Trung tính,63.3%,Trung tính / Khác,99.1%,0,Trả lời,ghan_219h,Tiếng Việt,2026-11-26 18:31:05,0
+120,@ℬ𝒶ℯ hay á quán bx đi ne,Trung tính,55.0%,Vui vẻ / Hài lòng,99.3%,0,Bình luận chính,noinhoemdii,Tiếng Việt,2026-11-28 01:24:36,0
+121,chê tư bản bóc lột. ở viêt nam 1 tiêng 30k thi không bóc lột sao,Trung tính,48.3%,Chán ghét / Khó chịu,99.3%,0,Bình luận chính,c.minh8183,Tiếng Việt,2026-11-27 17:39:20,0
+122,@Thu Uyên (mẹ Cún),Trung tính,43.7%,Vui vẻ / Hài lòng,67.0%,0,Bình luận chính,huyenem1299,Tiếng Việt,2026-11-27 22:28:35,0
+123,[Xấu hổ][Xấu hổ][Xấu hổ],Tiêu cực,65.4%,Chán ghét / Khó chịu,45.1%,0,Bình luận chính,trongnhom3,Tiếng Việt,2026-11-25 19:42:04,0

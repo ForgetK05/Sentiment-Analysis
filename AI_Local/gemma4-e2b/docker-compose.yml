@@ -1,0 +1,31 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: gemma4-e2b
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      # Lưu toàn bộ trọng số model trực tiếp tại thư mục dự án
+      - ./ollama_models:/root/.ollama
+      # Gắn file cấu hình tối ưu vào container
+      - ./Modelfile:/Modelfile
+    environment:
+      # Bật Flash Attention (bắt buộc để dùng lượng tử hóa KV Cache)
+      - OLLAMA_FLASH_ATTENTION=1
+      # Hạ KV Cache từ q8_0 xuống q4_0: giảm thêm ~50% VRAM cho ngữ cảnh hình ảnh/video trên GTX 1650 4GB
+      - OLLAMA_KV_CACHE_TYPE=q4_0
+      # Chỉ nạp tối đa 1 model vào VRAM cùng lúc, tối đa 1 request song song để không nhân đôi KV Cache
+      - OLLAMA_MAX_LOADED_MODELS=1
+      - OLLAMA_NUM_PARALLEL=1
+      # Giữ model trên VRAM trong 3 phút rồi tự giải phóng để trả VRAM cho các tác vụ khác (như Whisper)
+      - OLLAMA_KEEP_ALIVE=3m
+      # Mở quyền truy cập API cho script Python bên ngoài
+      - OLLAMA_HOST=0.0.0.0
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

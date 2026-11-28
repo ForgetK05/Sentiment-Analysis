@@ -1,0 +1,546 @@
+{
+  "run_name": "7710909877958282514",
+  "tiktok_metadata": {
+    "url": "https://www.tiktok.com/@memory13988/video/7710909877958282514?lang=vi-VN",
+    "resolved_url": "https://www.tiktok.com/@memory13988/video/7710909877958282514?lang=vi-VN",
+    "post_id": "7710909877958282514",
+    "media_type": "video",
+    "media_paths": [
+      "data\\7710909877958282514\\video.mp4"
+    ],
+    "caption": "TikTok video #7710909877958282514",
+    "hashtags": [
+      "#7710909877958282514"
+    ],
+    "uploader": "memory13988",
+    "title": "TikTok video #7710909877958282514",
+    "duration": 6.0,
+    "like_count": 2344,
+    "comment_count": 133,
+    "metadata_path": "data\\7710909877958282514\\metadata.json"
+  },
+  "media_analysis": {
+    "media_type": "video",
+    "source_paths": [
+      "data\\7710909877958282514\\video.mp4"
+    ],
+    "num_frames_used": 8,
+    "has_audio": true,
+    "caption": "TikTok video #7710909877958282514",
+    "transcript": "[00:00-00:02] ha ha ha ha ha ha",
+    "chu_de_chinh": "So sánh về yếu tố kinh tế (tiền tệ) và tinh thần dân tộc trong chiến thắng lịch sử giữa Việt Nam và Trung Quốc.",
+    "muc_dich_chinh": "Làm rõ sự khác biệt về yếu tố quyết định chiến thắng giữa Việt Nam và Trung Quốc thông qua việc so sánh đơn vị tiền tệ và lòng dân.",
+    "quan_diem_noi_dung": "Phân tích và bình luận về vai trò của tiền tệ (VND vs NDT) và tinh thần dân tộc trong các sự kiện lịch sử, đặc biệt là chiến thắng của Việt Nam.",
+    "doi_tuong_chinh": [
+      "Việt Nam",
+      "Trung Quốc",
+      "Tiền tệ (VND và NDT)",
+      "Tinh thần dân tộc"
+    ],
+    "sac_thai_noi_dung": "Tranh cãi",
+    "tom_tat_ngan": "Video so sánh Việt Nam và Trung Quốc về khả năng giành chiến thắng trước quân xâm lược, cho rằng nguyên nhân nằm ở tiền tệ. Việt Nam được ví như \"VND\" (Việt Nam Đồng Lòng), trong khi Trung Quốc là \"NDT\" (Nhân Dân Tệ). Tác giả đặt vấn đề liệu việc sử dụng đồng tiền có quyết định chiến thắng hay không, và khẳng định tinh thần dân tộc là yếu tố then chốt.",
+    "tu_khoa": [
+      "Việt Nam",
+      "Trung Quốc",
+      "VND",
+      "NDT",
+      "Chiến Thắng",
+      "Tiền",
+      "Dân Tệ"
+    ],
+    "luu_y_danh_gia_comment": "Người xem có thể tranh luận về tính đúng đắn của việc dùng tiền tệ để đánh giá chiến thắng. Các bình luận có thể tập trung vào việc ủng hộ hoặc phản đối cách so sánh VND/NDT, hoặc bàn luận thêm về khía cạnh tinh thần dân tộc được đề cập ở cuối video.",
+    "chu_tren_man_hinh": [
+      "F1 00:00",
+      "Giờ Mới Biết",
+      "Tại sao Việt Nam luôn giành Chiến Thắng trước quân Xâm lược.",
+      "Còn Trung Quốc thì không?",
+      "Là do: Tiền thôi.",
+      "Tại vì Việt Nam là \"VND\"",
+      "Việt Nam Đồng Lòng)",
+      "Còn Trung Quốc là: \"NDT\"",
+      "Tức (Nhân Dân Tệ) thì Làm sao mà thắng được"
+    ],
+    "dien_bien_hinh_anh": [
+      "F1: Mở đầu với tiêu đề và câu hỏi lớn.",
+      "F2: Đưa ra lý do cho sự khác biệt về chiến thắng.",
+      "F3: So sánh đơn vị tiền tệ của Việt Nam (\"VND\") và Trung Quốc (\"NDT\").",
+      "F4: Nhấn mạnh sự khác biệt về tinh thần dân tộc.",
+      "F5: Lặp lại luận điểm so sánh tiền tệ và kết luận về việc thắng lợi."
+    ],
+    "chi_tiet_va_luan_diem": [
+      "Video đặt vấn đề tại sao Việt Nam luôn giành chiến thắng trước quân xâm lược trong khi Trung Quốc thì không, cho rằng nguyên nhân là do tiền tệ.",
+      "Việt Nam được ví với \"VND\" (Việt Nam Đồng Lòng), còn Trung Quốc được ví với \"NDT\" (Nhân Dân Tệ).",
+      "Tác giả đặt câu hỏi liệu việc sử dụng đồng tiền có ảnh hưởng đến chiến thắng hay không.",
+      "Kết luận rằng việc dùng VND và tinh thần dân tộc là yếu tố quyết định sự khác biệt trong kết quả chiến thắng."
+    ]
+  },
+  "noise_filter_summary": {
+    "total_raw_comments": 104,
+    "valid_comments": 83,
+    "filtered_noise_count": 21,
+    "duplicate_valid_count": 4,
+    "filter_reasons": {
+      "FILTERED_URL_OR_SYMBOL": 21
+    }
+  },
+  "keywords_tfidf": {
+    "overall": [
+      {
+        "keyword": "hay",
+        "tfidf_score": 0.1083
+      },
+      {
+        "keyword": "nghĩ",
+        "tfidf_score": 0.0845
+      },
+      {
+        "keyword": "đúng",
+        "tfidf_score": 0.0758
+      },
+      {
+        "keyword": "khó nghĩ",
+        "tfidf_score": 0.0374
+      },
+      {
+        "keyword": "khó",
+        "tfidf_score": 0.0374
+      },
+      {
+        "keyword": "chuẩn",
+        "tfidf_score": 0.0326
+      },
+      {
+        "keyword": "giỏi",
+        "tfidf_score": 0.0239
+      },
+      {
+        "keyword": "có",
+        "tfidf_score": 0.0218
+      },
+      {
+        "keyword": "vn",
+        "tfidf_score": 0.0203
+      },
+      {
+        "keyword": "đồng lòng",
+        "tfidf_score": 0.0188
+      }
+    ],
+    "positive": [
+      {
+        "keyword": "hay",
+        "tfidf_score": 0.2028
+      },
+      {
+        "keyword": "đúng",
+        "tfidf_score": 0.1149
+      },
+      {
+        "keyword": "nghĩ",
+        "tfidf_score": 0.0662
+      },
+      {
+        "keyword": "chuẩn",
+        "tfidf_score": 0.0597
+      },
+      {
+        "keyword": "giỏi",
+        "tfidf_score": 0.0451
+      },
+      {
+        "keyword": "có",
+        "tfidf_score": 0.0335
+      },
+      {
+        "keyword": "khó",
+        "tfidf_score": 0.0292
+      },
+      {
+        "keyword": "khó nghĩ",
+        "tfidf_score": 0.0292
+      },
+      {
+        "keyword": "đồng lòng",
+        "tfidf_score": 0.0268
+      },
+      {
+        "keyword": "thích",
+        "tfidf_score": 0.0238
+      }
+    ],
+    "negative": [
+      {
+        "keyword": "tệ",
+        "tfidf_score": 0.0645
+      },
+      {
+        "keyword": "uh",
+        "tfidf_score": 0.035
+      },
+      {
+        "keyword": "uh tệ",
+        "tfidf_score": 0.035
+      },
+      {
+        "keyword": "thk",
+        "tfidf_score": 0.0347
+      },
+      {
+        "keyword": "đường",
+        "tfidf_score": 0.0335
+      },
+      {
+        "keyword": "lấy",
+        "tfidf_score": 0.0317
+      },
+      {
+        "keyword": "vn",
+        "tfidf_score": 0.0307
+      },
+      {
+        "keyword": "xâm lược",
+        "tfidf_score": 0.0302
+      },
+      {
+        "keyword": "tq",
+        "tfidf_score": 0.0301
+      },
+      {
+        "keyword": "thắng",
+        "tfidf_score": 0.0289
+      }
+    ]
+  },
+  "sentiment_summary": {
+    "total_valid_comments": 83,
+    "language_counts": {
+      "vi": 80,
+      "en": 3
+    },
+    "polarity_counts": {
+      "POS": 42,
+      "NEG": 18,
+      "NEU": 23
+    },
+    "polarity_percentages": {
+      "POS": 50.6,
+      "NEG": 21.69,
+      "NEU": 27.71
+    },
+    "emotion_counts": {
+      "Anger": 0,
+      "Sadness": 4,
+      "Fear": 1,
+      "Enjoyment": 46,
+      "Disgust": 10,
+      "Surprise": 12,
+      "Other": 10
+    },
+    "emotion_percentages": {
+      "Anger": 0.0,
+      "Sadness": 4.82,
+      "Fear": 1.2,
+      "Enjoyment": 55.42,
+      "Disgust": 12.05,
+      "Surprise": 14.46,
+      "Other": 12.05
+    },
+    "avg_polarity_score": 0.2735,
+    "avg_confidence": 0.6838,
+    "overall_tendency": "Tích cực",
+    "sarcasm_flagged_count": 3,
+    "classical_ml_benchmark": {
+      "vi": {
+        "language": "vi",
+        "polarity_train_size": 36971,
+        "polarity_test_size": 4773,
+        "polarity_models": {
+          "tfidf_nb": {
+            "accuracy": 0.5192,
+            "macro_f1": 0.5064
+          },
+          "tfidf_lr": {
+            "accuracy": 0.6195,
+            "macro_f1": 0.6216
+          },
+          "tfidf_svm": {
+            "accuracy": 0.6434,
+            "macro_f1": 0.6405
+          }
+        },
+        "emotion_train_size": 6234,
+        "emotion_test_size": 693,
+        "emotion_lr": {
+          "accuracy": 0.5772,
+          "macro_f1": 0.574
+        }
+      },
+      "en": {
+        "language": "en",
+        "polarity_train_size": 45657,
+        "polarity_test_size": 12284,
+        "polarity_models": {
+          "tfidf_nb": {
+            "accuracy": 0.6143,
+            "macro_f1": 0.61
+          },
+          "tfidf_lr": {
+            "accuracy": 0.6107,
+            "macro_f1": 0.6087
+          },
+          "tfidf_svm": {
+            "accuracy": 0.6025,
+            "macro_f1": 0.5776
+          }
+        },
+        "emotion_train_size": 3425,
+        "emotion_test_size": 1421,
+        "emotion_lr": {
+          "accuracy": 0.7234,
+          "macro_f1": 0.7172
+        }
+      }
+    },
+    "model_timings_sec": {
+      "classical_ml_setup_sec": 79.248,
+      "classical_ml_polarity_sec": 0.014,
+      "classical_ml_emotion_sec": 0.009,
+      "lexicon_rules_sec": 0.001,
+      "visobert_sec": 5.234,
+      "phobert_sentiment_sec": 5.231,
+      "phobert_emotion_sec": 5.327,
+      "en_roberta_sentiment_sec": 3.416,
+      "en_roberta_emotion_sec": 2.003
+    },
+    "top_examples": {
+      "POS": [
+        {
+          "comment": "thế cũng nghĩ ra dc🤣",
+          "language": "vi",
+          "likes": 25,
+          "polarity_score": 0.5617,
+          "emotion": "Vui vẻ / Hài lòng",
+          "confidence": 0.5581
+        },
+        {
+          "comment": "cũng đúng nha",
+          "language": "vi",
+          "likes": 9,
+          "polarity_score": 0.7421,
+          "emotion": "Vui vẻ / Hài lòng",
+          "confidence": 0.715
+        },
+        {
+          "comment": "Đúng, đúng nè😁😁😁😁😁😁",
+          "language": "vi",
+          "likes": 3,
+          "polarity_score": 0.8497,
+          "emotion": "Vui vẻ / Hài lòng",
+          "confidence": 0.8218
+        }
+      ],
+      "NEG": [
+        {
+          "comment": "1. Ý nghĩa của tên gọi Nhân dân tệ\nTên tiếng Trung gồm:\n人民 (Rénmín): Nhân dân, người dân.\n币 (Bì): Tiền tệ, đồng tiền.\nGhép lại, 人民币 (Nhân dân tệ) có nghĩa là đồng tiền của nhân dân.\nTên tiếng Anh là Renminbi, viết tắt là RMB.",
+          "language": "vi",
+          "likes": 7,
+          "polarity_score": -0.6454,
+          "emotion": "Chán ghét / Khó chịu",
+          "confidence": 0.737
+        },
+        {
+          "comment": "Uh mà tệ thiệt",
+          "language": "vi",
+          "likes": 1,
+          "polarity_score": -0.9015,
+          "emotion": "Buồn bã",
+          "confidence": 0.9058
+        },
+        {
+          "comment": "1tệ gần bằng 3,900 vnđ. Tệ dữ chưa",
+          "language": "vi",
+          "likes": 1,
+          "polarity_score": -0.8607,
+          "emotion": "Vui vẻ / Hài lòng",
+          "confidence": 0.8796
+        }
+      ],
+      "NEU": [
+        {
+          "comment": "ông nào nghi ra này tui nể that",
+          "language": "vi",
+          "likes": 3,
+          "polarity_score": 0.0307,
+          "emotion": "Vui vẻ / Hài lòng",
+          "confidence": 0.4769
+        },
+        {
+          "comment": "1. Ý nghĩa của tên gọi Việt Nam đồng\nTên gọi gồm hai phần:\nViệt Nam: Tên đất nước.\nĐồng: Tên một đơn vị tiền tệ, có nguồn gốc từ cách gọi tiền bằng đồng kim loại (đồng đỏ, đồng thau).\nGhép lại, Việt Nam đồng có thể hiểu là đồng tiền của Việt Nam, tức tiền tệ quốc gia.",
+          "language": "vi",
+          "likes": 3,
+          "polarity_score": 0.0709,
+          "emotion": "Trung tính / Khác",
+          "confidence": 0.4042
+        },
+        {
+          "comment": "trời thế mà cũng nghĩ ra",
+          "language": "vi",
+          "likes": 2,
+          "polarity_score": -0.0339,
+          "emotion": "Ngạc nhiên",
+          "confidence": 0.5177
+        }
+      ]
+    },
+    "on_topic_summary": {
+      "on_topic_count": 12,
+      "on_topic_pct": 14.46,
+      "off_topic_count": 71,
+      "avg_context_relevance": 0.1051,
+      "on_topic_polarity_counts": {
+        "POS": 2,
+        "NEG": 5,
+        "NEU": 5
+      },
+      "on_topic_polarity_percentages": {
+        "POS": 16.67,
+        "NEG": 41.67,
+        "NEU": 41.67
+      },
+      "alignment_counts": {
+        "Bức xúc / Tiêu cực về chủ đề video (cần xét đồng tình hay công kích)": 5,
+        "Ít liên quan / Bình luận ngoài lề": 65,
+        "Ủng hộ / Tích cực với video": 4,
+        "Thảo luận trung lập về chủ đề video (cần kiểm tra ẩn ý)": 4,
+        "Nghi ngờ mỉa mai / Cần AI kiểm tra ngữ cảnh": 3,
+        "Ủng hộ / Tích cực với nội dung video": 2
+      }
+    }
+  },
+  "model_comparison": {
+    "polarity_models": [
+      {
+        "model": "TF-IDF + Naive Bayes",
+        "family": "Classical ML",
+        "total_comments": 83,
+        "pos_count": 19,
+        "neu_count": 27,
+        "neg_count": 37,
+        "pos_pct": 22.89,
+        "neu_pct": 32.53,
+        "neg_pct": 44.58,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 0.014
+      },
+      {
+        "model": "TF-IDF + Logistic Regression",
+        "family": "Classical ML",
+        "total_comments": 83,
+        "pos_count": 38,
+        "neu_count": 30,
+        "neg_count": 15,
+        "pos_pct": 45.78,
+        "neu_pct": 36.14,
+        "neg_pct": 18.07,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 0.014
+      },
+      {
+        "model": "TF-IDF + Linear SVM",
+        "family": "Classical ML",
+        "total_comments": 83,
+        "pos_count": 45,
+        "neu_count": 15,
+        "neg_count": 23,
+        "pos_pct": 54.22,
+        "neu_pct": 18.07,
+        "neg_pct": 27.71,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 0.014
+      },
+      {
+        "model": "Bilingual Lexicon + Rules",
+        "family": "Rule-based NLP",
+        "total_comments": 83,
+        "pos_count": 25,
+        "neu_count": 52,
+        "neg_count": 6,
+        "pos_pct": 30.12,
+        "neu_pct": 62.65,
+        "neg_pct": 7.23,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 0.001
+      },
+      {
+        "model": "ViSoBERT (5CD-AI, VI)",
+        "family": "Deep Learning",
+        "total_comments": 80,
+        "pos_count": 60,
+        "neu_count": 2,
+        "neg_count": 18,
+        "pos_pct": 75.0,
+        "neu_pct": 2.5,
+        "neg_pct": 22.5,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 5.234
+      },
+      {
+        "model": "PhoBERT (VI) / Twitter-RoBERTa (EN)",
+        "family": "Deep Learning",
+        "total_comments": 83,
+        "pos_count": 39,
+        "neu_count": 26,
+        "neg_count": 18,
+        "pos_pct": 46.99,
+        "neu_pct": 31.33,
+        "neg_pct": 21.69,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 8.647
+      },
+      {
+        "model": "Hybrid Ensemble (Hệ thống chính)",
+        "family": "Hybrid ML + DL",
+        "total_comments": 83,
+        "pos_count": 42,
+        "neu_count": 23,
+        "neg_count": 18,
+        "pos_pct": 50.6,
+        "neu_pct": 27.71,
+        "neg_pct": 21.69,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": null
+      }
+    ],
+    "emotion_models": [
+      {
+        "model": "TF-IDF + Logistic Regression (Emotion)",
+        "family": "Classical ML",
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "inference_time_sec": 0.009
+      },
+      {
+        "model": "PhoBERT Emotion (VI) / DistilRoBERTa (EN)",
+        "family": "Deep Learning",
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "inference_time_sec": 7.33
+      }
+    ]
+  },
+  "ai_audit_verdict": null
+}

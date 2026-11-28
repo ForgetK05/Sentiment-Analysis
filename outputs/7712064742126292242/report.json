@@ -1,0 +1,1108 @@
+{
+  "run_name": "7712064742126292242",
+  "total_duration_sec": 1167.654,
+  "pipeline_stages": [
+    {
+      "id": "GĐ 0",
+      "title": "Chuẩn bị dữ liệu đầu vào",
+      "status": "completed",
+      "duration_sec": 137.2,
+      "summary": "Tải & thu thập từ TikTok (7712064742126292242)",
+      "metrics": {
+        "nguồn": "TikTok URL",
+        "media": "Có",
+        "comments": "Có"
+      }
+    },
+    {
+      "id": "GĐ 1",
+      "title": "Ngữ cảnh Media (Gemma 4 + Whisper)",
+      "status": "completed",
+      "duration_sec": 161.437,
+      "summary": "Gemma 4 E2B + Whisper trích xuất ngữ cảnh mới",
+      "metrics": {
+        "loại": "video",
+        "khung hình": 8,
+        "lời thoại": "Có"
+      }
+    },
+    {
+      "id": "GĐ 2",
+      "title": "Tiền xử lý NLP & Lọc nhiễu",
+      "status": "completed",
+      "duration_sec": 0.292,
+      "summary": "Giữ 123/236 bình luận hợp lệ",
+      "metrics": {
+        "thô": 236,
+        "hợp lệ": 123,
+        "nhiễu": 113,
+        "bám video": 20
+      }
+    },
+    {
+      "id": "GĐ 3",
+      "title": "Phân tích Cảm xúc Song ngữ",
+      "status": "completed",
+      "duration_sec": 868.629,
+      "summary": "Xu hướng: Trung tính (POS 32 / NEU 47 / NEG 44)",
+      "metrics": {
+        "chế độ": "hybrid",
+        "mô hình": "5 đại diện + Ensemble",
+        "tổng câu": 123
+      }
+    },
+    {
+      "id": "GĐ 4",
+      "title": "AI Thẩm định (Gemma 4 E2B)",
+      "status": "skipped",
+      "duration_sec": 0.0,
+      "summary": "Đã tắt Giai đoạn 4 theo lựa chọn người dùng (run_ai_audit=False).",
+      "metrics": {
+        "phạm vi": "all",
+        "đã chấm": 0
+      }
+    }
+  ],
+  "tiktok_metadata": {
+    "url": "https://www.tiktok.com/@hdiem.bonuongphomai60/video/7712064742126292242?lang=vi-VN",
+    "resolved_url": "https://www.tiktok.com/@hdiem.bonuongphomai60/video/7712064742126292242?lang=vi-VN",
+    "post_id": "7712064742126292242",
+    "media_type": "video",
+    "media_paths": [
+      "data\\7712064742126292242\\video.mp4"
+    ],
+    "caption": "Ứng viên dạo này kiểu… làm mình làm mẩy #bonuongphomai60 #trending #genz",
+    "hashtags": [
+      "#bonuongphomai60",
+      "#trending",
+      "#genz"
+    ],
+    "uploader": "hdiem.bonuongphomai60",
+    "title": "Ứng viên dạo này kiểu… làm mình làm mẩy #bonuongphomai60 #trending #g...",
+    "duration": 65.0,
+    "like_count": 71200,
+    "comment_count": 266,
+    "metadata_path": "data\\7712064742126292242\\metadata.json"
+  },
+  "media_analysis": {
+    "media_type": "video",
+    "source_paths": [
+      "data\\7712064742126292242\\video.mp4"
+    ],
+    "num_frames_used": 8,
+    "has_audio": true,
+    "caption": "Ứng viên dạo này kiểu… làm mình làm mẩy #bonuongphomai60 #trending #genz",
+    "transcript": "[00:00-00:01] Cho chị lý do để tuyển em đi\n[00:01-00:03] Cho em 3 cái lẩu riêng khô bắp bò xường sổng đem về\n[00:03-00:04] Lấy cho nó kìa\n[00:05-00:06] Đợi xíu\n[00:06-00:09] Đã em rỡi anh 3 lẩu riêng khô bắp bò xường sổng\n[00:10-00:11] Trời ra luôn thanh sầu của em\n[00:17-00:19] Lương chối chị á, 30 ngày 1 giờ\n[00:19-00:21] Ôi, cào thế, 30.000\n[00:21-00:23] Vậy là tính ra tháng em làm không phải?\n[00:23-00:23] Tháng mấy chị\n[00:24-00:25] Ôi, mày tính kiểu gì thế?\n[00:25-00:27] Thì 30.000 1 giờ\n[00:27-00:28] Ừ\n[00:28-00:30] Nhân lên 24, nhưng cho 30\n[00:30-00:33] Ôi, mày tính là 1 ngày mày làm hết 24 tiếng luôn à\n[00:33-00:34] Đúng rồi\n[00:34-00:36] Từ xảy đến cổ luôn là đúng luôn\n[00:36-00:37] Người tiếp theo\n[00:37-00:39] Trời, trời, nó làm cái gì trời?\n[00:40-00:42] Ở đây phải làm việc về trễ, tiếp khách trễ\n[00:42-00:43] Em có làm được không?\n[00:43-00:44] Dạ không à\n[00:45-00:47] Ở đây em làm việc phải chiều khó\n[00:47-00:48] Trăm chỉt luôn tay, luôn chân\n[00:48-00:49] Em có làm được không?\n[00:49-00:52] Dạ không à\n[00:52-00:54] Ở đây đi làm phải xoay cact với các bạn\n[00:54-00:56] Bẹp bẹn nhau rồi làm này làm kia\n[00:56-00:57] Em có làm được không?\n[00:57-00:57] Dạ không à\n[00:57-00:59] Bất thức mình không làm được thì mày đi về đi\n[00:59-01:00] Chứ mình ngồi đây làm gì?\n[01:00-01:01] Dạ không à\n[01:01-01:02] Dạ, cảm giác nó nhất nhất\n[01:02-01:03] Bố tầng điên\n[01:04-01:05] Điên à",
+    "chu_de_chinh": "Thảo luận về điều kiện làm việc, mức lương và áp lực công việc trong môi trường làm việc.",
+    "muc_dich_chinh": "Trình bày chi tiết về cơ hội việc làm (lương, giờ làm) và đánh giá sự khắc nghiệt của công việc tại một địa điểm cụ thể để thuyết phục hoặc cảnh báo người khác.",
+    "quan_diem_noi_dung": "Phân tích các gói dịch vụ/công việc được đề xuất (Lý thông, Over mọi thứ, Tuyển dụng nhà tuyển dụng) và đối chiếu với thực tế công việc đòi hỏi sự làm việc cường độ cao, không thể xoay xở.",
+    "doi_tuong_chinh": [
+      "Người lao động/Ứng viên",
+      "Mức lương (30.000 VNĐ/giờ)",
+      "Điều kiện làm việc khắc nghiệt"
+    ],
+    "sac_thai_noi_dung": "Tiêu cực",
+    "tom_tat_ngan": "Video trình bày một cuộc trao đổi liên quan đến việc tuyển dụng nhân viên, cụ thể là đề xuất mức lương và điều kiện làm việc tại một nơi có nhiều công việc. Người nói đưa ra chi tiết về việc tính toán lương dựa trên số giờ làm việc (30 ngày 1 giờ) và sự bất khả thi của việc đáp ứng yêu cầu làm việc quá sức tại đó. Cuối cùng, người nói kết luận rằng nếu không làm được thì nên nghỉ việc.",
+    "tu_khoa": [
+      "lương chối chị á",
+      "30 ngày 1 giờ",
+      "30.000",
+      "xoay cact",
+      "bất thức mình không làm được thì mày đi về đi"
+    ],
+    "luu_y_danh_gia_comment": "Nếu người xem đồng tình với tác giả, họ đang ủng hộ quan điểm rằng công việc đó quá sức và nên nghỉ việc. Nếu có bình luận chê tác giả, có thể là do họ không đồng tình với sự khắc nghiệt của môi trường làm việc được mô tả hoặc cảm thấy lời khuyên 'đi về đi' quá gay gắt.",
+    "chu_tren_man_hinh": [
+      "F1: LOẠI 1: LÝ THÔNG",
+      "F2: LOẠI 1: LÝ THÔNG",
+      "F3: LOẠI 2: OVER MỘI THỨ",
+      "F4: LOẠI 2: OVER MỘI THỨ",
+      "F5: LOẠI 2: OVER MỘI THỨ",
+      "F6: LOẠI 3: TUYÊN DỤNG NHÀ TUYÊN DỤNG",
+      "F7: LOẠI 3: TUYÊN DỤNG NHÀ TUYÊN DỤNG"
+    ],
+    "dien_bien_hinh_anh": [
+      "F1 (00:00-00:02): Màn hình hiển thị tiêu đề 'LOẠI 1: LÝ THÔNG'.",
+      "F2 (00:00-00:11): Cảnh quay tại một khu ẩm thực ngoài trời với nhiều bàn ghế. Có người đang tương tác.",
+      "F3 (00:00-00:19): Màn hình hiển thị tiêu đề 'LOẠI 2: OVER MỘI THỨ'.",
+      "F4 (00:00-00:28): Cảnh quay tại khu ẩm thực. Một người đàn ông đang cầm túi đồ ăn.",
+      "F5 (00:00-00:37): Màn hình hiển thị tiêu đề 'LOẠI 2: OVER MỘI THỨ'.",
+      "F6 (00:00-00:45): Màn hình hiển thị tiêu đề 'LOẠI 3: TUYÊN DỤNG NHÀ TUYÊN DỤNG'.",
+      "F7 (00:00-00:54): Màn hình hiển thị tiêu đề 'LOẠI 3: TUYÊN DỤNG NHÀ TUYÊN DỤNG'."
+    ],
+    "chi_tiet_va_luan_diem": [
+      "Lời thoại (00:00-00:01): Cho chị lý do để tuyển em đi",
+      "Lời thoại (00:01-00:03): Cho em 3 cái lẩu riêng khô bắp bò xường sổng đem về",
+      "Lời thoại (00:06-00:09): Đã em rỡi anh 3 lẩu riêng khô bắp bò xường sổng",
+      "Lời thoại (00:10-00:11): Trời ra luôn thanh sầu của em",
+      "Lời thoại (00:17-00:19): Lương chối chị á, 30 ngày 1 giờ",
+      "Lời thoại (00:19-00:21): Ôi, cào thế, 30.000",
+      "Lời thoại (00:21-00:23): Vậy là tính ra tháng em làm không phải?",
+      "Lời thoại (00:23-00:23): Tháng mấy chị",
+      "Lời thoại (00:25-00:27): Thì 30.000 1 giờ",
+      "Lời thoại (00:28-00:30): Nhân lên 24, nhưng cho 30",
+      "Lời thoại (00:30-00:33): Ôi, mày tính là 1 ngày mày làm hết 24 tiếng luôn à",
+      "Lời thoại (00:34-00:36): Đúng rồi",
+      "Lời thoại (00:36-00:37): Người tiếp theo",
+      "Lời thoại (00:40-00:42): Ở đây phải làm việc về trễ, tiếp khách trễ",
+      "Lời thoại (00:42-00:43): Em có làm được không?",
+      "Lời thoại (00:45-00:47): Ở đây em làm việc phải chiều khó",
+      "Lời thoại (00:47-00:48): Trăm chỉt luôn tay, luôn chân",
+      "Lời thoại (00:52-00:54): Ở đây đi làm phải xoay cact với các bạn",
+      "Lời thoại (00:54-00:56): Bẹp bẹn nhau rồi làm này làm kia",
+      "Lời thoại (00:57-00:59): Bất thức mình không làm được thì mày đi về đi",
+      "Lời thoại (01:02-01:03): Bố tầng điên"
+    ]
+  },
+  "noise_filter_summary": {
+    "total_raw_comments": 236,
+    "valid_comments": 123,
+    "filtered_noise_count": 113,
+    "duplicate_valid_count": 0,
+    "filter_reasons": {
+      "FILTERED_URL_OR_SYMBOL": 102,
+      "FILTERED_TAG_FRIEND": 11
+    }
+  },
+  "keywords_tfidf": {
+    "overall": [
+      {
+        "keyword": "làm",
+        "tfidf_score": 0.0504
+      },
+      {
+        "keyword": "được",
+        "tfidf_score": 0.0391
+      },
+      {
+        "keyword": "tuyển",
+        "tfidf_score": 0.0364
+      },
+      {
+        "keyword": "xin",
+        "tfidf_score": 0.0346
+      },
+      {
+        "keyword": "việc",
+        "tfidf_score": 0.0322
+      },
+      {
+        "keyword": "đầu",
+        "tfidf_score": 0.0299
+      },
+      {
+        "keyword": "xin việc",
+        "tfidf_score": 0.0261
+      },
+      {
+        "keyword": "có",
+        "tfidf_score": 0.0254
+      },
+      {
+        "keyword": "nhận",
+        "tfidf_score": 0.0254
+      },
+      {
+        "keyword": "đánh",
+        "tfidf_score": 0.0229
+      }
+    ],
+    "positive": [
+      {
+        "keyword": "chất",
+        "tfidf_score": 0.0479
+      },
+      {
+        "keyword": "tuyển",
+        "tfidf_score": 0.0474
+      },
+      {
+        "keyword": "được",
+        "tfidf_score": 0.0399
+      },
+      {
+        "keyword": "đầu",
+        "tfidf_score": 0.0377
+      },
+      {
+        "keyword": "ok",
+        "tfidf_score": 0.0341
+      },
+      {
+        "keyword": "đẹp",
+        "tfidf_score": 0.0318
+      },
+      {
+        "keyword": "thật thà",
+        "tfidf_score": 0.0312
+      },
+      {
+        "keyword": "hah",
+        "tfidf_score": 0.0312
+      },
+      {
+        "keyword": "giống",
+        "tfidf_score": 0.0312
+      },
+      {
+        "keyword": "hợp lý",
+        "tfidf_score": 0.0312
+      }
+    ],
+    "negative": [
+      {
+        "keyword": "xin",
+        "tfidf_score": 0.0431
+      },
+      {
+        "keyword": "đánh",
+        "tfidf_score": 0.043
+      },
+      {
+        "keyword": "làm",
+        "tfidf_score": 0.0423
+      },
+      {
+        "keyword": "việc",
+        "tfidf_score": 0.0342
+      },
+      {
+        "keyword": "thằng",
+        "tfidf_score": 0.031
+      },
+      {
+        "keyword": "điên",
+        "tfidf_score": 0.03
+      },
+      {
+        "keyword": "xin việc",
+        "tfidf_score": 0.028
+      },
+      {
+        "keyword": "lương",
+        "tfidf_score": 0.0228
+      },
+      {
+        "keyword": "chéo",
+        "tfidf_score": 0.0227
+      },
+      {
+        "keyword": "nhận",
+        "tfidf_score": 0.0223
+      }
+    ]
+  },
+  "sentiment_summary": {
+    "total_valid_comments": 123,
+    "engine_mode": "hybrid",
+    "full_models": false,
+    "ensemble_formula": {
+      "vi": "0.40 × PhoBERT + 0.20 × ViSoBERT + 0.25 × ML Meta-Ensemble (VI) + 0.15 × Lexicon (VI)",
+      "en": "0.60 × Twitter-RoBERTa + 0.25 × ML Meta-Ensemble (EN) + 0.15 × Lexicon (EN)"
+    },
+    "language_counts": {
+      "vi": 116,
+      "en": 7
+    },
+    "polarity_counts": {
+      "POS": 32,
+      "NEG": 44,
+      "NEU": 47
+    },
+    "polarity_percentages": {
+      "POS": 26.02,
+      "NEG": 35.77,
+      "NEU": 38.21
+    },
+    "emotion_counts": {
+      "Anger": 4,
+      "Sadness": 8,
+      "Fear": 7,
+      "Enjoyment": 36,
+      "Disgust": 33,
+      "Surprise": 2,
+      "Other": 33
+    },
+    "emotion_percentages": {
+      "Anger": 3.25,
+      "Sadness": 6.5,
+      "Fear": 5.69,
+      "Enjoyment": 29.27,
+      "Disgust": 26.83,
+      "Surprise": 1.63,
+      "Other": 26.83
+    },
+    "avg_polarity_score": 0.0234,
+    "avg_confidence": 0.582,
+    "overall_tendency": "Trung tính",
+    "sarcasm_flagged_count": 0,
+    "classical_ml_benchmark": {
+      "vi": {
+        "schema_version": 3,
+        "feature_pipeline": [
+          "word_tfidf(1-3)",
+          "char_wb_tfidf(3-5)",
+          "social_lexicon_features(15)"
+        ],
+        "polarity_train_size": 36971,
+        "polarity_test_size": 4773,
+        "polarity_ensemble_method": "oof_stacking_lr",
+        "emotion_train_size": 6234,
+        "emotion_test_size": 693,
+        "emotion_ensemble_method": "top4_weighted_soft_vote",
+        "benchmark_file": "models/classical_ml/vi/benchmark_metrics.json",
+        "polarity_models": {
+          "tfidf_nb": {
+            "accuracy": 0.5324,
+            "macro_f1": 0.5207,
+            "weighted_f1": 0.5215
+          },
+          "tfidf_cnb": {
+            "accuracy": 0.5671,
+            "macro_f1": 0.5597,
+            "weighted_f1": 0.5617
+          },
+          "tfidf_lr": {
+            "accuracy": 0.6233,
+            "macro_f1": 0.6257,
+            "weighted_f1": 0.626
+          },
+          "tfidf_ridge": {
+            "accuracy": 0.6499,
+            "macro_f1": 0.65,
+            "weighted_f1": 0.6509
+          },
+          "tfidf_sgd": {
+            "accuracy": 0.6466,
+            "macro_f1": 0.6479,
+            "weighted_f1": 0.6486
+          },
+          "tfidf_svm": {
+            "accuracy": 0.6447,
+            "macro_f1": 0.6418,
+            "weighted_f1": 0.6431
+          },
+          "tfidf_nbsvm": {
+            "accuracy": 0.6445,
+            "macro_f1": 0.6409,
+            "weighted_f1": 0.6423
+          },
+          "tfidf_rbf_svm": {
+            "accuracy": 0.511,
+            "macro_f1": 0.5137,
+            "weighted_f1": 0.5138
+          },
+          "tfidf_rf": {
+            "accuracy": 0.5682,
+            "macro_f1": 0.5683,
+            "weighted_f1": 0.5687
+          },
+          "tfidf_tree": {
+            "accuracy": 0.5674,
+            "macro_f1": 0.5652,
+            "weighted_f1": 0.5663
+          },
+          "ml_ensemble": {
+            "accuracy": 0.6516,
+            "macro_f1": 0.6513,
+            "weighted_f1": 0.6522
+          }
+        },
+        "emotion_models": {
+          "emo_cnb": {
+            "accuracy": 0.5498,
+            "macro_f1": 0.4879,
+            "weighted_f1": 0.541
+          },
+          "emo_lr": {
+            "accuracy": 0.5931,
+            "macro_f1": 0.5867,
+            "weighted_f1": 0.5941
+          },
+          "emo_ridge": {
+            "accuracy": 0.6032,
+            "macro_f1": 0.574,
+            "weighted_f1": 0.5994
+          },
+          "emo_svm": {
+            "accuracy": 0.5931,
+            "macro_f1": 0.5494,
+            "weighted_f1": 0.5866
+          },
+          "emo_nbsvm": {
+            "accuracy": 0.5758,
+            "macro_f1": 0.5177,
+            "weighted_f1": 0.5685
+          },
+          "emo_sgd": {
+            "accuracy": 0.6017,
+            "macro_f1": 0.5855,
+            "weighted_f1": 0.6005
+          },
+          "emo_ensemble": {
+            "accuracy": 0.596,
+            "macro_f1": 0.5771,
+            "weighted_f1": 0.5943
+          }
+        },
+        "top_features": {
+          "polarity": {
+            "NEG": [
+              {
+                "feature": "char_tfidf__ ( ",
+                "weight": 5.1526
+              },
+              {
+                "feature": "word_tfidf__không đẹp",
+                "weight": 3.9601
+              },
+              {
+                "feature": "word_tfidf__không giống",
+                "weight": 2.9695
+              },
+              {
+                "feature": "word_tfidf__không được",
+                "weight": 2.7515
+              },
+              {
+                "feature": "word_tfidf__giảng_viên này",
+                "weight": 2.7298
+              },
+              {
+                "feature": "word_tfidf__không đúng",
+                "weight": 2.6128
+              },
+              {
+                "feature": "word_tfidf__thiếu sự",
+                "weight": 2.4025
+              },
+              {
+                "feature": "word_tfidf__ngu",
+                "weight": 2.3943
+              }
+            ],
+            "NEU": [
+              {
+                "feature": "char_tfidf__ ! ",
+                "weight": 4.2649
+              },
+              {
+                "feature": "word_tfidf__nhưng đẹp",
+                "weight": 2.4428
+              },
+              {
+                "feature": "word_tfidf__bt",
+                "weight": 2.206
+              },
+              {
+                "feature": "word_tfidf__nên",
+                "weight": 2.1594
+              },
+              {
+                "feature": "char_tfidf__ : ",
+                "weight": 2.1085
+              },
+              {
+                "feature": "word_tfidf__giao hàng",
+                "weight": 2.0555
+              },
+              {
+                "feature": "word_tfidf__không nhỉ",
+                "weight": 1.9698
+              },
+              {
+                "feature": "word_tfidf__khác nhau",
+                "weight": 1.9677
+              }
+            ],
+            "POS": [
+              {
+                "feature": "word_tfidf__không bị",
+                "weight": 3.6133
+              },
+              {
+                "feature": "word_tfidf__không cần",
+                "weight": 2.8576
+              },
+              {
+                "feature": "char_tfidf__ ok",
+                "weight": 2.8006
+              },
+              {
+                "feature": "word_tfidf__đẹp",
+                "weight": 2.776
+              },
+              {
+                "feature": "char_tfidf__đẹp",
+                "weight": 2.641
+              },
+              {
+                "feature": "word_tfidf__5 sao",
+                "weight": 2.4013
+              },
+              {
+                "feature": "char_tfidf__ok ",
+                "weight": 2.4003
+              },
+              {
+                "feature": "char_tfidf__ 🤣 ",
+                "weight": 2.3355
+              }
+            ]
+          }
+        }
+      },
+      "en": {
+        "schema_version": 3,
+        "feature_pipeline": [
+          "word_tfidf(1-3)",
+          "char_wb_tfidf(3-5)",
+          "social_lexicon_features(15)"
+        ],
+        "polarity_train_size": 45671,
+        "polarity_test_size": 12284,
+        "polarity_ensemble_method": "oof_stacking_lr",
+        "emotion_train_size": 9577,
+        "emotion_test_size": 2933,
+        "emotion_ensemble_method": "oof_stacking_lr",
+        "benchmark_file": "models/classical_ml/en/benchmark_metrics.json",
+        "polarity_models": {
+          "tfidf_nb": {
+            "accuracy": 0.6268,
+            "macro_f1": 0.6233,
+            "weighted_f1": 0.6269
+          },
+          "tfidf_cnb": {
+            "accuracy": 0.6141,
+            "macro_f1": 0.6143,
+            "weighted_f1": 0.614
+          },
+          "tfidf_lr": {
+            "accuracy": 0.6259,
+            "macro_f1": 0.623,
+            "weighted_f1": 0.6259
+          },
+          "tfidf_ridge": {
+            "accuracy": 0.6215,
+            "macro_f1": 0.6028,
+            "weighted_f1": 0.6162
+          },
+          "tfidf_sgd": {
+            "accuracy": 0.6316,
+            "macro_f1": 0.6198,
+            "weighted_f1": 0.6305
+          },
+          "tfidf_svm": {
+            "accuracy": 0.6161,
+            "macro_f1": 0.5923,
+            "weighted_f1": 0.606
+          },
+          "tfidf_nbsvm": {
+            "accuracy": 0.6247,
+            "macro_f1": 0.595,
+            "weighted_f1": 0.6084
+          },
+          "tfidf_rbf_svm": {
+            "accuracy": 0.5726,
+            "macro_f1": 0.5397,
+            "weighted_f1": 0.5627
+          },
+          "tfidf_rf": {
+            "accuracy": 0.5659,
+            "macro_f1": 0.5216,
+            "weighted_f1": 0.5485
+          },
+          "tfidf_tree": {
+            "accuracy": 0.5626,
+            "macro_f1": 0.5027,
+            "weighted_f1": 0.5273
+          },
+          "ml_ensemble": {
+            "accuracy": 0.6334,
+            "macro_f1": 0.6327,
+            "weighted_f1": 0.6325
+          }
+        },
+        "emotion_models": {
+          "emo_cnb": {
+            "accuracy": 0.7767,
+            "macro_f1": 0.7398,
+            "weighted_f1": 0.7762
+          },
+          "emo_lr": {
+            "accuracy": 0.791,
+            "macro_f1": 0.8241,
+            "weighted_f1": 0.7918
+          },
+          "emo_ridge": {
+            "accuracy": 0.7872,
+            "macro_f1": 0.8135,
+            "weighted_f1": 0.7883
+          },
+          "emo_svm": {
+            "accuracy": 0.7828,
+            "macro_f1": 0.8144,
+            "weighted_f1": 0.7833
+          },
+          "emo_nbsvm": {
+            "accuracy": 0.8074,
+            "macro_f1": 0.826,
+            "weighted_f1": 0.8084
+          },
+          "emo_sgd": {
+            "accuracy": 0.776,
+            "macro_f1": 0.8058,
+            "weighted_f1": 0.7749
+          },
+          "emo_ensemble": {
+            "accuracy": 0.8053,
+            "macro_f1": 0.8281,
+            "weighted_f1": 0.8079
+          }
+        },
+        "top_features": {
+          "polarity": {
+            "NEG": [
+              {
+                "feature": "char_tfidf__ :(",
+                "weight": 3.3559
+              },
+              {
+                "feature": "char_tfidf__:( ",
+                "weight": 3.2184
+              },
+              {
+                "feature": "char_tfidf__uck",
+                "weight": 2.9095
+              },
+              {
+                "feature": "char_tfidf__ :( ",
+                "weight": 2.5335
+              },
+              {
+                "feature": "char_tfidf__fuc",
+                "weight": 2.4587
+              },
+              {
+                "feature": "char_tfidf__fuck",
+                "weight": 2.4464
+              },
+              {
+                "feature": "char_tfidf__ los",
+                "weight": 2.2479
+              },
+              {
+                "feature": "word_tfidf__fuck",
+                "weight": 2.2439
+              }
+            ],
+            "NEU": [
+              {
+                "feature": "word_tfidf__w",
+                "weight": 1.937
+              },
+              {
+                "feature": "word_tfidf__bad blood",
+                "weight": 1.3664
+              },
+              {
+                "feature": "word_tfidf__gucci",
+                "weight": 1.2685
+              },
+              {
+                "feature": "word_tfidf__is there",
+                "weight": 1.257
+              },
+              {
+                "feature": "word_tfidf__at",
+                "weight": 1.2447
+              },
+              {
+                "feature": "word_tfidf__do you",
+                "weight": 1.2173
+              },
+              {
+                "feature": "word_tfidf__it be",
+                "weight": 1.1832
+              },
+              {
+                "feature": "word_tfidf__says he",
+                "weight": 1.1569
+              }
+            ],
+            "POS": [
+              {
+                "feature": "char_tfidf__ :)",
+                "weight": 3.0508
+              },
+              {
+                "feature": "char_tfidf__:) ",
+                "weight": 2.8195
+              },
+              {
+                "feature": "word_tfidf__fun",
+                "weight": 2.3749
+              },
+              {
+                "feature": "word_tfidf__can t wait",
+                "weight": 2.3432
+              },
+              {
+                "feature": "word_tfidf__i like",
+                "weight": 2.3125
+              },
+              {
+                "feature": "word_tfidf__t wait",
+                "weight": 2.2632
+              },
+              {
+                "feature": "char_tfidf__ :) ",
+                "weight": 2.1096
+              },
+              {
+                "feature": "char_tfidf__fun",
+                "weight": 1.6983
+              }
+            ]
+          }
+        }
+      }
+    },
+    "model_timings_sec": {
+      "classical_ml_setup_sec": 837.519,
+      "classical_ml_polarity_sec": 0.224,
+      "ml_model_timings_sec": {
+        "tfidf_cnb": 0.0028,
+        "tfidf_lr": 0.0015,
+        "tfidf_ridge": 0.0089,
+        "tfidf_sgd": 0.0021,
+        "tfidf_svm": 0.0046,
+        "tfidf_nbsvm": 0.0089,
+        "tfidf_rf": 0.1182,
+        "tfidf_tree": 0.055,
+        "ml_ensemble": 0.0023,
+        "_vectorizer": 0.0186
+      },
+      "lexicon_rules_sec": 0.002,
+      "visobert_sec": 7.968,
+      "phobert_sentiment_sec": 9.531,
+      "phobert_emotion_sec": 7.489,
+      "en_roberta_sentiment_sec": 3.478,
+      "en_roberta_emotion_sec": 2.257
+    },
+    "top_examples": {
+      "POS": [
+        {
+          "comment": "Bạn đầu bao có việc 😅😅😅",
+          "language": "vi",
+          "likes": 441,
+          "polarity_score": 0.6286,
+          "emotion": "Vui vẻ / Hài lòng",
+          "confidence": 0.6243
+        },
+        {
+          "comment": "mình coi tin tức đi nha",
+          "language": "vi",
+          "likes": 13,
+          "polarity_score": 0.4917,
+          "emotion": "Trung tính / Khác",
+          "confidence": 0.5474
+        },
+        {
+          "comment": "bé áo đen xinh thế",
+          "language": "vi",
+          "likes": 5,
+          "polarity_score": 0.463,
+          "emotion": "Chán ghét / Khó chịu",
+          "confidence": 0.5617
+        }
+      ],
+      "NEG": [
+        {
+          "comment": "toàn là thiên binh thần tướng đi xin việc 😂😂😂",
+          "language": "vi",
+          "likes": 3435,
+          "polarity_score": -0.21,
+          "emotion": "Chán ghét / Khó chịu",
+          "confidence": 0.4309
+        },
+        {
+          "comment": "ko nhận là mất tiền 😂",
+          "language": "vi",
+          "likes": 177,
+          "polarity_score": -0.4056,
+          "emotion": "Buồn bã",
+          "confidence": 0.4827
+        },
+        {
+          "comment": "Truyền bá những cái hay không truyền, thiếu gì chủ đề để làm.",
+          "language": "vi",
+          "likes": 34,
+          "polarity_score": -0.2719,
+          "emotion": "Chán ghét / Khó chịu",
+          "confidence": 0.4079
+        }
+      ],
+      "NEU": [
+        {
+          "comment": "khúc cuối dạ hong thêm phát nữa có bị đánh hong😂",
+          "language": "vi",
+          "likes": 873,
+          "polarity_score": 0.0769,
+          "emotion": "Tức giận",
+          "confidence": 0.568
+        },
+        {
+          "comment": "Mai ik xin việc r mua đồ kk",
+          "language": "vi",
+          "likes": 58,
+          "polarity_score": 0.19,
+          "emotion": "Vui vẻ / Hài lòng",
+          "confidence": 0.4807
+        },
+        {
+          "comment": "Hehe giờ tụi nhỏ toàn v k đó",
+          "language": "vi",
+          "likes": 55,
+          "polarity_score": 0.0349,
+          "emotion": "Vui vẻ / Hài lòng",
+          "confidence": 0.4767
+        }
+      ]
+    },
+    "on_topic_summary": {
+      "on_topic_count": 20,
+      "on_topic_pct": 16.26,
+      "off_topic_count": 103,
+      "avg_context_relevance": 0.0714,
+      "on_topic_polarity_counts": {
+        "POS": 1,
+        "NEG": 7,
+        "NEU": 12
+      },
+      "on_topic_polarity_percentages": {
+        "POS": 5.0,
+        "NEG": 35.0,
+        "NEU": 60.0
+      },
+      "alignment_counts": {
+        "Ít liên quan / Bình luận ngoài lề": 102,
+        "Thảo luận trung lập về chủ đề video (cần kiểm tra ẩn ý)": 10,
+        "Bức xúc / Tiêu cực về chủ đề video (cần xét đồng tình hay công kích)": 7,
+        "Thảo luận trung lập về chủ đề video": 2,
+        "Ủng hộ / Tích cực với nội dung video": 1,
+        "Ủng hộ / Tích cực với video": 1
+      }
+    }
+  },
+  "model_comparison": {
+    "polarity_models": [
+      {
+        "model_key": "tfidf_cnb",
+        "tier": "base",
+        "model": "TF-IDF + Complement NB",
+        "family": "Classical ML (Generative)",
+        "total_comments": 123,
+        "pos_count": 21,
+        "neu_count": 24,
+        "neg_count": 78,
+        "pos_pct": 17.07,
+        "neu_pct": 19.51,
+        "neg_pct": 63.41,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 0.0028
+      },
+      {
+        "model_key": "tfidf_lr",
+        "tier": "base",
+        "model": "TF-IDF + Logistic Regression",
+        "family": "Classical ML (Linear)",
+        "total_comments": 123,
+        "pos_count": 35,
+        "neu_count": 51,
+        "neg_count": 37,
+        "pos_pct": 28.46,
+        "neu_pct": 41.46,
+        "neg_pct": 30.08,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 0.0015
+      },
+      {
+        "model_key": "tfidf_svm",
+        "tier": "base",
+        "model": "TF-IDF + Linear SVM",
+        "family": "Classical ML (Margin / SVM)",
+        "total_comments": 123,
+        "pos_count": 42,
+        "neu_count": 27,
+        "neg_count": 54,
+        "pos_pct": 34.15,
+        "neu_pct": 21.95,
+        "neg_pct": 43.9,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 0.0046
+      },
+      {
+        "model_key": "tfidf_rf",
+        "tier": "base",
+        "model": "SVD+Social + Random Forest",
+        "family": "Classical ML (Tree Bagging)",
+        "total_comments": 123,
+        "pos_count": 19,
+        "neu_count": 40,
+        "neg_count": 64,
+        "pos_pct": 15.45,
+        "neu_pct": 32.52,
+        "neg_pct": 52.03,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 0.1182
+      },
+      {
+        "model_key": "tfidf_tree",
+        "tier": "base",
+        "model": "SVD+Social + HistGradientBoosting",
+        "family": "Classical ML (Tree Boosting)",
+        "total_comments": 123,
+        "pos_count": 37,
+        "neu_count": 15,
+        "neg_count": 71,
+        "pos_pct": 30.08,
+        "neu_pct": 12.2,
+        "neg_pct": 57.72,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 0.055
+      },
+      {
+        "model_key": "ml_ensemble",
+        "tier": "ensemble",
+        "model": "Classical ML Meta-Ensemble",
+        "family": "Classical ML Ensemble",
+        "total_comments": 123,
+        "pos_count": 41,
+        "neu_count": 29,
+        "neg_count": 53,
+        "pos_pct": 33.33,
+        "neu_pct": 23.58,
+        "neg_pct": 43.09,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 0.0023
+      },
+      {
+        "model_key": "lexicon",
+        "tier": "base",
+        "model": "Bilingual Lexicon + Rules",
+        "family": "Rule-based NLP",
+        "total_comments": 123,
+        "pos_count": 7,
+        "neu_count": 110,
+        "neg_count": 6,
+        "pos_pct": 5.69,
+        "neu_pct": 89.43,
+        "neg_pct": 4.88,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 0.002
+      },
+      {
+        "model_key": "phobert",
+        "tier": "base",
+        "model": "PhoBERT (VI)",
+        "family": "Deep Learning",
+        "total_comments": 116,
+        "pos_count": 23,
+        "neu_count": 48,
+        "neg_count": 45,
+        "pos_pct": 19.83,
+        "neu_pct": 41.38,
+        "neg_pct": 38.79,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 9.531
+      },
+      {
+        "model_key": "visobert",
+        "tier": "base",
+        "model": "ViSoBERT (5CD-AI, VI)",
+        "family": "Deep Learning",
+        "total_comments": 116,
+        "pos_count": 91,
+        "neu_count": 3,
+        "neg_count": 22,
+        "pos_pct": 78.45,
+        "neu_pct": 2.59,
+        "neg_pct": 18.97,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 7.968
+      },
+      {
+        "model_key": "roberta",
+        "tier": "base",
+        "model": "Twitter-RoBERTa (EN)",
+        "family": "Deep Learning",
+        "total_comments": 7,
+        "pos_count": 2,
+        "neu_count": 5,
+        "neg_count": 0,
+        "pos_pct": 28.57,
+        "neu_pct": 71.43,
+        "neg_pct": 0.0,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 3.478
+      },
+      {
+        "model_key": "system_main",
+        "tier": "system",
+        "model": "Hybrid Ensemble (Hệ thống chính)",
+        "family": "Hybrid ML + DL",
+        "total_comments": 123,
+        "pos_count": 32,
+        "neu_count": 47,
+        "neg_count": 44,
+        "pos_pct": 26.02,
+        "neu_pct": 38.21,
+        "neg_pct": 35.77,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": null
+      }
+    ],
+    "emotion_models": [
+      {
+        "model_key": "dl_emotion",
+        "tier": "system",
+        "model": "PhoBERT Emotion (VI) / DistilRoBERTa (EN)",
+        "family": "Deep Learning",
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "inference_time_sec": 9.746
+      }
+    ]
+  },
+  "ai_audit_verdict": null,
+  "ai_audit_status": {
+    "requested": false,
+    "scope": "all",
+    "ollama_ready": null,
+    "audited_count": 0,
+    "total_comments": 123,
+    "message": "Đã tắt Giai đoạn 4 theo lựa chọn người dùng (run_ai_audit=False)."
+  }
+}

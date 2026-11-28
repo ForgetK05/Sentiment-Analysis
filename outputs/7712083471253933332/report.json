@@ -1,0 +1,1086 @@
+{
+  "run_name": "7712083471253933332",
+  "total_duration_sec": 566.347,
+  "pipeline_stages": [
+    {
+      "id": "GĐ 0",
+      "title": "Chuẩn bị dữ liệu đầu vào",
+      "status": "completed",
+      "duration_sec": 425.825,
+      "summary": "Tải & thu thập từ TikTok (7712083471253933332)",
+      "metrics": {
+        "nguồn": "TikTok URL",
+        "media": "Có",
+        "comments": "Có"
+      }
+    },
+    {
+      "id": "GĐ 1",
+      "title": "Ngữ cảnh Media (Gemma 4 + Whisper)",
+      "status": "completed",
+      "duration_sec": 122.415,
+      "summary": "Gemma 4 E2B + Whisper trích xuất ngữ cảnh mới",
+      "metrics": {
+        "loại": "video",
+        "khung hình": 8,
+        "lời thoại": "Có"
+      }
+    },
+    {
+      "id": "GĐ 2",
+      "title": "Tiền xử lý NLP & Lọc nhiễu",
+      "status": "completed",
+      "duration_sec": 12.624,
+      "summary": "Giữ 601/625 bình luận hợp lệ",
+      "metrics": {
+        "thô": 625,
+        "hợp lệ": 601,
+        "nhiễu": 24,
+        "bám video": 18
+      }
+    },
+    {
+      "id": "GĐ 3",
+      "title": "Phân tích Cảm xúc Song ngữ",
+      "status": "completed",
+      "duration_sec": 5.409,
+      "summary": "Xu hướng: Tích cực (POS 337 / NEU 79 / NEG 185)",
+      "metrics": {
+        "chế độ": "classical",
+        "mô hình": "5 đại diện + Ensemble",
+        "tổng câu": 601
+      }
+    },
+    {
+      "id": "GĐ 4",
+      "title": "AI Thẩm định (Gemma 4 E2B)",
+      "status": "skipped",
+      "duration_sec": 0.0,
+      "summary": "Đã tắt Giai đoạn 4 theo lựa chọn người dùng (run_ai_audit=False).",
+      "metrics": {
+        "phạm vi": "all",
+        "đã chấm": 0
+      }
+    }
+  ],
+  "tiktok_metadata": {
+    "url": "https://www.tiktok.com/@imjack1997/video/7712083471253933332?lang=vi-VN",
+    "resolved_url": "https://www.tiktok.com/@imjack1997/video/7712083471253933332?lang=vi-VN",
+    "post_id": "7712083471253933332",
+    "media_type": "video",
+    "media_paths": [
+      "data\\7712083471253933332\\video.mp4"
+    ],
+    "caption": "Trời ban ánh sáng năm tháng tư bề... #JackJ97 #J97 #PhuongTuan #DomDom",
+    "hashtags": [
+      "#JackJ97",
+      "#J97",
+      "#PhuongTuan",
+      "#DomDom"
+    ],
+    "uploader": "imjack1997",
+    "title": "Trời ban ánh sáng năm tháng tư bề... #JackJ97 #J97 #PhuongTuan #DomDom",
+    "duration": 57.0,
+    "like_count": 710300,
+    "comment_count": 12900,
+    "metadata_path": "data\\7712083471253933332\\metadata.json"
+  },
+  "media_analysis": {
+    "media_type": "video",
+    "source_paths": [
+      "data\\7712083471253933332\\video.mp4"
+    ],
+    "num_frames_used": 8,
+    "has_audio": true,
+    "caption": "Trời ban ánh sáng năm tháng tư bề... #JackJ97 #J97 #PhuongTuan #DomDom",
+    "transcript": "[00:00-00:02] Trời ban ánh sáng năm tháng tư bề...\n[00:02-00:06] Giám ánh, người mang tiên ánh...",
+    "chu_de_chinh": "Trình diễn nghệ thuật của Jack J97.",
+    "muc_dich_chinh": "Chia sẻ khoảnh khắc biểu diễn hoặc quảng bá về sự xuất hiện/năng lượng của nghệ sĩ.",
+    "quan_diem_noi_dung": "Tập trung vào hình ảnh và màn trình diễn trực tiếp của Jack J97 với trang phục ấn tượng.",
+    "doi_tuong_chinh": [
+      "Jack J97",
+      "Trang phục màu đỏ"
+    ],
+    "sac_thai_noi_dung": "Tích cực",
+    "tom_tat_ngan": "Video là chuỗi hình ảnh trình diễn của nghệ sĩ Jack J97 (hoặc liên quan đến Phuong Tuan/DomDom) với trang phục màu đỏ rực rỡ trên sân khấu. Nội dung tập trung vào việc thể hiện màn trình diễn đầy năng lượng và ánh sáng.",
+    "tu_khoa": [
+      "JackJ97",
+      "J97",
+      "PhuongTuan",
+      "DomDom"
+    ],
+    "luu_y_danh_gia_comment": "Do nội dung là video trình diễn nghệ thuật, bình luận thường sẽ tập trung vào chất lượng biểu diễn, trang phục hoặc cảm xúc của người xem. Không có chi tiết chê bai cụ thể trong các khung hình được cung cấp.",
+    "chu_tren_man_hinh": [
+      "F1 00:02",
+      "Trời ban ánh sáng năm tháng tư bề...",
+      "F2 00:09",
+      "F3 00:17",
+      "F4 00:24",
+      "F5 00:32",
+      "F6 00:40",
+      "F7 00:47",
+      "F8 00:55"
+    ],
+    "dien_bien_hinh_anh": [
+      "F1 (00:00-00:02): Màn hình mở đầu với dòng chữ 'F1 00:02' và lời thoại bắt đầu.",
+      "F2 (00:02-00:06): Cảnh người đàn ông (Jack J97) đang biểu diễn, có vẻ như là một phần của buổi trình diễn.",
+      "F3 (00:06-00:17): Cận cảnh Jack J97 đang biểu diễn với trang phục đỏ nổi bật.",
+      "F4 (00:17-00:24): Jack J97 tiếp tục biểu diễn, tay cầm micro và trang phục lấp lánh.",
+      "F5 (00:24-00:32): Cảnh Jack J97 đang trình diễn với trang phục đỏ rực.",
+      "F6 (00:32-00:40): Jack J97 tiếp tục biểu diễn, thể hiện năng lượng trên sân khấu.",
+      "F7 (00:40-04:00): Cảnh Jack J97 ở vị trí trung tâm sân khấu với trang phục đỏ.",
+      "F8 (00:47-05:00): Cảnh kết thúc, Jack J97 vẫn đang biểu diễn."
+    ],
+    "chi_tiet_va_luan_diem": [
+      "Video là một chuỗi các cảnh quay về một nghệ sĩ tên Jack J97 (hoặc Phuong Tuan/DomDom theo caption) đang trình diễn trên sân khấu với trang phục màu đỏ lộng lẫy.",
+      "Lời thoại được trích xuất: '[00:00-00:02] Trời ban ánh sáng năm tháng tư bề...' và '[00:02-00:06] Giám ánh, người mang tiên ánh...'",
+      "Caption bài đăng bao gồm các hashtag: #JackJ97 #J97 #PhuongTuan #DomDom."
+    ]
+  },
+  "noise_filter_summary": {
+    "total_raw_comments": 625,
+    "valid_comments": 601,
+    "filtered_noise_count": 24,
+    "duplicate_valid_count": 6,
+    "filter_reasons": {
+      "FILTERED_URL_OR_SYMBOL": 17,
+      "FILTERED_MEANINGLESS": 1,
+      "FILTERED_UNSUPPORTED_LANG": 1,
+      "FILTERED_NAME_ONLY": 2,
+      "FILTERED_TAG_FRIEND": 3
+    }
+  },
+  "keywords_tfidf": {
+    "overall": [
+      {
+        "keyword": "có",
+        "tfidf_score": 0.0405
+      },
+      {
+        "keyword": "hát",
+        "tfidf_score": 0.0399
+      },
+      {
+        "keyword": "jack",
+        "tfidf_score": 0.0384
+      },
+      {
+        "keyword": "nghe",
+        "tfidf_score": 0.0364
+      },
+      {
+        "keyword": "bài",
+        "tfidf_score": 0.0287
+      },
+      {
+        "keyword": "sóng gió",
+        "tfidf_score": 0.0286
+      },
+      {
+        "keyword": "hay",
+        "tfidf_score": 0.0264
+      },
+      {
+        "keyword": "đỉnh",
+        "tfidf_score": 0.0259
+      },
+      {
+        "keyword": "yêu",
+        "tfidf_score": 0.0175
+      },
+      {
+        "keyword": "thương",
+        "tfidf_score": 0.0162
+      }
+    ],
+    "positive": [
+      {
+        "keyword": "hát",
+        "tfidf_score": 0.0443
+      },
+      {
+        "keyword": "đỉnh",
+        "tfidf_score": 0.0418
+      },
+      {
+        "keyword": "hay",
+        "tfidf_score": 0.0409
+      },
+      {
+        "keyword": "jack",
+        "tfidf_score": 0.0371
+      },
+      {
+        "keyword": "sóng gió",
+        "tfidf_score": 0.0337
+      },
+      {
+        "keyword": "có",
+        "tfidf_score": 0.0326
+      },
+      {
+        "keyword": "nghe",
+        "tfidf_score": 0.0298
+      },
+      {
+        "keyword": "bài",
+        "tfidf_score": 0.0289
+      },
+      {
+        "keyword": "yêu",
+        "tfidf_score": 0.0252
+      },
+      {
+        "keyword": "thương",
+        "tfidf_score": 0.0208
+      }
+    ],
+    "negative": [
+      {
+        "keyword": "nghe",
+        "tfidf_score": 0.0511
+      },
+      {
+        "keyword": "khóc",
+        "tfidf_score": 0.0378
+      },
+      {
+        "keyword": "hát",
+        "tfidf_score": 0.0372
+      },
+      {
+        "keyword": "có",
+        "tfidf_score": 0.0357
+      },
+      {
+        "keyword": "jack",
+        "tfidf_score": 0.0243
+      },
+      {
+        "keyword": "nhạc",
+        "tfidf_score": 0.0214
+      },
+      {
+        "keyword": "bị",
+        "tfidf_score": 0.021
+      },
+      {
+        "keyword": "sóng gió",
+        "tfidf_score": 0.021
+      },
+      {
+        "keyword": "phải",
+        "tfidf_score": 0.0209
+      },
+      {
+        "keyword": "nhìn",
+        "tfidf_score": 0.0197
+      }
+    ]
+  },
+  "sentiment_summary": {
+    "total_valid_comments": 601,
+    "engine_mode": "classical",
+    "full_models": false,
+    "ensemble_formula": {
+      "all": "0.85 × ML Meta-Ensemble + 0.15 × Bilingual Lexicon"
+    },
+    "language_counts": {
+      "vi": 585,
+      "en": 16
+    },
+    "polarity_counts": {
+      "POS": 337,
+      "NEG": 185,
+      "NEU": 79
+    },
+    "polarity_percentages": {
+      "POS": 56.07,
+      "NEG": 30.78,
+      "NEU": 13.14
+    },
+    "emotion_counts": {
+      "Anger": 2,
+      "Sadness": 79,
+      "Fear": 4,
+      "Enjoyment": 323,
+      "Disgust": 31,
+      "Surprise": 24,
+      "Other": 138
+    },
+    "emotion_percentages": {
+      "Anger": 0.33,
+      "Sadness": 13.14,
+      "Fear": 0.67,
+      "Enjoyment": 53.74,
+      "Disgust": 5.16,
+      "Surprise": 3.99,
+      "Other": 22.96
+    },
+    "avg_polarity_score": 0.216,
+    "avg_confidence": 0.676,
+    "overall_tendency": "Tích cực",
+    "sarcasm_flagged_count": 0,
+    "classical_ml_benchmark": {
+      "vi": {
+        "schema_version": 3,
+        "feature_pipeline": [
+          "word_tfidf(1-3)",
+          "char_wb_tfidf(3-5)",
+          "social_lexicon_features(15)"
+        ],
+        "polarity_train_size": 36971,
+        "polarity_test_size": 4773,
+        "polarity_ensemble_method": "oof_stacking_lr",
+        "emotion_train_size": 6234,
+        "emotion_test_size": 693,
+        "emotion_ensemble_method": "top4_weighted_soft_vote",
+        "benchmark_file": "models/classical_ml/vi/benchmark_metrics.json",
+        "polarity_models": {
+          "tfidf_nb": {
+            "accuracy": 0.5324,
+            "macro_f1": 0.5207,
+            "weighted_f1": 0.5215
+          },
+          "tfidf_cnb": {
+            "accuracy": 0.5671,
+            "macro_f1": 0.5597,
+            "weighted_f1": 0.5617
+          },
+          "tfidf_lr": {
+            "accuracy": 0.6233,
+            "macro_f1": 0.6257,
+            "weighted_f1": 0.626
+          },
+          "tfidf_ridge": {
+            "accuracy": 0.6499,
+            "macro_f1": 0.65,
+            "weighted_f1": 0.6509
+          },
+          "tfidf_sgd": {
+            "accuracy": 0.6466,
+            "macro_f1": 0.6479,
+            "weighted_f1": 0.6486
+          },
+          "tfidf_svm": {
+            "accuracy": 0.6447,
+            "macro_f1": 0.6418,
+            "weighted_f1": 0.6431
+          },
+          "tfidf_nbsvm": {
+            "accuracy": 0.6445,
+            "macro_f1": 0.6409,
+            "weighted_f1": 0.6423
+          },
+          "tfidf_rbf_svm": {
+            "accuracy": 0.511,
+            "macro_f1": 0.5137,
+            "weighted_f1": 0.5138
+          },
+          "tfidf_rf": {
+            "accuracy": 0.5682,
+            "macro_f1": 0.5683,
+            "weighted_f1": 0.5687
+          },
+          "tfidf_tree": {
+            "accuracy": 0.5674,
+            "macro_f1": 0.5652,
+            "weighted_f1": 0.5663
+          },
+          "ml_ensemble": {
+            "accuracy": 0.6516,
+            "macro_f1": 0.6513,
+            "weighted_f1": 0.6522
+          }
+        },
+        "emotion_models": {
+          "emo_cnb": {
+            "accuracy": 0.5498,
+            "macro_f1": 0.4879,
+            "weighted_f1": 0.541
+          },
+          "emo_lr": {
+            "accuracy": 0.5931,
+            "macro_f1": 0.5867,
+            "weighted_f1": 0.5941
+          },
+          "emo_ridge": {
+            "accuracy": 0.6032,
+            "macro_f1": 0.574,
+            "weighted_f1": 0.5994
+          },
+          "emo_svm": {
+            "accuracy": 0.5931,
+            "macro_f1": 0.5494,
+            "weighted_f1": 0.5866
+          },
+          "emo_nbsvm": {
+            "accuracy": 0.5758,
+            "macro_f1": 0.5177,
+            "weighted_f1": 0.5685
+          },
+          "emo_sgd": {
+            "accuracy": 0.6017,
+            "macro_f1": 0.5855,
+            "weighted_f1": 0.6005
+          },
+          "emo_ensemble": {
+            "accuracy": 0.596,
+            "macro_f1": 0.5771,
+            "weighted_f1": 0.5943
+          }
+        },
+        "top_features": {
+          "polarity": {
+            "NEG": [
+              {
+                "feature": "char_tfidf__ ( ",
+                "weight": 5.1526
+              },
+              {
+                "feature": "word_tfidf__không đẹp",
+                "weight": 3.9601
+              },
+              {
+                "feature": "word_tfidf__không giống",
+                "weight": 2.9695
+              },
+              {
+                "feature": "word_tfidf__không được",
+                "weight": 2.7515
+              },
+              {
+                "feature": "word_tfidf__giảng_viên này",
+                "weight": 2.7298
+              },
+              {
+                "feature": "word_tfidf__không đúng",
+                "weight": 2.6128
+              },
+              {
+                "feature": "word_tfidf__thiếu sự",
+                "weight": 2.4025
+              },
+              {
+                "feature": "word_tfidf__ngu",
+                "weight": 2.3943
+              }
+            ],
+            "NEU": [
+              {
+                "feature": "char_tfidf__ ! ",
+                "weight": 4.2649
+              },
+              {
+                "feature": "word_tfidf__nhưng đẹp",
+                "weight": 2.4428
+              },
+              {
+                "feature": "word_tfidf__bt",
+                "weight": 2.206
+              },
+              {
+                "feature": "word_tfidf__nên",
+                "weight": 2.1594
+              },
+              {
+                "feature": "char_tfidf__ : ",
+                "weight": 2.1085
+              },
+              {
+                "feature": "word_tfidf__giao hàng",
+                "weight": 2.0555
+              },
+              {
+                "feature": "word_tfidf__không nhỉ",
+                "weight": 1.9698
+              },
+              {
+                "feature": "word_tfidf__khác nhau",
+                "weight": 1.9677
+              }
+            ],
+            "POS": [
+              {
+                "feature": "word_tfidf__không bị",
+                "weight": 3.6133
+              },
+              {
+                "feature": "word_tfidf__không cần",
+                "weight": 2.8576
+              },
+              {
+                "feature": "char_tfidf__ ok",
+                "weight": 2.8006
+              },
+              {
+                "feature": "word_tfidf__đẹp",
+                "weight": 2.776
+              },
+              {
+                "feature": "char_tfidf__đẹp",
+                "weight": 2.641
+              },
+              {
+                "feature": "word_tfidf__5 sao",
+                "weight": 2.4013
+              },
+              {
+                "feature": "char_tfidf__ok ",
+                "weight": 2.4003
+              },
+              {
+                "feature": "char_tfidf__ 🤣 ",
+                "weight": 2.3355
+              }
+            ]
+          }
+        }
+      },
+      "en": {
+        "schema_version": 3,
+        "feature_pipeline": [
+          "word_tfidf(1-3)",
+          "char_wb_tfidf(3-5)",
+          "social_lexicon_features(15)"
+        ],
+        "polarity_train_size": 45671,
+        "polarity_test_size": 12284,
+        "polarity_ensemble_method": "oof_stacking_lr",
+        "emotion_train_size": 9577,
+        "emotion_test_size": 2933,
+        "emotion_ensemble_method": "oof_stacking_lr",
+        "benchmark_file": "models/classical_ml/en/benchmark_metrics.json",
+        "polarity_models": {
+          "tfidf_nb": {
+            "accuracy": 0.6268,
+            "macro_f1": 0.6233,
+            "weighted_f1": 0.6269
+          },
+          "tfidf_cnb": {
+            "accuracy": 0.6141,
+            "macro_f1": 0.6143,
+            "weighted_f1": 0.614
+          },
+          "tfidf_lr": {
+            "accuracy": 0.6259,
+            "macro_f1": 0.623,
+            "weighted_f1": 0.6259
+          },
+          "tfidf_ridge": {
+            "accuracy": 0.6215,
+            "macro_f1": 0.6028,
+            "weighted_f1": 0.6162
+          },
+          "tfidf_sgd": {
+            "accuracy": 0.6316,
+            "macro_f1": 0.6198,
+            "weighted_f1": 0.6305
+          },
+          "tfidf_svm": {
+            "accuracy": 0.6161,
+            "macro_f1": 0.5923,
+            "weighted_f1": 0.606
+          },
+          "tfidf_nbsvm": {
+            "accuracy": 0.6247,
+            "macro_f1": 0.595,
+            "weighted_f1": 0.6084
+          },
+          "tfidf_rbf_svm": {
+            "accuracy": 0.5726,
+            "macro_f1": 0.5397,
+            "weighted_f1": 0.5627
+          },
+          "tfidf_rf": {
+            "accuracy": 0.5659,
+            "macro_f1": 0.5216,
+            "weighted_f1": 0.5485
+          },
+          "tfidf_tree": {
+            "accuracy": 0.5626,
+            "macro_f1": 0.5027,
+            "weighted_f1": 0.5273
+          },
+          "ml_ensemble": {
+            "accuracy": 0.6334,
+            "macro_f1": 0.6327,
+            "weighted_f1": 0.6325
+          }
+        },
+        "emotion_models": {
+          "emo_cnb": {
+            "accuracy": 0.7767,
+            "macro_f1": 0.7398,
+            "weighted_f1": 0.7762
+          },
+          "emo_lr": {
+            "accuracy": 0.791,
+            "macro_f1": 0.8241,
+            "weighted_f1": 0.7918
+          },
+          "emo_ridge": {
+            "accuracy": 0.7872,
+            "macro_f1": 0.8135,
+            "weighted_f1": 0.7883
+          },
+          "emo_svm": {
+            "accuracy": 0.7828,
+            "macro_f1": 0.8144,
+            "weighted_f1": 0.7833
+          },
+          "emo_nbsvm": {
+            "accuracy": 0.8074,
+            "macro_f1": 0.826,
+            "weighted_f1": 0.8084
+          },
+          "emo_sgd": {
+            "accuracy": 0.776,
+            "macro_f1": 0.8058,
+            "weighted_f1": 0.7749
+          },
+          "emo_ensemble": {
+            "accuracy": 0.8053,
+            "macro_f1": 0.8281,
+            "weighted_f1": 0.8079
+          }
+        },
+        "top_features": {
+          "polarity": {
+            "NEG": [
+              {
+                "feature": "char_tfidf__ :(",
+                "weight": 3.3559
+              },
+              {
+                "feature": "char_tfidf__:( ",
+                "weight": 3.2184
+              },
+              {
+                "feature": "char_tfidf__uck",
+                "weight": 2.9095
+              },
+              {
+                "feature": "char_tfidf__ :( ",
+                "weight": 2.5335
+              },
+              {
+                "feature": "char_tfidf__fuc",
+                "weight": 2.4587
+              },
+              {
+                "feature": "char_tfidf__fuck",
+                "weight": 2.4464
+              },
+              {
+                "feature": "char_tfidf__ los",
+                "weight": 2.2479
+              },
+              {
+                "feature": "word_tfidf__fuck",
+                "weight": 2.2439
+              }
+            ],
+            "NEU": [
+              {
+                "feature": "word_tfidf__w",
+                "weight": 1.937
+              },
+              {
+                "feature": "word_tfidf__bad blood",
+                "weight": 1.3664
+              },
+              {
+                "feature": "word_tfidf__gucci",
+                "weight": 1.2685
+              },
+              {
+                "feature": "word_tfidf__is there",
+                "weight": 1.257
+              },
+              {
+                "feature": "word_tfidf__at",
+                "weight": 1.2447
+              },
+              {
+                "feature": "word_tfidf__do you",
+                "weight": 1.2173
+              },
+              {
+                "feature": "word_tfidf__it be",
+                "weight": 1.1832
+              },
+              {
+                "feature": "word_tfidf__says he",
+                "weight": 1.1569
+              }
+            ],
+            "POS": [
+              {
+                "feature": "char_tfidf__ :)",
+                "weight": 3.0508
+              },
+              {
+                "feature": "char_tfidf__:) ",
+                "weight": 2.8195
+              },
+              {
+                "feature": "word_tfidf__fun",
+                "weight": 2.3749
+              },
+              {
+                "feature": "word_tfidf__can t wait",
+                "weight": 2.3432
+              },
+              {
+                "feature": "word_tfidf__i like",
+                "weight": 2.3125
+              },
+              {
+                "feature": "word_tfidf__t wait",
+                "weight": 2.2632
+              },
+              {
+                "feature": "char_tfidf__ :) ",
+                "weight": 2.1096
+              },
+              {
+                "feature": "char_tfidf__fun",
+                "weight": 1.6983
+              }
+            ]
+          }
+        }
+      }
+    },
+    "model_timings_sec": {
+      "classical_ml_setup_sec": 4.06,
+      "classical_ml_polarity_sec": 0.312,
+      "ml_model_timings_sec": {
+        "tfidf_cnb": 0.0039,
+        "tfidf_lr": 0.0027,
+        "tfidf_ridge": 0.0114,
+        "tfidf_sgd": 0.0042,
+        "tfidf_svm": 0.0073,
+        "tfidf_nbsvm": 0.0144,
+        "tfidf_rf": 0.125,
+        "tfidf_tree": 0.0654,
+        "ml_ensemble": 0.008,
+        "_vectorizer": 0.0681
+      },
+      "classical_ml_emotion_sec": 0.13,
+      "ml_emo_model_timings_sec": {
+        "emo_cnb": 0.0072,
+        "emo_lr": 0.0049,
+        "emo_ridge": 0.0157,
+        "emo_svm": 0.0091,
+        "emo_sgd": 0.0067,
+        "emo_ensemble": 0.0051,
+        "_vectorizer": 0.0709,
+        "emo_nbsvm": 0.0098
+      },
+      "lexicon_rules_sec": 0.006
+    },
+    "top_examples": {
+      "POS": [
+        {
+          "comment": "Mãi là ĐÓMMM",
+          "language": "vi",
+          "likes": 40610,
+          "polarity_score": 0.3168,
+          "emotion": "Trung tính / Khác",
+          "confidence": 0.5237
+        },
+        {
+          "comment": "Ferrari dù có cũ vẫn mãi là Ferrari ❤️‍🔥",
+          "language": "vi",
+          "likes": 31932,
+          "polarity_score": 0.21,
+          "emotion": "Vui vẻ / Hài lòng",
+          "confidence": 0.4265
+        },
+        {
+          "comment": "Thật sự Đỉnh , rất Đỉnh ❤️",
+          "language": "vi",
+          "likes": 7129,
+          "polarity_score": 0.9643,
+          "emotion": "Vui vẻ / Hài lòng",
+          "confidence": 0.9404
+        }
+      ],
+      "NEG": [
+        {
+          "comment": "Sóng gió cất lên ,chúng sinh bình đẳng ,vị vua VPOP trở về ngai vàng",
+          "language": "vi",
+          "likes": 19452,
+          "polarity_score": -0.2236,
+          "emotion": "Trung tính / Khác",
+          "confidence": 0.4351
+        },
+        {
+          "comment": "Ổng khóc hả [Mắt ngấn lệ][Mắt ngấn lệ][Mắt ngấn lệ]",
+          "language": "vi",
+          "likes": 3391,
+          "polarity_score": -0.7012,
+          "emotion": "Buồn bã",
+          "confidence": 0.7462
+        },
+        {
+          "comment": "Nhà vua trở về",
+          "language": "vi",
+          "likes": 3341,
+          "polarity_score": -0.21,
+          "emotion": "Trung tính / Khác",
+          "confidence": 0.3583
+        }
+      ],
+      "NEU": [
+        {
+          "comment": "tuat",
+          "language": "en",
+          "likes": 312,
+          "polarity_score": -0.046,
+          "emotion": "Trung tính / Khác",
+          "confidence": 0.6103
+        },
+        {
+          "comment": "Ngày đó tui binh ổng mình tui chọi lại 5 đứa bạn của tui. Kết quả 4 đứa kia k thèm chơi với tui luôn 🤣🤣 nhưng tui k sợ nha 😁",
+          "language": "vi",
+          "likes": 143,
+          "polarity_score": 0.0868,
+          "emotion": "Vui vẻ / Hài lòng",
+          "confidence": 0.4932
+        },
+        {
+          "comment": "Trải qua bao Sóng Gió thì Jack vẫn là chính mình, 1 nghệ sĩ có tài có đức, thiên tài âm nhạc Việt Nam",
+          "language": "vi",
+          "likes": 139,
+          "polarity_score": 0.1086,
+          "emotion": "Vui vẻ / Hài lòng",
+          "confidence": 0.604
+        }
+      ]
+    },
+    "on_topic_summary": {
+      "on_topic_count": 18,
+      "on_topic_pct": 3.0,
+      "off_topic_count": 583,
+      "avg_context_relevance": 0.0188,
+      "on_topic_polarity_counts": {
+        "POS": 11,
+        "NEG": 3,
+        "NEU": 4
+      },
+      "on_topic_polarity_percentages": {
+        "POS": 61.11,
+        "NEG": 16.67,
+        "NEU": 22.22
+      },
+      "alignment_counts": {
+        "Ít liên quan / Bình luận ngoài lề": 573,
+        "Ủng hộ / Tích cực với nội dung video": 11,
+        "Ủng hộ / Tích cực với video": 8,
+        "Phản bác / Tiêu cực với video": 2,
+        "Tiêu cực đối với nội dung video": 3,
+        "Thảo luận trung lập về chủ đề video": 1,
+        "Thảo luận trung lập về chủ đề video (cần kiểm tra ẩn ý)": 3
+      }
+    }
+  },
+  "model_comparison": {
+    "polarity_models": [
+      {
+        "model_key": "tfidf_cnb",
+        "tier": "base",
+        "model": "TF-IDF + Complement NB",
+        "family": "Classical ML (Generative)",
+        "total_comments": 601,
+        "pos_count": 210,
+        "neu_count": 141,
+        "neg_count": 250,
+        "pos_pct": 34.94,
+        "neu_pct": 23.46,
+        "neg_pct": 41.6,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 0.0039
+      },
+      {
+        "model_key": "tfidf_lr",
+        "tier": "base",
+        "model": "TF-IDF + Logistic Regression",
+        "family": "Classical ML (Linear)",
+        "total_comments": 601,
+        "pos_count": 300,
+        "neu_count": 159,
+        "neg_count": 142,
+        "pos_pct": 49.92,
+        "neu_pct": 26.46,
+        "neg_pct": 23.63,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 0.0027
+      },
+      {
+        "model_key": "tfidf_svm",
+        "tier": "base",
+        "model": "TF-IDF + Linear SVM",
+        "family": "Classical ML (Margin / SVM)",
+        "total_comments": 601,
+        "pos_count": 344,
+        "neu_count": 64,
+        "neg_count": 193,
+        "pos_pct": 57.24,
+        "neu_pct": 10.65,
+        "neg_pct": 32.11,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 0.0073
+      },
+      {
+        "model_key": "tfidf_rf",
+        "tier": "base",
+        "model": "SVD+Social + Random Forest",
+        "family": "Classical ML (Tree Bagging)",
+        "total_comments": 601,
+        "pos_count": 227,
+        "neu_count": 182,
+        "neg_count": 192,
+        "pos_pct": 37.77,
+        "neu_pct": 30.28,
+        "neg_pct": 31.95,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 0.125
+      },
+      {
+        "model_key": "tfidf_tree",
+        "tier": "base",
+        "model": "SVD+Social + HistGradientBoosting",
+        "family": "Classical ML (Tree Boosting)",
+        "total_comments": 601,
+        "pos_count": 303,
+        "neu_count": 62,
+        "neg_count": 236,
+        "pos_pct": 50.42,
+        "neu_pct": 10.32,
+        "neg_pct": 39.27,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 0.0654
+      },
+      {
+        "model_key": "ml_ensemble",
+        "tier": "ensemble",
+        "model": "Classical ML Meta-Ensemble",
+        "family": "Classical ML Ensemble",
+        "total_comments": 601,
+        "pos_count": 341,
+        "neu_count": 63,
+        "neg_count": 197,
+        "pos_pct": 56.74,
+        "neu_pct": 10.48,
+        "neg_pct": 32.78,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 0.008
+      },
+      {
+        "model_key": "lexicon",
+        "tier": "base",
+        "model": "Bilingual Lexicon + Rules",
+        "family": "Rule-based NLP",
+        "total_comments": 601,
+        "pos_count": 206,
+        "neu_count": 370,
+        "neg_count": 25,
+        "pos_pct": 34.28,
+        "neu_pct": 61.56,
+        "neg_pct": 4.16,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": 0.006
+      },
+      {
+        "model_key": "system_main",
+        "tier": "system",
+        "model": "ML Ensemble + Lexicon (Hệ thống chính)",
+        "family": "Classical ML Ensemble",
+        "total_comments": 601,
+        "pos_count": 337,
+        "neu_count": 79,
+        "neg_count": 185,
+        "pos_pct": 56.07,
+        "neu_pct": 13.14,
+        "neg_pct": 30.78,
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "cohen_kappa_vs_gemma": null,
+        "inference_time_sec": null
+      }
+    ],
+    "emotion_models": [
+      {
+        "model_key": "emo_cnb",
+        "tier": "base",
+        "model": "Complement NB (Emotion)",
+        "family": "Classical ML (Generative)",
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "inference_time_sec": 0.0072
+      },
+      {
+        "model_key": "emo_lr",
+        "tier": "base",
+        "model": "Logistic Regression (Emotion)",
+        "family": "Classical ML (Linear)",
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "inference_time_sec": 0.0049
+      },
+      {
+        "model_key": "emo_svm",
+        "tier": "base",
+        "model": "Linear SVM (Emotion)",
+        "family": "Classical ML (Margin / SVM)",
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "inference_time_sec": 0.0091
+      },
+      {
+        "model_key": "emo_ensemble",
+        "tier": "ensemble",
+        "model": "ML Emotion Meta-Ensemble",
+        "family": "Classical ML Ensemble",
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "inference_time_sec": 0.0051
+      },
+      {
+        "model_key": "emo_system_main",
+        "tier": "system",
+        "model": "ML Emotion Ensemble + Cues (Hệ thống chính)",
+        "family": "Classical ML Ensemble",
+        "agreement_vs_gemma_pct": null,
+        "macro_f1_vs_gemma": null,
+        "inference_time_sec": 0.13
+      }
+    ]
+  },
+  "ai_audit_verdict": null,
+  "ai_audit_status": {
+    "requested": false,
+    "scope": "all",
+    "ollama_ready": null,
+    "audited_count": 0,
+    "total_comments": 601,
+    "message": "Đã tắt Giai đoạn 4 theo lựa chọn người dùng (run_ai_audit=False)."
+  }
+}

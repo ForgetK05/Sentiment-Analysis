@@ -1,0 +1,622 @@
+﻿"stt
+(số thứ tự)","original_text
+(nội dung bình luận)","polarity_vi
+(sắc thái)","polarity_confidence
+(độ tự tin sắc thái %)","emotion_vi
+(cảm xúc)","emotion_confidence
+(độ tự tin cảm xúc %)","likes
+(lượt thích)","comment_type
+(loại bình luận)","username
+(tài khoản)","language
+(ngôn ngữ)","created_at
+(thời gian đăng)","reply_count
+(số phản hồi)"
+1,Mãi là ĐÓMMM,Tích cực,52.4%,Trung tính / Khác,40.5%,40610,Bình luận chính,chu3duy0305,Tiếng Việt,2026-11-26 17:37:21,380
+2,Ferrari dù có cũ vẫn mãi là Ferrari ❤️‍🔥,Tích cực,42.6%,Vui vẻ / Hài lòng,60.0%,31932,Bình luận chính,tnieeeeeeeee,Tiếng Việt,2026-11-25 19:26:13,81
+3,"Sóng gió cất lên ,chúng sinh bình đẳng ,vị vua VPOP trở về ngai vàng",Tiêu cực,43.5%,Trung tính / Khác,54.6%,19452,Bình luận chính,maitinh1991,Tiếng Việt,2026-11-25 19:27:02,294
+4,"Thật sự Đỉnh , rất Đỉnh ❤️",Tích cực,94.0%,Vui vẻ / Hài lòng,84.0%,7129,Bình luận chính,hanact,Tiếng Việt,2026-11-27 11:54:55,34
+5,Sóng Gió cất lên Chúng Sinh Bình Đẳng 👏 hoài niệm quá 🥹,Tích cực,87.8%,Vui vẻ / Hài lòng,73.7%,5755,Bình luận chính,vuquochai08,Tiếng Việt,2026-11-25 20:50:32,17
+6,Thật sự đỉnh 🙏anh Jack và cả Fan của ảnh ai cũng đỉnh 🥺 rất là dễ thương luôn ạ,Tích cực,97.5%,Vui vẻ / Hài lòng,92.8%,4968,Bình luận chính,canaurap,Tiếng Việt,2026-11-26 14:04:35,29
+7,Hay qá vỗ tayy,Tích cực,63.7%,Vui vẻ / Hài lòng,55.0%,4169,Bình luận chính,quanghai2910,Tiếng Việt,2026-11-26 19:29:14,35
+8,Ổng khóc hả [Mắt ngấn lệ][Mắt ngấn lệ][Mắt ngấn lệ],Tiêu cực,74.6%,Buồn bã,68.7%,3391,Bình luận chính,munphan99,Tiếng Việt,2026-11-25 19:32:50,67
+9,Nhà vua trở về,Tiêu cực,35.8%,Trung tính / Khác,28.0%,3341,Bình luận chính,thanhloi2548,Tiếng Việt,2026-11-25 19:24:31,20
+10,"ảnh khóc là vì những năm tháng các bạn Fan Đóm đã luôn bên cạnh và động viện anh ấy , đến hôm nay anh ấy bùng nổ trên Sân Khấu chứng kiến các bạn luôn dành những sự yêu thương 🥰",Tích cực,94.1%,Vui vẻ / Hài lòng,59.7%,2134,Bình luận chính,vantinhcuaem2306,Tiếng Việt,2026-11-25 19:32:14,18
+11,"Chúc mừng bạn, bài hát này từng là kỉ niệm một phần tuổi trẻ của mình ❤️",Tích cực,87.5%,Vui vẻ / Hài lòng,85.0%,1491,Bình luận chính,hieuyeuga,Tiếng Việt,2026-11-26 09:33:34,6
+12,hát mún lòi cái họng mà bảo nhép😳,Tích cực,59.3%,Vui vẻ / Hài lòng,40.8%,1435,Trả lời,sumi_1723,Tiếng Việt,2026-11-25 21:04:35,0
+13,"hát hay hơn Sơn Tùng á chèn, mình già rồi, ai hát hay mình nghe thôi, ST hát ko nghe đc chữ nào",Tích cực,40.8%,Vui vẻ / Hài lòng,59.1%,1339,Trả lời,pumpaa120719,Tiếng Việt,2026-11-25 21:22:31,0
+14,Đám ma k ai ăn bánh canh cá lóc đâu,Tiêu cực,53.3%,Trung tính / Khác,58.0%,1037,Trả lời,khoaduong5676,Tiếng Việt,2026-11-26 21:35:48,0
+15,đứa con tinh thần của bản thân tạo ra mà để ngkhac chiếm biết bao nhiêu năm nay mà kh khóc sao được,Tiêu cực,75.0%,Buồn bã,69.7%,978,Trả lời,quoctoan_138,Tiếng Việt,2026-11-25 19:57:57,0
+16,tính ra ổng nghị lực ghê..biết bao sóng gió ổng vẫn hien ngang với nghề..fan ổng cung quá trời..,Tích cực,71.5%,Chán ghét / Khó chịu,33.6%,969,Bình luận chính,cantronglong23,Tiếng Việt,2026-11-26 12:57:20,10
+17,"Tui biết ông hát sai lời chỗ nào đó, mà yêu ông tui ko nói ai biết đâu",Tiêu cực,43.6%,Vui vẻ / Hài lòng,42.5%,964,Bình luận chính,nganguyen11877,Tiếng Việt,2026-11-25 19:33:01,77
+18,"Jack ơi, cậu là thiên tài âm nhạc Việt Nam. Tui tự hào về cậu lắm. Mãi yêu ! Thương sao cho hết [Mắt ngấn lệ][Mắt ngấn lệ][Mắt ngấn lệ]",Tích cực,77.2%,Vui vẻ / Hài lòng,46.8%,915,Bình luận chính,8683792t50932,Tiếng Việt,2026-11-25 19:30:15,37
+19,Chị ngồi cạnh mẹ jack trên khán đài cùng che chung chiếc dù khi trời mưa 🥰 Mẹ Jack cũng khóc khi Sóng gió đã trở lại sau 7 năm. chị làm trong Đảng ủy phường Tam Hiệp. Một đêm nhạc trên cả tuyệt vời 👍🎵🎼🎶✍️,Tích cực,63.0%,Vui vẻ / Hài lòng,72.3%,743,Bình luận chính,leetam6868,Tiếng Việt,2026-11-25 22:49:53,19
+20,"Đúng là người từng trải qua sóng gió , nên hát bài sóng gió , từ thần thái cho đến lời nhạc nghe mãi ko chán 🥰",Tiêu cực,54.9%,Buồn bã,40.6%,645,Bình luận chính,hanlap2001,Tiếng Việt,2026-11-25 19:38:22,9
+21,You are so talented 🇻🇳🇻🇳🇻🇳❤️❤️,Tích cực,41.6%,Vui vẻ / Hài lòng,92.6%,642,Bình luận chính,olilondon2026,Tiếng Anh,2026-11-28 04:12:12,4
+22,Thích bản phối này hơn bản gốc luôn,Tích cực,65.0%,Vui vẻ / Hài lòng,48.7%,425,Bình luận chính,jackhuynh173,Tiếng Việt,2026-11-25 21:35:51,10
+23,Thần tượng Ddagon đâu phải chuyện đùa ❤️không ngờ em cũng idol ảnh giống t,Tích cực,71.2%,Vui vẻ / Hài lòng,57.5%,355,Trả lời,kim.luyen58,Tiếng Việt,2026-11-25 19:27:28,0
+24,"show đợt này ảnh đăng nhiều , ghiền gê luôn á",Tích cực,74.7%,Ngạc nhiên,53.9%,334,Bình luận chính,vnat8989,Tiếng Việt,2026-11-25 19:46:28,6
+25,tuat,Trung tính,61.0%,Trung tính / Khác,56.1%,312,Trả lời,t1gumayusi2806,Tiếng Anh,2026-11-25 23:55:48,0
+26,Chính ra cậu này hát và sáng tác rất hay.,Tích cực,91.8%,Vui vẻ / Hài lòng,72.4%,307,Bình luận chính,edibleflower_hoaanduoc,Tiếng Việt,2026-11-25 22:18:54,12
+27,Ferrari dù có cũ vẫn mãi là Ferrari 🔥,Tiêu cực,34.0%,Vui vẻ / Hài lòng,50.0%,258,Bình luận chính,ngt.khangggg,Tiếng Việt,2026-11-26 04:45:03,3
+28,Sời.. sai lời là gì.. ảnh còn quên luôn cả lời 🤣🤣🤣,Tiêu cực,68.6%,Vui vẻ / Hài lòng,24.1%,225,Trả lời,nuongbaby1999,Tiếng Việt,2026-11-25 20:06:54,0
+29,sóng gió của hiện tại...mạnh mẽ hơn cứng cáp hơn và trưởng thành hơn 🥰,Tích cực,89.3%,Vui vẻ / Hài lòng,79.5%,208,Bình luận chính,01101992hoa,Tiếng Việt,2026-11-25 19:27:57,2
+30,Đổ mồ hôi háng chèm nhẹp hết mà kêu nhép,Tiêu cực,46.3%,Trung tính / Khác,31.5%,186,Trả lời,miadaithon,Tiếng Việt,2026-11-25 21:49:05,0
+31,Fan J97 đâu hết r,Tiêu cực,42.0%,Trung tính / Khác,29.0%,152,Bình luận chính,chill.withgenz,Tiếng Việt,2026-11-25 19:46:31,14
+32,Ngày đó tui binh ổng mình tui chọi lại 5 đứa bạn của tui. Kết quả 4 đứa kia k thèm chơi với tui luôn 🤣🤣 nhưng tui k sợ nha 😁,Trung tính,49.3%,Vui vẻ / Hài lòng,39.6%,143,Bình luận chính,oanh_noooo,Tiếng Việt,2026-11-25 22:44:14,11
+33,"Trải qua bao Sóng Gió thì Jack vẫn là chính mình, 1 nghệ sĩ có tài có đức, thiên tài âm nhạc Việt Nam",Trung tính,60.4%,Vui vẻ / Hài lòng,41.7%,139,Trả lời,lu.dic.phi.1995,Tiếng Việt,2026-11-27 13:00:41,0
+34,"7 năm rùi,ở bên a 7 năm chờ đến lúc a quay trở lại cuối cùng e đã thành công, cảm ơn cô bé năm đó đã ko từ bỏ,a xứng đáng với những ánh hào quang này,e vẫn sẽ ở đây đóm sẽ ở đây lm chỗ dựa cho a,cố lên a nhấ🥺🫂",Tích cực,81.0%,Vui vẻ / Hài lòng,69.5%,133,Bình luận chính,gia.hn9432,Tiếng Việt,2026-11-25 19:39:54,3
+35,bài hát giống như hát ĐÁM MA,Tích cực,47.3%,Trung tính / Khác,35.5%,115,Bình luận chính,vu.cuong1974,Tiếng Việt,2026-11-26 21:10:50,184
+36,"Con bé giống bố nó 1 cách kỳ lạ, nhất là đôi mắt, nhìn phát ra bố nó là ai",Tiêu cực,59.8%,Vui vẻ / Hài lòng,27.9%,112,Bình luận chính,mamitomcua,Tiếng Việt,2026-11-25 22:51:54,24
+37,Mình khán giả bình thường nhưng rất cảm kích tấm lòng của Đóm dành cho Jack.,Tích cực,77.0%,Vui vẻ / Hài lòng,56.0%,94,Trả lời,jp79798,Tiếng Việt,2026-11-25 19:51:46,0
+38,4.4 củ,Trung tính,64.6%,Trung tính / Khác,49.2%,92,Bình luận chính,user6308353113655,Tiếng Việt,2026-11-25 23:14:09,64
+39,Dân ta có cái máu cứ nhân tài lên là dập xuống,Tiêu cực,74.3%,Chán ghét / Khó chịu,37.5%,90,Bình luận chính,onggiao1993,Tiếng Việt,2026-11-26 17:20:42,4
+40,hình như nhép hã,Trung tính,76.5%,Trung tính / Khác,32.9%,87,Bình luận chính,meianh_29,Tiếng Việt,2026-11-25 20:15:46,331
+41,"Quá đĩnh Tuấn oi chi đã khoc em co biết không , những gì chi biết chi không cầm được nuoc mắt 🥰❤️",Tiêu cực,49.6%,Buồn bã,45.9%,84,Bình luận chính,lethanhtuyen988,Tiếng Việt,2026-11-25 19:48:47,2
+42,J thích nhiều ng tài chứ k riêng GD nha. Bên Trung J cũng thần tượng Jaychou lắm.,Tích cực,43.9%,Chán ghét / Khó chịu,35.4%,74,Trả lời,baba41372,Tiếng Việt,2026-11-25 20:57:47,0
+43,"Xứng đáng làm idol vừa có tài vừa có đức, thêm nghị lực nữa, không tin ông có thật luôn.",Tích cực,52.0%,Lo lắng / Sợ hãi,22.4%,74,Trả lời,nguyen_huongtra,Tiếng Việt,2026-11-26 13:00:55,0
+44,Vậy ạ! Mẹ Jack cũng rất điềm đạm và khiêm nhường,Tích cực,71.2%,Vui vẻ / Hài lòng,30.1%,72,Trả lời,m.maicha8,Tiếng Việt,2026-11-25 23:39:11,0
+45,"giỏi lắm roii cục dàngg, quá tự hào luonnn🥺",Tích cực,92.5%,Vui vẻ / Hài lòng,71.7%,70,Bình luận chính,_ga.ae08_,Tiếng Việt,2026-11-25 19:35:20,0
+46,chính chủ hát có khác🥰,Tích cực,68.2%,Vui vẻ / Hài lòng,59.3%,69,Bình luận chính,imbao2004,Tiếng Việt,2026-11-25 19:30:14,0
+47,"ê nhưng cũng k phủ nhận ông kia đàn giỏi , phối nhạc ok nữa .",Tích cực,51.2%,Trung tính / Khác,43.6%,66,Bình luận chính,ly1997_thuong.com,Tiếng Việt,2026-11-26 11:37:59,22
+48,Đây rồi đã về với chính chủ🥰,Tích cực,89.8%,Vui vẻ / Hài lòng,66.2%,66,Bình luận chính,user4953925902301,Tiếng Việt,2026-11-25 19:27:28,0
+49,Nói gì chứ bài này đỉnh thật 😂 nhậu toàn quẩy bài này 😂,Tích cực,84.2%,Vui vẻ / Hài lòng,60.9%,64,Bình luận chính,datjmmy,Tiếng Việt,2026-11-26 12:14:34,1
+50,mãi là đom đóm,Trung tính,42.0%,Trung tính / Khác,53.7%,63,Bình luận chính,lapxuongbotot,Tiếng Việt,2026-11-26 18:31:31,9
+51,thật luôn. đó T A biết lùi lại giờ thì có tất cả. và có 1 gd hp,Tích cực,72.8%,Chán ghét / Khó chịu,23.0%,61,Trả lời,caonhien.18.08,Tiếng Việt,2026-11-25 22:55:13,0
+52,"Nghe nó day dứt bi lụy và như trút lòng vào bài hát, bao uất ức dồn vào câu từ, hóa ra năm 29 tuổi trải đời nghe khác hẳn 21 tuổi cỡ đó 🥲",Tiêu cực,71.1%,Vui vẻ / Hài lòng,37.7%,56,Trả lời,thanhhngaa598,Tiếng Việt,2026-11-25 19:57:08,0
+53,"Nhớ năm 2019 em ấy về Bến Tre diễn lễ hội dừa, nghe câu "" Bến Tre ơi ! Con đã về"" , nghe từ "" Con "" nghe cưng lắm !",Tích cực,79.5%,Vui vẻ / Hài lòng,64.0%,55,Bình luận chính,ni.ca718,Tiếng Việt,2026-11-25 19:46:30,0
+54,từ tối qua đến giờ chỉ xem em thôi đó Jack à,Trung tính,58.6%,Trung tính / Khác,52.2%,55,Bình luận chính,lysa20085,Tiếng Việt,2026-11-25 19:28:12,0
+55,Sao tui nghe có câu không say k về vậy 😁,Tiêu cực,46.0%,Buồn bã,29.3%,51,Bình luận chính,linhnhi_38_makeup,Tiếng Việt,2026-11-25 23:09:36,15
+56,Tôi là fan bạn lúc bạn hát hồng nhan rồi. Sao tôi nghe đoạn sóng gió này xót xa quá . Hay quá. Chúc bạn nhìu sức khỏe và,Tích cực,91.1%,Vui vẻ / Hài lòng,73.7%,51,Bình luận chính,nguyndin2403,Tiếng Việt,2026-11-26 00:13:46,3
+57,thì sao? bộ cựu tuyển thủ ko được idol người khác à,Tiêu cực,74.8%,Chán ghét / Khó chịu,24.1%,50,Trả lời,v.cng157,Tiếng Việt,2026-11-26 23:04:00,0
+58,"tới bây giờ c vẫn còn xúc động Jack ơi,nước mắt hạnh phúc,đã gần 7 năm rồi mới nghe bài Sóng Gió vang lên từ cha đẻ ,cảm giác khó tả lắm🥰🥰",Tích cực,62.4%,Vui vẻ / Hài lòng,66.6%,49,Bình luận chính,gaukute2305,Tiếng Việt,2026-11-25 19:28:10,4
+59,"hát hay, ráp hay, sáng tác giỏi, lời rất có chiều sâu, combo khó kím ở vn",Tích cực,95.4%,Vui vẻ / Hài lòng,75.5%,48,Trả lời,user2455995841228,Tiếng Việt,2026-11-26 01:08:17,0
+60,"Thời nay nhạc sĩ sáng tác đi vần cũng nhờ AI hỗ trợ câu từ nhiều, thời đó mà nhạc Jack đã đi vần đỉnh từ đó đến nay luôn mà 😘",Tích cực,75.8%,Vui vẻ / Hài lòng,67.4%,47,Bình luận chính,davidbeckham6686,Tiếng Việt,2026-11-25 19:54:39,3
+61,"T xem mà khóc , thương cho những gì em ấy phải trải qua, từ giờ phải thật hạnh phúc nhé chàng trai",Tích cực,82.5%,Vui vẻ / Hài lòng,54.1%,47,Bình luận chính,mainguyenthi230391,Tiếng Việt,2026-11-25 19:42:00,0
+62,"Hôm qua nay chưa ngủ, lướt Tiktok thôi. Không tập trung công việc đc luôn . Yêu em 😍",Tích cực,88.6%,Vui vẻ / Hài lòng,77.6%,47,Bình luận chính,hotarujp,Tiếng Việt,2026-11-25 19:26:33,0
+63,40 tuổi giờ đu e ấy có kịp ko,Tiêu cực,58.5%,Trung tính / Khác,52.2%,46,Bình luận chính,hoaiantonnu,Tiếng Việt,2026-11-26 12:44:33,18
+64,"Ngày xưa cô hay ngồi ăn uống nước với mấy cô mấy dì bác trong fc lắm, sau cô mới tránh dư luận hạn chế, chứ cô bình dị lắm",Tiêu cực,41.7%,Vui vẻ / Hài lòng,35.9%,45,Trả lời,thanhhngaa598,Tiếng Việt,2026-11-26 07:59:54,0
+65,Ảnh vừa phỏng vấn xong b biết Drama ngày ảnh bị cả Hàn Quốc tế sống vì nghi ngờ sử dụng ma túy không ảnh vẫn hiên ngang trước cửa cảnh sát & phóng viên ảnh không làm ảnh không sợ cái t cần là sự bản lĩnh ấy đó,Tiêu cực,84.5%,Lo lắng / Sợ hãi,29.6%,44,Trả lời,kim.luyen58,Tiếng Việt,2026-11-25 21:17:31,0
+66,Mới làm fan bạn có 2 năm nay thôi! Cảm ơn vì sau tất cả vẫn mạnh mẽ đứng trên ánh đèn sân khấu để thể hiện tài năng của mình cho khán giả nhé! Mãi ủng hộ Meo,Tích cực,94.9%,Vui vẻ / Hài lòng,84.6%,42,Bình luận chính,rin.in.fukuoka,Tiếng Việt,2026-11-25 19:35:58,0
+67,thanks anh tiết mục của anh rất tuyệt vời luôn 💯,Tích cực,95.6%,Vui vẻ / Hài lòng,92.4%,40,Trả lời,hnk_69,Tiếng Việt,2026-11-26 19:01:40,0
+68,"7 năm rồi anh mới hát lại bài này, cũng là lần đầu tiên em nhìn thấy anh ở ngoài đời trong 7 năm qua làm fan anh 🥰❤️",Tiêu cực,43.5%,Vui vẻ / Hài lòng,40.8%,40,Bình luận chính,kphuong0203,Tiếng Việt,2026-11-25 19:27:20,0
+69,đến cuối cùng thì sóng gió đã vang lên suốt chừng ấy năm. tuyệt vời,Tích cực,83.9%,Vui vẻ / Hài lòng,75.0%,37,Bình luận chính,phuongnguyen28_08,Tiếng Việt,2026-11-25 19:32:00,0
+70,Nghe xúc động quá,Tiêu cực,67.1%,Vui vẻ / Hài lòng,30.5%,36,Trả lời,8683792t50932,Tiếng Việt,2026-11-25 23:04:25,0
+71,Đứa con lạc lối cuối cùng cũng về.,Tiêu cực,51.2%,Buồn bã,35.9%,35,Bình luận chính,31283310097,Tiếng Việt,2026-11-26 08:12:02,4
+72,ngta ko sáng tác ra thì lấy gì mà phối nhạc mà đánh đàn,Tiêu cực,76.1%,Chán ghét / Khó chịu,36.9%,34,Trả lời,b.aobao1111,Tiếng Việt,2026-11-26 19:48:52,0
+73,qua bao sóng gió để trưởng thành và sống hạnh phúc như ngày hôm nay,Tích cực,92.0%,Vui vẻ / Hài lòng,76.2%,34,Trả lời,hieuhamhoc2005,Tiếng Việt,2026-11-27 13:51:17,0
+74,Fan được tiếp xúc nên sẽ hiểu con ng J hiền lành. Còn chúng ta chỉ xem trên màn ảnh nên dễ bị hùa và dắt,Trung tính,46.1%,Trung tính / Khác,30.8%,34,Trả lời,tuananhmanbolro,Tiếng Việt,2026-11-25 20:36:51,0
+75,Bản gốc 7 năm màu nhạc quê r… bản này hiện đại hơn,Trung tính,77.2%,Trung tính / Khác,33.0%,33,Trả lời,suliee02,Tiếng Việt,2026-11-26 13:56:10,0
+76,"Sao nghe con phối mới này nó đắng mà nó đúng chất sóng gió vậy,đoạn cuối nghe nó đau từng khúc luôn á trời",Tiêu cực,55.6%,Ngạc nhiên,41.2%,32,Bình luận chính,thu_lilac,Tiếng Việt,2026-11-26 12:25:38,1
+77,Sóng gió vang lên là hát theo không trật nhịp nào,Tiêu cực,59.6%,Trung tính / Khác,59.0%,32,Bình luận chính,ngocninh23038,Tiếng Việt,2026-11-25 19:25:52,0
+78,a hát e nghe hôm nay hơn 1000 lần rồi . sao mà truyền cảm dữ vậy a,Trung tính,45.1%,Ngạc nhiên,42.0%,31,Bình luận chính,khahailonggsm,Tiếng Việt,2026-11-25 19:26:00,0
+79,"“ Sóng Gió “ cất lên chúng sinh bình đẳng, nhà Vua trở về … ♥️♥️♥️♥️",Tích cực,74.6%,Vui vẻ / Hài lòng,53.2%,31,Bình luận chính,angelia1368,Tiếng Việt,2026-11-25 19:29:45,0
+80,cha đẻ hát có khác,Tiêu cực,72.7%,Chán ghét / Khó chịu,38.4%,30,Bình luận chính,iapkaka,Tiếng Việt,2026-11-25 19:25:08,0
+81,Hôm ấy Cậu hai loại nước quyện vào nhau . Còn Chúng Tôi tới ba loại mồ hôi nước mưa nước mắt quyện vào tạo nên Hạnh phúc khi BRO cất tiếng hát Sóng gió lại có thêm kỉ niệm đẹp nữa rồi..,Tích cực,64.0%,Vui vẻ / Hài lòng,54.2%,30,Bình luận chính,_mahuongjackhi78,Tiếng Việt,2026-11-25 20:17:58,2
+82,Cái gì của mình thì mãi mãi là của mình anh nhỉ🥰,Tích cực,68.9%,Vui vẻ / Hài lòng,59.9%,30,Bình luận chính,chery01029,Tiếng Việt,2026-11-25 19:28:23,0
+83,“Hoa Vô Sắc” vẫn là thứ t mong chờ đc J97 hát lại cho nghe. U mê vô cùng 🌻🌻🌻,Tích cực,63.8%,Vui vẻ / Hài lòng,39.0%,29,Bình luận chính,anhh9393,Tiếng Việt,2026-11-26 11:08:18,6
+84,"luyện giọng chắc căng lém , xưa cx hay nhưng h thấy hát hay hơn hẳn",Tích cực,89.9%,Vui vẻ / Hài lòng,73.4%,27,Bình luận chính,banthantaolathao,Tiếng Việt,2026-11-26 11:13:13,1
+85,"Lấy lại đc r bạn giờ bên kia chỉ nắm đc MV vs beat cũ thôi , quyền tác giả thuộc về J, J đổi beat khác là hát vs đi show bth",Tiêu cực,79.1%,Trung tính / Khác,33.1%,27,Trả lời,bebut99,Tiếng Việt,2026-11-26 11:11:51,0
+86,Haha tui lau cho ảnh mà,Tích cực,80.0%,Vui vẻ / Hài lòng,82.4%,27,Trả lời,miadaithon,Tiếng Việt,2026-11-25 23:11:30,0
+87,Sóng gió cất lên anti k cần để lời,Tiêu cực,41.7%,Trung tính / Khác,49.8%,26,Trả lời,ngheobaho,Tiếng Việt,2026-11-26 01:14:59,0
+88,Sao anh lại khóc nó vỗn dĩ là của anh và lẽ ra anh phải có tất cả và hơn bây giờ lâu rồi 🥰,Tiêu cực,78.5%,Buồn bã,65.2%,26,Bình luận chính,01thanhtam_spa,Tiếng Việt,2026-11-27 08:53:31,1
+89,cmt đẹp nhất đây rồi,Tích cực,84.4%,Vui vẻ / Hài lòng,65.5%,25,Trả lời,axiang2989,Tiếng Việt,2026-11-26 11:56:15,0
+90,tuyệt vời quá 🌹,Tích cực,94.9%,Vui vẻ / Hài lòng,92.2%,24,Trả lời,thanhdoi.j03,Tiếng Việt,2026-11-27 11:58:38,0
+91,"Ui, có ngoại 70 tuổi mà show nào cũng đi kìa b, kể cả show ngoài trời như show này nha, mà fan Jack nhiều cô chú 40-50 tuổi lắm ạ",Tích cực,81.0%,Vui vẻ / Hài lòng,37.8%,24,Trả lời,rose36173,Tiếng Việt,2026-11-26 12:57:10,0
+92,Vua trong lòng Fan🙂,Tích cực,43.0%,Vui vẻ / Hài lòng,37.0%,24,Trả lời,16th06_14,Tiếng Việt,2026-11-26 05:57:31,0
+93,"bài hat duy nhât chỉ mỗi chính chủ hat là hay, bao bản cover đều ko ăn lại đc",Tiêu cực,37.8%,Vui vẻ / Hài lòng,38.7%,24,Bình luận chính,okami.2811,Tiếng Việt,2026-11-25 23:01:30,0
+94,Ủa k còn bị bản quyền nửa hả mọi người,Tiêu cực,71.4%,Buồn bã,37.0%,23,Bình luận chính,binhnghiatran98,Tiếng Việt,2026-11-26 11:03:49,11
+95,Nhìn ảnh hát muốn tắt thở vẫn bị bảo nhép =)),Tiêu cực,43.7%,Vui vẻ / Hài lòng,51.4%,23,Bình luận chính,atsuya.yeu.22,Tiếng Việt,2026-11-26 16:07:53,2
+96,Người thiện lành họ ko diễn dc nên chúng ta cũng cảm nhận dc,Tiêu cực,50.8%,Trung tính / Khác,47.1%,22,Trả lời,m.maicha8,Tiếng Việt,2026-11-26 12:46:52,0
+97,Anh tôi mãi đỉnh 😍,Tích cực,96.0%,Vui vẻ / Hài lòng,80.2%,22,Bình luận chính,sad2002t2,Tiếng Việt,2026-11-25 19:24:35,0
+98,"Mấy Bạn Mà Nói Hát Nhép Thì không đúng, đây là hát live thực thụ nhưng vẫn phải qua suond và phần mềm nhưng mình thấy cái này chỉnh để rỏ chử chứ không hỗ trợ gì thêm hết Jack Live Giỏi Quá rồi",Tiêu cực,72.7%,Chán ghét / Khó chịu,48.9%,22,Bình luận chính,pu.g.c,Tiếng Việt,2026-11-26 08:46:40,0
+99,"?vcl, t joke mà, nhạy cảm v. idol ai vc ngt thôi, với tình lướt cmt thì ns v chứ có bắt k đc fan đâu má",Tiêu cực,84.7%,Chán ghét / Khó chịu,38.5%,21,Trả lời,f4iry.fyn,Tiếng Việt,2026-11-26 23:42:39,0
+100,giờ có ekip đằng sau đăng nhiều lắm.Đợt album đăng liên tục😂,Tiêu cực,44.5%,Trung tính / Khác,28.0%,21,Trả lời,baba41372,Tiếng Việt,2026-11-25 21:00:48,0
+101,Sóng gió vang lên chúng sinh bình đẳng,Tích cực,58.7%,Trung tính / Khác,35.0%,21,Bình luận chính,hoaqphuz,Tiếng Việt,2026-11-25 22:38:27,0
+102,"thật sự đã lâu lắm rồi không được nghe, muốn khóc luôn á Meo ơi",Tiêu cực,91.2%,Buồn bã,80.9%,21,Bình luận chính,tng.vy.02,Tiếng Việt,2026-11-25 23:11:18,0
+103,đã mang ADN của nhà vua thì dù có bị vùi dập anh vẫn mãi là nhà vua 😂,Tích cực,46.2%,Vui vẻ / Hài lòng,51.7%,21,Bình luận chính,tuntun_2081,Tiếng Việt,2026-11-25 19:51:51,0
+104,nhìn về anh ng chẳng khiến em lẻ loi,Tiêu cực,79.9%,Buồn bã,53.1%,20,Trả lời,8683792t50932,Tiếng Việt,2026-11-25 19:33:10,0
+105,"Tôi là 1 người con Mỏ Cày, đã đồng hành cùng Jack -TTPT 1 quãng đường khá dài
+Chúc Jack luôn thành công và tiến xa hơn trên con đường sự nghiệp của mình🤟",Tích cực,87.8%,Vui vẻ / Hài lòng,62.8%,20,Bình luận chính,ynbt3,Tiếng Việt,2026-11-26 19:03:07,0
+106,"Mìn vừa là sky vừa là đóm, tài năng của Jack là 1 thứ không thể phủ nhận 🥰",Tích cực,49.6%,Vui vẻ / Hài lòng,51.6%,19,Bình luận chính,connguoibandt6789,Tiếng Việt,2026-11-25 23:35:48,0
+107,cho tui order bài Em gì ơi đi ạ... cảm xúc rồi cho vui lên tý đi,Tích cực,76.2%,Vui vẻ / Hài lòng,65.0%,18,Bình luận chính,hanh.chelsea,Tiếng Việt,2026-11-25 19:34:54,2
+108,b k bt gì ST hú hét cực hay nhed,Tiêu cực,74.6%,Chán ghét / Khó chịu,23.4%,17,Trả lời,chataigptgenmiclaudegrok,Tiếng Việt,2026-11-25 22:33:19,0
+109,chắc đang vui 😊,Tích cực,81.0%,Vui vẻ / Hài lòng,46.8%,17,Trả lời,user1401661793002,Tiếng Việt,2026-11-25 20:11:51,0
+110,"Như hát cho chính cuộc đời của J vậy, thương quá",Tiêu cực,41.7%,Vui vẻ / Hài lòng,30.3%,17,Bình luận chính,nthg9x,Tiếng Việt,2026-11-26 04:17:51,0
+111,"Chết tiệt, Hát như vậy chúng tôi không làm gì được từ hôm qua r đó, like quá mỏi tay",Tiêu cực,68.2%,Buồn bã,39.5%,16,Bình luận chính,vanle7247,Tiếng Việt,2026-11-25 19:42:22,0
+112,1 bài hát mình sáng tác gần 7 năm mới được hát 😳 lại,Tích cực,44.0%,Vui vẻ / Hài lòng,53.1%,15,Bình luận chính,l.cng5524,Tiếng Việt,2026-11-25 21:42:43,3
+113,"hiền lành, tốt tính, làm từ thiện rất nhiều, không tranh cãi đôi co chỉ im lặng tập trung làm nghề... Ai cũng có sai lầm khi còn trẻ, nhưng chính thái độ và cách người đó đứng dậy mới quyết định tất cả!",Tiêu cực,73.7%,Chán ghét / Khó chịu,35.8%,15,Trả lời,user2455995841228,Tiếng Việt,2026-11-28 00:00:53,0
+114,Nhạc ông này bài nào nghe cũng hay,Tích cực,76.0%,Vui vẻ / Hài lòng,45.9%,15,Bình luận chính,trangnguyen231193,Tiếng Việt,2026-11-26 13:05:20,5
+115,"Sóng gió chính chủ hát khác biệt, có hồn đi vào tim khán giả, 7n tui chờ khoảnh khắc này và mong đợi những bài còn lại năm 2019",Tích cực,57.7%,Buồn bã,33.0%,15,Bình luận chính,giangha1975,Tiếng Việt,2026-11-25 19:36:04,0
+116,Ferrari dù có cũ vẫn mãi là Ferrari ❤️‍🔥❤️‍🔥❤️‍🔥❤️‍🔥,Tích cực,61.4%,Vui vẻ / Hài lòng,72.1%,14,Bình luận chính,thien_an010211,Tiếng Việt,2026-11-27 09:03:14,1
+117,ko có ng thứ 2 với thời điểm hiện tại,Tiêu cực,52.0%,Trung tính / Khác,41.2%,14,Trả lời,hoaquynhngabienhoa,Tiếng Việt,2026-11-26 09:16:13,0
+118,thương Jack🥺,Tích cực,52.1%,Buồn bã,65.2%,13,Trả lời,lu.dic.phi.1995,Tiếng Việt,2026-11-25 22:18:37,0
+119,Đau khổ trong tình yêu vốn dĩ là chất xúc tác để tạo ra những tác phẩm để đời.,Tiêu cực,81.6%,Buồn bã,72.0%,13,Trả lời,thythy_2019,Tiếng Việt,2026-11-26 13:08:27,0
+120,đoạn nhạc cuoi nghe day dứt nhỉ,Trung tính,63.0%,Trung tính / Khác,43.2%,13,Trả lời,h.v_92,Tiếng Việt,2026-11-26 10:05:24,0
+121,ko bằng ghen tị kéo xuống,Tiêu cực,64.7%,Trung tính / Khác,60.5%,13,Trả lời,vgm.ok,Tiếng Việt,2026-11-26 17:23:07,0
+122,"Mừng cho anh, bạn em Thanh Tuyền, Băng Đình, Hữu Nhân hâm mộ anh lắm. Tụi nó như đc sống trở lại khi thấy anh xuất thần với hit này. Cảm ơn a đã nỗ lực đưa bài hát trở lại.",Tích cực,95.0%,Vui vẻ / Hài lòng,90.3%,13,Bình luận chính,nguyenchiden,Tiếng Việt,2026-11-26 19:21:18,0
+123,mong chời nó quá lâu rồi a ơi✌✌,Tiêu cực,60.2%,Vui vẻ / Hài lòng,53.7%,13,Bình luận chính,truongcongdinh372011,Tiếng Việt,2026-11-25 19:32:39,0
+124,Từ hôm qua tới nay k thoát ra được luôn,Trung tính,61.1%,Buồn bã,34.3%,13,Bình luận chính,ledieubacon,Tiếng Việt,2026-11-25 19:29:33,0
+125,"Cảm xúc ấy, thật sự khó diễn tả lắm, tôi vẫn luôn ở đây, nhìn hành trình cậu trưởng thành và trải qua nhiều thứ, không mong mọi thứ quá suôn sẻ nhưng mong cậu luôn đủ sk và giũ vững tinh thần, vì sau còn chúng tớ. DOMI dễ thương luôn bên cậu🌻🌻❤️",Tích cực,93.2%,Vui vẻ / Hài lòng,79.9%,13,Bình luận chính,uttly98,Tiếng Việt,2026-11-25 19:39:17,0
+126,còn bạc phận vs hồng nhan sao ạ🥲😔,Tiêu cực,55.7%,Vui vẻ / Hài lòng,40.6%,12,Bình luận chính,vox_phuowg_thuyzf,Tiếng Việt,2026-11-26 16:17:04,3
+127,"hồng nhan lấy đc từ lâu rồi bạn ơi, còn bạc phận, em gì ơi, sao em vô tình, hoa vô sắc, việt nam tôi thì mình không chắc, đã lấy lại đc chưa",Tiêu cực,73.5%,Buồn bã,56.6%,12,Trả lời,t.bp77,Tiếng Việt,2026-11-26 13:12:22,0
+128,Jack giờ đẹp traii he,Tích cực,83.7%,Vui vẻ / Hài lòng,64.0%,12,Bình luận chính,phanhh.2k,Tiếng Việt,2026-11-27 09:44:13,8
+129,bộ k đúng hả😂,Tiêu cực,68.0%,Ngạc nhiên,31.4%,12,Trả lời,tinhyeula.caideogi,Tiếng Việt,2026-11-26 18:01:36,0
+130,có ai giống tui k? khóc vì hạnh phúc,Tích cực,59.2%,Vui vẻ / Hài lòng,48.0%,12,Trả lời,8683792t50932,Tiếng Việt,2026-11-25 19:31:49,0
+131,"""nhìn về anh người chẳng khiến em lẻ loi""",Tiêu cực,82.2%,Buồn bã,53.9%,12,Bình luận chính,datdj1605,Tiếng Việt,2026-11-25 19:44:55,0
+132,"Thái học hát cũng hay lắm ấy, chị fan Jack mà hôm chị nghe e hát chị cũng thấy hay lắm nha e. 🤭🤭🤭",Tích cực,96.0%,Vui vẻ / Hài lòng,89.8%,11,Trả lời,annhien5341,Tiếng Việt,2026-11-26 19:59:59,0
+133,"Jack có được vị trí hôm này là do tài năng âm nhạc của bạn ấy
+sáng tác và biểu diễn ❤️",Tích cực,83.0%,Vui vẻ / Hài lòng,41.9%,11,Trả lời,hh16031990,Tiếng Việt,2026-11-28 10:04:30,0
+134,Sau này chỉ khóc vì hạnh phúc thôi nhé cục dàng ❤,Tích cực,79.8%,Vui vẻ / Hài lòng,41.6%,11,Bình luận chính,nganxeko0211,Tiếng Việt,2026-11-25 21:13:09,0
+135,"Sóng gió vang lên,chúng sinh bình đẳng💯",Tích cực,70.4%,Vui vẻ / Hài lòng,42.1%,11,Bình luận chính,deo_huy_chuong135,Tiếng Việt,2026-11-25 19:29:50,0
+136,Vừa hay vừa thương k cảm xúc nào tả nổi 🥰 nhà vua trở về 🔥,Tích cực,87.4%,Vui vẻ / Hài lòng,66.6%,11,Bình luận chính,tuo.vii78,Tiếng Việt,2026-11-25 20:02:06,0
+137,Khg ai hát bài này qua Jack đâu,Tiêu cực,73.2%,Trung tính / Khác,50.9%,11,Bình luận chính,nhinhib97,Tiếng Việt,2026-11-25 19:28:37,0
+138,"Đi được đến đây là một hành trình không dễ dàng,mọi cố gắng đều đã được đền đáp. Quãng đường sau này phải thật rực rỡ và hạnh phúc thật nhiều nhé🥰🥰🥰",Tích cực,95.6%,Vui vẻ / Hài lòng,85.7%,11,Bình luận chính,airinn584,Tiếng Việt,2026-11-25 19:44:29,0
+139,Sóng gió🥰,Tích cực,81.3%,Vui vẻ / Hài lòng,59.6%,11,Bình luận chính,nghiemtoc12,Tiếng Việt,2026-11-25 19:24:33,0
+140,Jack ok 1 cái là e bỏ chồng theo anh liền,Tiêu cực,42.3%,Vui vẻ / Hài lòng,42.0%,10,Bình luận chính,kim_anh_8821,Tiếng Việt,2026-11-26 23:56:22,4
+141,đroii,Tích cực,60.1%,Trung tính / Khác,35.4%,10,Trả lời,iua215.eek,Tiếng Việt,2026-11-26 14:11:13,0
+142,"Đoạn rap ""từ một cô bé"", ổng hát "" thành một cô bé""",Tiêu cực,52.7%,Buồn bã,31.3%,10,Trả lời,chapterdang1,Tiếng Việt,2026-11-26 07:04:12,0
+143,ng mang tia nắng nhưng cớ sao còn tăm tối,Tiêu cực,50.8%,Buồn bã,50.0%,10,Trả lời,ngocchai95.2,Tiếng Việt,2026-11-25 19:32:44,0
+144,Nghe đã hai cái lỗ tai ♥️♥️♥️. Cuối cùng cũng nghe lại được chính chủ hát . Mãi trong tim ♥️,Tích cực,68.5%,Vui vẻ / Hài lòng,67.3%,10,Bình luận chính,thongoc.1998,Tiếng Việt,2026-11-25 23:43:58,0
+145,"t đi r, bên ngoài đẹp zai cực",Tích cực,84.1%,Vui vẻ / Hài lòng,61.4%,10,Bình luận chính,cyymekeohyeon,Tiếng Việt,2026-11-25 20:16:18,0
+146,dù nắng hay mưa thì cũng qua rồi. dù thắng hay thua thì cũng thành công rồi. chúc e con đường phía trước dù có chông gai bão tố cũng sẽ vững chân bước qua trong hào quang rực rỡ,Tích cực,79.5%,Vui vẻ / Hài lòng,61.8%,10,Bình luận chính,thuenguyen123,Tiếng Việt,2026-11-25 20:23:35,0
+147,ổng khen bth thôi có j đâu mà bà bảo kiểu v tui ko hiểu joke của bà lắm ha,Trung tính,78.8%,Trung tính / Khác,47.3%,9,Trả lời,bichip141309,Tiếng Việt,2026-11-27 13:50:49,0
+148,đã mang DNA của nhà vua thì khó mà dìm đc Jack:v công bằng mà nói Jack nó ko chỉ có tài năng mà còn vô cùng nghị lực ấy chứ 😂,Tích cực,74.5%,Chán ghét / Khó chịu,50.7%,9,Trả lời,tuntun_2081,Tiếng Việt,2026-11-27 13:42:57,0
+149,Hát sai lời mà tụi nó còn bảo nhép mớ đau,Tiêu cực,83.5%,Chán ghét / Khó chịu,33.5%,9,Trả lời,ntng152,Tiếng Việt,2026-11-26 13:03:31,0
+150,hồng nhan vẫn hát bình thường từ trước giờ mà vì bài đó Jack có trước khi vào công ty đó mà,Trung tính,58.1%,Trung tính / Khác,48.2%,9,Trả lời,annie_sunnies,Tiếng Việt,2026-11-26 16:20:18,0
+151,"Mình cũng ý như bạn, Đóm phần lớn là các chị các bạn nữ, những người ở lại là những người kiên định với sự cảm thông, họ chờ đợi thời gian trả lời, chịu dè bĩu của anti khi biết họ là Đóm và luôn giữ 1 lòng bảo vệ J, thật xúc động, mình thích kiểu người phụ nữ như này, nếu có duyên mình cũng muốn quen 1 bạn gái là Đóm, cùng đu thần tượng, nghĩ thôi cũng thấy vui ! ❤️❤️❤️❤️❤️",Tích cực,94.7%,Vui vẻ / Hài lòng,81.5%,9,Trả lời,davidbeckham6686,Tiếng Việt,2026-11-26 08:23:30,0
+152,Nhìn gương mặt dễ thương có hậu ❤️❤️❤️,Tích cực,91.4%,Vui vẻ / Hài lòng,88.6%,9,Bình luận chính,hanh.dinh024,Tiếng Việt,2026-11-25 21:55:11,0
+153,thương lắm,Tích cực,64.6%,Buồn bã,65.0%,9,Bình luận chính,bevi2.09,Tiếng Việt,2026-11-25 19:24:31,0
+154,Đừng khóc. Vì nó vốn dĩ là của ông🥰,Tiêu cực,78.1%,Buồn bã,38.7%,9,Bình luận chính,votacthien93,Tiếng Việt,2026-11-25 19:27:01,0
+155,Cánh tay fan JACK đâu rồi,Trung tính,44.6%,Trung tính / Khác,47.5%,9,Bình luận chính,06_08_1991,Tiếng Việt,2026-11-25 20:16:49,0
+156,😂😂😂 tự nhiên cmt mắc cười,Tích cực,83.7%,Vui vẻ / Hài lòng,87.2%,8,Trả lời,vyvy.1314,Tiếng Việt,2026-11-26 22:19:16,0
+157,😂sao bà bít bà,Tích cực,44.5%,Trung tính / Khác,37.4%,8,Trả lời,sumi_1723,Tiếng Việt,2026-11-25 23:10:16,0
+158,Đẳng cấp,Tích cực,42.0%,Trung tính / Khác,34.9%,8,Bình luận chính,daonguyenanh99,Tiếng Việt,2026-11-27 19:19:36,0
+159,Ko phải fan nhưng công nhận ĐỈNH ❤️,Tích cực,46.1%,Vui vẻ / Hài lòng,41.1%,8,Bình luận chính,gianglangthang2310,Tiếng Việt,2026-11-26 11:00:28,0
+160,Lamborghini có cũ vẫn là Lamborghini👍,Trung tính,51.8%,Vui vẻ / Hài lòng,55.1%,8,Bình luận chính,trungkiennehihi,Tiếng Việt,2026-11-25 19:32:13,0
+161,tuy không phải là fan ổng..nhưng gặp ổng 2 lần trong nhà máy nesty quá là dễ thương nè,Tích cực,89.6%,Vui vẻ / Hài lòng,79.0%,8,Bình luận chính,thaonguyenkkk3,Tiếng Việt,2026-11-26 17:14:26,0
+162,"chính nó, cái cảm giác này 7 năm trước ... sao có thể quên được 😭❤",Tiêu cực,53.0%,Buồn bã,40.4%,8,Bình luận chính,nhidoijackne,Tiếng Việt,2026-11-25 19:38:13,0
+163,"beat đó mang đi sân khấu lớn có phần chưa hợp vì nó hơi cũ, này hiện đại hơn và rất hợp",Tích cực,76.5%,Chán ghét / Khó chịu,38.1%,7,Trả lời,maivangquocnguyen65,Tiếng Việt,2026-11-26 22:14:37,0
+164,ôi tr oi,Tiêu cực,41.3%,Vui vẻ / Hài lòng,30.5%,7,Trả lời,iamconggtrung07,Tiếng Việt,2026-11-28 09:08:04,0
+165,Có J là đủ oy 😂,Tích cực,78.1%,Vui vẻ / Hài lòng,41.9%,7,Trả lời,marilyn.vo,Tiếng Việt,2026-11-26 03:52:42,0
+166,Tối nghe ở ngoài tr ơi nó hay kinh khủng khiếp,Tiêu cực,70.8%,Vui vẻ / Hài lòng,27.7%,7,Bình luận chính,lychipi29,Tiếng Việt,2026-11-25 21:18:57,0
+167,Beat mới nghe sâu sắc hơn..nó như mang tiếng lòng để thay lời muốn nói của câu chuyện đã qua❤️đúng là sóng gió..,Tích cực,51.2%,Vui vẻ / Hài lòng,52.8%,7,Bình luận chính,susu718775,Tiếng Việt,2026-11-26 08:06:52,0
+168,ông nhỏ hát hết cả tâm hồn mồ hôi ướt đầm đìa 🥰,Tiêu cực,54.3%,Vui vẻ / Hài lòng,50.8%,7,Bình luận chính,user3ey869vkr4,Tiếng Việt,2026-11-26 07:46:38,0
+169,Nhà Vua Đã Tỉnh Thức 🐐,Tích cực,73.8%,Vui vẻ / Hài lòng,61.4%,7,Bình luận chính,haonamnoine,Tiếng Việt,2026-11-25 20:23:31,0
+170,"Sóng gió vang lên ,chúng sinh bình đẳng 🐐",Tích cực,70.4%,Vui vẻ / Hài lòng,42.1%,7,Bình luận chính,haonamnoine,Tiếng Việt,2026-11-25 19:42:15,0
+171,"Sương rồng đơm lá đơm hoa
+Nước đông đầy trên cao nguyên đá
+Là ngày hoàng đế trở về nhà 👏",Tích cực,43.3%,Vui vẻ / Hài lòng,72.3%,7,Bình luận chính,user465921029,Tiếng Việt,2026-11-25 22:27:59,0
+172,Sóng Gió vang lên hoàng đế trở về nhà👑,Tích cực,71.2%,Vui vẻ / Hài lòng,57.4%,7,Bình luận chính,lncongthanh_,Tiếng Việt,2026-11-25 21:02:19,0
+173,cảm xúc lẫn lộn vừa vui vừa hạnh phúc anh yêu âm nhạc còn tụi em ở phía sau ổn hộ và yêuuu anh gia đình đóm mãi thương anhh,Tích cực,97.4%,Vui vẻ / Hài lòng,91.3%,7,Bình luận chính,yunanguyen124,Tiếng Việt,2026-11-25 19:39:41,0
+174,‘’Thần khúc’’ vang lên tất cả quỳ xuống[Ấm lòng],Tích cực,75.3%,Vui vẻ / Hài lòng,34.4%,7,Bình luận chính,beckham_1995,Tiếng Việt,2026-11-25 19:31:34,0
+175,bạn này mỗi lần đứng sân khấu đều rất toả sáng có hào quang nổi bần bật mà sao lận đận . lâu lắm mới đc nghe bài này thì phải,Tích cực,53.1%,Vui vẻ / Hài lòng,35.4%,7,Bình luận chính,rose.kienanh,Tiếng Việt,2026-11-26 12:58:12,1
+176,Mãi yêu 🥰,Tích cực,95.5%,Vui vẻ / Hài lòng,83.3%,6,Trả lời,thanh_hoai1993,Tiếng Việt,2026-11-26 17:01:28,0
+177,thêm Thái Học vào giỏ hàng🌸❤️🙏,Tích cực,47.3%,Vui vẻ / Hài lòng,65.9%,6,Trả lời,thinh.gaga,Tiếng Việt,2026-11-26 21:00:09,0
+178,sao có đức v bạn,Trung tính,80.1%,Trung tính / Khác,55.4%,6,Trả lời,yuube180,Tiếng Việt,2026-11-27 11:20:49,0
+179,"Nhờ AI làm giùm t 1 bài nổi như v, ý là giờ ko phân biệt đc cái nào là AI cái nào là ng thật luôn hả. Đừng có phủ nhận sáng tác của ngkh là 1, đừng có phủ nhận công sức sản xuất phối khí của ngkh là 2. Ghét thì học cách kệ mịe nhau đi 😌",Tiêu cực,93.7%,Chán ghét / Khó chịu,72.4%,6,Trả lời,iamj.t.zino007,Tiếng Việt,2026-11-26 14:34:27,0
+180,Trước giờ bạn này mình thấy hát bài này là hay nhất,Tích cực,80.5%,Vui vẻ / Hài lòng,60.2%,6,Bình luận chính,banhtieu2884,Tiếng Việt,2026-11-25 21:10:08,1
+181,hi,Trung tính,69.5%,Trung tính / Khác,50.0%,6,Bình luận chính,v.hiep2012,Tiếng Anh,2026-11-25 19:24:30,1
+182,Trùng sinh jack lấy lại tất cả mọi thứ thuộc về mình ♥️,Tiêu cực,43.8%,Vui vẻ / Hài lòng,41.2%,6,Bình luận chính,minheejeju,Tiếng Việt,2026-11-26 11:21:19,0
+183,"Anh ơi concert Hà Nội dùm e, e nôn lắm r 🥹",Tích cực,75.7%,Vui vẻ / Hài lòng,57.0%,6,Bình luận chính,thuy.giangg,Tiếng Việt,2026-11-25 19:31:47,0
+184,"""Ferrari cũ vẫn là ferrari """,Tiêu cực,64.1%,Trung tính / Khác,48.7%,6,Bình luận chính,nauuxinkgai001,Tiếng Việt,2026-11-25 19:46:31,0
+185,Jack tự tìm đến tôi,Tiêu cực,45.6%,Trung tính / Khác,35.6%,6,Bình luận chính,maimit36,Tiếng Việt,2026-11-25 19:25:56,0
+186,Hát đoạn cuối này mà ảnh muốn khóc tới nơi lun,Tiêu cực,75.5%,Buồn bã,53.3%,6,Bình luận chính,pn06018,Tiếng Việt,2026-11-26 11:05:50,0
+187,Hôm qua là ngày Vua trở lại Ngai Vàngggg👑,Tích cực,51.2%,Vui vẻ / Hài lòng,43.6%,6,Bình luận chính,annie_yennhiii,Tiếng Việt,2026-11-25 19:55:08,0
+188,rồi up từ giờ tới 28 cho em:))),Trung tính,43.6%,Vui vẻ / Hài lòng,54.5%,6,Bình luận chính,_hang.domi11,Tiếng Việt,2026-11-25 19:37:55,0
+189,công nhận e này hát hay nha.nhạc trẻ nhưng gu nhạc hợp 8x 9x,Tích cực,82.4%,Vui vẻ / Hài lòng,51.7%,6,Bình luận chính,v.qton,Tiếng Việt,2026-11-26 15:02:54,0
+190,nay ní đúng điên luôn á . theo tim cho ní hổng kịp luôn ní oai 😁,Tiêu cực,55.3%,Vui vẻ / Hài lòng,51.1%,6,Bình luận chính,lin180721,Tiếng Việt,2026-11-25 21:58:39,0
+191,Anh jack hát bài này đúng đỉnh😳,Tích cực,91.5%,Vui vẻ / Hài lòng,78.8%,6,Bình luận chính,thuongbaby1501,Tiếng Việt,2026-11-25 21:54:38,0
+192,Con bé con t nó mới 7 tuổi mà nó hỏi mẹ biết idol của con là ai ko? Là a Jack đó mẹ🤣🤣🤣🤣🤣,Tiêu cực,46.1%,Trung tính / Khác,34.4%,6,Bình luận chính,phuc_chau90,Tiếng Việt,2026-11-25 21:13:20,0
+193,sớm luônnnnn,Trung tính,77.4%,Trung tính / Khác,80.4%,6,Bình luận chính,cimanh2003,Tiếng Việt,2026-11-25 19:24:34,0
+194,Tất cả lúc ấy lùi lại thì đã k như ngày hôm nay b ạ. Kicm và công ty chịu thiệt 1 chút cho jack toả sáng thì giờ công ty tha hồ tiền tài và danh tiếng ạ,Tiêu cực,61.5%,Chán ghét / Khó chịu,37.4%,5,Trả lời,huyen220022,Tiếng Việt,2026-11-27 07:48:54,0
+195,nghe cty kia hát muốn đổi cả tai h được nghe live lại bản này như được an ủi😭,Tiêu cực,83.3%,Buồn bã,47.3%,5,Trả lời,_136.meoz,Tiếng Việt,2026-11-26 04:52:55,0
+196,Tuổi quan trọng gì ci ơi,Trung tính,75.1%,Trung tính / Khác,77.5%,5,Trả lời,annhien99393,Tiếng Việt,2026-11-26 13:18:20,0
+197,"Anh trở lại với bài hát này,quần chúng ai ai cũng mãi ủng hộ và công nhận nổ lực không ngừng của một người,tụi em mãi yêu và dõi theo anh🥰",Tích cực,96.9%,Vui vẻ / Hài lòng,81.7%,5,Bình luận chính,ylyyy0049,Tiếng Việt,2026-11-26 17:16:44,0
+198,Đỉnh cao hát live 🫰🏻🫰🏻hơn cả khối ca sĩ lên hát nhép,Tích cực,77.5%,Vui vẻ / Hài lòng,65.9%,5,Bình luận chính,bo.thi8518,Tiếng Việt,2026-11-26 04:49:43,0
+199,"Quá khứ kệ đi mấy bà, công nhận tài năng của người ta đi",Tiêu cực,57.9%,Trung tính / Khác,35.7%,5,Bình luận chính,w_wang2803,Tiếng Việt,2026-11-26 14:53:17,0
+200,Sao tự dưng nhìn mặt tội tội thương thương z trời,Tiêu cực,76.8%,Buồn bã,68.9%,5,Bình luận chính,hongvan_14,Tiếng Việt,2026-11-26 11:11:03,0
+201,+ Một đóm u.40 iu Jack 🥰,Tích cực,94.0%,Vui vẻ / Hài lòng,82.6%,5,Bình luận chính,cotuvinhlong...198x,Tiếng Việt,2026-11-26 03:47:24,0
+202,bộ đồ đỏ thật sự hợp với ổng quá trời,Tích cực,57.6%,Vui vẻ / Hài lòng,28.5%,5,Bình luận chính,thaodangiu_12,Tiếng Việt,2026-11-26 18:54:11,0
+203,Đỉnh qá Meo ơiiiiiiii[Mắt ngấn lệ],Tích cực,86.9%,Vui vẻ / Hài lòng,47.0%,5,Bình luận chính,bong472002,Tiếng Việt,2026-11-25 19:26:12,0
+204,"trước đây tui chưa từng chủ động nghe bản cũ luôn á, nay nghe chính chủ hát thiệt đã tai👍👍👍👍👍👍👍👍👍",Tiêu cực,46.5%,Vui vẻ / Hài lòng,50.0%,5,Bình luận chính,katmia1118,Tiếng Việt,2026-11-25 19:40:04,0
+205,trở lại đường đua thôi,Tiêu cực,45.2%,Trung tính / Khác,67.7%,5,Bình luận chính,motminhtoii19,Tiếng Việt,2026-11-25 19:45:36,0
+206,nghe đã tai thật jack ơi. ❤,Tích cực,61.7%,Vui vẻ / Hài lòng,63.7%,5,Bình luận chính,vanviet.369,Tiếng Việt,2026-11-26 20:29:41,0
+207,"Lần đầu đu show Jack lại được nghe live Sóng Gió sau 7 năm, tôi trúng số chăng?",Trung tính,71.9%,Ngạc nhiên,31.8%,5,Bình luận chính,hatbuitran11,Tiếng Việt,2026-11-25 20:20:10,0
+208,Mãi là ĐOM ĐÓM NHÓ !! 🎀🎀,Tích cực,41.9%,Vui vẻ / Hài lòng,52.7%,5,Bình luận chính,mimidayy181215,Tiếng Việt,2026-11-25 19:25:35,0
+209,sáng nay t hát bài này cái bn t nói là m làm t nghiện rồi,Tích cực,57.6%,Trung tính / Khác,38.9%,5,Bình luận chính,nguyt.cute018,Tiếng Việt,2026-11-25 21:06:16,0
+210,tui mê bài này xưa h vẫn mê.phải noi nhac cua jack bài nào cũng hay,Tích cực,85.4%,Vui vẻ / Hài lòng,77.0%,5,Bình luận chính,nguyenkieu901,Tiếng Việt,2026-11-25 21:22:35,0
+211,đầu,Tích cực,45.6%,Trung tính / Khác,39.5%,5,Bình luận chính,viethoangdaynek,Tiếng Việt,2026-11-25 19:24:22,0
+212,cố lên chàng trai mình tuổi trâu nên cứ lì như trâu đời có vùi cỡ nào nếu đúng cứ cắm đầu mà bước tiếp thôi !,Tích cực,55.6%,Chán ghét / Khó chịu,42.0%,5,Bình luận chính,hatran_777,Tiếng Việt,2026-11-25 21:09:06,0
+213,thần tượng của tôi khóc rồi,Tiêu cực,78.7%,Buồn bã,73.0%,5,Bình luận chính,thithao0603,Tiếng Việt,2026-11-27 09:55:34,0
+214,"Xem qua tiktok thôi mà tui cũng rơi nước mắt, thương em ấy!tui theo dõi em từ ca khúc Hồng Nhan đến giờ, bài hát cũng như cuộc đời,mong là mọi sóng gió trôi qua thì hạnh phúc sẽ đến với em từ nay về sau này!",Tích cực,84.4%,Vui vẻ / Hài lòng,70.9%,5,Bình luận chính,tuyetngoc491,Tiếng Việt,2026-11-25 21:44:36,0
+215,lần sau lại mặc màu đỏ nha PT. màu này quá đẹp. mê k lối thoát.,Tích cực,74.7%,Vui vẻ / Hài lòng,28.4%,5,Bình luận chính,nguytlao0,Tiếng Việt,2026-11-25 19:48:20,0
+216,@bong công chúa @bạn cùng bàn bị gay @MinaHan @bél @YIN🤘🏻🤡 @haiyen~ @_twuyn._ @ena.,Tiêu cực,47.5%,Trung tính / Khác,60.6%,5,Bình luận chính,bong.iu357,Tiếng Việt,2026-11-27 12:06:33,0
+217,ủa vụ j rk,Trung tính,86.1%,Ngạc nhiên,48.7%,4,Trả lời,shii_sweet,Tiếng Việt,2026-11-28 09:53:50,0
+218,mà vẫn thích đúng hăm,Tích cực,86.6%,Vui vẻ / Hài lòng,64.6%,4,Trả lời,serenahainhu,Tiếng Việt,2026-11-26 21:45:08,0
+219,Cùng như bạn,Tích cực,40.0%,Trung tính / Khác,44.1%,4,Trả lời,davidbeckham6686,Tiếng Việt,2026-11-26 08:37:27,0
+220,Ảnh vui lắm á,Tích cực,89.5%,Vui vẻ / Hài lòng,83.9%,4,Trả lời,nhinhwki7ny,Tiếng Việt,2026-11-26 09:21:06,0
+221,"Bởi vậy nước ngoài họ bảo nhười Việt rơi xuống hố cứ vứt cho cái thang, chưa chắc đã lên được đâu 😂",Tiêu cực,46.8%,Trung tính / Khác,28.6%,4,Trả lời,tieuthukieuki2975,Tiếng Việt,2026-11-27 06:48:37,0
+222,Anh ơi cố lên,Tích cực,79.7%,Vui vẻ / Hài lòng,54.8%,4,Bình luận chính,its.kmaine,Tiếng Việt,2026-11-26 00:23:45,3
+223,"Cmt khen miết ko biết khen gì, khen đỉnh đỉnh thì bảo là seeding. Nên ko biết sao.",Tích cực,93.7%,Vui vẻ / Hài lòng,52.2%,4,Bình luận chính,nguynhong2611,Tiếng Việt,2026-11-27 20:48:32,2
+224,Tui thấy nó hay kiểu gì ấy á. Cứ nghe đi nghe lại mà tim đập thình thịch chân tay run rẩy.,Tiêu cực,58.6%,Buồn bã,36.0%,4,Bình luận chính,bong_bong96,Tiếng Việt,2026-11-28 07:21:55,0
+225,jack vẫn như ngày nào,Tích cực,46.2%,Trung tính / Khác,51.0%,4,Bình luận chính,ngtai.212,Tiếng Việt,2026-11-26 18:41:30,0
+226,mãi yêu idol của tôi chúc idol thành công tất cả,Tích cực,91.3%,Vui vẻ / Hài lòng,73.6%,4,Bình luận chính,oasalem,Tiếng Việt,2026-11-26 16:52:50,0
+227,của mình thuộc về mình ! vẩn quay lại cha đẻ bài hát,Tích cực,39.7%,Vui vẻ / Hài lòng,46.9%,4,Bình luận chính,cuongbaylv,Tiếng Việt,2026-11-26 12:47:48,0
+228,Tui là fan già của em ý. Cứ muốn nghe đi nghe lại.,Tiêu cực,40.5%,Buồn bã,30.6%,4,Bình luận chính,giangthi87,Tiếng Việt,2026-11-26 20:38:51,0
+229,Ổng hợp màu đỏ lắm,Tích cực,72.3%,Trung tính / Khác,39.5%,4,Bình luận chính,creamchesse.love_chesse,Tiếng Việt,2026-11-25 23:18:57,0
+230,Mong Jack làm lại bài này full để mỗi lần muốn nghe bài này k phải vào kênh của cty cũ nữa,Tiêu cực,72.9%,Trung tính / Khác,37.7%,4,Bình luận chính,cotrangcongnghe,Tiếng Việt,2026-11-26 14:41:51,0
+231,"hôm đấy có hát mấy bài trong album mới ko mn, mưa quá ko đi coi",Trung tính,42.2%,Trung tính / Khác,39.9%,4,Bình luận chính,nht.anh6139,Tiếng Việt,2026-11-26 20:37:50,2
+232,đúng là bản gốc,Tích cực,37.8%,Trung tính / Khác,35.9%,4,Bình luận chính,nguoidungtiktok879,Tiếng Việt,2026-11-25 19:48:45,0
+233,"Huyền thoại trở lại rồi,quá xuất sắc,xứng đáng chờ đợi suốt 7 năm quá👍👍👍👍",Tích cực,86.1%,Vui vẻ / Hài lòng,84.3%,4,Bình luận chính,mrdung_nancylamanh,Tiếng Việt,2026-11-25 21:04:55,0
+234,Trẻ con xa mạc truyền tai về bài đồng dao…,Tiêu cực,76.7%,Trung tính / Khác,32.4%,4,Bình luận chính,halacrisman,Tiếng Việt,2026-11-26 08:39:52,0
+235,Nghe nó đã j đâu ý.sóng gió nào rồi cũng qua.ai vùi dập mặc ai.mình cứ toả sáng thôi e,Trung tính,60.2%,Trung tính / Khác,56.9%,4,Bình luận chính,xuanhoa0702,Tiếng Việt,2026-11-25 21:37:10,0
+236,"Anh dừng lại 5 năm để tụi em đi trước, tới khi anh bước tiếp anh vẫn phải ngoảnh lại để tìm tụi em",Tiêu cực,41.2%,Buồn bã,57.4%,4,Bình luận chính,yeubautroivaem,Tiếng Việt,2026-11-25 22:59:41,0
+237,Tuấn ơi em đã rưng rưng khi nghe ca khúc này vang lên đây chính là thứ mang thanh xuân của em trở nên ý nghĩa. Thương Jack mạnh mẽ nhé tụi em ở đây🥰🥰,Tích cực,95.2%,Vui vẻ / Hài lòng,85.9%,4,Bình luận chính,tangquoc.bieu,Tiếng Việt,2026-11-25 22:19:23,0
+238,"eo ơi! ko pải đóm mà t cũng xúc động. Mừng cho ổ, mừng cho đóm😍",Tích cực,70.2%,Vui vẻ / Hài lòng,83.5%,4,Bình luận chính,jvk0608,Tiếng Việt,2026-11-25 20:05:10,0
+239,huyền thoại trở lại,Tích cực,67.1%,Trung tính / Khác,35.4%,4,Bình luận chính,nht.sang76,Tiếng Việt,2026-11-25 19:24:53,0
+240,chúc bạn ấy luôn toả sáng và hp,Tích cực,84.2%,Trung tính / Khác,47.7%,4,Bình luận chính,ngnkim2184,Tiếng Việt,2026-11-25 21:58:48,0
+241,tao thích cái phòng cách đấy,Tích cực,83.7%,Vui vẻ / Hài lòng,64.5%,4,Bình luận chính,quynhanh16.1.2014,Tiếng Việt,2026-11-26 08:55:35,0
+242,"Stac dc bài hát mà nó vận luôn vào người. Nhưng ksao em ạ, cố gắng lên. Cs cái gì nó là của mình sẽ mãi là của mình.",Tích cực,48.2%,Buồn bã,32.8%,4,Bình luận chính,luuhonghao93,Tiếng Việt,2026-11-26 07:40:53,0
+243,"Theo mình cảm nhận, giống như bao uất ức jack được trút ra, và đứa con tinh thần đã quay trở về với jack",Tích cực,64.6%,Vui vẻ / Hài lòng,37.7%,4,Bình luận chính,ngoan.nguyn0024,Tiếng Việt,2026-11-25 23:59:41,0
+244,Tiếc quá hôm qua ko đi xem live em ấy hát 😌,Tiêu cực,65.0%,Buồn bã,77.4%,4,Bình luận chính,0512vananh,Tiếng Việt,2026-11-25 21:13:33,0
+245,hay nha sau bao năm nghe lại vẫn thấy hay,Tích cực,91.9%,Vui vẻ / Hài lòng,73.1%,4,Bình luận chính,hatran_777,Tiếng Việt,2026-11-25 21:06:44,0
+246,cái gì của anh thì trước sau gì cũng thuộc về anh 👑🔥 vốn dĩ nó đã là của anh,Tiêu cực,43.1%,Vui vẻ / Hài lòng,43.0%,4,Bình luận chính,_iambich_07,Tiếng Việt,2026-11-25 19:28:55,0
+247,7 năm ròi cuối cùng Jack đã cất tiếng hát sóng gió trên sân khấu,Tích cực,46.1%,Vui vẻ / Hài lòng,38.1%,4,Bình luận chính,ativlog3,Tiếng Việt,2026-11-25 21:35:08,0
+248,Sóng gió khi cất lên thì Đế vương năm ấy đã trở lại 🥰🥰🥰🥰 cảm xúc vở òa thật sự mãi yêu,Tích cực,79.6%,Vui vẻ / Hài lòng,58.2%,4,Bình luận chính,luytam65,Tiếng Việt,2026-11-25 20:15:47,0
+249,Từng bài hát như kể lại chính cuộc đời đầy sóng gió của anh ấy.Chỉ có hết mình hát ra anh mới giải toả được những gì anh kìm nén🥺,Tích cực,53.6%,Vui vẻ / Hài lòng,49.1%,4,Bình luận chính,betham2611,Tiếng Việt,2026-11-25 20:49:51,0
+250,"nhìn jack hát mới biết ca sĩ phải nỗ lực đến như nào,đam mê như nào mới có thể hadt được những bài hát hay như này",Tích cực,83.6%,Vui vẻ / Hài lòng,43.5%,4,Bình luận chính,19thuy96,Tiếng Việt,2026-11-25 21:49:53,0
+251,Ảnh ấy đã trở lại và lợi hại hơn xưa. Cuối cùng cũng được hát ca khúc của mình. 🥰🥰🥰,Tích cực,96.3%,Vui vẻ / Hài lòng,87.4%,4,Bình luận chính,ngocryry9x,Tiếng Việt,2026-11-25 21:35:17,0
+252,"Bóng tối ôm trọn lấy bóng ma
+Thiên linh duy nhất hóa nhạt nhòa
+Ngai vàng vẫn chờ trong đất đá
+Đế vương năm ấy trở về nhà!",Tiêu cực,75.6%,Buồn bã,39.8%,3,Trả lời,cua.xinh.thch.v,Tiếng Việt,2026-11-26 22:18:38,0
+253,🤣🤣🤣🤣ban hết,Tích cực,68.2%,Vui vẻ / Hài lòng,56.2%,3,Trả lời,serenahainhu,Tiếng Việt,2026-11-26 21:44:52,0
+254,"hồng nhan mới hát đó, Bạc phận chắc 28 ngày kkkk đoán thế",Trung tính,38.7%,Vui vẻ / Hài lòng,46.9%,3,Trả lời,jjjjjaaaakkk,Tiếng Việt,2026-11-26 16:18:04,0
+255,rap còn sai lời nữa mà 😂,Tiêu cực,58.4%,Vui vẻ / Hài lòng,29.3%,3,Trả lời,annie_sunnies,Tiếng Việt,2026-11-26 16:20:59,0
+256,V đó nói ảnh nhép =)),Tích cực,80.2%,Vui vẻ / Hài lòng,78.8%,3,Trả lời,atsuya.yeu.22,Tiếng Việt,2026-11-26 16:21:40,0
+257,nghe nhạc nó đã gì đâu í. giờ nghe nhỏ hát lại thấy thương quá,Tích cực,47.4%,Vui vẻ / Hài lòng,46.9%,3,Trả lời,hoaiantonnu,Tiếng Việt,2026-11-26 13:17:05,0
+258,thấy nhỏ khóc mà đau tim,Tiêu cực,89.3%,Buồn bã,84.6%,3,Trả lời,hoaiantonnu,Tiếng Việt,2026-11-26 13:20:53,0
+259,Nghe có đoạn nức nở nỗi lòng cô nhỉ,Trung tính,42.1%,Trung tính / Khác,49.1%,3,Trả lời,rose36173,Tiếng Việt,2026-11-26 12:57:52,0
+260,cái bình luận,Tiêu cực,34.8%,Chán ghét / Khó chịu,42.0%,3,Bình luận chính,dngg725,Tiếng Việt,2026-11-28 17:21:14,1
+261,có mẹo hết cả đấy,Tiêu cực,79.8%,Trung tính / Khác,37.5%,3,Bình luận chính,user123nguyen0,Tiếng Việt,2026-11-27 19:30:58,3
+262,kể ra cũng hát hay cũng đẹp trai mà,Tích cực,82.2%,Vui vẻ / Hài lòng,59.2%,3,Bình luận chính,sturn..frorae,Tiếng Việt,2026-11-27 10:27:41,5
+263,Đom đóm con đây,Tích cực,43.7%,Trung tính / Khác,35.2%,3,Bình luận chính,v.trang34,Tiếng Việt,2026-11-27 09:48:02,9
+264,CƠ MÀ IDOL RAP SAI LỜI NHA 😂😂😂,Tiêu cực,55.1%,Chán ghét / Khó chịu,30.9%,3,Bình luận chính,nosa26056,Tiếng Việt,2026-11-26 22:20:00,1
+265,Tự nhiên nghe J hát đến câu…” cuộc đời mình chẳng bằng người ta..” cái tui thấy buồn ngang dị chời,Tiêu cực,89.4%,Buồn bã,57.0%,3,Bình luận chính,tieuthuhole93,Tiếng Việt,2026-11-28 12:55:11,0
+266,Tuấn hát live mãi đỉnh,Tích cực,91.3%,Vui vẻ / Hài lòng,67.9%,3,Bình luận chính,khanhnhumusic,Tiếng Việt,2026-11-27 15:23:50,0
+267,Chồng ơi đừng khóttt,Tiêu cực,79.0%,Buồn bã,37.3%,3,Bình luận chính,24th.906,Tiếng Việt,2026-11-27 11:03:03,0
+268,hi,Trung tính,69.5%,Trung tính / Khác,50.0%,3,Trả lời,mimidayy181215,Tiếng Anh,2026-11-25 19:26:01,0
+269,nhà vua đã trở về🥰,Tích cực,75.5%,Vui vẻ / Hài lòng,63.8%,3,Bình luận chính,huhuq223,Tiếng Việt,2026-11-27 09:55:46,0
+270,Đóm chúa đây kk,Tích cực,84.5%,Vui vẻ / Hài lòng,80.3%,3,Bình luận chính,xinchaotojlalong,Tiếng Việt,2026-11-27 09:09:48,0
+271,Thần khúc thì ko còn gì bình luận thêm!🥰🥰🥰,Tích cực,91.9%,Vui vẻ / Hài lòng,66.8%,3,Bình luận chính,thuanksbr,Tiếng Việt,2026-11-27 19:44:10,0
+272,đấng nam nhi nó ph v. Chúc a vững bước trên sự nghiệp của mình nhé🥹🥹,Tích cực,88.9%,Vui vẻ / Hài lòng,84.8%,3,Bình luận chính,gta6letsgo,Tiếng Việt,2026-11-27 08:30:49,0
+273,Phong độ chỉ là nhất thời . Đẳng cấp vẫn là mãi mãi 🔥🔥🔥🥰,Tích cực,88.3%,Vui vẻ / Hài lòng,64.1%,3,Bình luận chính,duyca988,Tiếng Việt,2026-11-27 20:03:06,0
+274,Beat càng nghe càng hay,Tích cực,62.6%,Vui vẻ / Hài lòng,38.9%,3,Bình luận chính,meomeo231199,Tiếng Việt,2026-11-26 08:53:23,0
+275,Trường Giang từng nói: “ chỉ có Đóm mới làm cho thằng bé cười được thôi❤️❤️❤️”,Tích cực,82.4%,Vui vẻ / Hài lòng,74.7%,3,Bình luận chính,hangbimsua,Tiếng Việt,2026-11-25 20:26:23,0
+276,jack đc hát lại bài này r à 🥰,Tích cực,68.9%,Vui vẻ / Hài lòng,45.6%,3,Bình luận chính,user952414267,Tiếng Việt,2026-11-25 22:27:44,0
+277,Nhà vua trở laij,Tích cực,38.4%,Trung tính / Khác,45.6%,3,Bình luận chính,minhnhutbell,Tiếng Việt,2026-11-27 09:16:14,0
+278,Điểm danh đóm chúa [Tim đỏ],Tích cực,40.7%,Trung tính / Khác,43.6%,3,Bình luận chính,phucnguyentpn,Tiếng Việt,2026-11-26 14:45:25,0
+279,"quá tự hào về e jack ơi,",Tích cực,77.2%,Vui vẻ / Hài lòng,47.1%,3,Bình luận chính,phanngocdung69,Tiếng Việt,2026-11-25 20:17:08,0
+280,hay thấy cha luôn má ơi,Tích cực,72.8%,Vui vẻ / Hài lòng,56.8%,3,Bình luận chính,doinaydethuonghen,Tiếng Việt,2026-11-25 23:19:43,0
+281,"Ảnh khóc tụi tui khóc theo ! Sóng gió cất lên chúng sinh bình đẳng , nhà vua đã trở lại mạnh mẽ hơn trưởng thành hơn và thành công hơn nha Jack🥰🥰",Tích cực,66.6%,Buồn bã,45.8%,3,Bình luận chính,baotran23_9,Tiếng Việt,2026-11-25 19:56:37,0
+282,e bt e đợi đc ngày này mà🥺🥺🥺,Trung tính,63.0%,Vui vẻ / Hài lòng,44.6%,3,Bình luận chính,naoxuhuongcungdc,Tiếng Việt,2026-11-26 08:14:48,0
+283,có nhiu cảm xúc ổng dồn vô hết bài hát cuối cùng thì anh cũng đã trở lại và lợi hại hơn xưa,Tích cực,64.0%,Vui vẻ / Hài lòng,48.1%,3,Bình luận chính,ngochan20_3,Tiếng Việt,2026-11-25 20:11:58,0
+284,người lấy được nước mắt của tôi chỉ có thể là Cậu...là Sóng Gió của Cậu 🥺,Tiêu cực,72.7%,Buồn bã,72.6%,3,Bình luận chính,nuocepminhlong68,Tiếng Việt,2026-11-25 20:51:08,0
+285,Nghe từ hqua giờ kbiet bao nhiêu lần rồi á trời.,Tiêu cực,36.9%,Trung tính / Khác,53.2%,3,Bình luận chính,tuyetno2111,Tiếng Việt,2026-11-25 21:15:04,0
+286,"m thuộc kiểu k qt đời tư của ca hay nhạc sĩ,kể cả dv, cứ nhạc hay,phim hay là nghe và xem thôi.",Tích cực,55.6%,Vui vẻ / Hài lòng,60.6%,3,Bình luận chính,khanhngoc_0509910,Tiếng Việt,2026-11-26 11:07:51,0
+287,Hôm qua bán lễ mệt quá ko đi ra coi được . Nhưng bù lại koi trên dt nguyên một ngày,Tiêu cực,75.1%,Buồn bã,47.7%,3,Bình luận chính,gatahapmamnhi,Tiếng Việt,2026-11-25 20:11:36,0
+288,bạn này trắng nhỉ,Trung tính,83.6%,Trung tính / Khác,38.2%,3,Bình luận chính,nguyenly1169,Tiếng Việt,2026-11-26 09:01:48,0
+289,lời bài hát nói lên ý nghĩa 🥰🥰🥰🥰,Tích cực,79.0%,Vui vẻ / Hài lòng,76.2%,3,Bình luận chính,tinhchimotdem.yeu,Tiếng Việt,2026-11-25 21:30:34,0
+290,"Không phải fan nhưng tôi đã phải khóc khi nghe chính chủ hát , 7 năm chờ đợi , chúc mừng bạn",Tiêu cực,60.5%,Buồn bã,55.1%,3,Bình luận chính,hoangngoc_hoangngoc,Tiếng Việt,2026-11-25 20:00:47,0
+291,Anh ấy vẫn như này nào 🥰,Tích cực,83.7%,Vui vẻ / Hài lòng,53.1%,3,Bình luận chính,anhlu405,Tiếng Việt,2026-11-25 19:27:22,0
+292,Nghe bài này nhớ lại Cái thời đi đòi lại công lý 😳 …Trở lại mạnh mẽ nha “Anh Bạn Nhỏ”,Tích cực,58.4%,Vui vẻ / Hài lòng,53.2%,3,Bình luận chính,triphat_vegan,Tiếng Việt,2026-11-25 20:00:43,0
+293,"Trời ui ra ngay Mv cho tui , đẳng cấp 👍👍👍😘",Tích cực,83.5%,Vui vẻ / Hài lòng,71.3%,3,Bình luận chính,jinjun9399,Tiếng Việt,2026-11-26 08:14:21,0
+294,"Bung xõa hết sức lực , vì sóng gió",Tiêu cực,49.7%,Trung tính / Khác,35.9%,3,Bình luận chính,yeubanthan99320,Tiếng Việt,2026-11-25 21:22:17,0
+295,"Hay mà nó da diết, nó chạm nỗi lòng sao á ông ơi. Hay 👏🏻👏🏻👏🏻",Tích cực,88.4%,Vui vẻ / Hài lòng,81.3%,3,Bình luận chính,anhngoclethi.1398,Tiếng Việt,2026-11-25 19:56:41,0
+296,"Trẻ con sa mạc truyền tai nhau bài đồng dao: Xương rồng đơm lá đơm hoa, nước đong đầy trên cao nguyên đá, là ngày hoàng đế trở về nhà!",Tiêu cực,52.1%,Chán ghét / Khó chịu,31.9%,3,Bình luận chính,pnthang.tiktok,Tiếng Việt,2026-11-25 22:43:23,0
+297,vẫn mê bài này bạn này dù sống gió cuộc đời bạn ấy k hề nhỏ ❤️,Tiêu cực,78.5%,Vui vẻ / Hài lòng,58.6%,3,Bình luận chính,poniva23,Tiếng Việt,2026-11-27 11:46:00,0
+298,sóng gió là bài nhạc khiến ai cũng phải nhớ mãi :(((,Tiêu cực,57.6%,Buồn bã,54.4%,3,Bình luận chính,ng.hi.dn.official,Tiếng Việt,2026-11-25 20:18:11,0
+299,"tại đây tôi xin chân thành xin lỗi ông. tôi đã từng chửi ông rất nhiều , và chửi thậm tệ khi đời tư của ông bắt đầu nổi sóng gió. và giờ đây tôi lại xin phép được hâm mộ ông lần 2",Tiêu cực,69.2%,Buồn bã,57.0%,3,Bình luận chính,uynki.com,Tiếng Việt,2026-11-25 23:43:43,0
+300,Ảnh vỏiiii,Tiêu cực,43.7%,Vui vẻ / Hài lòng,39.9%,3,Bình luận chính,ildvhj,Tiếng Việt,2026-11-25 19:25:34,0
+301,"có tài thật sự, chút e luôn thành công.",Tích cực,82.4%,Vui vẻ / Hài lòng,54.0%,3,Bình luận chính,trm01917,Tiếng Việt,2026-11-26 07:49:13,0
+302,"ổ hát cuốn thiệt mà tui mê ck tui hơn, ck tui là fan của ổ",Tích cực,46.4%,Vui vẻ / Hài lòng,33.4%,3,Bình luận chính,chicuaheo,Tiếng Việt,2026-11-25 20:43:13,0
+303,The King Comeback🥰,Tích cực,77.8%,Vui vẻ / Hài lòng,80.5%,3,Bình luận chính,11th1_97,Tiếng Anh,2026-11-25 21:59:01,0
+304,chúc mừng huyền thoại đã trở lại mãi mãi là 1 cái gì đó đẳng cấp,Tích cực,82.0%,Vui vẻ / Hài lòng,54.9%,3,Bình luận chính,tiu.bo.bi819,Tiếng Việt,2026-11-25 19:48:44,0
+305,qua h vẫn ch thoát ra đc Tứng ê,Tích cực,54.2%,Vui vẻ / Hài lòng,35.2%,3,Bình luận chính,imnhii.99,Tiếng Việt,2026-11-25 19:28:14,0
+306,Nghe nhạc mà sao mắt tao đỏ là sao ta . Chắc bụi bay vào mắt. Hơn 7 năm mới nghe lại . Từ lúc lùm xùm gì với tụi kia là ko nghe trên yutube luôn . Cảm xúc nó sao sao đó [Mắt ngấn lệ],Tiêu cực,71.6%,Buồn bã,25.7%,3,Bình luận chính,phamdung19901,Tiếng Việt,2026-11-25 22:36:11,0
+307,Thương em nhiều. Mong từ đây em sẽ về đúng vị trí của mình. Thật xúc động khi nghe Sóng Gió vang lên từ chính cha đẻ của nó sau 7 năm.,Tích cực,69.3%,Vui vẻ / Hài lòng,69.2%,3,Bình luận chính,minhtien6588,Tiếng Việt,2026-11-25 19:47:07,0
+308,Mãi là ĐÓM nhé @thích ăn hủ tiếu uống trà đào @thnam471 @. @nhím,Trung tính,62.7%,Trung tính / Khác,63.0%,3,Bình luận chính,riana_onlyone,Tiếng Việt,2026-11-27 00:46:58,3
+309,rời công ty mà công ty cũ vẫn thuộc quyền sở hữu bài hát dù Jack sáng tác suốt 7 năm trời,Tiêu cực,57.9%,Buồn bã,24.8%,2,Trả lời,iamnoone084,Tiếng Việt,2026-11-28 18:35:56,0
+310,"dòng nhạc mỗi người mỗi khác, ST đẳng cấp từ lúc cơn mưa ngang qua rồi, càng ngày nhạc của Tùng hướng đến quốc tế vì mục tiêu của Tùng nó to lớn hơn, chứ ko chỉ là chiều theo khán giả và chỉ dậm chân ở 1 dòng nhạc.",Tiêu cực,51.3%,Chán ghét / Khó chịu,41.6%,2,Trả lời,hng.ni.m.xe,Tiếng Việt,2026-11-28 12:25:36,0
+311,Còn bạc phận với hồng nhan thì sao bạn?,Trung tính,66.2%,Buồn bã,26.5%,2,Trả lời,binhnghiatran98,Tiếng Việt,2026-11-26 13:04:01,0
+312,sao tui nghe trong bản gốc cũng là ko say không về mà nhỉ. mn bảo sai lời. sai ở đâu nhỉ. tò mò,Trung tính,47.9%,Trung tính / Khác,31.6%,2,Trả lời,thuthuy02101992,Tiếng Việt,2026-11-26 04:23:55,0
+313,"ý mình nói ông kia cũng giỏi , vì đàn đủ thể loại , còn giờ cái gì cũng hiện đại nên việc nhạc phối hay hơn nhiều .",Tích cực,44.4%,Vui vẻ / Hài lòng,41.7%,2,Trả lời,ly1997_thuong.com,Tiếng Việt,2026-11-26 22:47:59,0
+314,Vì đã trải qua 7 năm sóng gió nên khi Sóng Gió hồi sinh là 1 phiên bản hoàn toàn khác,Tiêu cực,48.9%,Trung tính / Khác,28.1%,2,Trả lời,nhinhwki7ny,Tiếng Việt,2026-11-26 09:24:10,0
+315,A nói hay quá Khoa ơi,Tích cực,84.2%,Vui vẻ / Hài lòng,59.8%,2,Trả lời,thodennn,Tiếng Việt,2026-11-28 14:21:43,0
+316,Jack mãi đỉnh,Tích cực,91.0%,Vui vẻ / Hài lòng,55.0%,2,Trả lời,lu.dic.phi.1995,Tiếng Việt,2026-11-27 13:01:48,0
+317,hay quá. vỗ tay,Tích cực,82.1%,Vui vẻ / Hài lòng,47.2%,2,Trả lời,kemkem060620,Tiếng Việt,2026-11-28 18:25:04,0
+318,Công tâm hay hơn thật nha,Tích cực,79.2%,Vui vẻ / Hài lòng,66.9%,2,Trả lời,sniperjack_21,Tiếng Việt,2026-11-26 19:37:42,0
+319,ủa là dc hát bài này trở lại rồi à b,Trung tính,59.3%,Ngạc nhiên,54.4%,2,Trả lời,meomeo.mcd,Tiếng Việt,2026-11-26 09:34:24,0
+320,"Có lên đc đúng 1 lần ở sân khấu Bình Phước hát nhá trc với fan, xong ra MV bị chiếm từ đó luôn 🥺",Tích cực,72.2%,Vui vẻ / Hài lòng,67.6%,2,Trả lời,rosy93122,Tiếng Việt,2026-11-27 15:57:18,0
+321,"MV là ra ngay lúc J trốn ra dc, đang nằm viện thì cty nó cho MV ra luôn đó. J có nói trong stt năm đó, bản trong MV mới là demo chứ chưa thu âm chính thức luôn đó. họ ra để chiếm bản quyền luôn",Trung tính,62.8%,Trung tính / Khác,34.3%,2,Trả lời,naju.88,Tiếng Việt,2026-11-28 10:03:42,0
+322,"Cấp 2, cấp 3, môn Ngữ Văn, học sinh được học rất nhiều bài về ca dao, tục ngữ, thơ Nôm, thơ Đường, học phân tích tác phẩm, học các phép tu từ, luật, nêm, nhịp, vần... ai mà sài AI để viết nhạc là... thua rồi!",Tiêu cực,60.9%,Chán ghét / Khó chịu,57.5%,2,Trả lời,daisydaisy101281,Tiếng Việt,2026-11-27 00:32:33,0
+323,"Thương lắm má ơi, Đóm thì dãi nắng dầm mưa từ sáng tới khuya, ảnh thì vượt qua bóng tối ấy để hát lại SG chiều fan hâm mộ",Tích cực,82.2%,Vui vẻ / Hài lòng,52.6%,2,Trả lời,nhinhwki7ny,Tiếng Việt,2026-11-26 09:25:25,0
+324,Thương cả gia đình mình chị ơi,Tích cực,69.2%,Buồn bã,47.5%,2,Trả lời,hoahathi1678,Tiếng Việt,2026-11-26 08:43:49,0
+325,tb cai bl toàn tích xanh,Tiêu cực,42.2%,Trung tính / Khác,33.8%,2,Bình luận chính,khanhhchii16214,Tiếng Việt,2026-11-28 06:00:44,0
+326,"❤️❤️❤️Thương con quá! Cuộc đời trãi qua nhiều sóng gió , cố lên sau cơn mưa Trời sáng con nhé. !",Tích cực,81.9%,Vui vẻ / Hài lòng,77.0%,2,Bình luận chính,bichhop1963,Tiếng Việt,2026-11-28 09:14:43,0
+327,Người có tài năng có hào quang chẳng thế lực nào dập tắt đc 🥰,Tiêu cực,44.6%,Vui vẻ / Hài lòng,36.5%,2,Bình luận chính,010601053112ab,Tiếng Việt,2026-11-28 03:23:39,0
+328,Outfit đỉnh quá a,Tích cực,86.4%,Ngạc nhiên,51.2%,2,Bình luận chính,lunketui45,Tiếng Việt,2026-11-27 08:22:31,0
+329,Huyền thoại trở về🥰🥰🥰,Tích cực,87.3%,Vui vẻ / Hài lòng,73.4%,2,Bình luận chính,bao.trangia,Tiếng Việt,2026-11-26 23:05:37,0
+330,Mốt em nổi tiếng ft với em 1 bài nha anh,Trung tính,49.9%,Vui vẻ / Hài lòng,42.8%,2,Bình luận chính,oliusobad,Tiếng Việt,2026-11-27 20:32:32,0
+331,"Tôi đến từ Mỹ, Tôi yêu Jack 97 👉👈",Tích cực,87.6%,Vui vẻ / Hài lòng,76.1%,2,Bình luận chính,tngyn2603,Tiếng Việt,2026-11-27 07:08:07,0
+332,"ê nha, t tuổi này còn thích nghe Jack hát nữa nói gì ai",Tích cực,79.0%,Vui vẻ / Hài lòng,52.0%,2,Bình luận chính,camtu.chuot,Tiếng Việt,2026-11-26 21:55:04,0
+333,Jack dù có cũ vẫn là Jack,Tiêu cực,69.0%,Trung tính / Khác,47.6%,2,Bình luận chính,phuprime123,Tiếng Việt,2026-11-27 05:26:09,0
+334,Sao mà trắng dữ luôn mê 🥰🥰,Tích cực,75.2%,Ngạc nhiên,37.0%,2,Bình luận chính,anglelajolienguyen,Tiếng Việt,2026-11-27 04:26:54,0
+335,Bùng nổ truyền thông,Tích cực,49.6%,Trung tính / Khác,55.6%,2,Bình luận chính,nguynhong2611,Tiếng Việt,2026-11-27 09:03:48,0
+336,Hát mà sợ ảnh tắc thở😭,Tiêu cực,89.5%,Lo lắng / Sợ hãi,83.0%,2,Bình luận chính,_trangnguyen.86,Tiếng Việt,2026-11-26 22:34:24,0
+337,Nghe nhạc k nghe đời tư 🫶🫶,Tiêu cực,54.7%,Trung tính / Khác,51.9%,2,Bình luận chính,thanhduy3009,Tiếng Việt,2026-11-27 10:09:08,0
+338,tôi coi cũng khóc theo luôn ông luôn,Tiêu cực,84.4%,Buồn bã,72.0%,2,Bình luận chính,sin.nguyen016,Tiếng Việt,2026-11-26 11:57:16,0
+339,Khóc vì đã chịu đựng suốt 7 năm qua,Tiêu cực,85.2%,Buồn bã,73.2%,2,Bình luận chính,bechautqtk1,Tiếng Việt,2026-11-26 18:15:33,0
+340,"quá tuyệt vời, quá dễ thương ,quá đáng yêu",Tích cực,97.5%,Vui vẻ / Hài lòng,94.9%,2,Bình luận chính,ngocnu.2012,Tiếng Việt,2026-11-26 21:56:36,0
+341,cháyyy quá anhh oiiiii🔥🔥🔥,Tích cực,56.6%,Vui vẻ / Hài lòng,57.4%,2,Bình luận chính,voiuchoiseunghyun60,Tiếng Việt,2026-11-26 19:24:09,0
+342,Thương ah quá 🥺,Tiêu cực,64.8%,Buồn bã,57.2%,2,Bình luận chính,uadhk50,Tiếng Việt,2026-11-25 20:49:01,0
+343,đứa con tinh thần trở lại roi,Tích cực,45.9%,Trung tính / Khác,54.1%,2,Bình luận chính,trngyduyuyen24,Tiếng Việt,2026-11-25 19:26:00,0
+344,The King Comeback👑,Tích cực,56.6%,Vui vẻ / Hài lòng,63.0%,2,Bình luận chính,destinyy10110,Tiếng Anh,2026-11-25 20:59:27,0
+345,Sóng gió đỉnh,Tích cực,89.5%,Vui vẻ / Hài lòng,50.4%,2,Bình luận chính,mlyz99366,Tiếng Việt,2026-11-27 09:03:43,0
+346,Tất cả quỳ xuống ❤️❤️❤️❤️,Tích cực,73.1%,Vui vẻ / Hài lòng,54.9%,2,Bình luận chính,chang.trai.lam.bep,Tiếng Việt,2026-11-25 19:26:04,0
+347,Mong là mọi việc thuận lợi lấy dk 6 bài hát này về để diễn🥰,Tích cực,83.8%,Vui vẻ / Hài lòng,67.8%,2,Bình luận chính,user4953925902301,Tiếng Việt,2026-11-26 19:55:05,0
+348,thời trẻ trâu tao hay nghe nhạc này hay vl giờ vẫn còn nghe vẫn hay như lúc trẻ trâu🥰🥰,Tiêu cực,52.0%,Vui vẻ / Hài lòng,69.4%,2,Bình luận chính,vuong305,Tiếng Việt,2026-11-26 23:47:31,0
+349,"Tui chịu em hết cái gì cũng chịu, tui thương em như thương con tui. Ốm ốm ròm ròm đút nhét cho ăn hoài mà ko mập. Mà tình cảm thui ê hề🥰🥰🥰",Tích cực,51.2%,Vui vẻ / Hài lòng,48.8%,2,Bình luận chính,banglyl02minh,Tiếng Việt,2026-11-28 13:09:39,0
+350,T thấy hay vs cuốn mãi iu đómmmmm,Tích cực,94.5%,Vui vẻ / Hài lòng,81.3%,2,Bình luận chính,ng.nghi171,Tiếng Việt,2026-11-27 15:20:59,0
+351,Dính 4 ngày ko thoát dc,Tiêu cực,52.2%,Buồn bã,33.0%,2,Bình luận chính,mia.cambpell,Tiếng Việt,2026-11-27 05:10:57,0
+352,hát được sóng gió là JACK hết sóng gió rồi,Tích cực,44.5%,Trung tính / Khác,45.7%,2,Bình luận chính,dng.ngc.chi6,Tiếng Việt,2026-11-26 18:47:22,0
+353,Hy vọng có sóng gió new version chính thức của jack,Trung tính,41.4%,Vui vẻ / Hài lòng,48.3%,2,Bình luận chính,id1221226,Tiếng Việt,2026-11-25 22:00:34,0
+354,Tui koi mà tui khóc 😭,Tiêu cực,88.4%,Buồn bã,87.0%,2,Bình luận chính,camthoa713,Tiếng Việt,2026-11-26 19:02:48,0
+355,"Sao tui chăm da mấy năm mà k trắng nổi, ổng làm gì mà trắng mau trắng tươi đẹp zị, ông chỉ tui với",Tiêu cực,43.3%,Buồn bã,58.2%,2,Bình luận chính,lann_bae983,Tiếng Việt,2026-11-26 06:01:06,0
+356,Lấy lại bản quyền rồi tiếc là chưa đi coi anh hát lần nào muốn gặp một lần,Tiêu cực,76.0%,Buồn bã,78.4%,2,Bình luận chính,qun.hv2,Tiếng Việt,2026-11-25 23:56:02,0
+357,Trước k fan st hay ai hết cũng k fan jack nhưng từ khi có bài lưu niên nghe bản trung phê thật,Tiêu cực,71.8%,Buồn bã,39.9%,2,Bình luận chính,quanhuybao,Tiếng Việt,2026-11-26 16:00:12,0
+358,bữa đó ní đúng đỉnh luôn,Tích cực,88.7%,Vui vẻ / Hài lòng,59.6%,2,Bình luận chính,ohmnanonforever317,Tiếng Việt,2026-11-25 19:49:26,0
+359,sau tất cả nó vẫn là của e,Trung tính,43.2%,Trung tính / Khác,64.0%,2,Bình luận chính,trucnzrl6xr,Tiếng Việt,2026-11-25 19:30:34,0
+360,quá hay jack ơi🥰🥰🥰,Tích cực,93.4%,Vui vẻ / Hài lòng,84.2%,2,Bình luận chính,v.tk83,Tiếng Việt,2026-11-25 20:33:39,0
+361,Em ấy cháy hết mình trên sân khấu,Tích cực,42.2%,Vui vẻ / Hài lòng,35.7%,2,Bình luận chính,kelvinhuynh0811,Tiếng Việt,2026-11-25 21:40:02,0
+362,mờ ê mê,Tiêu cực,54.8%,Trung tính / Khác,35.0%,2,Bình luận chính,ptt_nguyn,Tiếng Việt,2026-11-25 20:43:30,0
+363,Chúc mừng sóng gió đã trở lại 🥰,Tích cực,89.7%,Vui vẻ / Hài lòng,80.9%,2,Bình luận chính,hhoang196,Tiếng Việt,2026-11-25 19:58:07,0
+364,"Sóng gió vang lên, hoàng đế trở về🥰🥰🥰",Tích cực,80.3%,Vui vẻ / Hài lòng,70.4%,2,Bình luận chính,baotran010803,Tiếng Việt,2026-11-25 19:58:40,0
+365,có nhiuu là ảnh up hết🗿,Tích cực,46.4%,Vui vẻ / Hài lòng,51.0%,2,Bình luận chính,_ngc.linh06,Tiếng Việt,2026-11-25 19:30:13,0
+366,Cháy quá cháy👍👍👍👍👍 đêm nhạc bùng nổ,Tiêu cực,53.9%,Trung tính / Khác,32.6%,2,Bình luận chính,k.ngo.mn.office,Tiếng Việt,2026-11-25 20:31:29,0
+367,Tui sớm 37 giây lun 🥺,Trung tính,74.6%,Trung tính / Khác,24.9%,2,Bình luận chính,sad2002t2,Tiếng Việt,2026-11-25 19:25:23,0
+368,cuộc sống mà ko có sóng gió thì ko phải là cuộc sống.chúc em thành công trong mọi lĩnh vực,Tích cực,67.3%,Trung tính / Khác,44.5%,2,Bình luận chính,tuvip2006,Tiếng Việt,2026-11-25 21:39:05,0
+369,em yêu chồng,Tích cực,84.4%,Vui vẻ / Hài lòng,63.6%,2,Bình luận chính,muontien02,Tiếng Việt,2026-11-25 19:30:01,0
+370,"siêu phẩm của j thì nó vẫn mãi là của j,đó là đẳng cấp",Tích cực,52.6%,Trung tính / Khác,53.6%,2,Bình luận chính,tuan07078,Tiếng Việt,2026-11-26 09:30:51,0
+371,"em ấy có một lương fan luôn yêu thương em ấy, trong đó có tui, chưa bao giờ bỏ rơi em ấy. combat với bọn anti nao năm để bv em ấy, nay nhìn thấy e ấy trở lại hào quang tui vui lắm á. nghĩ đến mà thương thằng bé quá",Tích cực,74.5%,Vui vẻ / Hài lòng,56.4%,2,Bình luận chính,trnthhu199,Tiếng Việt,2026-11-26 15:25:53,0
+372,"Fan ST nhưng công nhận cha này thực lực lắm, bị bên nào dìm bao năm tội. +1 ngưỡng mộ",Tích cực,71.3%,Buồn bã,57.5%,2,Bình luận chính,silenceisagudwaytospeak,Tiếng Việt,2026-11-26 09:08:08,0
+373,k có cây ATM thì Jack vẫn là Jack ... k có Jack thì cây ATM mất điện... nên đừng ai nói sóng gió của ai nữa... nói thế cho nó vuông[Cười thầm],Tiêu cực,68.0%,Trung tính / Khác,45.8%,2,Bình luận chính,v16042020,Tiếng Việt,2026-11-26 20:41:33,0
+374,"7 năm rồi , chúc mừng Jack , 97 luôn cố gắng như vậy đó ông bạn ❤️",Tích cực,68.4%,Vui vẻ / Hài lòng,49.9%,2,Bình luận chính,hungrom97.official,Tiếng Việt,2026-11-26 09:07:13,0
+375,@Ng Huong 🤓 @mệt @punnii~★ @.🧀🤍 @xu🐽 @suu 💕 @𝓟𝓱𝓾̛𝓸̛𝓷𝓰 𝓵𝓲𝓷𝓱 ෆ @nc. @hugw thích 🌧 @𝔳ợ𝔞𝔥ᯓᡣ𐭩 chồng tui:)))),Tích cực,70.4%,Vui vẻ / Hài lòng,67.5%,2,Bình luận chính,cochonoyeutao,Tiếng Việt,2026-11-27 13:14:56,4
+376,@nguynquyet8 @✨🌻 @Tít ⚽️❤️‍🔥 @lúc lặn lúc chìm @qminhh @vịt hay buồn😊 @kisttj ≽^• ˕ • ྀི≼ @nghii @trami @God-Killer @H. Maiᙏ̤̫͚ có ai là đóm giống emmmm,Tiêu cực,45.6%,Buồn bã,43.7%,2,Bình luận chính,dtg.2010,Tiếng Việt,2026-11-25 20:18:13,2
+377,@hà ởi hà ơiii @mah.enh_ @Lên ký đổi tên💪 vf3 cũ vẫn là vf3,Tiêu cực,64.3%,Vui vẻ / Hài lòng,36.1%,2,Bình luận chính,aeris._2001,Tiếng Việt,2026-11-25 23:05:35,2
+378,@K.Ngân @kieuthi hay,Tích cực,78.5%,Vui vẻ / Hài lòng,63.5%,2,Bình luận chính,lmt287211_,Tiếng Việt,2026-11-25 21:33:43,1
+379,@mắt Mờ tay Tê💫,Tiêu cực,64.2%,Vui vẻ / Hài lòng,36.5%,2,Bình luận chính,juan.1nc_,Tiếng Việt,2026-11-26 08:03:41,1
+380,@June's girlfriend @đang tập ngủ trước 12h. @Ghét văn yêu tón 💛💜💛💜💛💜 @thầm tri @Tường thích 🦋,Tích cực,87.2%,Vui vẻ / Hài lòng,75.8%,2,Bình luận chính,ta_ongot,Tiếng Việt,2026-11-28 13:34:37,1
+381,Ngày này cũng tới,Trung tính,39.7%,Trung tính / Khác,35.5%,1,Bình luận chính,tuong_dy,Tiếng Việt,2026-11-28 20:43:50,0
+382,i love Jack J97❤️,Tích cực,89.9%,Vui vẻ / Hài lòng,66.9%,1,Trả lời,8683792t50932,Tiếng Anh,2026-11-28 15:34:33,0
+383,Tìm hiểu chx mà ns,Tích cực,61.6%,Trung tính / Khác,42.6%,1,Trả lời,anhthu_02122007,Tiếng Việt,2026-11-27 23:41:54,0
+384,bà gan😂😂,Tích cực,78.9%,Vui vẻ / Hài lòng,65.6%,1,Trả lời,tramy18990,Tiếng Việt,2026-11-27 15:04:00,0
+385,Ác zậy ní,Tiêu cực,79.0%,Chán ghét / Khó chịu,59.7%,1,Trả lời,userfcn4ai1nxd,Tiếng Việt,2026-11-27 00:01:04,0
+386,Chưa lên sân khấu 1 lần nào luôn,Tiêu cực,41.8%,Buồn bã,31.5%,1,Trả lời,vinnocg,Tiếng Việt,2026-11-27 12:51:38,0
+387,V hả..giờ cũng hay mà ta..có ông trúc nhân mới ra cái bài j nghe ngộ mún chết 😂😂😂,Tích cực,72.1%,Vui vẻ / Hài lòng,73.6%,1,Trả lời,trangnguyen231193,Tiếng Việt,2026-11-26 13:45:22,0
+388,"kakak giống tui, tui bênh ổng mà chọi cả bạn bè cả đồng nghiệp cty, kaka, mà giờ mấy người đó vẫn chưa tỉnh... chán",Tiêu cực,88.3%,Buồn bã,50.2%,1,Trả lời,.dung131095,Tiếng Việt,2026-11-28 02:43:55,0
+389,b thật đỉnh,Tích cực,91.5%,Vui vẻ / Hài lòng,50.7%,1,Trả lời,thuyduongle124,Tiếng Việt,2026-11-27 12:41:29,0
+390,Cảm giác bao nhiêu uất ức đã đc trút ra ngoài .,Trung tính,43.7%,Trung tính / Khác,50.6%,1,Bình luận chính,ngochien_store99,Tiếng Việt,2026-11-28 19:54:28,1
+391,"@Bs Nguyễn Quang Dũng bs 16 năm trong nghề rùi Im chắc tay lắmmm, t Im 3 năm rùi chưa ph đi chỉnh lại lần nào nek",Tiêu cực,52.8%,Buồn bã,50.7%,1,Trả lời,trc.xinhh67,Tiếng Việt,2026-11-27 10:31:14,0
+392,Bài này sẽ là huyền thoại rồi nên hay nhất trong các bài hát của j97 rồi,Tích cực,79.3%,Vui vẻ / Hài lòng,54.3%,1,Trả lời,hahamared96,Tiếng Việt,2026-11-27 12:44:48,0
+393,rap sai còn bị tụi nó blame là nhép ko sai chắc hết cãi vs tụi nó,Tiêu cực,83.2%,Tức giận,38.9%,1,Trả lời,qdthelazy1103,Tiếng Việt,2026-11-28 07:27:46,0
+394,Trải qua sóng gió xong hát bài này là quá vỡ oà rồi ❤️,Tích cực,54.0%,Vui vẻ / Hài lòng,46.7%,1,Bình luận chính,drduonghoang,Tiếng Việt,2026-11-28 19:31:16,0
+395,@chiến thần rô lóc,Tích cực,59.0%,Trung tính / Khác,34.0%,1,Trả lời,chihwuyn,Tiếng Việt,2026-11-26 00:24:08,0
+396,Gặp chị ở đây 😂,Tích cực,68.3%,Vui vẻ / Hài lòng,40.8%,1,Trả lời,tieubao834,Tiếng Việt,2026-11-27 21:05:33,0
+397,Nguyện mãi là đóm,Tích cực,49.7%,Trung tính / Khác,52.0%,1,Bình luận chính,ngoc_cua,Tiếng Việt,2026-11-28 19:28:29,0
+398,"Album mới có Lưu niên thôi ạ ,còn lại hồng nhan vs sóng gió",Trung tính,40.1%,Trung tính / Khác,30.0%,1,Trả lời,_withtly_,Tiếng Việt,2026-11-26 21:02:16,0
+399,có 1 đoạn đầu bài tắm thái tử .1 bài lưu liên mới,Trung tính,43.7%,Vui vẻ / Hài lòng,43.6%,1,Trả lời,thanhnga5605,Tiếng Việt,2026-11-26 20:48:25,0
+400,Cái bl :,Tích cực,53.3%,Chán ghét / Khó chịu,35.5%,1,Bình luận chính,ynhi.00,Tiếng Việt,2026-11-27 16:34:43,1
+401,Bạn này hát live ăn đứt Sơn Tùng.,Tích cực,44.9%,Trung tính / Khác,33.0%,1,Bình luận chính,thanhbinhle.daily,Tiếng Việt,2026-11-28 00:52:36,0
+402,bao năm r nghe lại bài này vẫn thik,Trung tính,40.4%,Buồn bã,36.2%,1,Bình luận chính,voiucuafotfot2,Tiếng Việt,2026-11-27 20:51:53,0
+403,Mãi là Đốm,Trung tính,38.7%,Trung tính / Khác,53.2%,1,Bình luận chính,danhdodanchoi0,Tiếng Việt,2026-11-27 20:36:29,0
+404,"hồi trước k 1 tich xanh dô bl, h thì quá trời luôn, mừng cho J🥰",Tích cực,58.6%,Vui vẻ / Hài lòng,66.2%,1,Trả lời,nhatminhne_20,Tiếng Việt,2026-11-27 21:21:10,0
+405,cho e hỏi anh nay bị sao mà bảo sóng guos ạ.,Tiêu cực,46.9%,Trung tính / Khác,46.9%,1,Bình luận chính,2172944576,Tiếng Việt,2026-11-28 15:46:02,0
+406,mới đây 7 năm r à😳😳,Trung tính,70.6%,Ngạc nhiên,49.4%,1,Bình luận chính,malemo644,Tiếng Việt,2026-11-28 17:29:02,0
+407,Ôi Xinh quá,Tích cực,84.8%,Vui vẻ / Hài lòng,79.6%,1,Bình luận chính,khamnguyen0109,Tiếng Việt,2026-11-27 02:18:43,0
+408,nhạc nó hay là đc..túm lại mặc kệ đời tư,Trung tính,65.2%,Trung tính / Khác,55.7%,1,Bình luận chính,vuongthang_ntn,Tiếng Việt,2026-11-26 19:25:12,1
+409,Sóng Gió cất lên Chúng Sinh Bình Đẳng 👏 hoài niệm quá 🥹,Tích cực,87.8%,Vui vẻ / Hài lòng,73.7%,1,Bình luận chính,comcuabo_,Tiếng Việt,2026-11-27 05:25:31,0
+410,"mãi là đom đóm luôn, hát live nét nha quý vị🥰",Tích cực,85.9%,Vui vẻ / Hài lòng,71.8%,1,Bình luận chính,songsinhpov,Tiếng Việt,2026-11-28 17:03:01,0
+411,Yêu anh Jack ❤️❤️❤️,Tích cực,90.7%,Vui vẻ / Hài lòng,88.3%,1,Bình luận chính,hphawthyz,Tiếng Việt,2026-11-28 16:42:49,0
+412,hay quá anh ơi,Tích cực,73.1%,Vui vẻ / Hài lòng,56.6%,1,Bình luận chính,nhutam1505,Tiếng Việt,2026-11-26 10:36:34,0
+413,Nhạc nó đã,Tiêu cực,41.9%,Trung tính / Khác,44.3%,1,Bình luận chính,newbiecalis06,Tiếng Việt,2026-11-25 19:48:41,0
+414,"bao năm r mới nghe bn live lại sóng gió, thật sự rất súc động ❤️🥰",Tích cực,85.8%,Vui vẻ / Hài lòng,74.2%,1,Bình luận chính,luan_nak_,Tiếng Việt,2026-11-28 15:34:38,0
+415,"Nhà t cũng có đóm con đây, mà ảnh nghe mỗi Lưu niên thôi, bật nhạc phải có hình đúng chính chủ 🤣, cô nó mê J cái giờ nó theo bè mê 😁",Tích cực,63.2%,Chán ghét / Khó chịu,42.5%,1,Bình luận chính,no47761,Tiếng Việt,2026-11-28 14:41:55,0
+416,"Nói sao thì nói, lời bài hát này vẫn là một cái gì đó quá tình",Tiêu cực,54.8%,Trung tính / Khác,27.7%,1,Bình luận chính,bchngchong5,Tiếng Việt,2026-11-26 23:02:18,0
+417,"Những gì của mình thì không cần phải tranh giành,Nó vẫn của mình ở đó với mình,Chúc mừng anh,Chúc mừng chúng ta [Tim đỏ]",Tích cực,64.9%,Vui vẻ / Hài lòng,43.7%,1,Bình luận chính,alexrain999,Tiếng Việt,2026-11-26 13:49:54,0
+418,Thương lắm 🥰,Tích cực,85.1%,Vui vẻ / Hài lòng,51.1%,1,Bình luận chính,hongtham.ptuan97,Tiếng Việt,2026-11-25 19:31:54,0
+419,nhạc anh hay lắm á nên e quyết định nghe nhạc Sơn Tùng🥰,Tích cực,94.4%,Vui vẻ / Hài lòng,79.1%,1,Bình luận chính,m.phwg_3,Tiếng Việt,2026-11-28 16:35:43,0
+420,"Jack hát vẫn là đỉnh nhất🥰
+à mà mn rảnh tay qua YT cày cho mv SG lên 500m với",Tích cực,95.4%,Vui vẻ / Hài lòng,84.9%,1,Bình luận chính,npgb367,Tiếng Việt,2026-11-28 15:59:29,0
+421,ae fan jack trên 5năm điểm danh ❤️❤️❤️❤️,Tích cực,67.0%,Vui vẻ / Hài lòng,72.2%,1,Bình luận chính,tuyen.lucky7321,Tiếng Việt,2026-11-27 14:54:15,0
+422,"Nể ảnh thiệt, từng một thời toxic ổng vì hong hiểu đầu đuôi câu chuyện, bây giờ thì mọi chuyện cũng đã sáng tỏa rồi, mong anh luôn tỏa sáng trên con đường sắp tới nhé! tên nhạc cũng như cuộc đời của ảnh vậy á, bao nhiêu sóng gió, áp lực cđm ảnh điều vượt qua được, ""Jack ơi a giỏi lắm"" ❤️❤️❤️",Tích cực,66.8%,Vui vẻ / Hài lòng,72.7%,1,Bình luận chính,cobexiting080809,Tiếng Việt,2026-11-28 16:39:52,0
+423,sóng gió vang lên anti cũng phải hát theo,Tích cực,45.7%,Vui vẻ / Hài lòng,45.9%,1,Bình luận chính,tndyz7,Tiếng Việt,2026-11-27 04:56:11,0
+424,"mấy bn ơi ,năn nỉ mấy bn tim 2video đầu cho tui với",Trung tính,52.3%,Trung tính / Khác,28.5%,1,Bình luận chính,nt88711,Tiếng Việt,2026-11-26 19:24:36,0
+425,"tuy jack không đẹp trai bằng tôi, nhưng tôi đánh giá rất cao anh ấy.",Tích cực,44.9%,Buồn bã,68.3%,1,Bình luận chính,greenredkinhdich,Tiếng Việt,2026-11-26 14:18:41,0
+426,@Le Nhan Xứ Biển phải chi hú hú hét hét nữa là top1,Tiêu cực,44.5%,Trung tính / Khác,41.9%,1,Bình luận chính,nthd_17,Tiếng Việt,2026-11-28 16:00:19,1
+427,tụi truyền thông neft vua quá,Tiêu cực,38.8%,Ngạc nhiên,26.7%,1,Trả lời,emceen.0301,Tiếng Việt,2026-11-28 16:12:11,0
+428,ck t ms đúng😔🥀🥀,Tích cực,67.3%,Vui vẻ / Hài lòng,71.1%,1,Trả lời,punnii5,Tiếng Việt,2026-11-27 16:41:39,0
+429,thôi đủ rồi,Trung tính,64.1%,Trung tính / Khác,68.8%,1,Trả lời,meoww.dz_05,Tiếng Việt,2026-11-27 20:13:06,0
+430,chồng mà chồng yêu,Tích cực,58.5%,Vui vẻ / Hài lòng,58.5%,1,Trả lời,uyn.trn5827,Tiếng Việt,2026-11-27 20:13:27,0
+431,@Lọc review đóm đâu giơ tayyyyy,Trung tính,61.5%,Trung tính / Khác,43.2%,1,Bình luận chính,namquang7724,Tiếng Việt,2026-11-27 19:28:11,1
+432,@Nhii nè 🐯🐯 hay quá,Tích cực,88.7%,Vui vẻ / Hài lòng,82.9%,1,Bình luận chính,ntkt21024,Tiếng Việt,2026-11-26 20:01:49,1
+433,@nói ít làm liều🦭,Trung tính,51.7%,Vui vẻ / Hài lòng,34.3%,1,Bình luận chính,hng.dim945,Tiếng Việt,2026-11-26 20:27:24,1
+434,@Hân36 ba số bê su @apple pie @yêu quá(i) @Lém🦀🐤🥛 ê hay vãi cmay ơi,Tích cực,57.0%,Vui vẻ / Hài lòng,59.4%,1,Bình luận chính,iluvbangtann131012,Tiếng Việt,2026-11-28 15:44:35,1
+435,@Phô mai con Trang cười🧀 ảnh hót r tui mừng cho bà,Tích cực,83.5%,Vui vẻ / Hài lòng,87.4%,1,Bình luận chính,meoconyeudauuu,Tiếng Việt,2026-11-28 13:31:02,1
+436,@đổi gì😏 ngài ấy,Trung tính,51.3%,Trung tính / Khác,52.8%,1,Bình luận chính,trai_dep_biet_hat_ne,Tiếng Việt,2026-11-26 13:21:22,0
+437,tui lưu bản live full ròii,Trung tính,60.4%,Buồn bã,21.7%,1,Trả lời,_ngluonte_,Tiếng Việt,2026-11-26 09:48:36,0
+438,Top 1!,Tích cực,52.6%,Tức giận,61.3%,1,Bình luận chính,thachthaoxinkgai205,Tiếng Anh,2026-11-28 19:53:27,0
+439,Công nhận dách hát live đỉnh quá ha,Tích cực,70.3%,Vui vẻ / Hài lòng,55.7%,1,Bình luận chính,lc.vn.chi87,Tiếng Việt,2026-11-28 19:22:51,0
+440,vỗ tay đi @Khoai lang nướng 🍠 @𐙚 ˚ ♡,Tích cực,44.5%,Vui vẻ / Hài lòng,58.1%,1,Bình luận chính,tuyn.kimm,Tiếng Việt,2026-11-28 17:59:09,0
+441,@ɴɢọᴄ ʏếɴᯓᡣ𐭩 chồng m ne con,Tiêu cực,56.0%,Buồn bã,28.3%,1,Bình luận chính,ntcl_3010,Tiếng Việt,2026-11-28 16:20:55,0
+442,"bạn cùng bàn chê t mê jack từ 2023 , tới giờ đít t vẫn phát sáng 😏💔",Tích cực,76.7%,Vui vẻ / Hài lòng,43.9%,1,Bình luận chính,nguyen.thanh.thao4,Tiếng Việt,2026-11-28 15:53:31,0
+443,chồng ơi,Tiêu cực,59.3%,Buồn bã,44.2%,0,Bình luận chính,bongpeponq,Tiếng Việt,2026-11-28 20:48:07,0
+444,biệt danh thánh thì là đỉnh r b,Tích cực,90.5%,Vui vẻ / Hài lòng,52.2%,0,Trả lời,maivangquocnguyen65,Tiếng Việt,2026-11-26 22:48:45,0
+445,Để tóc này miết lun nhen,Tích cực,55.6%,Ngạc nhiên,28.6%,0,Bình luận chính,aprilchauchamhoc,Tiếng Việt,2026-11-28 20:52:41,0
+446,hay quá trời,Tích cực,83.4%,Vui vẻ / Hài lòng,51.5%,0,Bình luận chính,hee26222,Tiếng Việt,2026-11-28 20:47:30,0
+447,yêu đóm,Tích cực,90.7%,Vui vẻ / Hài lòng,73.1%,0,Bình luận chính,giangeulumdungtranhcuacj,Tiếng Việt,2026-11-28 20:45:10,0
+448,lời bài hát nhiều bài vận luôn vào cuộc đời j97,Tích cực,50.6%,Trung tính / Khác,40.7%,0,Bình luận chính,xingfadoor,Tiếng Việt,2026-11-28 20:38:40,0
+449,"Đỉnh thật, mãi là Đóm.",Tích cực,82.6%,Vui vẻ / Hài lòng,57.7%,0,Bình luận chính,dim.thy.cuc.sng.t3,Tiếng Việt,2026-11-28 20:53:41,0
+450,"Sóng gió vang lên, chúng sinh bình đẳng",Tích cực,59.1%,Trung tính / Khác,32.4%,0,Bình luận chính,vannguyen123abc,Tiếng Việt,2026-11-28 20:18:29,0
+451,Chú năm nay 60 tuổi chú còn mê thằng này 🥰🥰🥰,Tích cực,63.0%,Vui vẻ / Hài lòng,61.8%,0,Bình luận chính,kaka_n36,Tiếng Việt,2026-11-28 20:25:33,0
+452,Vẫn yêu quý jack!Bài nào cũng mê,Tích cực,90.6%,Vui vẻ / Hài lòng,78.2%,0,Bình luận chính,trungla434,Tiếng Việt,2026-11-28 19:53:14,0
+453,Nhớ ủng hộ tô banh canh cua😁😁😁,Tích cực,86.3%,Vui vẻ / Hài lòng,75.5%,0,Trả lời,khoaduong5676,Tiếng Việt,2026-11-28 14:29:40,0
+454,🥰🥰🥰 Vẫn hay như ngày nào,Tích cực,94.6%,Vui vẻ / Hài lòng,76.1%,0,Trả lời,_naki1359,Tiếng Việt,2026-11-27 21:32:05,0
+455,ye,Trung tính,48.1%,Trung tính / Khác,52.7%,0,Trả lời,jack97_j9777,Tiếng Anh,2026-11-27 11:39:45,0
+456,rồi🥺,Tiêu cực,45.9%,Buồn bã,57.9%,0,Trả lời,tinhyeula.caideogi,Tiếng Việt,2026-11-28 05:34:50,0
+457,Đúng á lời hát đời lắm 🥰,Tích cực,91.2%,Vui vẻ / Hài lòng,82.1%,0,Trả lời,nghiemmeo1,Tiếng Việt,2026-11-28 17:41:04,0
+458,Theo dõi nửa mùa à,Trung tính,38.0%,Trung tính / Khác,27.7%,0,Trả lời,jk85868,Tiếng Việt,2026-11-27 21:55:46,0
+459,"Trước giờ có ai cấm hát đâu, bản quyền có đi đâu đâu, luật bản quyền thì đâu có cấm tác giả hát, chẳng qua không muốn lùm xùm với bài hát nữa nên nghỉ hát, đồn bậy đồn bạ bản quyền. Chỉ là sau khi Khánh với Jack rời công ty thì công ty phải đứng ra đứng tên sở hữu bài hát, lúc vào công ty thì chắc 2 người cũng phải hiểu rõ mình sau khi rời sẽ mất gì rồi, ông Khánh cũng bị công ty giữ kênh youtube luôn mà. Tóm lại là mấy bài hát của Jack với Khánh sau khi rời công ty thì theo luật bản quyền công ty phải giữ quyền thương mại bài hát, còn Jack với Khánh rời đi thì cầm quyền đồng tác giả.",Tiêu cực,75.8%,Buồn bã,34.2%,0,Trả lời,giodongthudo,Tiếng Việt,2026-11-26 13:55:08,0
+460,"Nếu nó kiểm soát đc J thì đã k dìm J thậm chí còn mua truyền thông nâng bi r, nhưng đổi lại sẽ là nó bảo gì nghe và làm nấy :))",Tiêu cực,66.9%,Chán ghét / Khó chịu,45.7%,0,Trả lời,lqh270209,Tiếng Việt,2026-11-28 11:57:19,0
+461,🤣🤣🤣 Cười chết,Tích cực,84.7%,Vui vẻ / Hài lòng,90.2%,0,Trả lời,huyen.thu8842,Tiếng Việt,2026-11-28 09:48:38,0
+462,ổng mùa bản quyền ad,Tiêu cực,57.1%,Buồn bã,30.4%,0,Trả lời,ebetho20051,Tiếng Việt,2026-11-26 15:13:07,0
+463,Rồi còn bài bạc phận ảnh lấy lại được ko ạ🥺,Trung tính,48.9%,Buồn bã,58.6%,0,Trả lời,dungnguyen12947,Tiếng Việt,2026-11-26 22:04:20,0
+464,ổng lm mũi xong mặt nét thật,Tiêu cực,40.9%,Trung tính / Khác,30.6%,0,Trả lời,quynhiu.2k,Tiếng Việt,2026-11-27 09:50:38,0
+465,"Đúng nam nữ gì làm mũi xong cung xinh hơn ha, mũi cao đẹp",Tích cực,83.1%,Vui vẻ / Hài lòng,61.2%,0,Trả lời,phanhh.2k,Tiếng Việt,2026-11-27 09:51:01,0
+466,Đẹp hong 🤣🤣🤣,Tích cực,74.1%,Vui vẻ / Hài lòng,70.5%,0,Trả lời,thoajun,Tiếng Việt,2026-11-28 19:32:28,0
+467,T cũng tính nâng mà kb đc đẹp như ổng kh,Tích cực,69.4%,Ngạc nhiên,31.8%,0,Trả lời,vanlinhh5,Tiếng Việt,2026-11-27 09:36:26,0
+468,Cứ thkhao kĩ bsi là làm 1l ưng lunn như t nè,Tích cực,63.2%,Vui vẻ / Hài lòng,37.2%,0,Trả lời,mai.thu2655,Tiếng Việt,2026-11-27 09:36:52,0
+469,Ngày xưa thôi,Trung tính,70.4%,Trung tính / Khác,69.6%,0,Trả lời,giodongthudo,Tiếng Việt,2026-11-26 13:44:30,0
+470,Mấy đứa anti nó hay thích phủ nhận lắm. Chứ mình vô tình nghe album mới thấy hay quá mới tìm hiểu về bạn này đó.,Tích cực,85.0%,Vui vẻ / Hài lòng,71.4%,0,Trả lời,m.hi.hn4,Tiếng Việt,2026-11-27 19:03:24,0
+471,Giờ anh làm nhạc AI,Tiêu cực,42.4%,Trung tính / Khác,50.9%,0,Trả lời,giodongthudo,Tiếng Việt,2026-11-26 13:58:34,0
+472,"Tự hào không emm , khi mọi người vẫn ở đâyy , vẫn yêu thương em như ngày nàoo .",Tích cực,90.4%,Vui vẻ / Hài lòng,70.3%,0,Bình luận chính,huyencandy95,Tiếng Việt,2026-11-28 20:49:31,0
+473,708k thích sợ thật,Tích cực,60.3%,Lo lắng / Sợ hãi,72.6%,0,Bình luận chính,thanh.tnh7742,Tiếng Việt,2026-11-28 20:54:13,0
+474,đỉnh,Tích cực,89.3%,Vui vẻ / Hài lòng,45.4%,0,Trả lời,zuoly_06,Tiếng Việt,2026-11-28 17:32:34,0
+475,mẹo gì,Tiêu cực,72.6%,Trung tính / Khác,33.5%,0,Trả lời,rotoichoi19,Tiếng Việt,2026-11-27 19:36:33,0
+476,chuẩn,Tích cực,89.5%,Vui vẻ / Hài lòng,82.8%,0,Trả lời,tonlawmloingzutlamtroz,Tiếng Việt,2026-11-28 20:00:04,0
+477,"t cũng muốn lm lắm ý mà kb đâu ok, b lm đâu v thấy from đẹp nha",Tích cực,87.4%,Vui vẻ / Hài lòng,62.1%,0,Trả lời,sturn..frorae,Tiếng Việt,2026-11-27 10:29:03,0
+478,công nhận nhỉ từ lúc làm mũi xong đẹp hơn hằn,Tích cực,71.2%,Vui vẻ / Hài lòng,30.2%,0,Trả lời,sturn..frorae,Tiếng Việt,2026-11-27 10:28:44,0
+479,có được bhanh gì kh ạ,Trung tính,81.2%,Trung tính / Khác,59.1%,0,Trả lời,v.trang34,Tiếng Việt,2026-11-27 09:48:42,0
+480,Có b oi,Tích cực,48.9%,Trung tính / Khác,36.0%,0,Trả lời,nguyn.thu.anh664,Tiếng Việt,2026-11-27 09:49:57,0
+481,Có phải sụn càng cứng càng tốt?,Trung tính,45.8%,Trung tính / Khác,52.8%,0,Trả lời,v.trang34,Tiếng Việt,2026-11-27 09:48:55,0
+482,ổng sửa gi k mà nhìn đẹp hơn nhỉ,Tiêu cực,39.5%,Ngạc nhiên,33.9%,0,Bình luận chính,quccnh.4748,Tiếng Việt,2026-11-28 20:00:47,1
+483,chúc mừng,Tích cực,81.7%,Vui vẻ / Hài lòng,61.9%,0,Bình luận chính,jack.j97877,Tiếng Việt,2026-11-28 20:22:20,0
+484,Có thu gọn cánh mũi á bà,Tiêu cực,47.9%,Trung tính / Khác,36.1%,0,Trả lời,bebut99,Tiếng Việt,2026-11-28 20:35:33,0
+485,"tr oi, sao bà giấu tui!!",Trung tính,78.8%,Ngạc nhiên,30.7%,0,Trả lời,ahn_nagnz,Tiếng Việt,2026-11-26 16:53:35,0
+486,"tui xin lỗi , tại hay quá",Trung tính,51.3%,Buồn bã,32.0%,0,Trả lời,its.kmaine,Tiếng Việt,2026-11-26 17:03:47,0
+487,Siêng đi cmt dạo là thấy c à,Tiêu cực,51.1%,Chán ghét / Khó chịu,37.1%,0,Trả lời,nguynhong2611,Tiếng Việt,2026-11-27 21:41:29,0
+488,cuối cùng cx dc hát lại rồi ha a,Tích cực,70.9%,Vui vẻ / Hài lòng,38.0%,0,Bình luận chính,jack.j97877,Tiếng Việt,2026-11-28 20:22:13,0
+489,Song gió nghe đi nghe vẫn hay ☺️,Tích cực,75.7%,Vui vẻ / Hài lòng,69.7%,0,Bình luận chính,thoitrangnam.js,Tiếng Việt,2026-11-28 20:35:24,0
+490,Nhạc vẫn đỉnh vlin,Tích cực,88.1%,Vui vẻ / Hài lòng,52.6%,0,Bình luận chính,thucha_3802,Tiếng Việt,2026-11-28 19:41:50,0
+491,Hay wa’🥰,Tích cực,95.4%,Vui vẻ / Hài lòng,78.5%,0,Bình luận chính,vomaihuynh90,Tiếng Việt,2026-11-28 19:07:04,0
+492,"vàng thật ko sợ lửa , chúc chàng trai mãi toả sáng , nge mới thấm từng câu từng chữ , biết bao sóng gió trong những năm tháng ,nghe biết bao nhiêu lời kay nghiệt nhưng bản lĩnh người đàn ông vẫn tử tế đến cuối cùng",Tích cực,91.4%,Vui vẻ / Hài lòng,70.8%,0,Bình luận chính,ninh.nhn3,Tiếng Việt,2026-11-28 19:26:20,0
+493,Day dứt tâm cang,Tích cực,39.7%,Trung tính / Khác,37.0%,0,Bình luận chính,tuyen0168,Tiếng Việt,2026-11-28 19:54:55,0
+494,còn nếu muốn nói về những gia vị chúng ta dùng sweet....,Trung tính,43.1%,Buồn bã,61.4%,0,Bình luận chính,c1_c2m,Tiếng Việt,2026-11-28 19:55:07,0
+495,quá hay 😘,Tích cực,90.7%,Vui vẻ / Hài lòng,82.6%,0,Bình luận chính,gaichymbu_shop,Tiếng Việt,2026-11-28 20:11:32,0
+496,Một bầu trời kỉ niệm,Tiêu cực,56.0%,Trung tính / Khác,30.6%,0,Bình luận chính,trung.tnh7145,Tiếng Việt,2026-11-28 20:03:31,0
+497,mãi mãi nhiều kỷ niệm 🥰🥰,Tích cực,93.5%,Vui vẻ / Hài lòng,77.5%,0,Bình luận chính,kle_992,Tiếng Việt,2026-11-28 20:36:50,0
+498,Nổi da gà khi Jack hát Sóng Gió ❤️,Tích cực,61.6%,Vui vẻ / Hài lòng,40.2%,0,Bình luận chính,thichthichan789,Tiếng Việt,2026-11-28 18:59:57,0
+499,mê ảnh,Tích cực,76.3%,Vui vẻ / Hài lòng,39.6%,0,Bình luận chính,p312lonlon,Tiếng Việt,2026-11-28 19:58:50,0
+500,thương ảnh,Tiêu cực,44.6%,Buồn bã,39.9%,0,Bình luận chính,ht.hay.khng.bng.h48,Tiếng Việt,2026-11-28 19:56:44,0
+501,Vẫ hay như thời mới ra,Tích cực,66.1%,Vui vẻ / Hài lòng,50.0%,0,Bình luận chính,khanhlyle.20,Tiếng Việt,2026-11-28 20:01:57,0
+502,hay quá tuyệt vời,Tích cực,97.3%,Vui vẻ / Hài lòng,89.5%,0,Bình luận chính,agugff9775gmail.com,Tiếng Việt,2026-11-28 20:27:43,0
+503,Tuyệt vời!,Tích cực,93.4%,Vui vẻ / Hài lòng,88.9%,0,Bình luận chính,thiepcuoithanhtruc,Tiếng Việt,2026-11-28 19:17:06,0
+504,Mãi đỉnh. 🥰🥰🥰🥰,Tích cực,97.0%,Vui vẻ / Hài lòng,82.8%,0,Bình luận chính,user4238086545295,Tiếng Việt,2026-11-28 18:59:03,0
+505,kô hiểu bài nào cũng hot viết lời siêu đỉnh,Tích cực,46.7%,Vui vẻ / Hài lòng,31.2%,0,Bình luận chính,camvan0805,Tiếng Việt,2026-11-28 18:59:03,0
+506,hay quá,Tích cực,83.8%,Vui vẻ / Hài lòng,51.3%,0,Bình luận chính,cayngodong_,Tiếng Việt,2026-11-28 19:55:26,0
+507,Hoa hải đường đom đóm hát lại 🔥,Tiêu cực,56.5%,Vui vẻ / Hài lòng,32.5%,0,Bình luận chính,lucvuong1821,Tiếng Việt,2026-11-28 18:56:48,0
+508,comback dù muộn nhưng hayy 🍀,Tiêu cực,39.0%,Buồn bã,42.5%,0,Bình luận chính,ngocminhll,Tiếng Việt,2026-11-28 19:35:57,0
+509,🥰 quá tuyệt vời,Tích cực,97.3%,Vui vẻ / Hài lòng,93.4%,0,Bình luận chính,lthhnh8255,Tiếng Việt,2026-11-28 19:12:10,0
+510,chúc mừng A,Tích cực,82.0%,Vui vẻ / Hài lòng,64.9%,0,Bình luận chính,thaygiaogau_maths,Tiếng Việt,2026-11-28 19:45:55,0
+511,"Thấy có tài mà cứ bị số sao á, hết gập chuyện này tới chuyện kia.",Tiêu cực,76.0%,Vui vẻ / Hài lòng,30.3%,0,Bình luận chính,thunguyen4971,Tiếng Việt,2026-11-28 19:46:39,0
+512,Giọng quá mượt luôn,Tích cực,57.9%,Ngạc nhiên,64.9%,0,Bình luận chính,peisj_666,Tiếng Việt,2026-11-28 19:34:54,0
+513,toàn ai đồ nhắn thế này 😳😳,Tiêu cực,69.7%,Chán ghét / Khó chịu,49.7%,0,Bình luận chính,f.ng.khi.v.da.huy,Tiếng Việt,2026-11-28 18:51:34,0
+514,em hâm mộ anh,Tích cực,83.1%,Vui vẻ / Hài lòng,63.9%,0,Bình luận chính,vntgf1,Tiếng Việt,2026-11-28 19:08:07,0
+515,Bữa đó đúng điên,Tiêu cực,50.2%,Trung tính / Khác,33.2%,0,Bình luận chính,phaanngoctrann,Tiếng Việt,2026-11-28 20:57:54,0
+516,ĐÓM ƠIIIIIIIII,Tiêu cực,59.6%,Ngạc nhiên,27.9%,0,Bình luận chính,dthk_01,Tiếng Việt,2026-11-28 18:41:55,0
+517,Hôm nay ổng hạt sóng gió lạ thế,Tích cực,44.5%,Ngạc nhiên,39.4%,0,Bình luận chính,khoamelamineyamal,Tiếng Việt,2026-11-28 19:44:16,0
+518,Jack ơi Anh là Vua👑👑👑,Tích cực,45.0%,Vui vẻ / Hài lòng,58.0%,0,Bình luận chính,fyz2kkkk,Tiếng Việt,2026-11-28 19:18:38,0
+519,Hát live đỉnh quá Jack ơi🥰🥰,Tích cực,91.5%,Vui vẻ / Hài lòng,76.9%,0,Bình luận chính,23quabinho09,Tiếng Việt,2026-11-28 18:57:56,0
+520,nghe kiểu đau lòng,Tiêu cực,91.6%,Buồn bã,79.4%,0,Bình luận chính,hip9944,Tiếng Việt,2026-11-28 18:58:57,0
+521,Tự nhiên coi clip này mê ảnh ngang là sao nữa trời?,Trung tính,46.2%,Ngạc nhiên,45.7%,0,Bình luận chính,be_dua_mien_tay,Tiếng Việt,2026-11-28 20:14:13,0
+522,mẹ 1 video 1 đống tích xanh,Tiêu cực,62.5%,Chán ghét / Khó chịu,35.6%,0,Bình luận chính,minh.khin.l3,Tiếng Việt,2026-11-28 18:41:30,0
+523,tại vì quá nổi bật mà lại ko chịu thỏa hiệp nên mới bị dập tơi tả đó,Tiêu cực,79.3%,Trung tính / Khác,27.1%,0,Trả lời,naju.88,Tiếng Việt,2026-11-28 10:05:35,0
+524,em ấy hát hay quá 🥰,Tích cực,96.0%,Vui vẻ / Hài lòng,86.4%,0,Bình luận chính,tuyendo008,Tiếng Việt,2026-11-28 18:40:42,0
+525,mờ ê mê,Tiêu cực,54.8%,Trung tính / Khác,35.0%,0,Bình luận chính,naolenxuhuongdoiten_18,Tiếng Việt,2026-11-28 19:35:21,0
+526,hay quá,Tích cực,83.8%,Vui vẻ / Hài lòng,51.3%,0,Bình luận chính,phng.ale.h,Tiếng Việt,2026-11-28 19:06:54,0
+527,đang đói bụng nên khóc,Tiêu cực,69.6%,Buồn bã,61.3%,0,Bình luận chính,baoduy3623,Tiếng Việt,2026-11-28 20:21:18,0
+528,"Đoạn cuối nhìn ảnh thương vậyy. Sau 7 năm nhiều biến cố 1 mình chống chọi lại cả thế lực lớn , con k được gặp . Đứa con tinh thần h đc hát lại như an ủi phần nào, lúc đó ảnh chắc lắm tâm tư suy nghĩ lắm",Tiêu cực,75.0%,Chán ghét / Khó chịu,35.3%,0,Bình luận chính,hansapgay,Tiếng Việt,2026-11-28 20:28:44,0
+529,Đóm,Tiêu cực,41.2%,Trung tính / Khác,35.0%,0,Bình luận chính,thang28080,Tiếng Việt,2026-11-28 19:29:39,0
+530,Đứa con tinh thần đã về🥹,Tích cực,75.9%,Vui vẻ / Hài lòng,63.9%,0,Bình luận chính,dungem95,Tiếng Việt,2026-11-28 19:46:41,0
+531,700k timmmm,Trung tính,60.4%,Trung tính / Khác,50.0%,0,Bình luận chính,tr_lonn2k,Tiếng Anh,2026-11-28 20:16:39,0
+532,Anh j,Tiêu cực,40.3%,Trung tính / Khác,41.9%,0,Bình luận chính,c168.com4,Tiếng Việt,2026-11-28 19:41:23,0
+533,k vượt được tác giả hát quá hay,Tích cực,88.1%,Vui vẻ / Hài lòng,57.4%,0,Bình luận chính,hue.nguyen414,Tiếng Việt,2026-11-28 20:03:42,0
+534,goat comeback,Tích cực,55.6%,Vui vẻ / Hài lòng,83.9%,0,Bình luận chính,pvyzz,Tiếng Anh,2026-11-28 19:54:11,0
+535,Best! ❤️❤️❤️,Tích cực,88.1%,Vui vẻ / Hài lòng,89.4%,0,Bình luận chính,congtran1707,Tiếng Anh,2026-11-28 19:52:06,0
+536,"Phải công nhận giọng vs nhạc nó hay điên, ko sến, lại thấm . Giọng ko lẫn đc",Tiêu cực,58.5%,Vui vẻ / Hài lòng,30.0%,0,Bình luận chính,lamlada_py,Tiếng Việt,2026-11-28 19:37:25,0
+537,Đời tư cũng đâu có gì đâu b,Trung tính,75.9%,Trung tính / Khác,54.6%,0,Trả lời,linhlan_domi,Tiếng Việt,2026-11-26 19:27:15,0
+538,quá đỉnh lun trai đẹp ơi,Tích cực,93.8%,Vui vẻ / Hài lòng,64.8%,0,Bình luận chính,anvat_vatsach368,Tiếng Việt,2026-11-28 18:35:43,1
+539,Quá hay. 😍,Tích cực,94.8%,Vui vẻ / Hài lòng,88.3%,0,Bình luận chính,luchaunhi,Tiếng Việt,2026-11-28 18:37:11,0
+540,Thương quá 🥰,Tích cực,75.9%,Vui vẻ / Hài lòng,53.4%,0,Bình luận chính,thaotrinh1997,Tiếng Việt,2026-11-28 18:38:40,0
+541,Vị vua trở lại 🥰,Tích cực,43.6%,Trung tính / Khác,56.5%,0,Bình luận chính,lqp.090998,Tiếng Việt,2026-11-28 18:34:18,0
+542,Mãi là đom đóm soi khắp nơi,Trung tính,43.6%,Trung tính / Khác,53.9%,0,Bình luận chính,hieublu8,Tiếng Việt,2026-11-28 18:38:36,0
+543,"Hay qué. Ấm ức bao nhiêu lâu, bạn này bị nhiều sóng gió thực sự luôn í",Tích cực,56.7%,Trung tính / Khác,44.1%,0,Bình luận chính,coco_shop7,Tiếng Việt,2026-11-28 18:35:39,0
+544,Jack 97.,Trung tính,64.9%,Trung tính / Khác,50.0%,0,Bình luận chính,duyn.nguyn.th29,Tiếng Anh,2026-11-28 18:30:51,0
+545,hay quá,Tích cực,83.8%,Vui vẻ / Hài lòng,51.3%,0,Bình luận chính,phan.ngoc.thuy.trang132,Tiếng Việt,2026-11-28 18:24:14,0
+546,Chưa thoát 😁,Tiêu cực,43.6%,Buồn bã,49.6%,0,Bình luận chính,honghong17_01,Tiếng Việt,2026-11-28 18:16:27,0
+547,Ảnh cháyy quá,Tiêu cực,79.4%,Vui vẻ / Hài lòng,33.1%,0,Bình luận chính,khamphakhoahoc8,Tiếng Việt,2026-11-28 18:18:29,0
+548,Idol nhà Đóm mãi đỉnh💪🫶,Tích cực,91.5%,Vui vẻ / Hài lòng,69.2%,0,Bình luận chính,chicken69_21,Tiếng Việt,2026-11-28 18:51:11,0
+549,tui cx đóm chúa:)),Trung tính,74.2%,Vui vẻ / Hài lòng,43.3%,0,Bình luận chính,nganthikcodoc,Tiếng Việt,2026-11-28 19:12:19,0
+550,hay,Tích cực,78.5%,Vui vẻ / Hài lòng,63.5%,0,Bình luận chính,thichayduong6,Tiếng Việt,2026-11-28 18:25:11,0
+551,tui mê nhạc trư tình từ xưa giờ..mà nghe nhạc Của em nó cuốn kiểu gì,Trung tính,62.1%,Trung tính / Khác,46.5%,0,Bình luận chính,diemhanh24,Tiếng Việt,2026-11-28 19:16:45,0
+552,chỉ tại scandal chứ e này có tài thật sự,Tích cực,46.1%,Trung tính / Khác,46.3%,0,Bình luận chính,dathuy91,Tiếng Việt,2026-11-28 18:56:33,0
+553,Em mừng cho anh lắm Jack theo dõi anh từ những ngày đầu mặc dù e chưa có cơ hội được nhìn anh trình diễn trên sân khấu nhưng e luôn là Fan của anh qua bao nhiêu chuyện xảy ra anh rất mạnh mẽ vượt qua được hết gửi ngàn cái ôm 🥰 chúc anh sự nghiệp thành công và thật nhiều năng lượng 🥰,Tích cực,95.3%,Vui vẻ / Hài lòng,87.3%,0,Bình luận chính,meooghetca_,Tiếng Việt,2026-11-28 18:14:42,0
+554,Ổng khóc kìa 🥺,Tiêu cực,83.1%,Buồn bã,59.9%,0,Bình luận chính,khnhh.nhnn2010,Tiếng Việt,2026-11-28 17:56:00,0
+555,Mê ko lối thoát em hát hay đỉnh🌷,Tích cực,94.9%,Vui vẻ / Hài lòng,85.9%,0,Bình luận chính,baongoc20192,Tiếng Việt,2026-11-28 17:49:48,0
+556,phát sáng thôi,Trung tính,57.2%,Trung tính / Khác,69.7%,0,Bình luận chính,141286dobao15,Tiếng Việt,2026-11-28 18:02:37,0
+557,Anti fan mà bài nào cũng thuộc 😂 chết k cơ chứ mà kiểu thuộc trong vô thức,Tiêu cực,78.8%,Vui vẻ / Hài lòng,31.6%,0,Bình luận chính,trangtrieu93,Tiếng Việt,2026-11-28 17:48:27,0
+558,replay từ hôm qua tới giờ rồi,Trung tính,78.0%,Buồn bã,32.4%,0,Bình luận chính,nguyenthanhtam863,Tiếng Việt,2026-11-28 17:41:19,0
+559,Nghe kho chán,Tiêu cực,90.0%,Buồn bã,58.4%,0,Bình luận chính,ncm.0307,Tiếng Việt,2026-11-28 17:38:14,0
+560,ai v mng,Trung tính,56.6%,Trung tính / Khác,50.0%,0,Bình luận chính,na_la_to_5,Tiếng Anh,2026-11-28 17:29:13,2
+561,Chồng yêu,Tích cực,78.6%,Vui vẻ / Hài lòng,69.2%,0,Bình luận chính,hng.tho68115,Tiếng Việt,2026-11-28 17:27:39,0
+562,Ngày hôm đó mưa mà nhất định ko về. Tắm mưa để coi e jack,Tiêu cực,57.9%,Trung tính / Khác,47.2%,0,Bình luận chính,maikua.93,Tiếng Việt,2026-11-28 17:31:07,0
+563,"Thích nghe nhạc của bạn này, đỉnh chóp",Tích cực,93.9%,Vui vẻ / Hài lòng,60.1%,0,Bình luận chính,banthothantai41,Tiếng Việt,2026-11-28 17:32:57,0
+564,ai nghe rõ chữ nói tao,Tiêu cực,56.9%,Trung tính / Khác,47.6%,0,Bình luận chính,truong66shop,Tiếng Việt,2026-11-28 20:27:22,0
+565,1m tim nào,Tích cực,56.7%,Trung tính / Khác,44.9%,0,Bình luận chính,slowwander25,Tiếng Việt,2026-11-28 20:22:45,0
+566,Múa lân hả,Trung tính,82.6%,Ngạc nhiên,62.9%,0,Bình luận chính,linhphuongvu01,Tiếng Việt,2026-11-28 20:29:01,0
+567,Cl. Cl vv,Trung tính,68.1%,Trung tính / Khác,50.0%,0,Bình luận chính,besonak2004,Tiếng Anh,2026-11-28 20:04:37,0
+568,cái eo chắc còn nhỏ hơn t,Tiêu cực,57.0%,Vui vẻ / Hài lòng,31.0%,0,Bình luận chính,concobebe78,Tiếng Việt,2026-11-28 19:51:40,0
+569,Đây r:>,Tích cực,67.0%,Vui vẻ / Hài lòng,35.3%,0,Trả lời,yorugawa_san1511,Tiếng Việt,2026-11-25 20:19:04,0
+570,Jack j97,Trung tính,64.6%,Trung tính / Khác,50.0%,0,Trả lời,masted61,Tiếng Anh,2026-11-28 17:38:14,0
+571,à jack,Tiêu cực,72.5%,Ngạc nhiên,67.5%,0,Trả lời,na_la_to_5,Tiếng Việt,2026-11-28 17:29:33,0
+572,Lau nước mắt củng tinh tế nửa 😳,Tiêu cực,83.1%,Buồn bã,65.4%,0,Bình luận chính,vybap1622,Tiếng Việt,2026-11-28 17:13:49,0
+573,quá cháy🥰,Tiêu cực,52.1%,Vui vẻ / Hài lòng,65.2%,0,Bình luận chính,n.g.a1314,Tiếng Việt,2026-11-28 17:08:44,0
+574,mê ẻm,Tích cực,81.2%,Vui vẻ / Hài lòng,35.0%,0,Bình luận chính,tenten_01470147,Tiếng Việt,2026-11-28 17:10:40,0
+575,sóng gió cất lên ngai vàng mãi là của ngài,Trung tính,43.4%,Trung tính / Khác,58.0%,0,Bình luận chính,t3g735,Tiếng Việt,2026-11-28 17:12:51,0
+576,ai fan jack thì tim,Trung tính,51.3%,Trung tính / Khác,40.0%,0,Bình luận chính,behoangan11,Tiếng Việt,2026-11-28 17:17:20,0
+577,phải nói là chất đẳng cấp,Tích cực,77.2%,Trung tính / Khác,50.8%,0,Bình luận chính,duyson505,Tiếng Việt,2026-11-28 17:15:00,0
+578,Dị,Tích cực,53.5%,Trung tính / Khác,28.9%,0,Bình luận chính,hhh.31100809,Tiếng Việt,2026-11-28 19:49:24,0
+579,@cậu út họ Ngô🤑🤑🤑🤑:tương tác ác khỏe😁😁,Tích cực,65.3%,Vui vẻ / Hài lòng,41.2%,0,Bình luận chính,mewff41,Tiếng Việt,2026-11-28 19:45:59,0
+580,Tím à,Tiêu cực,77.4%,Ngạc nhiên,41.3%,0,Bình luận chính,tng.vo2,Tiếng Việt,2026-11-28 19:21:58,0
+581,Fan ST có nói Jack hát live dỡ k bằng ST thì vào đây😂😂,Tiêu cực,62.9%,Vui vẻ / Hài lòng,30.7%,0,Bình luận chính,caylaunha77,Tiếng Việt,2026-11-28 18:56:00,0
+582,đổi cách ăn mặc lại thì còn j chê nửa 😅,Tích cực,62.8%,Chán ghét / Khó chịu,48.3%,0,Bình luận chính,nhutcao5992,Tiếng Việt,2026-11-28 17:11:57,0
+583,Quá hay,Tích cực,82.4%,Vui vẻ / Hài lòng,69.9%,0,Trả lời,huynhdnuong,Tiếng Việt,2026-11-25 19:50:25,0
+584,nhớ meo quá,Tiêu cực,66.5%,Buồn bã,49.1%,0,Trả lời,mp.mp7132,Tiếng Việt,2026-11-25 19:33:38,0
+585,Ck tuiii ck tuii bà oii,Tích cực,76.5%,Vui vẻ / Hài lòng,55.6%,0,Trả lời,nghuongsu,Tiếng Việt,2026-11-27 14:11:09,0
+586,vẫn rất là thích,Tích cực,92.7%,Vui vẻ / Hài lòng,76.0%,0,Bình luận chính,kimlequyen282,Tiếng Việt,2026-11-28 16:57:25,0
+587,Sắp đẹp bằng Sếp Tùng lun rồi đó 😂,Tích cực,81.2%,Vui vẻ / Hài lòng,42.1%,0,Bình luận chính,vancaotuy,Tiếng Việt,2026-11-28 16:48:43,0
+588,quá hay quá tuyệt vời,Tích cực,97.3%,Vui vẻ / Hài lòng,90.1%,0,Bình luận chính,bidinh.bi,Tiếng Việt,2026-11-28 16:54:06,0
+589,một thời nổi bài này lắm,Tích cực,52.0%,Vui vẻ / Hài lòng,35.0%,0,Bình luận chính,nhbnhbinh8286,Tiếng Việt,2026-11-28 16:59:10,0
+590,@An Kim ( 安金 ） phong độ là nhất thời đẳng cấp là mãi mãi,Tích cực,64.8%,Vui vẻ / Hài lòng,32.9%,0,Bình luận chính,yanyan22124,Tiếng Việt,2026-11-28 19:24:38,2
+591,@cơm cháy kho quẹt💋💋 ảnh của m nè,Tiêu cực,42.0%,Vui vẻ / Hài lòng,52.2%,0,Bình luận chính,ngi.li.chm.ch67,Tiếng Việt,2026-11-28 19:40:46,1
+592,Zậy là chị em ta không có điểm chung rùi🤣,Tiêu cực,63.4%,Vui vẻ / Hài lòng,46.4%,0,Trả lời,antran05.10,Tiếng Việt,2026-11-25 21:09:07,0
+593,Ảnh kỉu này tui chịu sao nổi trờii,Tích cực,36.9%,Ngạc nhiên,36.6%,0,Trả lời,mah.enh_,Tiếng Việt,2026-11-26 09:19:50,0
+594,Phe ra ri cũ vẫn là phe ra ri🥰🥰🥰🥰🥰,Tiêu cực,40.7%,Vui vẻ / Hài lòng,53.6%,0,Trả lời,binhnhiiii,Tiếng Việt,2026-11-25 23:21:29,0
+595,khót dồi,Tiêu cực,41.1%,Trung tính / Khác,30.0%,0,Trả lời,locreviewer,Tiếng Việt,2026-11-27 23:36:51,0
+596,idol chị 🥰🥰,Tích cực,86.5%,Vui vẻ / Hài lòng,66.5%,0,Trả lời,nhinhinhi121098,Tiếng Việt,2026-11-26 20:09:07,0
+597,ai đlai kìa,Trung tính,59.1%,Trung tính / Khác,48.3%,0,Trả lời,kimmngan.1407,Tiếng Việt,2026-11-25 21:35:21,0
+598,😂 m cũng thấy hả,Trung tính,50.2%,Vui vẻ / Hài lòng,45.6%,0,Trả lời,lam.ankim2608,Tiếng Việt,2026-11-28 20:08:02,0
+599,bữa nghe nhỏ nào hát má ơi xỉu ngang😳,Tiêu cực,37.0%,Vui vẻ / Hài lòng,55.4%,0,Trả lời,yanyan22124,Tiếng Việt,2026-11-28 20:09:01,0
+600,"hát hay quá tr, dính mấy ngày nay[Ấm lòng][Ấm lòng][尴尬][尴尬]",Tích cực,88.6%,Vui vẻ / Hài lòng,69.0%,0,Trả lời,_comchay.kq,Tiếng Việt,2026-11-28 20:10:52,0
+601,làm fan luôn thanh ơi,Tích cực,45.0%,Ngạc nhiên,40.7%,0,Trả lời,selen.ophile00,Tiếng Việt,2026-11-28 18:26:41,0

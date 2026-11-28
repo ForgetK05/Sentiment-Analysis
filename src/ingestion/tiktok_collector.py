@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import asyncio
 import concurrent.futures
 import hashlib
 import io
 import json
 import re
 import shutil
+import sys
 import time
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
@@ -15,6 +17,24 @@ from typing import Any, Callable, Sequence
 import pandas as pd
 import requests
 from PIL import Image, UnidentifiedImageError
+
+
+def _ensure_windows_proactor_loop() -> None:
+    """Đảm bảo thread hiện tại trên Windows dùng ProactorEventLoop để Playwright mở subprocess."""
+    if sys.platform != "win32":
+        return
+    policy_cls = getattr(asyncio, "WindowsProactorEventLoopPolicy", None)
+    if policy_cls is not None and not isinstance(asyncio.get_event_loop_policy(), policy_cls):
+        asyncio.set_event_loop_policy(policy_cls())
+    try:
+        loop = asyncio.get_event_loop()
+        if not isinstance(loop, asyncio.ProactorEventLoop):
+            if not loop.is_running():
+                loop.close()
+            asyncio.set_event_loop(asyncio.new_event_loop())
+    except RuntimeError:
+        asyncio.set_event_loop(asyncio.new_event_loop())
+
 
 COMMENT_COLUMN_CANDIDATES = (
     "comment",
@@ -802,6 +822,7 @@ def _download_photo_post_playwright(
 
     def _run_sync() -> None:
         nonlocal resolved_url, saved_paths
+        _ensure_windows_proactor_loop()
         with sync_playwright() as p:
             launch_kwargs: dict[str, Any] = {"headless": headless}
             if browser_channel:
@@ -1463,6 +1484,7 @@ def _collect_comments_sync(
             "Chưa cài đặt `playwright`. Hãy chạy: pip install playwright"
         ) from exc
 
+    _ensure_windows_proactor_loop()
     collected: dict[str, dict[str, Any]] = {}
     resolved_url = url
     add_rows = _make_comment_adder(collected)

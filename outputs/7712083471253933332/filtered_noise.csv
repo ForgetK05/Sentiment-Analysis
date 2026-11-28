@@ -1,0 +1,34 @@
+﻿"stt
+(số thứ tự)","original_text
+(nội dung gốc)","filter_reason_vi
+(lý do lọc)","filter_reason
+(mã lý do lọc)","language
+(ngôn ngữ)","likes
+(lượt thích)","username
+(tài khoản)","nickname
+(tên hiển thị)","comment_id
+(mã bình luận)"
+1,🥰,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,2279,nguyenthaihoc38hatinh,Nguyễn Thái Học,7712318598665503496
+2,🥰🥰🥰,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,81,imjack1997,Jack - J97,7712083509217542932
+3,😅,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,7,vnh.0410,ŋɧคռ.´꒳`౨ৎ🦀,7712496180719452936
+4,🥺,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,2,vanvien204,vanvien@,7712116696366105352
+5,❤️,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,2,thanhtuan20102008,thanhtuan20102008,7712088300186993409
+6,??,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,2,trang_anh338,Trang anh,7712830104674665224
+7,https://vt.tiktok.com/ZSsS1HGqV/,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,2,ng_hoangquan6,Hoàng Quân😄⚽💓,7712828908450546484
+8,🥰,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,1,8683792t50932,NGUYỄN THỊ THANH HUYỀN,7712668776912143112
+9,🥰,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,1,8683792t50932,NGUYỄN THỊ THANH HUYỀN,7712668655054258950
+10,Ừ,Từ rác / seeding ngắn vô nghĩa,FILTERED_MEANINGLESS,Tiếng Việt,1,u.com_67,Ừ,7713182824837251846
+11,🥰,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,1,myleeee.1,Dịu,7713194125450281748
+12,@VL chồng hú,Chỉ gắn thẻ (@tag) bạn bè,FILTERED_TAG_FRIEND,Tiếng Việt,1,uyn.trn5827,Tẹtt🫐,7712804571223212821
+13,@Phươngbao1989,Chỉ gắn thẻ (@tag) bạn bè,FILTERED_TAG_FRIEND,Tiếng Việt,1,tranchuppy,Bào Ngư,7713197476928717574
+14,🥰,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,0,8683792t50932,NGUYỄN THỊ THANH HUYỀN,7712668917068907282
+15,🥰,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,0,8683792t50932,NGUYỄN THỊ THANH HUYỀN,7712668912555508498
+16,❤️,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,0,19861975_dk,Diễm chị. ( nick phụ ),7712235716868686610
+17,😳😳😳😳,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,0,l.cng5524,Lê Cường,7713192816177070868
+18,🥰,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,0,8683792t50932,NGUYỄN THỊ THANH HUYỀN,7712668596250018568
+19,ฟังไม่ออกเเต่เพลงเพราะมากๆเลยค่ะ,Ngôn ngữ khác ngoài Tiếng Việt / Tiếng Anh,FILTERED_UNSUPPORTED_LANG,Ngôn ngữ khác,0,wantanasrijan,Wantana Srijan,7713196703126061876
+20,❤️🌹,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,0,phuong_prince,Phương Phò Mã,7713202871567172373
+21,đây,Chỉ gọi tên riêng (không có cảm xúc),FILTERED_NAME_ONLY,Tiếng Việt,0,akashic003,Jinka_10,7712471898609828609
+22,đây,Chỉ gọi tên riêng (không có cảm xúc),FILTERED_NAME_ONLY,Tiếng Việt,0,inhi.ly,iNhi Ly,7712137622378152711
+23,❤️🌻,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,0,thapham.786,Thà Phạm,7712084794398081844
+24,@Linh bel,Chỉ gắn thẻ (@tag) bạn bè,FILTERED_TAG_FRIEND,Tiếng Anh,0,dangdung_175,ở đây có dũng,7713181464846811924

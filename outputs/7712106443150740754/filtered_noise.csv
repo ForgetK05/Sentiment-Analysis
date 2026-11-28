@@ -1,0 +1,22 @@
+﻿"stt
+(số thứ tự)","original_text
+(nội dung gốc)","filter_reason_vi
+(lý do lọc)","filter_reason
+(mã lý do lọc)","language
+(ngôn ngữ)","likes
+(lượt thích)","username
+(tài khoản)","nickname
+(tên hiển thị)","comment_id
+(mã bình luận)"
+1,A Di Đà Phật,Chỉ gọi tên riêng (không có cảm xúc),FILTERED_NAME_ONLY,Tiếng Việt,3,dim.ngc.nguyn.th8,Diễm Ngọc Nguyễn Thị,7712305387537924916
+2,😳😳😳,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,1,kghhhhs,Lê hạnh,7712120164422009601
+3,ok,Từ rác / seeding ngắn vô nghĩa,FILTERED_MEANINGLESS,Tiếng Anh,0,abalasitamon0,Andg _ inhl,7712442881423835912
+4,Ok,Từ rác / seeding ngắn vô nghĩa,FILTERED_MEANINGLESS,Tiếng Anh,0,user56792178421,꧁༺ÁⒸ❦ⓆⓊỷ༻꧂,7712378256779100949
+5,sao 44 v,Ngôn ngữ khác ngoài Tiếng Việt / Tiếng Anh,FILTERED_UNSUPPORTED_LANG,Ngôn ngữ khác,0,tng.nguyn2110,Tùnqq,7712398786525561606
+6,@xoaii chịu r,Chỉ gắn thẻ (@tag) bạn bè,FILTERED_TAG_FRIEND,Tiếng Việt,0,_evx09,_babybong,7712350857790046997
+7,🥰🥰🥰,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,0,abcde_02022,😀😃,7712463219341116180
+8,🥺🥺🥺,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,0,thanhuong.1982,Thanh Hương,7712409796690854662
+9,😳😳😳,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,0,phuongtran0899,Phuongtran,7712349736544518913
+10,😳😳😳,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,0,ptkl6886,ptkl6886,7712319336447738676
+11,❤️❤️❤️,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,0,lehong3525,💕Lê Hồng 💕,7712130504598110983
+12,🥹🥹🥹😢😢😢😢,"Chỉ chứa URL, số hoặc ký tự/emoji",FILTERED_URL_OR_SYMBOL,Tiếng Việt,0,b.trm.baynick,Bàtrùm baynick,7712113131686363905

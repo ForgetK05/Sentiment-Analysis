@@ -1,0 +1,71 @@
+﻿"stt
+(số thứ tự)","comment_id
+(mã bình luận)","parent_comment_id
+(mã bình luận gốc)","username
+(tài khoản)","nickname
+(tên hiển thị)","likes
+(lượt thích)","language
+(ngôn ngữ)","original_text
+(nội dung gốc)","cleaned_text
+(nội dung đã làm sạch)","segmented_text
+(văn bản đã tách từ)","is_duplicate
+(bình luận trùng lặp)","has_sarcasm_signal
+(dấu hiệu mỉa mai)","needs_audit
+(cần thẩm định kỹ)","is_on_topic
+(bám sát chủ đề video)","context_relevance
+(độ liên quan video 0-1)","matched_video_terms
+(từ khóa video khớp)","context_alignment
+(liên hệ với nội dung video)","polarity_label
+(nhãn sắc thái chuẩn)","polarity_score
+(điểm cực tính -1 đến +1)","score_POS
+(xác suất tích cực)","score_NEG
+(xác suất tiêu cực)","score_NEU
+(xác suất trung tính)","emotion_label
+(nhãn cảm xúc chuẩn)","pred_cnb
+(dự đoán complement nb)","pred_lr
+(dự đoán logistic regression)","pred_ridge
+(dự đoán ridge classifier)","pred_sgd
+(dự đoán sgd classifier)","pred_svm
+(dự đoán linear svm)","pred_nbsvm
+(dự đoán nbsvm)","pred_rf
+(dự đoán random forest)","pred_tree
+(dự đoán histgradientboosting)","pred_ml_ensemble
+(dự đoán ml ensemble)","pred_lexicon
+(dự đoán từ điển luật)","dl_primary_model
+(mô hình học sâu sử dụng)","pred_phobert
+(dự đoán phobert - vi)","pred_visobert
+(dự đoán visobert - vi)","pred_roberta
+(dự đoán twitter-roberta - en)"
+1,7712310751020745478,,npl31_0,linh ta linh tinh,32,Tiếng Việt,thương bạn quá,thương bạn quá,thương bạn quá,False,False,True,False,0.0,,Ít liên quan / Bình luận ngoài lề,POS,0.6461,0.8078,0.1218,0.0704,Sadness,POS,POS,NEG,NEG,NEG,POS,POS,POS,POS,POS,PhoBERT,POS,POS,—
+2,7712327044852433670,,ngocha13112014,ngocha_1311,13,Tiếng Việt,"Chị đấy ở gần nhà t,thương qus","Chị đấy ở gần nhà t,thương qus","Chị đấy ở gần nhà t , thương qus",False,False,True,False,0.0809,,Ít liên quan / Bình luận ngoài lề,POS,0.6173,0.733,0.1466,0.1205,Enjoyment,NEG,NEG,NEG,NEG,NEG,POS,POS,NEG,NEG,POS,PhoBERT,POS,POS,—
+3,7712107489088537364,,vdphuong06,Hoàng tử lốp,12,Tiếng Việt,buon,buon,buon,False,False,True,False,0.0,,Ít liên quan / Bình luận ngoài lề,NEU,0.1035,0.2892,0.209,0.5017,Enjoyment,NEG,NEG,NEG,NEG,NEG,POS,NEG,NEG,NEG,NEU,PhoBERT,NEU,POS,—
+4,7712119605019378438,,ngha.phm.vn97,Nghĩa Phạm Văn,7,Tiếng Việt,bọn trẻ bh nghĩ bỗng bột quá,bọn trẻ bh nghĩ bỗng bột quá,bọn trẻ bh nghĩ bỗng bột quá,False,False,True,False,0.0421,,Ít liên quan / Bình luận ngoài lề,NEG,-0.5231,0.0453,0.4896,0.4651,Disgust,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEU,PhoBERT,NEU,NEG,—
+5,7712125948166652724,,user7qx7ttcosc,user68536259608,3,Tiếng Việt,có phải là anh bán sách thư viện phải không ❤️❤️❤️,có phải là anh bán sách thư viện phải không ❤️❤️❤️,có phải là anh bán sách thư_viện phải không ❤_️ ❤_️ ❤ ️,False,False,True,False,0.0666,,Ít liên quan / Bình luận ngoài lề,POS,0.4658,0.58,0.166,0.254,Enjoyment,POS,NEG,NEG,NEG,NEG,NEG,NEU,NEU,NEG,NEU,PhoBERT,POS,POS,—
+6,7712121259308073746,,doloi19892,Hương lợi 💕,3,Tiếng Việt,Thương con quá,Thương con quá,Thương con quá,False,False,True,False,0.0,,Ít liên quan / Bình luận ngoài lề,POS,0.21,0.5623,0.3683,0.0694,Sadness,POS,NEG,NEG,NEG,NEG,POS,POS,POS,NEG,POS,PhoBERT,POS,NEG,—
+7,7712128371920798470,,user371508793,Thuy nguyen,3,Tiếng Việt,thương cháu quá,thương cháu quá,thương cháu quá,False,False,True,False,0.0706,,Ít liên quan / Bình luận ngoài lề,POS,0.5993,0.7878,0.1486,0.0636,Sadness,POS,NEG,NEG,NEG,NEG,POS,POS,POS,NEG,POS,PhoBERT,POS,POS,—
+8,7712321245967319829,,sky0905818,NTHY,2,Tiếng Việt,Cứ như thế này sẽ thành tiền lệ xấu.,Cứ như thế này sẽ thành tiền lệ xấu.,Cứ như thế_này sẽ thành tiền_lệ xấu .,False,False,False,False,0.0426,,Ít liên quan / Bình luận ngoài lề,NEG,-0.8944,0.0261,0.9205,0.0533,Disgust,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEG,PhoBERT,NEG,NEG,—
+9,7712444894498243380,,mhin123454,mỹHiền12345,1,Tiếng Việt,Sao nhiều thế nhỉ,Sao nhiều thế nhỉ,Sao nhiều thế nhỉ,False,False,True,False,0.0,,Ít liên quan / Bình luận ngoài lề,NEU,0.0337,0.2505,0.2042,0.5453,Surprise,NEU,NEU,NEU,NEU,NEU,NEU,NEU,NEG,NEU,NEU,PhoBERT,NEU,NEG,—
+10,7712460687906226951,,lien.nguyen691,Ken Kun,1,Tiếng Việt,nên có lực lượng túc trực ở cac cầu vì ngươi tư tử nhiều quá,nên có lực lượng túc trực ở cac cầu vì ngươi tư tử nhiều quá,nên có lực_lượng túc_trực ở cac cầu vì_ngươi tư_tử nhiều quá,False,False,True,True,0.1299,,Tiêu cực đối với nội dung video,NEG,-0.6045,0.0926,0.6971,0.2102,Other,NEG,NEU,POS,NEU,POS,NEG,NEG,NEG,NEU,NEU,PhoBERT,NEG,NEG,—
+11,7712457283419144961,7712159092005585670,ltt23041998,Cuộc sống của 1 người lười 🥱,1,Tiếng Việt,ngáo à b,ngáo à b,ngáo à b,False,False,False,False,0.0,,Ít liên quan / Bình luận ngoài lề,NEG,-0.7767,0.0392,0.8159,0.1448,Surprise,NEG,NEG,NEG,NEG,NEG,NEG,POS,NEG,NEG,NEU,PhoBERT,NEG,NEG,—
+12,7712433104614654728,7712398786525561606,_nguoidangcap_,xinh gái búng dái đàn ông,1,Tiếng Việt,do áp lực gđ,do áp lực gđ,do áp_lực gđ,False,False,True,False,0.0855,,Ít liên quan / Bình luận ngoài lề,NEU,-0.19,0.0706,0.3986,0.5308,Sadness,NEG,NEU,NEG,NEU,NEG,NEG,POS,POS,NEG,NEU,PhoBERT,NEU,NEG,—
+13,7712434669597557505,7712119605019378438,_nguoidangcap_,xinh gái búng dái đàn ông,1,Tiếng Việt,suy nghĩ kiểu gì vậy?,suy nghĩ kiểu gì vậy?,suy_nghĩ kiểu gì vậy ?,False,False,False,False,0.0242,,Ít liên quan / Bình luận ngoài lề,NEG,-0.6109,0.0534,0.6643,0.2823,Other,NEG,NEU,NEU,NEU,NEU,NEU,NEU,NEU,NEU,NEU,PhoBERT,NEG,NEG,—
+14,7712342980938744596,7712159092005585670,qun0807,Quân 👺,1,Tiếng Việt,Ước j nói lung tung bị phạt nhỉ,Ước gì nói lung tung bị phạt nhỉ,Ước gì nói lung_tung bị phạt nhỉ,False,False,True,False,0.0287,,Ít liên quan / Bình luận ngoài lề,NEU,-0.1618,0.1689,0.3781,0.453,Other,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEU,PhoBERT,NEU,POS,—
+15,7712344132224008968,7712159092005585670,huy24010,Huy0109,1,Tiếng Việt,Ko nhảy cầu thì 44 bằng cách khác,không nhảy cầu thì 44 bằng cách khác,không nhảy_cầu thì 44 bằng cách khác,False,False,True,True,0.1207,,Tiêu cực đối với nội dung video,NEG,-0.6014,0.0459,0.6473,0.3069,Other,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEU,PhoBERT,NEG,NEU,—
+16,7712509907438928692,,.linhdayy,Vẫn làmvệsĩsaulưng.c.thìđổitên,0,Tiếng Việt,Lạnh lẽo🖤,Lạnh lẽo🖤,Lạnh_lẽo 🖤,False,False,True,False,0.0,,Ít liên quan / Bình luận ngoài lề,NEG,-0.21,0.3655,0.4685,0.1661,Sadness,NEU,NEU,POS,POS,POS,POS,POS,POS,POS,NEU,PhoBERT,NEG,POS,—
+17,7712433213881008897,,lananhyeucho,Lan anh🌼,0,Tiếng Việt,Thuong qua,Thuong qua,Thuong qua,False,False,True,False,0.0,,Ít liên quan / Bình luận ngoài lề,NEU,0.1418,0.2845,0.0761,0.6394,Enjoyment,NEU,NEU,NEU,NEU,NEU,NEU,NEG,NEG,NEU,NEU,PhoBERT,NEU,POS,—
+18,7712455025231594246,,mitdqy,Cục cức,0,Tiếng Việt,1h52 a ơi,1h52 a ơi,1 h52 a ơi,False,False,True,False,0.0,,Ít liên quan / Bình luận ngoài lề,NEU,0.1664,0.2887,0.1088,0.6024,Enjoyment,NEU,NEU,NEU,NEU,NEU,NEU,NEU,NEG,NEU,NEU,PhoBERT,NEU,POS,—
+19,7712162218003579669,,luuthanthanh199,thanh19..0..98.2645,0,Tiếng Việt,"hết số ,","hết số ,","hết số ,",False,False,False,False,0.0743,,Ít liên quan / Bình luận ngoài lề,NEG,-0.7868,0.0659,0.7933,0.1409,Disgust,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEU,PhoBERT,NEG,NEG,—
+20,7712426574402028295,,mithogau,Mi Thỏ Gấu,0,Tiếng Việt,Ơ sao nhiều vụ vậy. Liên tiếp luôn ý,Ơ sao nhiều vụ vậy. Liên tiếp luôn ý,Ơ_sao nhiều vụ vậy . Liên_tiếp luôn ý,False,False,False,False,0.0479,,Ít liên quan / Bình luận ngoài lề,POS,0.6501,0.7203,0.0702,0.2095,Surprise,POS,NEU,POS,NEU,POS,POS,NEU,NEU,POS,NEU,PhoBERT,POS,POS,—
+21,7712372281776112436,,tho.phm.th.tho,Thảo Phạm Thị Thảo,0,Tiếng Việt,tin hay,tin hay,tin hay,False,False,False,False,0.0454,,Ít liên quan / Bình luận ngoài lề,POS,0.8439,0.8284,0.0441,0.1275,Enjoyment,POS,NEU,POS,POS,POS,POS,POS,POS,POS,POS,PhoBERT,POS,POS,—
+22,7712128345442321173,,userrng1cpyozf,userrng1cpyozf,0,Tiếng Việt,buồn,buồn,buồn,False,False,False,False,0.0,,Ít liên quan / Bình luận ngoài lề,NEG,-0.9277,0.0295,0.9173,0.0531,Sadness,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEG,PhoBERT,NEG,NEG,—
+23,7712120122885899026,,quyn.l6264,ỉn83,0,Tiếng Anh,thuong be qua,thuong be qua,thuong be qua,False,False,False,False,0.0,,Ít liên quan / Bình luận ngoài lề,NEU,-0.0283,0.1271,0.1707,0.7022,Other,NEU,NEU,NEU,NEU,NEU,NEU,NEU,POS,NEU,NEU,Twitter-RoBERTa,—,—,NEU
+24,7712295533813596936,,_lan_1981,Hương Lan,0,Tiếng Việt,Thương cháu quá,Thương cháu quá,Thương cháu quá,True,False,True,False,0.0706,,Ít liên quan / Bình luận ngoài lề,POS,0.2512,0.6132,0.3221,0.0647,Sadness,POS,NEG,NEG,NEG,NEG,POS,POS,POS,NEG,POS,PhoBERT,POS,NEG,—
+25,7712223742302356245,7712125948166652724,li.thanh93,Lợi Thanh,0,Tiếng Việt,chêt vây khô hon sông,chêt vây khô hon sông,chêt vây khô_hon sông,False,False,False,False,0.0,,Ít liên quan / Bình luận ngoài lề,NEG,-0.6637,0.1385,0.7258,0.1358,Disgust,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEU,PhoBERT,NEG,NEG,—
+26,7712812394075423494,7712107489088537364,vthanh31_,van thanh.,0,Tiếng Việt,lạc à,lạc à,lạc à,False,False,True,False,0.0,,Ít liên quan / Bình luận ngoài lề,NEG,-0.3237,0.25,0.5737,0.1763,Surprise,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEU,PhoBERT,NEG,POS,—
+27,7712382244513710855,,userc4wz1y0nnq1,hoa sen,0,Tiếng Việt,thương con quá,thương con quá,thương con quá,True,False,True,False,0.0,,Ít liên quan / Bình luận ngoài lề,POS,0.5174,0.7451,0.1878,0.0671,Sadness,POS,NEG,NEG,NEG,NEG,POS,POS,POS,NEG,POS,PhoBERT,POS,POS,—
+28,7712310597749146389,,npl31_0,linh ta linh tinh,0,Tiếng Việt,a di đà phật,a di đà phật,a di_đà phật,False,False,False,False,0.0,,Ít liên quan / Bình luận ngoài lề,POS,0.7362,0.7296,0.0519,0.2184,Enjoyment,NEG,NEU,POS,NEU,POS,POS,NEU,NEU,POS,NEU,PhoBERT,POS,POS,—
+29,7712384399677211398,,ngi.tiu.cc48,tiêu cực đủ rồi tích cực lên,0,Tiếng Việt,ngay gần nhà t luôn:(((,ngay gần nhà t luôn:(((,ngay gần nhà t luôn : ( ( (,False,False,True,False,0.0568,,Ít liên quan / Bình luận ngoài lề,POS,0.3779,0.6376,0.231,0.1313,Sadness,NEG,NEG,NEG,NEG,NEG,NEG,NEU,NEG,NEG,NEU,PhoBERT,POS,POS,—
+30,7712159092005585670,,hihuhehe01,bộ PC,0,Tiếng Việt,nên bỏ hết cầu đi để hết nhảy cầu,nên bỏ hết cầu đi để hết nhảy cầu,nên bỏ hết cầu đi để hết nhảy cầu,False,False,False,False,0.0926,,Ít liên quan / Bình luận ngoài lề,NEG,-0.7567,0.0548,0.8115,0.1337,Other,NEG,NEG,NEG,NEG,NEG,NEG,NEU,NEU,NEG,NEU,PhoBERT,NEG,NEG,—
+31,7712855527089029889,,dung.tran3523,Dung Tran,0,Tiếng Việt,Thôi đi ông ạ. Bình luận đéo gì để người khác học theo,Thôi đi ông ạ. Bình luận đéo gì để người khác học theo,Thôi đi ông ạ . Bình_luận đéo gì để người khác học theo,False,False,False,False,0.0362,,Ít liên quan / Bình luận ngoài lề,NEG,-0.8529,0.0332,0.8243,0.1426,Disgust,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEG,NEU,PhoBERT,NEG,NEG,—
+32,7712427440618078994,,_iceplant_,LobsterPrice,0,Tiếng Anh,@best ex bf thua,ex bf thua,ex bf thua,False,False,False,False,0.0,,Ít liên quan / Bình luận ngoài lề,NEU,0.0409,0.1471,0.0804,0.7725,Other,POS,NEU,NEU,NEU,NEU,NEU,NEU,NEU,NEU,NEU,Twitter-RoBERTa,—,—,NEU
+33,7712116731121369857,,user5530197452160,Nguyễn Hà,0,Tiếng Việt,[Ngây thơ][Ngây thơ][Ngây thơ],[Ngây thơ][Ngây thơ][Ngây thơ],[ Ngây_thơ ]_[ Ngây_thơ ]_[ Ngây_thơ ],False,False,True,False,0.0,,Ít liên quan / Bình luận ngoài lề,POS,0.4893,0.6216,0.1855,0.1929,Enjoyment,NEG,NEG,NEG,NEG,NEG,NEG,NEG,POS,NEG,NEU,PhoBERT,POS,POS,—

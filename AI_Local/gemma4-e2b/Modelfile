@@ -1,0 +1,12 @@
+FROM gemma4:e2b
+
+# Giảm ngữ cảnh xuống 4096 tokens để tránh tràn 4GB VRAM của GTX 1650 khi nạp khung hình
+PARAMETER num_ctx 4096
+
+# Bỏ ép num_gpu 99 (hoặc dùng -1) để Ollama tự động cân đối GPU + RAM hệ thống
+PARAMETER num_gpu -1
+
+# Tham số sinh văn bản chuẩn cho Gemma 4
+PARAMETER temperature 1.0
+PARAMETER top_p 0.95
+PARAMETER top_k 64

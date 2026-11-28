@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Báo cáo Phân tích Cảm xúc — 7712106443150740754</title>
+  <style>
+    :root {
+      --bg: #f8fafc; --card: #ffffff; --ink: #0f172a; --muted: #64748b;
+      --border: #e2e8f0; --blue: #2563eb; --green: #16a34a; --red: #dc2626;
+      --gray: #64748b; --amber: #d97706;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg); color: var(--ink); line-height: 1.5; }
+    .topbar { position: sticky; top: 0; z-index: 20; background: #0f172a; color: #fff;
+      padding: 12px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+    .topbar .title { font-weight: 700; font-size: 16px; }
+    .topbar nav a { color: #cbd5e1; text-decoration: none; margin-left: 16px; font-size: 13.5px; }
+    .topbar nav a:hover { color: #fff; }
+    .container { max-width: 1280px; margin: 24px auto; padding: 0 20px 48px; }
+    .section { margin-bottom: 28px; }
+    .section-title { font-size: 18px; font-weight: 700; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04); }
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+    .kpi .k-lbl { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
+    .kpi .k-val { font-size: 20px; font-weight: 700; margin-top: 4px; }
+    .kpi .k-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .media-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px 18px; font-size: 14px; }
+    .media-grid .full-span { grid-column: 1 / -1; }
+    .lbl { color: var(--muted); font-weight: 600; }
+    .muted { color: var(--muted); font-size: 13.5px; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .badge-green { background: #dcfce7; color: #166534; }
+    .badge-blue { background: #dbeafe; color: #1e40af; }
+    .badge-red { background: #fee2e2; color: #991b1b; }
+    .badge-gray { background: #f1f5f9; color: #475569; }
+    .pill { display: inline-block; background: #f1f5f9; border: 1px solid var(--border); border-radius: 999px;
+      padding: 3px 10px; font-size: 12px; margin: 3px 4px 3px 0; }
+    .pill-pos { background: #dcfce7; border-color: #bbf7d0; color: #166534; }
+    .pill-neg { background: #fee2e2; border-color: #fecaca; color: #991b1b; }
+    .pipeline-flow { display: flex; align-items: stretch; gap: 10px; overflow-x: auto; padding-bottom: 6px; }
+    .stage-card { flex: 1 1 210px; min-width: 210px; background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px; display: flex; flex-direction: column; }
+    .stage-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .stage-id { font-size: 12px; font-weight: 700; color: var(--blue); }
+    .stage-card h4 { margin: 0 0 4px; font-size: 14.5px; }
+    .stage-time { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .stage-summary { font-size: 13px; margin: 0 0 8px; color: #334155; }
+    .stage-metrics { margin: auto 0 0; padding-left: 16px; font-size: 12px; color: #475569; }
+    .stage-arrow { display: flex; align-items: center; font-size: 22px; font-weight: 700; color: #94a3b8; }
+    .formula-box { margin-top: 14px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 10px; padding: 12px 14px; }
+    .formula-row { margin-top: 6px; font-size: 13.5px; }
+    .formula-row code { background: #e2e8f0; padding: 2px 6px; border-radius: 6px; font-size: 12.5px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 16px; }
+    .model-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .model-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+    .model-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .model-fam { font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
+    .model-name { font-size: 14.5px; font-weight: 700; margin-top: 2px; }
+    .model-desc { font-size: 12.5px; color: #475569; margin: 8px 0 10px; min-height: 36px; }
+    .dist-bar { display: flex; height: 10px; border-radius: 999px; overflow: hidden; background: #e2e8f0; }
+    .seg-pos { background: #22c55e; } .seg-neu { background: #94a3b8; } .seg-neg { background: #ef4444; }
+    .dist-legend { display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 600; margin: 5px 0 8px; }
+    .c-pos { color: var(--green); font-weight: 600; } .c-neu { color: var(--gray); font-weight: 600; } .c-neg { color: var(--red); font-weight: 600; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
+    th { background: #f8fafc; font-weight: 700; color: #334155; }
+    .row-ensemble { background: #eff6ff; }
+    .row-system { background: #f0fdf4; font-weight: 600; }
+    .heatmap-table th, .heatmap-table td { text-align: center; font-size: 12px; padding: 6px 8px; }
+    .heatmap-table tbody th { text-align: left; background: #f8fafc; }
+    .hm-na { color: #94a3b8; background: #f8fafc; }
+    .feat-row { display: grid; grid-template-columns: 150px 1fr 78px; align-items: center; gap: 8px; margin-bottom: 7px; font-size: 12.5px; }
+    .feat-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .feat-track { background: #f1f5f9; height: 10px; border-radius: 999px; overflow: hidden; }
+    .feat-fill { height: 100%; border-radius: 999px; }
+    .fill-pos { background: #22c55e; } .fill-neg { background: #ef4444; } .fill-blue { background: #3b82f6; }
+    .feat-val { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .callout { margin-top: 12px; padding: 12px 14px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; font-size: 13.5px; }
+    .xray-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
+    .xray-controls input { flex: 1 1 240px; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13.5px; }
+    .filter-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+    .f-btn { border: 1px solid #cbd5e1; background: #fff; padding: 5px 11px; border-radius: 999px; cursor: pointer; font-size: 12.5px; }
+    .f-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+    .xray-row { cursor: pointer; transition: background .12s; }
+    .xray-row:hover { background: #f8fafc; }
+    .xray-row td.txt-cell { white-space: normal; min-width: 260px; max-width: 480px; }
+    .xray-drawer td { white-space: normal; background: #f8fafc; padding: 14px 16px; }
+    .xray-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+    .vote-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .vote-chip { border: 1px solid var(--border); background: #fff; border-radius: 8px; padding: 4px 8px; font-size: 12px; }
+    .lbl-POS { color: #166534; background: #dcfce7; padding: 1px 6px; border-radius: 5px; font-weight: 700; }
+    .lbl-NEU { color: #475569; background: #e2e8f0; padding: 1px 6px; border-radius: 5px; font-weight: 700; }
+    .lbl-NEG { color: #991b1b; background: #fee2e2; padding: 1px 6px; border-radius: 5px; font-weight: 700; }
+    .pager { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 13px; }
+    .pager button { padding: 5px 12px; border: 1px solid #cbd5e1; background: #fff; border-radius: 6px; cursor: pointer; }
+    .pager button:disabled { opacity: 0.45; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="title">Báo cáo Phân tích Cảm xúc TikTok — <code>7712106443150740754</code></div>
+    <nav>
+      <a href="#overview">Tổng quan</a>
+      <a href="#pipeline">Luồng hệ thống</a>
+      <a href="#models">5 Họ Mô hình</a>
+      <a href="#xray">Comment X-Ray</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section id="overview" class="section">
+      <h2 class="section-title">1. Tổng quan &amp; Ngữ cảnh Video</h2>
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="k-lbl">Bình luận hợp lệ</div>
+          <div class="k-val">33 / 45</div>
+          <div class="k-sub">VI: 31 | EN: 2 | Lọc: 12</div>
+        </div>
+        <div class="kpi">
+          <div class="k-lbl">Xu hướng sắc thái</div>
+          <div class="k-val">Tranh cãi (Trái chiều)</div>
+          <div class="k-sub">POS 36.36% | NEU 24.24% | NEG 39.39%</div>
+        </div>
+        <div class="kpi">
+          <div class="k-lbl">Cảm xúc chủ đạo</div>
+          <div class="k-val">Buồn bã</div>
+          <div class="k-sub">Chiếm 27.27% | Tự tin TB: 68.1%</div>
+        </div>
+        <div class="kpi">
+          <div class="k-lbl">Cấu hình chạy</div>
+          <div class="k-val" style="font-size:16px">Hybrid (Classical ML + Deep Learning)</div>
+          <div class="k-sub">Tinh gọn 5 đại diện + Ensemble • 1196.44 s</div>
+        </div>
+      </div>
+
+      <div class="card">
+        
+        <div class="media-grid">
+          <div><span class="lbl">Chủ đề chính:</span> <strong>Tin tức xã hội về vụ việc em gái lớp 11 mất tích tại Cầu Thăng Long và lời khuyên cho giới trẻ khi gặp khó khăn.</strong></div>
+          <div><span class="lbl">Mục đích:</span> Cung cấp thông tin về vụ việc, đồng thời đưa ra lời khuyên tâm lý cho người xem về cách đối diện với các vấn đề khó khăn trong cuộc sống.</div>
+          <div><span class="lbl">Sắc thái bài:</span> Trung lập</div>
+          <div><span class="lbl">Thực thể chính:</span> Vụ việc em gái mất tích tại Cầu Thăng Long, Giới trẻ gặp khó khăn trong cuộc sống</div>
+          <div class="full-span"><span class="lbl">Tóm tắt nội dung:</span> Vụ việc em gái học lớp 11 tại Cầu Thăng Long, Hà Nội vẫn chưa tìm được người vào ngày 25/11. Người dân phát hiện cháu là sinh năm 2010 và đang học lớp 11. Lực lượng chức năng đã vào cuộc xử lý vụ việc. Người sáng tạo nội dung chia sẻ rằng những vấn đề khó khăn ở lứa tuổi này không phải là vấn đề lớn, mà chỉ là nhỏ trong bối cảnh chung. Tác giả khuyên người trẻ gặp khó khăn nên chia sẻ với bố mẹ hoặc bạn bè thay vì chọn cách cực đoan.</div>
+        </div>
+        
+        
+      </div>
+    </section>
+
+    <section id="pipeline" class="section">
+      <h2 class="section-title">2. Cách Hệ thống Chạy (Live Pipeline Funnel)</h2>
+      <div class="pipeline-flow">
+        
+            <div class="stage-card">
+              <div class="stage-top">
+                <span class="stage-id">GĐ 0</span>
+                <span class="badge badge-green">ĐÃ CHẠY</span>
+              </div>
+              <h4>Chuẩn bị dữ liệu đầu vào</h4>
+              <div class="stage-time">Thời gian: <strong>70.50 s</strong></div>
+              <p class="stage-summary">Tải &amp; thu thập từ TikTok (7712106443150740754)</p>
+              <ul class="stage-metrics"><li><span>nguồn:</span> <strong>TikTok URL</strong></li><li><span>media:</span> <strong>Có</strong></li><li><span>comments:</span> <strong>Có</strong></li></ul>
+            </div>
+            <div class="stage-arrow">→</div>
+            
+            <div class="stage-card">
+              <div class="stage-top">
+                <span class="stage-id">GĐ 1</span>
+                <span class="badge badge-green">ĐÃ CHẠY</span>
+              </div>
+              <h4>Ngữ cảnh Media (Gemma 4 + Whisper)</h4>
+              <div class="stage-time">Thời gian: <strong>178.71 s</strong></div>
+              <p class="stage-summary">Gemma 4 E2B + Whisper trích xuất ngữ cảnh mới</p>
+              <ul class="stage-metrics"><li><span>loại:</span> <strong>video</strong></li><li><span>khung hình:</span> <strong>8</strong></li><li><span>lời thoại:</span> <strong>Có</strong></li></ul>
+            </div>
+            <div class="stage-arrow">→</div>
+            
+            <div class="stage-card">
+              <div class="stage-top">
+                <span class="stage-id">GĐ 2</span>
+                <span class="badge badge-green">ĐÃ CHẠY</span>
+              </div>
+              <h4>Tiền xử lý NLP &amp; Lọc nhiễu</h4>
+              <div class="stage-time">Thời gian: <strong>9.09 s</strong></div>
+              <p class="stage-summary">Giữ 33/45 bình luận hợp lệ</p>
+              <ul class="stage-metrics"><li><span>thô:</span> <strong>45</strong></li><li><span>hợp lệ:</span> <strong>33</strong></li><li><span>nhiễu:</span> <strong>12</strong></li><li><span>bám video:</span> <strong>2</strong></li></ul>
+            </div>
+            <div class="stage-arrow">→</div>
+            
+            <div class="stage-card">
+              <div class="stage-top">
+                <span class="stage-id">GĐ 3</span>
+                <span class="badge badge-green">ĐÃ CHẠY</span>
+              </div>
+              <h4>Phân tích Cảm xúc Song ngữ</h4>
+              <div class="stage-time">Thời gian: <strong>938.03 s</strong></div>
+              <p class="stage-summary">Xu hướng: Tranh cãi (Trái chiều) (POS 12 / NEU 8 / NEG 13)</p>
+              <ul class="stage-metrics"><li><span>chế độ:</span> <strong>hybrid</strong></li><li><span>mô hình:</span> <strong>5 đại diện + Ensemble</strong></li><li><span>tổng câu:</span> <strong>33</strong></li></ul>
+            </div>
+            <div class="stage-arrow">→</div>
+            
+            <div class="stage-card">
+              <div class="stage-top">
+                <span class="stage-id">GĐ 4</span>
+                <span class="badge badge-gray">BỎ QUA</span>
+              </div>
+              <h4>AI Thẩm định (Gemma 4 E2B)</h4>
+              <div class="stage-time">Thời gian: <strong>0.0 ms</strong></div>
+              <p class="stage-summary">Đã tắt Giai đoạn 4 theo lựa chọn người dùng (run_ai_audit=False).</p>
+              <ul class="stage-metrics"><li><span>phạm vi:</span> <strong>all</strong></li><li><span>đã chấm:</span> <strong>0</strong></li></ul>
+            </div>
+            
+            
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div style="font-size:13.5px">
+          <strong>Chi tiết lọc nhiễu:</strong>
+          <span class="pill">Chỉ tên riêng: <strong>1</strong></span><span class="pill">Vô nghĩa/Seeding: <strong>2</strong></span><span class="pill">Ngoại ngữ: <strong>1</strong></span><span class="pill">URL/Số/Emoji: <strong>7</strong></span><span class="pill">Chỉ @tag: <strong>1</strong></span>
+        </div>
+        <div class="formula-box"><strong>Công thức tổ hợp điểm cuối (Stage 3):</strong><div class="formula-row"><span class="badge badge-blue">VI</span> <code>0.40 × PhoBERT + 0.20 × ViSoBERT + 0.25 × ML Meta-Ensemble (VI) + 0.15 × Lexicon (VI)</code></div><div class="formula-row"><span class="badge badge-blue">EN</span> <code>0.60 × Twitter-RoBERTa + 0.25 × ML Meta-Ensemble (EN) + 0.15 × Lexicon (EN)</code></div></div>
+      </div>
+    </section>
+
+    <section id="models" class="section">
+      <h2 class="section-title">3. Biểu diễn 5 Họ Mô hình &amp; Giải thích</h2>
+      <div class="model-cards">
+        
+            <div class="model-card" style="border-top: 4px solid #0ea5e9">
+              <div class="model-card-head">
+                <div>
+                  <div class="model-fam">Xác suất sinh (Naive Bayes)</div>
+                  <div class="model-name">TF-IDF + Complement NB</div>
+                </div>
+                
+              </div>
+              <p class="model-desc">Ước lượng xác suất phần bù giúp xử lý tốt tập bình luận mất cân bằng lớp.</p>
+              <div class="dist-bar" title="POS 27.27% | NEU 15.15% | NEG 57.58%">
+                <span class="seg-pos" style="width:27.27%"></span>
+                <span class="seg-neu" style="width:15.15%"></span>
+                <span class="seg-neg" style="width:57.58%"></span>
+              </div>
+              <div class="dist-legend">
+                <span class="c-pos">POS 27.27%</span>
+                <span class="c-neu">NEU 15.15%</span>
+                <span class="c-neg">NEG 57.58%</span>
+              </div>
+              <div class="model-meta">
+                <span class="pill">Chạy: <strong>2.4 ms</strong></span>
+                <span class="pill">Test VI Macro-F1: <strong>56.0%</strong></span>
+                
+              </div>
+            </div>
+            
+            <div class="model-card" style="border-top: 4px solid #6366f1">
+              <div class="model-card-head">
+                <div>
+                  <div class="model-fam">Tuyến tính (Linear)</div>
+                  <div class="model-name">TF-IDF + Logistic Regression</div>
+                </div>
+                
+              </div>
+              <p class="model-desc">Học trọng số tuyến tính cho từng từ/n-gram và xuất xác suất qua Softmax.</p>
+              <div class="dist-bar" title="POS 3.03% | NEU 36.36% | NEG 60.61%">
+                <span class="seg-pos" style="width:3.03%"></span>
+                <span class="seg-neu" style="width:36.36%"></span>
+                <span class="seg-neg" style="width:60.61%"></span>
+              </div>
+              <div class="dist-legend">
+                <span class="c-pos">POS 3.03%</span>
+                <span class="c-neu">NEU 36.36%</span>
+                <span class="c-neg">NEG 60.61%</span>
+              </div>
+              <div class="model-meta">
+                <span class="pill">Chạy: <strong>0.8 ms</strong></span>
+                <span class="pill">Test VI Macro-F1: <strong>62.6%</strong></span>
+                
+              </div>
+            </div>
+            
+            <div class="model-card" style="border-top: 4px solid #8b5cf6">
+              <div class="model-card-head">
+                <div>
+                  <div class="model-fam">Biên cực đại (SVM)</div>
+                  <div class="model-name">TF-IDF + Linear SVM</div>
+                </div>
+                
+              </div>
+              <p class="model-desc">Tìm siêu phẳng có biên phân cách lớn nhất trong không gian TF-IDF nhiều chiều.</p>
+              <div class="dist-bar" title="POS 15.15% | NEU 18.18% | NEG 66.67%">
+                <span class="seg-pos" style="width:15.15%"></span>
+                <span class="seg-neu" style="width:18.18%"></span>
+                <span class="seg-neg" style="width:66.67%"></span>
+              </div>
+              <div class="dist-legend">
+                <span class="c-pos">POS 15.15%</span>
+                <span class="c-neu">NEU 18.18%</span>
+                <span class="c-neg">NEG 66.67%</span>
+              </div>
+              <div class="model-meta">
+                <span class="pill">Chạy: <strong>4.5 ms</strong></span>
+                <span class="pill">Test VI Macro-F1: <strong>64.2%</strong></span>
+                
+              </div>
+            </div>
+            
+            <div class="model-card" style="border-top: 4px solid #14b8a6">
+              <div class="model-card-head">
+                <div>
+                  <div class="model-fam">Cây quyết định (Bagging)</div>
+                  <div class="model-name">SVD+Social + Random Forest</div>
+                </div>
+                
+              </div>
+              <p class="model-desc">Bỏ phiếu từ 150 cây quyết định độc lập trên đặc trưng SVD + 15 tín hiệu MXH.</p>
+              <div class="dist-bar" title="POS 30.3% | NEU 30.3% | NEG 39.39%">
+                <span class="seg-pos" style="width:30.3%"></span>
+                <span class="seg-neu" style="width:30.3%"></span>
+                <span class="seg-neg" style="width:39.39%"></span>
+              </div>
+              <div class="dist-legend">
+                <span class="c-pos">POS 30.3%</span>
+                <span class="c-neu">NEU 30.3%</span>
+                <span class="c-neg">NEG 39.39%</span>
+              </div>
+              <div class="model-meta">
+                <span class="pill">Chạy: <strong>97.9 ms</strong></span>
+                <span class="pill">Test VI Macro-F1: <strong>56.8%</strong></span>
+                
+              </div>
+            </div>
+            
+            <div class="model-card" style="border-top: 4px solid #f59e0b">
+              <div class="model-card-head">
+                <div>
+                  <div class="model-fam">Cây quyết định (Boosting)</div>
+                  <div class="model-name">SVD+Social + HistGradientBoosting</div>
+                </div>
+                
+              </div>
+              <p class="model-desc">Chuỗi cây tăng cường tuần tự sửa lỗi của cây trước trên đặc trưng SVD + MXH.</p>
+              <div class="dist-bar" title="POS 30.3% | NEU 18.18% | NEG 51.52%">
+                <span class="seg-pos" style="width:30.3%"></span>
+                <span class="seg-neu" style="width:18.18%"></span>
+                <span class="seg-neg" style="width:51.52%"></span>
+              </div>
+              <div class="dist-legend">
+                <span class="c-pos">POS 30.3%</span>
+                <span class="c-neu">NEU 18.18%</span>
+                <span class="c-neg">NEG 51.52%</span>
+              </div>
+              <div class="model-meta">
+                <span class="pill">Chạy: <strong>41.5 ms</strong></span>
+                <span class="pill">Test VI Macro-F1: <strong>56.5%</strong></span>
+                
+              </div>
+            </div>
+            
+            <div class="model-card" style="border-top: 4px solid #2563eb">
+              <div class="model-card-head">
+                <div>
+                  <div class="model-fam">Tổ hợp ML (Meta-Ensemble)</div>
+                  <div class="model-name">Classical ML Meta-Ensemble</div>
+                </div>
+                <span class="badge badge-blue">Meta-Ensemble</span>
+              </div>
+              <p class="model-desc">Meta-learner kết hợp xác suất OOF từ nhóm mô hình ML cổ điển mạnh nhất.</p>
+              <div class="dist-bar" title="POS 15.15% | NEU 21.21% | NEG 63.64%">
+                <span class="seg-pos" style="width:15.15%"></span>
+                <span class="seg-neu" style="width:21.21%"></span>
+                <span class="seg-neg" style="width:63.64%"></span>
+              </div>
+              <div class="dist-legend">
+                <span class="c-pos">POS 15.15%</span>
+                <span class="c-neu">NEU 21.21%</span>
+                <span class="c-neg">NEG 63.64%</span>
+              </div>
+              <div class="model-meta">
+                <span class="pill">Chạy: <strong>1.1 ms</strong></span>
+                <span class="pill">Test VI Macro-F1: <strong>65.1%</strong></span>
+                
+              </div>
+            </div>
+            
+            <div class="model-card" style="border-top: 4px solid #64748b">
+              <div class="model-card-head">
+                <div>
+                  <div class="model-fam">Luật &amp; Từ điển (Rule-based)</div>
+                  <div class="model-name">Bilingual Lexicon + Rules</div>
+                </div>
+                
+              </div>
+              <p class="model-desc">Tra từ điển sắc thái Việt–Anh kết hợp luật đảo chiều phủ định (±2 từ) và từ tăng cường.</p>
+              <div class="dist-bar" title="POS 21.21% | NEU 72.73% | NEG 6.06%">
+                <span class="seg-pos" style="width:21.21%"></span>
+                <span class="seg-neu" style="width:72.73%"></span>
+                <span class="seg-neg" style="width:6.06%"></span>
+              </div>
+              <div class="dist-legend">
+                <span class="c-pos">POS 21.21%</span>
+                <span class="c-neu">NEU 72.73%</span>
+                <span class="c-neg">NEG 6.06%</span>
+              </div>
+              <div class="model-meta">
+                <span class="pill">Chạy: <strong>0.0 ms</strong></span>
+                
+                
+              </div>
+            </div>
+            
+            <div class="model-card" style="border-top: 4px solid #ec4899">
+              <div class="model-card-head">
+                <div>
+                  <div class="model-fam">Deep Learning (Transformer VI)</div>
+                  <div class="model-name">PhoBERT (VI)</div>
+                </div>
+                
+              </div>
+              <p class="model-desc">PhoBERT phân tích ngữ cảnh câu tiếng Việt đã tách từ bằng Underthesea.</p>
+              <div class="dist-bar" title="POS 38.71% | NEU 22.58% | NEG 38.71%">
+                <span class="seg-pos" style="width:38.71%"></span>
+                <span class="seg-neu" style="width:22.58%"></span>
+                <span class="seg-neg" style="width:38.71%"></span>
+              </div>
+              <div class="dist-legend">
+                <span class="c-pos">POS 38.71%</span>
+                <span class="c-neu">NEU 22.58%</span>
+                <span class="c-neg">NEG 38.71%</span>
+              </div>
+              <div class="model-meta">
+                <span class="pill">Chạy: <strong>20.17 s</strong></span>
+                
+                
+              </div>
+            </div>
+            
+            <div class="model-card" style="border-top: 4px solid #db2777">
+              <div class="model-card-head">
+                <div>
+                  <div class="model-fam">Deep Learning (Social VI)</div>
+                  <div class="model-name">ViSoBERT (5CD-AI, VI)</div>
+                </div>
+                
+              </div>
+              <p class="model-desc">ViSoBERT huấn luyện chuyên biệt trên bình luận mạng xã hội tiếng Việt.</p>
+              <div class="dist-bar" title="POS 51.61% | NEU 3.23% | NEG 45.16%">
+                <span class="seg-pos" style="width:51.61%"></span>
+                <span class="seg-neu" style="width:3.23%"></span>
+                <span class="seg-neg" style="width:45.16%"></span>
+              </div>
+              <div class="dist-legend">
+                <span class="c-pos">POS 51.61%</span>
+                <span class="c-neu">NEU 3.23%</span>
+                <span class="c-neg">NEG 45.16%</span>
+              </div>
+              <div class="model-meta">
+                <span class="pill">Chạy: <strong>16.84 s</strong></span>
+                
+                
+              </div>
+            </div>
+            
+            <div class="model-card" style="border-top: 4px solid #ec4899">
+              <div class="model-card-head">
+                <div>
+                  <div class="model-fam">Deep Learning (Transformer EN)</div>
+                  <div class="model-name">Twitter-RoBERTa (EN)</div>
+                </div>
+                
+              </div>
+              <p class="model-desc">Twitter-RoBERTa chuyên xử lý ngôn ngữ mạng xã hội và tiếng lóng tiếng Anh.</p>
+              <div class="dist-bar" title="POS 0.0% | NEU 100.0% | NEG 0.0%">
+                <span class="seg-pos" style="width:0.0%"></span>
+                <span class="seg-neu" style="width:100.0%"></span>
+                <span class="seg-neg" style="width:0.0%"></span>
+              </div>
+              <div class="dist-legend">
+                <span class="c-pos">POS 0.0%</span>
+                <span class="c-neu">NEU 100.0%</span>
+                <span class="c-neg">NEG 0.0%</span>
+              </div>
+              <div class="model-meta">
+                <span class="pill">Chạy: <strong>15.66 s</strong></span>
+                
+                
+              </div>
+            </div>
+            
+            <div class="model-card" style="border-top: 4px solid #16a34a">
+              <div class="model-card-head">
+                <div>
+                  <div class="model-fam">Hệ thống chính (Final Decision)</div>
+                  <div class="model-name">Hybrid Ensemble (Hệ thống chính)</div>
+                </div>
+                <span class="badge badge-green">Hệ thống chính</span>
+              </div>
+              <p class="model-desc">Tổ hợp có trọng số từ các nhánh tốt nhất kèm đồng bộ cảm xúc &amp; ngữ cảnh video.</p>
+              <div class="dist-bar" title="POS 36.36% | NEU 24.24% | NEG 39.39%">
+                <span class="seg-pos" style="width:36.36%"></span>
+                <span class="seg-neu" style="width:24.24%"></span>
+                <span class="seg-neg" style="width:39.39%"></span>
+              </div>
+              <div class="dist-legend">
+                <span class="c-pos">POS 36.36%</span>
+                <span class="c-neu">NEU 24.24%</span>
+                <span class="c-neg">NEG 39.39%</span>
+              </div>
+              <div class="model-meta">
+                <span class="pill">Chạy: <strong>—</strong></span>
+                
+                
+              </div>
+            </div>
+            
+      </div>
+
+      <div class="card section">
+        <h3 style="margin-top:0;font-size:15.5px">Bảng so sánh chi tiết các mô hình trên video hiện tại</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Mô hình</th><th>Nhóm phương pháp</th><th>Số mẫu</th>
+                <th>Tích cực (POS)</th><th>Trung tính (NEU)</th><th>Tiêu cực (NEG)</th>
+                
+                <th>Thời gian</th>
+              </tr>
+            </thead>
+            <tbody>
+            <tr class="">
+              <td><strong>TF-IDF + Complement NB</strong></td>
+              <td>Classical ML (Generative)</td>
+              <td>33</td>
+              <td class="c-pos">27.27% (9)</td>
+              <td class="c-neu">15.15% (5)</td>
+              <td class="c-neg">57.58% (19)</td>
+              
+              <td>2.4 ms</td>
+            </tr>
+            
+            <tr class="">
+              <td><strong>TF-IDF + Logistic Regression</strong></td>
+              <td>Classical ML (Linear)</td>
+              <td>33</td>
+              <td class="c-pos">3.03% (1)</td>
+              <td class="c-neu">36.36% (12)</td>
+              <td class="c-neg">60.61% (20)</td>
+              
+              <td>0.8 ms</td>
+            </tr>
+            
+            <tr class="">
+              <td><strong>TF-IDF + Linear SVM</strong></td>
+              <td>Classical ML (Margin / SVM)</td>
+              <td>33</td>
+              <td class="c-pos">15.15% (5)</td>
+              <td class="c-neu">18.18% (6)</td>
+              <td class="c-neg">66.67% (22)</td>
+              
+              <td>4.5 ms</td>
+            </tr>
+            
+            <tr class="">
+              <td><strong>SVD+Social + Random Forest</strong></td>
+              <td>Classical ML (Tree Bagging)</td>
+              <td>33</td>
+              <td class="c-pos">30.3% (10)</td>
+              <td class="c-neu">30.3% (10)</td>
+              <td class="c-neg">39.39% (13)</td>
+              
+              <td>97.9 ms</td>
+            </tr>
+            
+            <tr class="">
+              <td><strong>SVD+Social + HistGradientBoosting</strong></td>
+              <td>Classical ML (Tree Boosting)</td>
+              <td>33</td>
+              <td class="c-pos">30.3% (10)</td>
+              <td class="c-neu">18.18% (6)</td>
+              <td class="c-neg">51.52% (17)</td>
+              
+              <td>41.5 ms</td>
+            </tr>
+            
+            <tr class="row-ensemble">
+              <td><strong>Classical ML Meta-Ensemble</strong></td>
+              <td>Classical ML Ensemble</td>
+              <td>33</td>
+              <td class="c-pos">15.15% (5)</td>
+              <td class="c-neu">21.21% (7)</td>
+              <td class="c-neg">63.64% (21)</td>
+              
+              <td>1.1 ms</td>
+            </tr>
+            
+            <tr class="">
+              <td><strong>Bilingual Lexicon + Rules</strong></td>
+              <td>Rule-based NLP</td>
+              <td>33</td>
+              <td class="c-pos">21.21% (7)</td>
+              <td class="c-neu">72.73% (24)</td>
+              <td class="c-neg">6.06% (2)</td>
+              
+              <td>0.0 ms</td>
+            </tr>
+            
+            <tr class="">
+              <td><strong>PhoBERT (VI)</strong></td>
+              <td>Deep Learning</td>
+              <td>31</td>
+              <td class="c-pos">38.71% (12)</td>
+              <td class="c-neu">22.58% (7)</td>
+              <td class="c-neg">38.71% (12)</td>
+              
+              <td>20.17 s</td>
+            </tr>
+            
+            <tr class="">
+              <td><strong>ViSoBERT (5CD-AI, VI)</strong></td>
+              <td>Deep Learning</td>
+              <td>31</td>
+              <td class="c-pos">51.61% (16)</td>
+              <td class="c-neu">3.23% (1)</td>
+              <td class="c-neg">45.16% (14)</td>
+              
+              <td>16.84 s</td>
+            </tr>
+            
+            <tr class="">
+              <td><strong>Twitter-RoBERTa (EN)</strong></td>
+              <td>Deep Learning</td>
+              <td>2</td>
+              <td class="c-pos">0.0% (0)</td>
+              <td class="c-neu">100.0% (2)</td>
+              <td class="c-neg">0.0% (0)</td>
+              
+              <td>15.66 s</td>
+            </tr>
+            
+            <tr class="row-system">
+              <td><strong>Hybrid Ensemble (Hệ thống chính)</strong></td>
+              <td>Hybrid ML + DL</td>
+              <td>33</td>
+              <td class="c-pos">36.36% (12)</td>
+              <td class="c-neu">24.24% (8)</td>
+              <td class="c-neg">39.39% (13)</td>
+              
+              <td>—</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="margin-top:0;font-size:15.5px">Ma trận đồng thuận giữa các mô hình (%)</h3>
+          <p class="muted" style="margin-top:-4px">Tỷ lệ % số bình luận mà hai mô hình đưa ra cùng một nhãn POS / NEU / NEG.</p>
+          
+        <div class="table-wrap">
+          <table class="heatmap-table">
+            <thead><tr><th>Mô hình</th><th>CNB</th><th>LR</th><th>LinearSVM</th><th>RF</th><th>HistGB</th><th>ML-Ens</th><th>Lexicon</th><th>PhoBERT</th><th>ViSoBERT</th><th>RoBERTa</th><th>Chính</th></tr></thead>
+            <tbody><tr><th>CNB</th><td style='background:rgba(37,99,235,0.75);color:#ffffff'>100.0%</td><td style='background:rgba(37,99,235,0.34);color:#0f172a'>63.6%</td><td style='background:rgba(37,99,235,0.37);color:#0f172a'>66.7%</td><td style='background:rgba(37,99,235,0.34);color:#0f172a'>63.6%</td><td style='background:rgba(37,99,235,0.30);color:#0f172a'>60.6%</td><td style='background:rgba(37,99,235,0.41);color:#0f172a'>69.7%</td><td style='background:rgba(37,99,235,0.08);color:#0f172a'>39.4%</td><td style='background:rgba(37,99,235,0.42);color:#0f172a'>71.0%</td><td style='background:rgba(37,99,235,0.23);color:#0f172a'>54.8%</td><td style='background:rgba(37,99,235,0.18);color:#0f172a'>50.0%</td><td style='background:rgba(37,99,235,0.44);color:#0f172a'>72.7%</td></tr><tr><th>LR</th><td style='background:rgba(37,99,235,0.34);color:#0f172a'>63.6%</td><td style='background:rgba(37,99,235,0.75);color:#ffffff'>100.0%</td><td style='background:rgba(37,99,235,0.52);color:#ffffff'>78.8%</td><td style='background:rgba(37,99,235,0.27);color:#0f172a'>57.6%</td><td style='background:rgba(37,99,235,0.23);color:#0f172a'>54.5%</td><td style='background:rgba(37,99,235,0.59);color:#ffffff'>84.8%</td><td style='background:rgba(37,99,235,0.09);color:#0f172a'>42.4%</td><td style='background:rgba(37,99,235,0.12);color:#0f172a'>45.2%</td><td style='background:rgba(37,99,235,0.08);color:#0f172a'>35.5%</td><td style='background:rgba(37,99,235,0.75);color:#ffffff'>100.0%</td><td style='background:rgba(37,99,235,0.19);color:#0f172a'>51.5%</td></tr><tr><th>LinearSVM</th><td style='background:rgba(37,99,235,0.37);color:#0f172a'>66.7%</td><td style='background:rgba(37,99,235,0.52);color:#ffffff'>78.8%</td><td style='background:rgba(37,99,235,0.75);color:#ffffff'>100.0%</td><td style='background:rgba(37,99,235,0.23);color:#0f172a'>54.5%</td><td style='background:rgba(37,99,235,0.19);color:#0f172a'>51.5%</td><td style='background:rgba(37,99,235,0.69);color:#ffffff'>93.9%</td><td style='background:rgba(37,99,235,0.08);color:#0f172a'>27.3%</td><td style='background:rgba(37,99,235,0.16);color:#0f172a'>48.4%</td><td style='background:rgba(37,99,235,0.16);color:#0f172a'>48.4%</td><td style='background:rgba(37,99,235,0.75);color:#ffffff'>100.0%</td><td style='background:rgba(37,99,235,0.23);color:#0f172a'>54.5%</td></tr><tr><th>RF</th><td style='background:rgba(37,99,235,0.34);color:#0f172a'>63.6%</td><td style='background:rgba(37,99,235,0.27);color:#0f172a'>57.6%</td><td style='background:rgba(37,99,235,0.23);color:#0f172a'>54.5%</td><td style='background:rgba(37,99,235,0.75);color:#ffffff'>100.0%</td><td style='background:rgba(37,99,235,0.52);color:#ffffff'>78.8%</td><td style='background:rgba(37,99,235,0.27);color:#0f172a'>57.6%</td><td style='background:rgba(37,99,235,0.27);color:#0f172a'>57.6%</td><td style='background:rgba(37,99,235,0.23);color:#0f172a'>54.8%</td><td style='background:rgba(37,99,235,0.08);color:#0f172a'>41.9%</td><td style='background:rgba(37,99,235,0.75);color:#ffffff'>100.0%</td><td style='background:rgba(37,99,235,0.30);color:#0f172a'>60.6%</td></tr><tr><th>HistGB</th><td style='background:rgba(37,99,235,0.30);color:#0f172a'>60.6%</td><td style='background:rgba(37,99,235,0.23);color:#0f172a'>54.5%</td><td style='background:rgba(37,99,235,0.19);color:#0f172a'>51.5%</td><td style='background:rgba(37,99,235,0.52);color:#ffffff'>78.8%</td><td style='background:rgba(37,99,235,0.75);color:#ffffff'>100.0%</td><td style='background:rgba(37,99,235,0.23);color:#0f172a'>54.5%</td><td style='background:rgba(37,99,235,0.09);color:#0f172a'>42.4%</td><td style='background:rgba(37,99,235,0.20);color:#0f172a'>51.6%</td><td style='background:rgba(37,99,235,0.16);color:#0f172a'>48.4%</td><td style='background:rgba(37,99,235,0.18);color:#0f172a'>50.0%</td><td style='background:rgba(37,99,235,0.23);color:#0f172a'>54.5%</td></tr><tr><th>ML-Ens</th><td style='background:rgba(37,99,235,0.41);color:#0f172a'>69.7%</td><td style='background:rgba(37,99,235,0.59);color:#ffffff'>84.8%</td><td style='background:rgba(37,99,235,0.69);color:#ffffff'>93.9%</td><td style='background:rgba(37,99,235,0.27);color:#0f172a'>57.6%</td><td style='background:rgba(37,99,235,0.23);color:#0f172a'>54.5%</td><td style='background:rgba(37,99,235,0.75);color:#ffffff'>100.0%</td><td style='background:rgba(37,99,235,0.08);color:#0f172a'>33.3%</td><td style='background:rgba(37,99,235,0.20);color:#0f172a'>51.6%</td><td style='background:rgba(37,99,235,0.20);color:#0f172a'>51.6%</td><td style='background:rgba(37,99,235,0.75);color:#ffffff'>100.0%</td><td style='background:rgba(37,99,235,0.27);color:#0f172a'>57.6%</td></tr><tr><th>Lexicon</th><td style='background:rgba(37,99,235,0.08);color:#0f172a'>39.4%</td><td style='background:rgba(37,99,235,0.09);color:#0f172a'>42.4%</td><td style='background:rgba(37,99,235,0.08);color:#0f172a'>27.3%</td><td style='background:rgba(37,99,235,0.27);color:#0f172a'>57.6%</td><td style='background:rgba(37,99,235,0.09);color:#0f172a'>42.4%</td><td style='background:rgba(37,99,235,0.08);color:#0f172a'>33.3%</td><td style='background:rgba(37,99,235,0.75);color:#ffffff'>100.0%</td><td style='background:rgba(37,99,235,0.20);color:#0f172a'>51.6%</td><td style='background:rgba(37,99,235,0.08);color:#0f172a'>25.8%</td><td style='background:rgba(37,99,235,0.75);color:#ffffff'>100.0%</td><td style='background:rgba(37,99,235,0.19);color:#0f172a'>51.5%</td></tr><tr><th>PhoBERT</th><td style='background:rgba(37,99,235,0.42);color:#0f172a'>71.0%</td><td style='background:rgba(37,99,235,0.12);color:#0f172a'>45.2%</td><td style='background:rgba(37,99,235,0.16);color:#0f172a'>48.4%</td><td style='background:rgba(37,99,235,0.23);color:#0f172a'>54.8%</td><td style='background:rgba(37,99,235,0.20);color:#0f172a'>51.6%</td><td style='background:rgba(37,99,235,0.20);color:#0f172a'>51.6%</td><td style='background:rgba(37,99,235,0.20);color:#0f172a'>51.6%</td><td style='background:rgba(37,99,235,0.75);color:#ffffff'>100.0%</td><td style='background:rgba(37,99,235,0.31);color:#0f172a'>61.3%</td><td class='hm-na'>—</td><td style='background:rgba(37,99,235,0.73);color:#ffffff'>96.8%</td></tr><tr><th>ViSoBERT</th><td style='background:rgba(37,99,235,0.23);color:#0f172a'>54.8%</td><td style='background:rgba(37,99,235,0.08);color:#0f172a'>35.5%</td><td style='background:rgba(37,99,235,0.16);color:#0f172a'>48.4%</td><td style='background:rgba(37,99,235,0.08);color:#0f172a'>41.9%</td><td style='background:rgba(37,99,235,0.16);color:#0f172a'>48.4%</td><td style='background:rgba(37,99,235,0.20);color:#0f172a'>51.6%</td><td style='background:rgba(37,99,235,0.08);color:#0f172a'>25.8%</td><td style='background:rgba(37,99,235,0.31);color:#0f172a'>61.3%</td><td style='background:rgba(37,99,235,0.75);color:#ffffff'>100.0%</td><td class='hm-na'>—</td><td style='background:rgba(37,99,235,0.35);color:#0f172a'>64.5%</td></tr><tr><th>RoBERTa</th><td style='background:rgba(37,99,235,0.18);color:#0f172a'>50.0%</td><td style='background:rgba(37,99,235,0.75);color:#ffffff'>100.0%</td><td style='background:rgba(37,99,235,0.75);color:#ffffff'>100.0%</td><td style='background:rgba(37,99,235,0.75);color:#ffffff'>100.0%</td><td style='background:rgba(37,99,235,0.18);color:#0f172a'>50.0%</td><td style='background:rgba(37,99,235,0.75);color:#ffffff'>100.0%</td><td style='background:rgba(37,99,235,0.75);color:#ffffff'>100.0%</td><td class='hm-na'>—</td><td class='hm-na'>—</td><td style='background:rgba(37,99,235,0.75);color:#ffffff'>100.0%</td><td style='background:rgba(37,99,235,0.75);color:#ffffff'>100.0%</td></tr><tr><th>Chính</th><td style='background:rgba(37,99,235,0.44);color:#0f172a'>72.7%</td><td style='background:rgba(37,99,235,0.19);color:#0f172a'>51.5%</td><td style='background:rgba(37,99,235,0.23);color:#0f172a'>54.5%</td><td style='background:rgba(37,99,235,0.30);color:#0f172a'>60.6%</td><td style='background:rgba(37,99,235,0.23);color:#0f172a'>54.5%</td><td style='background:rgba(37,99,235,0.27);color:#0f172a'>57.6%</td><td style='background:rgba(37,99,235,0.19);color:#0f172a'>51.5%</td><td style='background:rgba(37,99,235,0.73);color:#ffffff'>96.8%</td><td style='background:rgba(37,99,235,0.35);color:#0f172a'>64.5%</td><td style='background:rgba(37,99,235,0.75);color:#ffffff'>100.0%</td><td style='background:rgba(37,99,235,0.75);color:#ffffff'>100.0%</td></tr></tbody>
+          </table>
+        </div>
+        
+        </div>
+        <div class="card">
+          <h3 style="margin-top:0;font-size:15.5px">Phân bố 7 cung bậc cảm xúc</h3>
+          
+            <div class="feat-row">
+              <span class="feat-name">Buồn bã</span>
+              <div class="feat-track"><div class="feat-fill fill-blue" style="width:27.3%"></div></div>
+              <span class="feat-val">9 (27.3%)</span>
+            </div>
+            
+            <div class="feat-row">
+              <span class="feat-name">Vui vẻ / Hài lòng</span>
+              <div class="feat-track"><div class="feat-fill fill-blue" style="width:24.2%"></div></div>
+              <span class="feat-val">8 (24.2%)</span>
+            </div>
+            
+            <div class="feat-row">
+              <span class="feat-name">Trung tính / Khác</span>
+              <div class="feat-track"><div class="feat-fill fill-blue" style="width:21.2%"></div></div>
+              <span class="feat-val">7 (21.2%)</span>
+            </div>
+            
+            <div class="feat-row">
+              <span class="feat-name">Chán ghét / Khó chịu</span>
+              <div class="feat-track"><div class="feat-fill fill-blue" style="width:15.2%"></div></div>
+              <span class="feat-val">5 (15.2%)</span>
+            </div>
+            
+            <div class="feat-row">
+              <span class="feat-name">Ngạc nhiên</span>
+              <div class="feat-track"><div class="feat-fill fill-blue" style="width:12.1%"></div></div>
+              <span class="feat-val">4 (12.1%)</span>
+            </div>
+            
+            <div class="feat-row">
+              <span class="feat-name">Tức giận</span>
+              <div class="feat-track"><div class="feat-fill fill-blue" style="width:0.0%"></div></div>
+              <span class="feat-val">0 (0.0%)</span>
+            </div>
+            
+            <div class="feat-row">
+              <span class="feat-name">Lo lắng / Sợ hãi</span>
+              <div class="feat-track"><div class="feat-fill fill-blue" style="width:0.0%"></div></div>
+              <span class="feat-val">0 (0.0%)</span>
+            </div>
+            
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:16px">
+        <div class="card">
+          <h3 style="margin-top:0;font-size:15.5px">Giải thích mô hình (VI): Top đặc trưng kéo về POS / NEG</h3>
+          <div style="margin-bottom:10px"><strong class="c-pos">Kéo về Tích cực (POS)</strong></div>
+          
+                <div class="feat-row">
+                  <span class="feat-name">Từ: không bị</span>
+                  <div class="feat-track"><div class="feat-fill fill-pos" style="width:70.1%"></div></div>
+                  <span class="feat-val">3.61</span>
+                </div>
+                
+                <div class="feat-row">
+                  <span class="feat-name">Từ: không cần</span>
+                  <div class="feat-track"><div class="feat-fill fill-pos" style="width:55.5%"></div></div>
+                  <span class="feat-val">2.86</span>
+                </div>
+                
+                <div class="feat-row">
+                  <span class="feat-name">Ký tự:  ok</span>
+                  <div class="feat-track"><div class="feat-fill fill-pos" style="width:54.4%"></div></div>
+                  <span class="feat-val">2.80</span>
+                </div>
+                
+                <div class="feat-row">
+                  <span class="feat-name">Từ: đẹp</span>
+                  <div class="feat-track"><div class="feat-fill fill-pos" style="width:53.9%"></div></div>
+                  <span class="feat-val">2.78</span>
+                </div>
+                
+                <div class="feat-row">
+                  <span class="feat-name">Ký tự: đẹp</span>
+                  <div class="feat-track"><div class="feat-fill fill-pos" style="width:51.3%"></div></div>
+                  <span class="feat-val">2.64</span>
+                </div>
+                
+                <div class="feat-row">
+                  <span class="feat-name">Từ: 5 sao</span>
+                  <div class="feat-track"><div class="feat-fill fill-pos" style="width:46.6%"></div></div>
+                  <span class="feat-val">2.40</span>
+                </div>
+                
+                <div class="feat-row">
+                  <span class="feat-name">Ký tự: ok </span>
+                  <div class="feat-track"><div class="feat-fill fill-pos" style="width:46.6%"></div></div>
+                  <span class="feat-val">2.40</span>
+                </div>
+                
+          <div style="margin:12px 0 10px"><strong class="c-neg">Kéo về Tiêu cực (NEG)</strong></div>
+          
+                <div class="feat-row">
+                  <span class="feat-name">Ký tự:  ( </span>
+                  <div class="feat-track"><div class="feat-fill fill-neg" style="width:100.0%"></div></div>
+                  <span class="feat-val">5.15</span>
+                </div>
+                
+                <div class="feat-row">
+                  <span class="feat-name">Từ: không đẹp</span>
+                  <div class="feat-track"><div class="feat-fill fill-neg" style="width:76.9%"></div></div>
+                  <span class="feat-val">3.96</span>
+                </div>
+                
+                <div class="feat-row">
+                  <span class="feat-name">Từ: không giống</span>
+                  <div class="feat-track"><div class="feat-fill fill-neg" style="width:57.6%"></div></div>
+                  <span class="feat-val">2.97</span>
+                </div>
+                
+                <div class="feat-row">
+                  <span class="feat-name">Từ: không được</span>
+                  <div class="feat-track"><div class="feat-fill fill-neg" style="width:53.4%"></div></div>
+                  <span class="feat-val">2.75</span>
+                </div>
+                
+                <div class="feat-row">
+                  <span class="feat-name">Từ: giảng_viên này</span>
+                  <div class="feat-track"><div class="feat-fill fill-neg" style="width:53.0%"></div></div>
+                  <span class="feat-val">2.73</span>
+                </div>
+                
+                <div class="feat-row">
+                  <span class="feat-name">Từ: không đúng</span>
+                  <div class="feat-track"><div class="feat-fill fill-neg" style="width:50.7%"></div></div>
+                  <span class="feat-val">2.61</span>
+                </div>
+                
+                <div class="feat-row">
+                  <span class="feat-name">Từ: thiếu sự</span>
+                  <div class="feat-track"><div class="feat-fill fill-neg" style="width:46.6%"></div></div>
+                  <span class="feat-val">2.40</span>
+                </div>
+                
+        </div>
+        <div class="card">
+          <h3 style="margin-top:0;font-size:15.5px">Từ khóa nổi bật trong bình luận (TF-IDF)</h3>
+          <div style="margin-bottom:8px"><strong>Chung toàn video:</strong><br/><span class="pill">thương <small>(0.130)</small></span><span class="pill">nhiều <small>(0.046)</small></span><span class="pill">cháu <small>(0.038)</small></span><span class="pill">thương cháu <small>(0.038)</small></span><span class="pill">qua <small>(0.035)</small></span><span class="pill">thuong qua <small>(0.035)</small></span><span class="pill">thuong <small>(0.035)</small></span><span class="pill">gần nhà <small>(0.031)</small></span><span class="pill">nhà <small>(0.031)</small></span><span class="pill">gần <small>(0.031)</small></span></div>
+          <div style="margin-bottom:8px"><strong class="c-pos">Nhóm Tích cực:</strong><br/><span class="pill pill-pos">thương</span><span class="pill pill-pos">thương cháu</span><span class="pill pill-pos">cháu</span><span class="pill pill-pos">nhà</span><span class="pill pill-pos">gần</span><span class="pill pill-pos">gần nhà</span><span class="pill pill-pos">tin</span><span class="pill pill-pos">di đà</span></div>
+          <div><strong class="c-neg">Nhóm Tiêu cực:</strong><br/><span class="pill pill-neg">ngáo</span><span class="pill pill-neg">lạc</span><span class="pill pill-neg">lạnh lẽo</span><span class="pill pill-neg">buồn</span><span class="pill pill-neg">hết</span><span class="pill pill-neg">khác</span><span class="pill pill-neg">cầu</span><span class="pill pill-neg">số</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="xray" class="section">
+      <h2 class="section-title">4. Comment X-Ray Explorer (Bấm từng dòng để soi phiếu bầu mô hình)</h2>
+      <div class="card">
+        <div class="xray-controls">
+          <input id="xraySearch" type="text" placeholder="Tìm nội dung bình luận, @username hoặc từ khóa..." />
+          <div id="xrayFilters" class="filter-pills">
+            <button class="f-btn active" data-filter="all">Tất cả</button>
+            <button class="f-btn" data-filter="POS">Tích cực</button>
+            <button class="f-btn" data-filter="NEU">Trung tính</button>
+            <button class="f-btn" data-filter="NEG">Tiêu cực</button>
+            <button class="f-btn" data-filter="needs_audit">Ca khó (needs_audit)</button>
+            <button class="f-btn" data-filter="sarcasm">Nghi mỉa mai</button>
+            <button class="f-btn" data-filter="disagree">Mô hình bất đồng</button>
+            <button class="f-btn" data-filter="on_topic">Bám sát video</button>
+          </div>
+        </div>
+        <div class="muted" id="xrayCount" style="margin-bottom:8px"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>Bình luận</th><th>Sắc thái</th><th>Cảm xúc</th>
+                <th>Likes</th><th>Ngôn ngữ</th><th>Cờ</th>
+              </tr>
+            </thead>
+            <tbody id="xrayBody"></tbody>
+          </table>
+        </div>
+        <div class="pager">
+          <button id="prevPage">← Trước</button>
+          <span id="pageInfo"></span>
+          <button id="nextPage">Sau →</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script id="xray-data" type="application/json">[{"stt":1,"username":"npl31_0","likes":32,"reply_count":1,"language":"VI","original_text":"thương bạn quá","cleaned_text":"thương bạn quá","segmented_text":"thương bạn quá","polarity_label":"POS","polarity_vi":"Tích cực","polarity_confidence":80.8,"polarity_score":0.6461,"score_POS":80.8,"score_NEU":7.0,"score_NEG":12.2,"emotion_label":"Sadness","emotion_vi":"Buồn bã","emotion_confidence":99.7,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.0,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":true,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"POS"},{"name":"LR (Linear)","pred":"POS"},{"name":"Ridge (Linear)","pred":"NEG"},{"name":"SGD (Linear)","pred":"NEG"},{"name":"LinearSVM (SVM)","pred":"NEG"},{"name":"NBSVM (SVM)","pred":"POS"},{"name":"RandomForest (Bagging)","pred":"POS"},{"name":"HistGB (Boosting)","pred":"POS"},{"name":"ML Meta-Ensemble","pred":"POS"},{"name":"Lexicon (Rule)","pred":"POS"},{"name":"PhoBERT (DL-VI)","pred":"POS"},{"name":"ViSoBERT (DL-VI)","pred":"POS"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":2,"username":"ngocha13112014","likes":13,"reply_count":0,"language":"VI","original_text":"Chị đấy ở gần nhà t,thương qus","cleaned_text":"Chị đấy ở gần nhà t,thương qus","segmented_text":"Chị đấy ở gần nhà t , thương qus","polarity_label":"POS","polarity_vi":"Tích cực","polarity_confidence":73.3,"polarity_score":0.6173,"score_POS":73.3,"score_NEU":12.0,"score_NEG":14.7,"emotion_label":"Enjoyment","emotion_vi":"Vui vẻ / Hài lòng","emotion_confidence":51.5,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.081,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":true,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"NEG"},{"name":"LR (Linear)","pred":"NEG"},{"name":"Ridge (Linear)","pred":"NEG"},{"name":"SGD (Linear)","pred":"NEG"},{"name":"LinearSVM (SVM)","pred":"NEG"},{"name":"NBSVM (SVM)","pred":"POS"},{"name":"RandomForest (Bagging)","pred":"POS"},{"name":"HistGB (Boosting)","pred":"NEG"},{"name":"ML Meta-Ensemble","pred":"NEG"},{"name":"Lexicon (Rule)","pred":"POS"},{"name":"PhoBERT (DL-VI)","pred":"POS"},{"name":"ViSoBERT (DL-VI)","pred":"POS"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":3,"username":"vdphuong06","likes":12,"reply_count":3,"language":"VI","original_text":"buon","cleaned_text":"buon","segmented_text":"buon","polarity_label":"NEU","polarity_vi":"Trung tính","polarity_confidence":50.2,"polarity_score":0.1035,"score_POS":28.9,"score_NEU":50.2,"score_NEG":20.9,"emotion_label":"Enjoyment","emotion_vi":"Vui vẻ / Hài lòng","emotion_confidence":96.5,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.0,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":true,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"NEG"},{"name":"LR (Linear)","pred":"NEG"},{"name":"Ridge (Linear)","pred":"NEG"},{"name":"SGD (Linear)","pred":"NEG"},{"name":"LinearSVM (SVM)","pred":"NEG"},{"name":"NBSVM (SVM)","pred":"POS"},{"name":"RandomForest (Bagging)","pred":"NEG"},{"name":"HistGB (Boosting)","pred":"NEG"},{"name":"ML Meta-Ensemble","pred":"NEG"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"PhoBERT (DL-VI)","pred":"NEU"},{"name":"ViSoBERT (DL-VI)","pred":"POS"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":4,"username":"ngha.phm.vn97","likes":7,"reply_count":1,"language":"VI","original_text":"bọn trẻ bh nghĩ bỗng bột quá","cleaned_text":"bọn trẻ bh nghĩ bỗng bột quá","segmented_text":"bọn trẻ bh nghĩ bỗng bột quá","polarity_label":"NEG","polarity_vi":"Tiêu cực","polarity_confidence":49.0,"polarity_score":-0.5231,"score_POS":4.5,"score_NEU":46.5,"score_NEG":49.0,"emotion_label":"Disgust","emotion_vi":"Chán ghét / Khó chịu","emotion_confidence":98.5,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.042,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":true,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"NEG"},{"name":"LR (Linear)","pred":"NEG"},{"name":"Ridge (Linear)","pred":"NEG"},{"name":"SGD (Linear)","pred":"NEG"},{"name":"LinearSVM (SVM)","pred":"NEG"},{"name":"NBSVM (SVM)","pred":"NEG"},{"name":"RandomForest (Bagging)","pred":"NEG"},{"name":"HistGB (Boosting)","pred":"NEG"},{"name":"ML Meta-Ensemble","pred":"NEG"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"PhoBERT (DL-VI)","pred":"NEU"},{"name":"ViSoBERT (DL-VI)","pred":"NEG"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":5,"username":"user7qx7ttcosc","likes":3,"reply_count":1,"language":"VI","original_text":"có phải là anh bán sách thư viện phải không ❤️❤️❤️","cleaned_text":"có phải là anh bán sách thư viện phải không ❤️❤️❤️","segmented_text":"có phải là anh bán sách thư_viện phải không ❤_️ ❤_️ ❤ ️","polarity_label":"POS","polarity_vi":"Tích cực","polarity_confidence":58.0,"polarity_score":0.4658,"score_POS":58.0,"score_NEU":25.4,"score_NEG":16.6,"emotion_label":"Enjoyment","emotion_vi":"Vui vẻ / Hài lòng","emotion_confidence":86.4,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.067,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":true,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"POS"},{"name":"LR (Linear)","pred":"NEG"},{"name":"Ridge (Linear)","pred":"NEG"},{"name":"SGD (Linear)","pred":"NEG"},{"name":"LinearSVM (SVM)","pred":"NEG"},{"name":"NBSVM (SVM)","pred":"NEG"},{"name":"RandomForest (Bagging)","pred":"NEU"},{"name":"HistGB (Boosting)","pred":"NEU"},{"name":"ML Meta-Ensemble","pred":"NEG"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"PhoBERT (DL-VI)","pred":"POS"},{"name":"ViSoBERT (DL-VI)","pred":"POS"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":6,"username":"doloi19892","likes":3,"reply_count":0,"language":"VI","original_text":"Thương con quá","cleaned_text":"Thương con quá","segmented_text":"Thương con quá","polarity_label":"POS","polarity_vi":"Tích cực","polarity_confidence":56.2,"polarity_score":0.21,"score_POS":56.2,"score_NEU":6.9,"score_NEG":36.8,"emotion_label":"Sadness","emotion_vi":"Buồn bã","emotion_confidence":99.7,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.0,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":true,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"POS"},{"name":"LR (Linear)","pred":"NEG"},{"name":"Ridge (Linear)","pred":"NEG"},{"name":"SGD (Linear)","pred":"NEG"},{"name":"LinearSVM (SVM)","pred":"NEG"},{"name":"NBSVM (SVM)","pred":"POS"},{"name":"RandomForest (Bagging)","pred":"POS"},{"name":"HistGB (Boosting)","pred":"POS"},{"name":"ML Meta-Ensemble","pred":"NEG"},{"name":"Lexicon (Rule)","pred":"POS"},{"name":"PhoBERT (DL-VI)","pred":"POS"},{"name":"ViSoBERT (DL-VI)","pred":"NEG"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":7,"username":"user371508793","likes":3,"reply_count":0,"language":"VI","original_text":"thương cháu quá","cleaned_text":"thương cháu quá","segmented_text":"thương cháu quá","polarity_label":"POS","polarity_vi":"Tích cực","polarity_confidence":78.8,"polarity_score":0.5993,"score_POS":78.8,"score_NEU":6.4,"score_NEG":14.9,"emotion_label":"Sadness","emotion_vi":"Buồn bã","emotion_confidence":99.7,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.071,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":true,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"POS"},{"name":"LR (Linear)","pred":"NEG"},{"name":"Ridge (Linear)","pred":"NEG"},{"name":"SGD (Linear)","pred":"NEG"},{"name":"LinearSVM (SVM)","pred":"NEG"},{"name":"NBSVM (SVM)","pred":"POS"},{"name":"RandomForest (Bagging)","pred":"POS"},{"name":"HistGB (Boosting)","pred":"POS"},{"name":"ML Meta-Ensemble","pred":"NEG"},{"name":"Lexicon (Rule)","pred":"POS"},{"name":"PhoBERT (DL-VI)","pred":"POS"},{"name":"ViSoBERT (DL-VI)","pred":"POS"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":8,"username":"sky0905818","likes":2,"reply_count":0,"language":"VI","original_text":"Cứ như thế này sẽ thành tiền lệ xấu.","cleaned_text":"Cứ như thế này sẽ thành tiền lệ xấu.","segmented_text":"Cứ như thế_này sẽ thành tiền_lệ xấu .","polarity_label":"NEG","polarity_vi":"Tiêu cực","polarity_confidence":92.0,"polarity_score":-0.8944,"score_POS":2.6,"score_NEU":5.3,"score_NEG":92.0,"emotion_label":"Disgust","emotion_vi":"Chán ghét / Khó chịu","emotion_confidence":49.7,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.043,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":false,"has_sarcasm_signal":false,"has_disagreement":false,"votes":[{"name":"CNB (Generative)","pred":"NEG"},{"name":"LR (Linear)","pred":"NEG"},{"name":"Ridge (Linear)","pred":"NEG"},{"name":"SGD (Linear)","pred":"NEG"},{"name":"LinearSVM (SVM)","pred":"NEG"},{"name":"NBSVM (SVM)","pred":"NEG"},{"name":"RandomForest (Bagging)","pred":"NEG"},{"name":"HistGB (Boosting)","pred":"NEG"},{"name":"ML Meta-Ensemble","pred":"NEG"},{"name":"Lexicon (Rule)","pred":"NEG"},{"name":"PhoBERT (DL-VI)","pred":"NEG"},{"name":"ViSoBERT (DL-VI)","pred":"NEG"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":9,"username":"mhin123454","likes":1,"reply_count":0,"language":"VI","original_text":"Sao nhiều thế nhỉ","cleaned_text":"Sao nhiều thế nhỉ","segmented_text":"Sao nhiều thế nhỉ","polarity_label":"NEU","polarity_vi":"Trung tính","polarity_confidence":54.5,"polarity_score":0.0337,"score_POS":25.1,"score_NEU":54.5,"score_NEG":20.4,"emotion_label":"Surprise","emotion_vi":"Ngạc nhiên","emotion_confidence":98.9,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.0,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":true,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"NEU"},{"name":"LR (Linear)","pred":"NEU"},{"name":"Ridge (Linear)","pred":"NEU"},{"name":"SGD (Linear)","pred":"NEU"},{"name":"LinearSVM (SVM)","pred":"NEU"},{"name":"NBSVM (SVM)","pred":"NEU"},{"name":"RandomForest (Bagging)","pred":"NEU"},{"name":"HistGB (Boosting)","pred":"NEG"},{"name":"ML Meta-Ensemble","pred":"NEU"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"PhoBERT (DL-VI)","pred":"NEU"},{"name":"ViSoBERT (DL-VI)","pred":"NEG"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":10,"username":"lien.nguyen691","likes":1,"reply_count":0,"language":"VI","original_text":"nên có lực lượng túc trực ở cac cầu vì ngươi tư tử nhiều quá","cleaned_text":"nên có lực lượng túc trực ở cac cầu vì ngươi tư tử nhiều quá","segmented_text":"nên có lực_lượng túc_trực ở cac cầu vì_ngươi tư_tử nhiều quá","polarity_label":"NEG","polarity_vi":"Tiêu cực","polarity_confidence":69.7,"polarity_score":-0.6045,"score_POS":9.3,"score_NEU":21.0,"score_NEG":69.7,"emotion_label":"Other","emotion_vi":"Trung tính / Khác","emotion_confidence":93.7,"emotion_ml_label":"","is_on_topic":true,"context_relevance":0.13,"matched_video_terms":[],"context_alignment":"Tiêu cực đối với nội dung video","needs_audit":true,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"NEG"},{"name":"LR (Linear)","pred":"NEU"},{"name":"Ridge (Linear)","pred":"POS"},{"name":"SGD (Linear)","pred":"NEU"},{"name":"LinearSVM (SVM)","pred":"POS"},{"name":"NBSVM (SVM)","pred":"NEG"},{"name":"RandomForest (Bagging)","pred":"NEG"},{"name":"HistGB (Boosting)","pred":"NEG"},{"name":"ML Meta-Ensemble","pred":"NEU"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"PhoBERT (DL-VI)","pred":"NEG"},{"name":"ViSoBERT (DL-VI)","pred":"NEG"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":11,"username":"ltt23041998","likes":1,"reply_count":0,"language":"VI","original_text":"ngáo à b","cleaned_text":"ngáo à b","segmented_text":"ngáo à b","polarity_label":"NEG","polarity_vi":"Tiêu cực","polarity_confidence":81.6,"polarity_score":-0.7767,"score_POS":3.9,"score_NEU":14.5,"score_NEG":81.6,"emotion_label":"Surprise","emotion_vi":"Ngạc nhiên","emotion_confidence":97.7,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.0,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":false,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"NEG"},{"name":"LR (Linear)","pred":"NEG"},{"name":"Ridge (Linear)","pred":"NEG"},{"name":"SGD (Linear)","pred":"NEG"},{"name":"LinearSVM (SVM)","pred":"NEG"},{"name":"NBSVM (SVM)","pred":"NEG"},{"name":"RandomForest (Bagging)","pred":"POS"},{"name":"HistGB (Boosting)","pred":"NEG"},{"name":"ML Meta-Ensemble","pred":"NEG"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"PhoBERT (DL-VI)","pred":"NEG"},{"name":"ViSoBERT (DL-VI)","pred":"NEG"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":12,"username":"_nguoidangcap_","likes":1,"reply_count":0,"language":"VI","original_text":"do áp lực gđ","cleaned_text":"do áp lực gđ","segmented_text":"do áp_lực gđ","polarity_label":"NEU","polarity_vi":"Trung tính","polarity_confidence":53.1,"polarity_score":-0.19,"score_POS":7.1,"score_NEU":53.1,"score_NEG":39.9,"emotion_label":"Sadness","emotion_vi":"Buồn bã","emotion_confidence":92.1,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.086,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":true,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"NEG"},{"name":"LR (Linear)","pred":"NEU"},{"name":"Ridge (Linear)","pred":"NEG"},{"name":"SGD (Linear)","pred":"NEU"},{"name":"LinearSVM (SVM)","pred":"NEG"},{"name":"NBSVM (SVM)","pred":"NEG"},{"name":"RandomForest (Bagging)","pred":"POS"},{"name":"HistGB (Boosting)","pred":"POS"},{"name":"ML Meta-Ensemble","pred":"NEG"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"PhoBERT (DL-VI)","pred":"NEU"},{"name":"ViSoBERT (DL-VI)","pred":"NEG"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":13,"username":"_nguoidangcap_","likes":1,"reply_count":0,"language":"VI","original_text":"suy nghĩ kiểu gì vậy?","cleaned_text":"suy nghĩ kiểu gì vậy?","segmented_text":"suy_nghĩ kiểu gì vậy ?","polarity_label":"NEG","polarity_vi":"Tiêu cực","polarity_confidence":66.4,"polarity_score":-0.6109,"score_POS":5.3,"score_NEU":28.2,"score_NEG":66.4,"emotion_label":"Other","emotion_vi":"Trung tính / Khác","emotion_confidence":97.8,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.024,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":false,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"NEG"},{"name":"LR (Linear)","pred":"NEU"},{"name":"Ridge (Linear)","pred":"NEU"},{"name":"SGD (Linear)","pred":"NEU"},{"name":"LinearSVM (SVM)","pred":"NEU"},{"name":"NBSVM (SVM)","pred":"NEU"},{"name":"RandomForest (Bagging)","pred":"NEU"},{"name":"HistGB (Boosting)","pred":"NEU"},{"name":"ML Meta-Ensemble","pred":"NEU"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"PhoBERT (DL-VI)","pred":"NEG"},{"name":"ViSoBERT (DL-VI)","pred":"NEG"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":14,"username":"qun0807","likes":1,"reply_count":0,"language":"VI","original_text":"Ước j nói lung tung bị phạt nhỉ","cleaned_text":"Ước gì nói lung tung bị phạt nhỉ","segmented_text":"Ước gì nói lung_tung bị phạt nhỉ","polarity_label":"NEU","polarity_vi":"Trung tính","polarity_confidence":45.3,"polarity_score":-0.1618,"score_POS":16.9,"score_NEU":45.3,"score_NEG":37.8,"emotion_label":"Other","emotion_vi":"Trung tính / Khác","emotion_confidence":93.9,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.029,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":true,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"NEG"},{"name":"LR (Linear)","pred":"NEG"},{"name":"Ridge (Linear)","pred":"NEG"},{"name":"SGD (Linear)","pred":"NEG"},{"name":"LinearSVM (SVM)","pred":"NEG"},{"name":"NBSVM (SVM)","pred":"NEG"},{"name":"RandomForest (Bagging)","pred":"NEG"},{"name":"HistGB (Boosting)","pred":"NEG"},{"name":"ML Meta-Ensemble","pred":"NEG"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"PhoBERT (DL-VI)","pred":"NEU"},{"name":"ViSoBERT (DL-VI)","pred":"POS"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":15,"username":"huy24010","likes":1,"reply_count":0,"language":"VI","original_text":"Ko nhảy cầu thì 44 bằng cách khác","cleaned_text":"không nhảy cầu thì 44 bằng cách khác","segmented_text":"không nhảy_cầu thì 44 bằng cách khác","polarity_label":"NEG","polarity_vi":"Tiêu cực","polarity_confidence":64.7,"polarity_score":-0.6014,"score_POS":4.6,"score_NEU":30.7,"score_NEG":64.7,"emotion_label":"Other","emotion_vi":"Trung tính / Khác","emotion_confidence":99.0,"emotion_ml_label":"","is_on_topic":true,"context_relevance":0.121,"matched_video_terms":[],"context_alignment":"Tiêu cực đối với nội dung video","needs_audit":true,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"NEG"},{"name":"LR (Linear)","pred":"NEG"},{"name":"Ridge (Linear)","pred":"NEG"},{"name":"SGD (Linear)","pred":"NEG"},{"name":"LinearSVM (SVM)","pred":"NEG"},{"name":"NBSVM (SVM)","pred":"NEG"},{"name":"RandomForest (Bagging)","pred":"NEG"},{"name":"HistGB (Boosting)","pred":"NEG"},{"name":"ML Meta-Ensemble","pred":"NEG"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"PhoBERT (DL-VI)","pred":"NEG"},{"name":"ViSoBERT (DL-VI)","pred":"NEU"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":16,"username":".linhdayy","likes":0,"reply_count":0,"language":"VI","original_text":"Lạnh lẽo🖤","cleaned_text":"Lạnh lẽo🖤","segmented_text":"Lạnh_lẽo 🖤","polarity_label":"NEG","polarity_vi":"Tiêu cực","polarity_confidence":46.9,"polarity_score":-0.21,"score_POS":36.5,"score_NEU":16.6,"score_NEG":46.9,"emotion_label":"Sadness","emotion_vi":"Buồn bã","emotion_confidence":50.3,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.0,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":true,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"NEU"},{"name":"LR (Linear)","pred":"NEU"},{"name":"Ridge (Linear)","pred":"POS"},{"name":"SGD (Linear)","pred":"POS"},{"name":"LinearSVM (SVM)","pred":"POS"},{"name":"NBSVM (SVM)","pred":"POS"},{"name":"RandomForest (Bagging)","pred":"POS"},{"name":"HistGB (Boosting)","pred":"POS"},{"name":"ML Meta-Ensemble","pred":"POS"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"PhoBERT (DL-VI)","pred":"NEG"},{"name":"ViSoBERT (DL-VI)","pred":"POS"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":17,"username":"lananhyeucho","likes":0,"reply_count":0,"language":"VI","original_text":"Thuong qua","cleaned_text":"Thuong qua","segmented_text":"Thuong qua","polarity_label":"NEU","polarity_vi":"Trung tính","polarity_confidence":63.9,"polarity_score":0.1418,"score_POS":28.4,"score_NEU":63.9,"score_NEG":7.6,"emotion_label":"Enjoyment","emotion_vi":"Vui vẻ / Hài lòng","emotion_confidence":33.7,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.0,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":true,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"NEU"},{"name":"LR (Linear)","pred":"NEU"},{"name":"Ridge (Linear)","pred":"NEU"},{"name":"SGD (Linear)","pred":"NEU"},{"name":"LinearSVM (SVM)","pred":"NEU"},{"name":"NBSVM (SVM)","pred":"NEU"},{"name":"RandomForest (Bagging)","pred":"NEG"},{"name":"HistGB (Boosting)","pred":"NEG"},{"name":"ML Meta-Ensemble","pred":"NEU"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"PhoBERT (DL-VI)","pred":"NEU"},{"name":"ViSoBERT (DL-VI)","pred":"POS"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":18,"username":"mitdqy","likes":0,"reply_count":0,"language":"VI","original_text":"1h52 a ơi","cleaned_text":"1h52 a ơi","segmented_text":"1 h52 a ơi","polarity_label":"NEU","polarity_vi":"Trung tính","polarity_confidence":60.2,"polarity_score":0.1664,"score_POS":28.9,"score_NEU":60.2,"score_NEG":10.9,"emotion_label":"Enjoyment","emotion_vi":"Vui vẻ / Hài lòng","emotion_confidence":97.0,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.0,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":true,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"NEU"},{"name":"LR (Linear)","pred":"NEU"},{"name":"Ridge (Linear)","pred":"NEU"},{"name":"SGD (Linear)","pred":"NEU"},{"name":"LinearSVM (SVM)","pred":"NEU"},{"name":"NBSVM (SVM)","pred":"NEU"},{"name":"RandomForest (Bagging)","pred":"NEU"},{"name":"HistGB (Boosting)","pred":"NEG"},{"name":"ML Meta-Ensemble","pred":"NEU"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"PhoBERT (DL-VI)","pred":"NEU"},{"name":"ViSoBERT (DL-VI)","pred":"POS"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":19,"username":"luuthanthanh199","likes":0,"reply_count":0,"language":"VI","original_text":"hết số ,","cleaned_text":"hết số ,","segmented_text":"hết số ,","polarity_label":"NEG","polarity_vi":"Tiêu cực","polarity_confidence":79.3,"polarity_score":-0.7868,"score_POS":6.6,"score_NEU":14.1,"score_NEG":79.3,"emotion_label":"Disgust","emotion_vi":"Chán ghét / Khó chịu","emotion_confidence":74.3,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.074,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":false,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"NEG"},{"name":"LR (Linear)","pred":"NEG"},{"name":"Ridge (Linear)","pred":"NEG"},{"name":"SGD (Linear)","pred":"NEG"},{"name":"LinearSVM (SVM)","pred":"NEG"},{"name":"NBSVM (SVM)","pred":"NEG"},{"name":"RandomForest (Bagging)","pred":"NEG"},{"name":"HistGB (Boosting)","pred":"NEG"},{"name":"ML Meta-Ensemble","pred":"NEG"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"PhoBERT (DL-VI)","pred":"NEG"},{"name":"ViSoBERT (DL-VI)","pred":"NEG"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":20,"username":"mithogau","likes":0,"reply_count":0,"language":"VI","original_text":"Ơ sao nhiều vụ vậy. Liên tiếp luôn ý","cleaned_text":"Ơ sao nhiều vụ vậy. Liên tiếp luôn ý","segmented_text":"Ơ_sao nhiều vụ vậy . Liên_tiếp luôn ý","polarity_label":"POS","polarity_vi":"Tích cực","polarity_confidence":72.0,"polarity_score":0.6501,"score_POS":72.0,"score_NEU":20.9,"score_NEG":7.0,"emotion_label":"Surprise","emotion_vi":"Ngạc nhiên","emotion_confidence":98.2,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.048,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":false,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"POS"},{"name":"LR (Linear)","pred":"NEU"},{"name":"Ridge (Linear)","pred":"POS"},{"name":"SGD (Linear)","pred":"NEU"},{"name":"LinearSVM (SVM)","pred":"POS"},{"name":"NBSVM (SVM)","pred":"POS"},{"name":"RandomForest (Bagging)","pred":"NEU"},{"name":"HistGB (Boosting)","pred":"NEU"},{"name":"ML Meta-Ensemble","pred":"POS"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"PhoBERT (DL-VI)","pred":"POS"},{"name":"ViSoBERT (DL-VI)","pred":"POS"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":21,"username":"tho.phm.th.tho","likes":0,"reply_count":0,"language":"VI","original_text":"tin hay","cleaned_text":"tin hay","segmented_text":"tin hay","polarity_label":"POS","polarity_vi":"Tích cực","polarity_confidence":82.8,"polarity_score":0.8439,"score_POS":82.8,"score_NEU":12.8,"score_NEG":4.4,"emotion_label":"Enjoyment","emotion_vi":"Vui vẻ / Hài lòng","emotion_confidence":99.4,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.045,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":false,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"POS"},{"name":"LR (Linear)","pred":"NEU"},{"name":"Ridge (Linear)","pred":"POS"},{"name":"SGD (Linear)","pred":"POS"},{"name":"LinearSVM (SVM)","pred":"POS"},{"name":"NBSVM (SVM)","pred":"POS"},{"name":"RandomForest (Bagging)","pred":"POS"},{"name":"HistGB (Boosting)","pred":"POS"},{"name":"ML Meta-Ensemble","pred":"POS"},{"name":"Lexicon (Rule)","pred":"POS"},{"name":"PhoBERT (DL-VI)","pred":"POS"},{"name":"ViSoBERT (DL-VI)","pred":"POS"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":22,"username":"userrng1cpyozf","likes":0,"reply_count":0,"language":"VI","original_text":"buồn","cleaned_text":"buồn","segmented_text":"buồn","polarity_label":"NEG","polarity_vi":"Tiêu cực","polarity_confidence":91.7,"polarity_score":-0.9277,"score_POS":2.9,"score_NEU":5.3,"score_NEG":91.7,"emotion_label":"Sadness","emotion_vi":"Buồn bã","emotion_confidence":99.7,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.0,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":false,"has_sarcasm_signal":false,"has_disagreement":false,"votes":[{"name":"CNB (Generative)","pred":"NEG"},{"name":"LR (Linear)","pred":"NEG"},{"name":"Ridge (Linear)","pred":"NEG"},{"name":"SGD (Linear)","pred":"NEG"},{"name":"LinearSVM (SVM)","pred":"NEG"},{"name":"NBSVM (SVM)","pred":"NEG"},{"name":"RandomForest (Bagging)","pred":"NEG"},{"name":"HistGB (Boosting)","pred":"NEG"},{"name":"ML Meta-Ensemble","pred":"NEG"},{"name":"Lexicon (Rule)","pred":"NEG"},{"name":"PhoBERT (DL-VI)","pred":"NEG"},{"name":"ViSoBERT (DL-VI)","pred":"NEG"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":23,"username":"quyn.l6264","likes":0,"reply_count":0,"language":"EN","original_text":"thuong be qua","cleaned_text":"thuong be qua","segmented_text":"thuong be qua","polarity_label":"NEU","polarity_vi":"Trung tính","polarity_confidence":70.2,"polarity_score":-0.0283,"score_POS":12.7,"score_NEU":70.2,"score_NEG":17.1,"emotion_label":"Other","emotion_vi":"Trung tính / Khác","emotion_confidence":60.1,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.0,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":false,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"NEU"},{"name":"LR (Linear)","pred":"NEU"},{"name":"Ridge (Linear)","pred":"NEU"},{"name":"SGD (Linear)","pred":"NEU"},{"name":"LinearSVM (SVM)","pred":"NEU"},{"name":"NBSVM (SVM)","pred":"NEU"},{"name":"RandomForest (Bagging)","pred":"NEU"},{"name":"HistGB (Boosting)","pred":"POS"},{"name":"ML Meta-Ensemble","pred":"NEU"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"RoBERTa (DL-EN)","pred":"NEU"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":24,"username":"_lan_1981","likes":0,"reply_count":0,"language":"VI","original_text":"Thương cháu quá","cleaned_text":"Thương cháu quá","segmented_text":"Thương cháu quá","polarity_label":"POS","polarity_vi":"Tích cực","polarity_confidence":61.3,"polarity_score":0.2512,"score_POS":61.3,"score_NEU":6.5,"score_NEG":32.2,"emotion_label":"Sadness","emotion_vi":"Buồn bã","emotion_confidence":99.6,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.071,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":true,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"POS"},{"name":"LR (Linear)","pred":"NEG"},{"name":"Ridge (Linear)","pred":"NEG"},{"name":"SGD (Linear)","pred":"NEG"},{"name":"LinearSVM (SVM)","pred":"NEG"},{"name":"NBSVM (SVM)","pred":"POS"},{"name":"RandomForest (Bagging)","pred":"POS"},{"name":"HistGB (Boosting)","pred":"POS"},{"name":"ML Meta-Ensemble","pred":"NEG"},{"name":"Lexicon (Rule)","pred":"POS"},{"name":"PhoBERT (DL-VI)","pred":"POS"},{"name":"ViSoBERT (DL-VI)","pred":"NEG"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":25,"username":"li.thanh93","likes":0,"reply_count":0,"language":"VI","original_text":"chêt vây khô hon sông","cleaned_text":"chêt vây khô hon sông","segmented_text":"chêt vây khô_hon sông","polarity_label":"NEG","polarity_vi":"Tiêu cực","polarity_confidence":72.6,"polarity_score":-0.6637,"score_POS":13.9,"score_NEU":13.6,"score_NEG":72.6,"emotion_label":"Disgust","emotion_vi":"Chán ghét / Khó chịu","emotion_confidence":95.5,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.0,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":false,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"NEG"},{"name":"LR (Linear)","pred":"NEG"},{"name":"Ridge (Linear)","pred":"NEG"},{"name":"SGD (Linear)","pred":"NEG"},{"name":"LinearSVM (SVM)","pred":"NEG"},{"name":"NBSVM (SVM)","pred":"NEG"},{"name":"RandomForest (Bagging)","pred":"NEG"},{"name":"HistGB (Boosting)","pred":"NEG"},{"name":"ML Meta-Ensemble","pred":"NEG"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"PhoBERT (DL-VI)","pred":"NEG"},{"name":"ViSoBERT (DL-VI)","pred":"NEG"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":26,"username":"vthanh31_","likes":0,"reply_count":0,"language":"VI","original_text":"lạc à","cleaned_text":"lạc à","segmented_text":"lạc à","polarity_label":"NEG","polarity_vi":"Tiêu cực","polarity_confidence":57.4,"polarity_score":-0.3237,"score_POS":25.0,"score_NEU":17.6,"score_NEG":57.4,"emotion_label":"Surprise","emotion_vi":"Ngạc nhiên","emotion_confidence":46.1,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.0,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":true,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"NEG"},{"name":"LR (Linear)","pred":"NEG"},{"name":"Ridge (Linear)","pred":"NEG"},{"name":"SGD (Linear)","pred":"NEG"},{"name":"LinearSVM (SVM)","pred":"NEG"},{"name":"NBSVM (SVM)","pred":"NEG"},{"name":"RandomForest (Bagging)","pred":"NEG"},{"name":"HistGB (Boosting)","pred":"NEG"},{"name":"ML Meta-Ensemble","pred":"NEG"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"PhoBERT (DL-VI)","pred":"NEG"},{"name":"ViSoBERT (DL-VI)","pred":"POS"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":27,"username":"userc4wz1y0nnq1","likes":0,"reply_count":0,"language":"VI","original_text":"thương con quá","cleaned_text":"thương con quá","segmented_text":"thương con quá","polarity_label":"POS","polarity_vi":"Tích cực","polarity_confidence":74.5,"polarity_score":0.5174,"score_POS":74.5,"score_NEU":6.7,"score_NEG":18.8,"emotion_label":"Sadness","emotion_vi":"Buồn bã","emotion_confidence":99.7,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.0,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":true,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"POS"},{"name":"LR (Linear)","pred":"NEG"},{"name":"Ridge (Linear)","pred":"NEG"},{"name":"SGD (Linear)","pred":"NEG"},{"name":"LinearSVM (SVM)","pred":"NEG"},{"name":"NBSVM (SVM)","pred":"POS"},{"name":"RandomForest (Bagging)","pred":"POS"},{"name":"HistGB (Boosting)","pred":"POS"},{"name":"ML Meta-Ensemble","pred":"NEG"},{"name":"Lexicon (Rule)","pred":"POS"},{"name":"PhoBERT (DL-VI)","pred":"POS"},{"name":"ViSoBERT (DL-VI)","pred":"POS"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":28,"username":"npl31_0","likes":0,"reply_count":0,"language":"VI","original_text":"a di đà phật","cleaned_text":"a di đà phật","segmented_text":"a di_đà phật","polarity_label":"POS","polarity_vi":"Tích cực","polarity_confidence":73.0,"polarity_score":0.7362,"score_POS":73.0,"score_NEU":21.8,"score_NEG":5.2,"emotion_label":"Enjoyment","emotion_vi":"Vui vẻ / Hài lòng","emotion_confidence":97.6,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.0,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":false,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"NEG"},{"name":"LR (Linear)","pred":"NEU"},{"name":"Ridge (Linear)","pred":"POS"},{"name":"SGD (Linear)","pred":"NEU"},{"name":"LinearSVM (SVM)","pred":"POS"},{"name":"NBSVM (SVM)","pred":"POS"},{"name":"RandomForest (Bagging)","pred":"NEU"},{"name":"HistGB (Boosting)","pred":"NEU"},{"name":"ML Meta-Ensemble","pred":"POS"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"PhoBERT (DL-VI)","pred":"POS"},{"name":"ViSoBERT (DL-VI)","pred":"POS"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":29,"username":"ngi.tiu.cc48","likes":0,"reply_count":0,"language":"VI","original_text":"ngay gần nhà t luôn:(((","cleaned_text":"ngay gần nhà t luôn:(((","segmented_text":"ngay gần nhà t luôn : ( ( (","polarity_label":"POS","polarity_vi":"Tích cực","polarity_confidence":63.8,"polarity_score":0.3779,"score_POS":63.8,"score_NEU":13.1,"score_NEG":23.1,"emotion_label":"Sadness","emotion_vi":"Buồn bã","emotion_confidence":71.7,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.057,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":true,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"NEG"},{"name":"LR (Linear)","pred":"NEG"},{"name":"Ridge (Linear)","pred":"NEG"},{"name":"SGD (Linear)","pred":"NEG"},{"name":"LinearSVM (SVM)","pred":"NEG"},{"name":"NBSVM (SVM)","pred":"NEG"},{"name":"RandomForest (Bagging)","pred":"NEU"},{"name":"HistGB (Boosting)","pred":"NEG"},{"name":"ML Meta-Ensemble","pred":"NEG"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"PhoBERT (DL-VI)","pred":"POS"},{"name":"ViSoBERT (DL-VI)","pred":"POS"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":30,"username":"hihuhehe01","likes":0,"reply_count":4,"language":"VI","original_text":"nên bỏ hết cầu đi để hết nhảy cầu","cleaned_text":"nên bỏ hết cầu đi để hết nhảy cầu","segmented_text":"nên bỏ hết cầu đi để hết nhảy cầu","polarity_label":"NEG","polarity_vi":"Tiêu cực","polarity_confidence":81.2,"polarity_score":-0.7567,"score_POS":5.5,"score_NEU":13.4,"score_NEG":81.2,"emotion_label":"Other","emotion_vi":"Trung tính / Khác","emotion_confidence":96.9,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.093,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":false,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"NEG"},{"name":"LR (Linear)","pred":"NEG"},{"name":"Ridge (Linear)","pred":"NEG"},{"name":"SGD (Linear)","pred":"NEG"},{"name":"LinearSVM (SVM)","pred":"NEG"},{"name":"NBSVM (SVM)","pred":"NEG"},{"name":"RandomForest (Bagging)","pred":"NEU"},{"name":"HistGB (Boosting)","pred":"NEU"},{"name":"ML Meta-Ensemble","pred":"NEG"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"PhoBERT (DL-VI)","pred":"NEG"},{"name":"ViSoBERT (DL-VI)","pred":"NEG"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":31,"username":"dung.tran3523","likes":0,"reply_count":0,"language":"VI","original_text":"Thôi đi ông ạ. Bình luận đéo gì để người khác học theo","cleaned_text":"Thôi đi ông ạ. Bình luận đéo gì để người khác học theo","segmented_text":"Thôi đi ông ạ . Bình_luận đéo gì để người khác học theo","polarity_label":"NEG","polarity_vi":"Tiêu cực","polarity_confidence":82.4,"polarity_score":-0.8529,"score_POS":3.3,"score_NEU":14.3,"score_NEG":82.4,"emotion_label":"Disgust","emotion_vi":"Chán ghét / Khó chịu","emotion_confidence":77.3,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.036,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":false,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"NEG"},{"name":"LR (Linear)","pred":"NEG"},{"name":"Ridge (Linear)","pred":"NEG"},{"name":"SGD (Linear)","pred":"NEG"},{"name":"LinearSVM (SVM)","pred":"NEG"},{"name":"NBSVM (SVM)","pred":"NEG"},{"name":"RandomForest (Bagging)","pred":"NEG"},{"name":"HistGB (Boosting)","pred":"NEG"},{"name":"ML Meta-Ensemble","pred":"NEG"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"PhoBERT (DL-VI)","pred":"NEG"},{"name":"ViSoBERT (DL-VI)","pred":"NEG"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":32,"username":"_iceplant_","likes":0,"reply_count":1,"language":"EN","original_text":"@best ex bf thua","cleaned_text":"ex bf thua","segmented_text":"ex bf thua","polarity_label":"NEU","polarity_vi":"Trung tính","polarity_confidence":77.2,"polarity_score":0.0409,"score_POS":14.7,"score_NEU":77.2,"score_NEG":8.0,"emotion_label":"Other","emotion_vi":"Trung tính / Khác","emotion_confidence":87.3,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.0,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":false,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"POS"},{"name":"LR (Linear)","pred":"NEU"},{"name":"Ridge (Linear)","pred":"NEU"},{"name":"SGD (Linear)","pred":"NEU"},{"name":"LinearSVM (SVM)","pred":"NEU"},{"name":"NBSVM (SVM)","pred":"NEU"},{"name":"RandomForest (Bagging)","pred":"NEU"},{"name":"HistGB (Boosting)","pred":"NEU"},{"name":"ML Meta-Ensemble","pred":"NEU"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"RoBERTa (DL-EN)","pred":"NEU"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""},{"stt":33,"username":"user5530197452160","likes":0,"reply_count":0,"language":"VI","original_text":"[Ngây thơ][Ngây thơ][Ngây thơ]","cleaned_text":"[Ngây thơ][Ngây thơ][Ngây thơ]","segmented_text":"[ Ngây_thơ ]_[ Ngây_thơ ]_[ Ngây_thơ ]","polarity_label":"POS","polarity_vi":"Tích cực","polarity_confidence":62.2,"polarity_score":0.4893,"score_POS":62.2,"score_NEU":19.3,"score_NEG":18.6,"emotion_label":"Enjoyment","emotion_vi":"Vui vẻ / Hài lòng","emotion_confidence":88.6,"emotion_ml_label":"","is_on_topic":false,"context_relevance":0.0,"matched_video_terms":[],"context_alignment":"Ít liên quan / Bình luận ngoài lề","needs_audit":true,"has_sarcasm_signal":false,"has_disagreement":true,"votes":[{"name":"CNB (Generative)","pred":"NEG"},{"name":"LR (Linear)","pred":"NEG"},{"name":"Ridge (Linear)","pred":"NEG"},{"name":"SGD (Linear)","pred":"NEG"},{"name":"LinearSVM (SVM)","pred":"NEG"},{"name":"NBSVM (SVM)","pred":"NEG"},{"name":"RandomForest (Bagging)","pred":"NEG"},{"name":"HistGB (Boosting)","pred":"POS"},{"name":"ML Meta-Ensemble","pred":"NEG"},{"name":"Lexicon (Rule)","pred":"NEU"},{"name":"PhoBERT (DL-VI)","pred":"POS"},{"name":"ViSoBERT (DL-VI)","pred":"POS"}],"gemma_audited":false,"gemma_polarity":"","gemma_emotion_vi":"","gemma_is_sarcasm":false,"gemma_reason":""}]</script>
+  <script>
+    (function () {
+      const rawData = JSON.parse(document.getElementById('xray-data').textContent || '[]');
+      const PAGE_SIZE = 25;
+      let currentFilter = 'all';
+      let currentQuery = '';
+      let currentPage = 1;
+      let openStt = null;
+
+      function esc(str) {
+        return String(str == null ? '' : str)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+
+      function getFiltered() {
+        const q = currentQuery.trim().toLowerCase();
+        return rawData.filter(item => {
+          if (currentFilter === 'POS' && item.polarity_label !== 'POS') return false;
+          if (currentFilter === 'NEU' && item.polarity_label !== 'NEU') return false;
+          if (currentFilter === 'NEG' && item.polarity_label !== 'NEG') return false;
+          if (currentFilter === 'needs_audit' && !item.needs_audit) return false;
+          if (currentFilter === 'sarcasm' && !item.has_sarcasm_signal && !item.gemma_is_sarcasm) return false;
+          if (currentFilter === 'disagree' && !item.has_disagreement) return false;
+          if (currentFilter === 'on_topic' && !item.is_on_topic) return false;
+          if (!q) return true;
+          return (
+            item.original_text.toLowerCase().includes(q) ||
+            item.username.toLowerCase().includes(q) ||
+            item.cleaned_text.toLowerCase().includes(q)
+          );
+        });
+      }
+
+      function renderDrawer(item) {
+        const votesHtml = item.votes.map(v =>
+          `<div class="vote-chip"><span>${esc(v.name)}:</span> <span class="lbl-${esc(v.pred)}">${esc(v.pred)}</span></div>`
+        ).join('');
+        const terms = item.matched_video_terms.length ? item.matched_video_terms.join(', ') : '—';
+        const gemmaBlock = item.gemma_audited
+          ? `<div style="margin-top:8px"><strong>Gemma 4 E2B Audit:</strong> <span class="lbl-${esc(item.gemma_polarity)}">${esc(item.gemma_polarity)}</span> (${esc(item.gemma_emotion_vi)}) — ${esc(item.gemma_reason)}</div>`
+          : '';
+        return `
+          <tr class="xray-drawer"><td colspan="7">
+            <div class="xray-grid">
+              <div>
+                <div><strong>1. Tiền xử lý &amp; Ngữ cảnh video</strong></div>
+                <div style="margin-top:4px;font-size:12.5px">
+                  <div><span class="lbl">Làm sạch:</span> ${esc(item.cleaned_text)}</div>
+                  <div><span class="lbl">Tách từ:</span> ${esc(item.segmented_text)}</div>
+                  <div><span class="lbl">Liên quan video:</span> ${item.is_on_topic ? 'Có' : 'Không'} (score ${item.context_relevance}) | <span class="lbl">Từ khóa khớp:</span> ${esc(terms)}</div>
+                  <div><span class="lbl">Context alignment:</span> ${esc(item.context_alignment || '—')}</div>
+                </div>
+              </div>
+              <div>
+                <div><strong>2. Kết quả tổ hợp cuối</strong></div>
+                <div style="margin-top:6px">
+                  <div class="dist-bar" style="height:12px">
+                    <span class="seg-pos" style="width:${item.score_POS}%"></span>
+                    <span class="seg-neu" style="width:${item.score_NEU}%"></span>
+                    <span class="seg-neg" style="width:${item.score_NEG}%"></span>
+                  </div>
+                  <div class="dist-legend">
+                    <span class="c-pos">POS ${item.score_POS}%</span>
+                    <span class="c-neu">NEU ${item.score_NEU}%</span>
+                    <span class="c-neg">NEG ${item.score_NEG}%</span>
+                  </div>
+                  <div style="font-size:12.5px">
+                    Điểm cực tính: <strong>${item.polarity_score}</strong> |
+                    Cảm xúc cuối: <strong>${esc(item.emotion_vi)}</strong> (${item.emotion_confidence}%)
+                  </div>
+                  ${gemmaBlock}
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:10px">
+              <strong>3. Phiếu bầu từng mô hình theo họ:</strong>
+              <div class="vote-grid">${votesHtml}</div>
+            </div>
+          </td></tr>
+        `;
+      }
+
+      function render() {
+        const filtered = getFiltered();
+        const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+        if (currentPage > totalPages) currentPage = totalPages;
+        const start = (currentPage - 1) * PAGE_SIZE;
+        const pageItems = filtered.slice(start, start + PAGE_SIZE);
+
+        document.getElementById('xrayCount').textContent =
+          `Hiển thị ${pageItems.length} / ${filtered.length} bình luận khớp điều kiện (Tổng ${rawData.length}). Bấm vào dòng bất kỳ để mở X-Ray.`;
+        document.getElementById('pageInfo').textContent = `Trang ${currentPage} / ${totalPages}`;
+        document.getElementById('prevPage').disabled = currentPage <= 1;
+        document.getElementById('nextPage').disabled = currentPage >= totalPages;
+
+        const tbody = document.getElementById('xrayBody');
+        tbody.innerHTML = pageItems.map(item => {
+          const flags = [];
+          if (item.needs_audit) flags.push('<span class="badge badge-blue">Ca khó</span>');
+          if (item.has_sarcasm_signal || item.gemma_is_sarcasm) flags.push('<span class="badge badge-red">Mỉa mai</span>');
+          if (item.has_disagreement) flags.push('<span class="badge badge-gray">Bất đồng</span>');
+          if (item.is_on_topic) flags.push('<span class="badge badge-green">Bám video</span>');
+          const rowHtml = `
+            <tr class="xray-row" data-stt="${item.stt}">
+              <td>${item.stt}</td>
+              <td class="txt-cell"><strong>@${esc(item.username || 'user')}</strong>: ${esc(item.original_text)}</td>
+              <td><span class="lbl-${esc(item.polarity_label)}">${esc(item.polarity_vi)}</span> <small>(${item.polarity_confidence}%)</small></td>
+              <td>${esc(item.emotion_vi)} <small>(${item.emotion_confidence}%)</small></td>
+              <td>${item.likes}</td>
+              <td>${esc(item.language)}</td>
+              <td>${flags.join(' ') || '—'}</td>
+            </tr>
+          `;
+          return openStt === item.stt ? rowHtml + renderDrawer(item) : rowHtml;
+        }).join('');
+      }
+
+      document.getElementById('xrayBody').addEventListener('click', function (e) {
+        const tr = e.target.closest('tr.xray-row');
+        if (!tr) return;
+        const stt = Number(tr.dataset.stt);
+        openStt = openStt === stt ? null : stt;
+        render();
+      });
+
+      document.getElementById('xraySearch').addEventListener('input', function (e) {
+        currentQuery = e.target.value;
+        currentPage = 1;
+        render();
+      });
+
+      document.getElementById('xrayFilters').addEventListener('click', function (e) {
+        const btn = e.target.closest('button.f-btn');
+        if (!btn) return;
+        document.querySelectorAll('#xrayFilters .f-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        currentPage = 1;
+        render();
+      });
+
+      document.getElementById('prevPage').addEventListener('click', function () {
+        if (currentPage > 1) { currentPage--; render(); }
+      });
+      document.getElementById('nextPage').addEventListener('click', function () {
+        currentPage++; render();
+      });
+
+      render();
+    })();
+  </script>
+</body>
+</html>

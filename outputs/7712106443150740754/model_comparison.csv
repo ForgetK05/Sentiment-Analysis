@@ -1,0 +1,24 @@
+﻿"task
+(nhiệm vụ)","model
+(mô hình)","family
+(nhóm phương pháp)","total_comments
+(số bình luận)","pos_count
+(tích cực SL)","neu_count
+(trung tính SL)","neg_count
+(tiêu cực SL)","pos_pct
+(tích cực %)","neu_pct
+(trung tính %)","neg_pct
+(tiêu cực %)","inference_time_sec
+(thời gian chạy giây)"
+Polarity (3 lớp),TF-IDF + Complement NB,Classical ML (Generative),33,9,5,19,27.27%,15.15%,57.58%,0.002
+Polarity (3 lớp),TF-IDF + Logistic Regression,Classical ML (Linear),33,1,12,20,3.03%,36.36%,60.61%,0.001
+Polarity (3 lớp),TF-IDF + Linear SVM,Classical ML (Margin / SVM),33,5,6,22,15.15%,18.18%,66.67%,0.004
+Polarity (3 lớp),SVD+Social + Random Forest,Classical ML (Tree Bagging),33,10,10,13,30.30%,30.30%,39.39%,0.098
+Polarity (3 lớp),SVD+Social + HistGradientBoosting,Classical ML (Tree Boosting),33,10,6,17,30.30%,18.18%,51.52%,0.042
+Polarity (3 lớp),Classical ML Meta-Ensemble,Classical ML Ensemble,33,5,7,21,15.15%,21.21%,63.64%,0.001
+Polarity (3 lớp),Bilingual Lexicon + Rules,Rule-based NLP,33,7,24,2,21.21%,72.73%,6.06%,0.0
+Polarity (3 lớp),PhoBERT (VI),Deep Learning,31,12,7,12,38.71%,22.58%,38.71%,20.171
+Polarity (3 lớp),"ViSoBERT (5CD-AI, VI)",Deep Learning,31,16,1,14,51.61%,3.23%,45.16%,16.845
+Polarity (3 lớp),Twitter-RoBERTa (EN),Deep Learning,2,0,2,0,0.00%,100.00%,0.00%,15.663
+Polarity (3 lớp),Hybrid Ensemble (Hệ thống chính),Hybrid ML + DL,33,12,8,13,36.36%,24.24%,39.39%,—
+Emotion (7 cung bậc),PhoBERT Emotion (VI) / DistilRoBERTa (EN),Deep Learning,—,—,—,—,—,—,—,37.481

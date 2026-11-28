@@ -1,0 +1,25 @@
+﻿"task
+(nhiệm vụ)","model
+(mô hình)","family
+(nhóm phương pháp)","total_comments
+(số bình luận)","pos_count
+(tích cực SL)","neu_count
+(trung tính SL)","neg_count
+(tiêu cực SL)","pos_pct
+(tích cực %)","neu_pct
+(trung tính %)","neg_pct
+(tiêu cực %)","inference_time_sec
+(thời gian chạy giây)"
+Polarity (3 lớp),TF-IDF + Complement NB,Classical ML (Generative),601,210,141,250,34.94%,23.46%,41.60%,0.004
+Polarity (3 lớp),TF-IDF + Logistic Regression,Classical ML (Linear),601,300,159,142,49.92%,26.46%,23.63%,0.003
+Polarity (3 lớp),TF-IDF + Linear SVM,Classical ML (Margin / SVM),601,344,64,193,57.24%,10.65%,32.11%,0.007
+Polarity (3 lớp),SVD+Social + Random Forest,Classical ML (Tree Bagging),601,227,182,192,37.77%,30.28%,31.95%,0.125
+Polarity (3 lớp),SVD+Social + HistGradientBoosting,Classical ML (Tree Boosting),601,303,62,236,50.42%,10.32%,39.27%,0.065
+Polarity (3 lớp),Classical ML Meta-Ensemble,Classical ML Ensemble,601,341,63,197,56.74%,10.48%,32.78%,0.008
+Polarity (3 lớp),Bilingual Lexicon + Rules,Rule-based NLP,601,206,370,25,34.28%,61.56%,4.16%,0.006
+Polarity (3 lớp),ML Ensemble + Lexicon (Hệ thống chính),Classical ML Ensemble,601,337,79,185,56.07%,13.14%,30.78%,—
+Emotion (7 cung bậc),Complement NB (Emotion),Classical ML (Generative),—,—,—,—,—,—,—,0.007
+Emotion (7 cung bậc),Logistic Regression (Emotion),Classical ML (Linear),—,—,—,—,—,—,—,0.005
+Emotion (7 cung bậc),Linear SVM (Emotion),Classical ML (Margin / SVM),—,—,—,—,—,—,—,0.009
+Emotion (7 cung bậc),ML Emotion Meta-Ensemble,Classical ML Ensemble,—,—,—,—,—,—,—,0.005
+Emotion (7 cung bậc),ML Emotion Ensemble + Cues (Hệ thống chính),Classical ML Ensemble,—,—,—,—,—,—,—,0.13
